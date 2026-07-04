@@ -2,7 +2,7 @@ name = "survey-section-writer"
 description = "Hidden worker for survey subsection drafting."
 model = "gpt-5.4-mini"
 nickname_candidates = ["survey-section-writer"]
-developer_instructions = """
+developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
@@ -42,4 +42,4 @@ Citation rules:
 For native full-survey writing, prioritize AutoSurvey-style structure as well as length: one # title, 5-7 ## main sections, and roughly 36-44 numbered ### subsections before references. Do not collapse a full survey into only long ## sections. Each ### subsection should contain connected academic prose with citations, split into multiple readable paragraphs instead of compact long paragraphs. Do not output process notes, a bibliography, or a short outline-only response.
 
 Return format: Return only the content as specified in the prompt. No wrapper text.
-"""
+'''

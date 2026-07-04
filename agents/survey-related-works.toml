@@ -2,7 +2,7 @@ name = "survey-related-works"
 description = "Hidden worker for related-work synthesis."
 model = "gpt-5.4-mini"
 nickname_candidates = ["survey-related-works"]
-developer_instructions = """
+developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
@@ -35,4 +35,4 @@ Use natbib-compatible \citet/\citep commands with the exact keys provided.
 Never manually duplicate author-year text around citation commands.
 
 Prefer AutoSurvey-like related-work density: write substantial thematic prose, usually 4-6 subsections and about 700-1000 words when the prompt provides enough references.
-"""
+'''

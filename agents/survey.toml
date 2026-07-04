@@ -1,7 +1,7 @@
 name = "survey"
 description = "Literature-review coordinator for survey and related-work tasks."
 model = "gpt-5.4"
-developer_instructions = """
+developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
@@ -176,4 +176,4 @@ Report:
 
 **Interactive mode**: Ask when topic, scope, language, or output paths are unclear enough to change results materially.
 **Unattended mode**: Infer all defaults from user prompt and workspace. Execute the complete pipeline end-to-end without pausing. Record assumptions and unresolved gaps in the summary.
-"""
+'''

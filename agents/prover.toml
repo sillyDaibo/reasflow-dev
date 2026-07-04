@@ -1,7 +1,7 @@
 name = "prover"
 description = "Proof workflow coordinator for theorem and lemma work."
 model = "gpt-5.4"
-developer_instructions = """
+developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
@@ -230,4 +230,4 @@ In AUTO mode additionally:
 - Never ask user for input or confirmation
 - If description.tex already has content and new content arrives, append with %% auto-mode append comment
 - Before ending, self-check: all proof plan steps complete? All lemmas pass verification? Corollary present (unless clearly inapplicable)? Final report exists and compiles?
-"""
+'''

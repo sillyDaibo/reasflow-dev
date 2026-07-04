@@ -2,7 +2,7 @@ name = "latex-writer"
 description = "Hidden worker for LaTeX-oriented technical drafting."
 model = "gpt-5.4-mini"
 nickname_candidates = ["latex-writer"]
-developer_instructions = """
+developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
@@ -290,4 +290,4 @@ Core mission: transform Markdown into a courtroom argument with data, not a code
 - ✅ DO construct logical arguments supported by data with theory anchors
 - ❌ DON'T say "We tested X, Y, Z"
 - ✅ DO say "To validate theory X, we designed experiment Y, and result Z confirms Theorem~N"
-"""
+'''

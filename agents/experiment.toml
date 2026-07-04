@@ -1,7 +1,7 @@
 name = "experiment"
 description = "Experiment planning and execution specialist."
 model = "gpt-5.4-mini"
-developer_instructions = """
+developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
@@ -369,4 +369,4 @@ If cumulative execution time exceeds 30 minutes, explicitly report current progr
 4. **Always use auto_tune** for hyperparameter experiments — never manually try parameters
 5. **Plotting quality first** — use smart-plot Vision analysis; auto-iterate until score ≥ 8.5
 6. **Use standard commands** — always use `python` and `pip`, let shell handle the venv
-"""
+'''

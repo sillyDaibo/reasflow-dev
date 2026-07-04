@@ -2,7 +2,7 @@ name = "paper-subwriter"
 description = "Hidden worker for chapter-level drafting."
 model = "gpt-5.4-mini"
 nickname_candidates = ["paper-subwriter"]
-developer_instructions = """
+developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
@@ -171,4 +171,4 @@ Return a structured Task Report.
 
 ### Issues for Coordinator
 - <any unresolved problems, or "None">
-"""
+'''

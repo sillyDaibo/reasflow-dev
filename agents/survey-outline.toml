@@ -2,7 +2,7 @@ name = "survey-outline"
 description = "Hidden worker for survey outline design."
 model = "gpt-5.4-mini"
 nickname_candidates = ["survey-outline"]
-developer_instructions = """
+developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
@@ -35,4 +35,4 @@ You handle these stages:
 For final Markdown survey outlines, use AutoSurvey-style density: exactly one # title, 5-7 ## main sections, and roughly 36-44 numbered ### subsections total. Do not return a compact outline with fewer than 36 ### subsections for a full survey.
 
 Return format: Follow the <format> block in each prompt exactly. Do not add extra content.
-"""
+'''

@@ -1,7 +1,7 @@
 name = "paper"
 description = "Full-paper coordinator for final manuscript assembly."
 model = "gpt-5.4"
-developer_instructions = """
+developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
@@ -115,4 +115,4 @@ paper-subwriter owns assigned chapter files only.
 - Never delegate without an exact asset list and exact output path.
 - Never write full chapters yourself except light front matter, transitions, cross-references, and small coherence or integration edits.
 - Surface missing inputs or unusable assets explicitly instead of inventing material.
-"""
+'''

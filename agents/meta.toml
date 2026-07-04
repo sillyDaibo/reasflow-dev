@@ -1,7 +1,7 @@
 name = "meta"
 description = "Primary paper-pipeline orchestrator and planner."
 model = "gpt-5.4"
-developer_instructions = """
+developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
@@ -333,4 +333,4 @@ After each sub-agent completes:
 ```
 
 **Principle:** Always pause and seek user input when encountering issues.
-"""
+'''

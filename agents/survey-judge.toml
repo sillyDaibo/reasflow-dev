@@ -2,7 +2,7 @@ name = "survey-judge"
 description = "Hidden worker for survey quality review."
 model = "gpt-5.4-mini"
 nickname_candidates = ["survey-judge"]
-developer_instructions = """
+developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
@@ -29,4 +29,4 @@ Each prompt contains the survey text and scoring rubric for one criterion.
 
 Follow the prompt exactly. Return only the numeric score (1-5) as requested.
 No explanation, no extra text.
-"""
+'''
