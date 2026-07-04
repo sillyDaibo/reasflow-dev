@@ -1,0 +1,75 @@
+---
+name: check-asset-usage
+description: Use when verifying that assigned assets or full-paper assets were actually consumed by the manuscript output
+---
+
+## Installed Root
+
+Resolve the installed reasflow-dev skills root before running packaged scripts:
+
+```bash
+REASFLOW_SKILLS_ROOT="${REASFLOW_SKILLS_ROOT:-}"
+if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
+  if [ -d ./.agents/skills ]; then
+    REASFLOW_SKILLS_ROOT="$(pwd)/.agents/skills"
+  elif [ -d "$HOME/.agents/skills" ]; then
+    REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
+  else
+    echo "reasflow-dev skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    exit 1
+  fi
+fi
+```
+
+# Check Asset Usage
+
+## Overview
+Treat asset utilization as a hard constraint, not a nice-to-have. Run this after a chapter draft or full-paper integration pass to confirm the output really uses the assets it was supposed to use.
+
+## Helper Script
+Set `SKILL_ROOT="$REASFLOW_SKILLS_ROOT/check-asset-usage"`.
+
+Preferred command:
+
+```bash
+python3 "$SKILL_ROOT/scripts/check_asset_usage.py" \
+  --assets-dir assets/Paper03_SudaMuon \
+  --output-dir output/Paper03_SudaMuon \
+  --main-file main.tex \
+  --format text
+```
+
+JSON for automation:
+
+```bash
+python3 "$SKILL_ROOT/scripts/check_asset_usage.py" \
+  --assets-dir assets/Paper03_SudaMuon \
+  --output-dir output/Paper03_SudaMuon \
+  --format json
+```
+
+If Python runtime/setup is missing:
+
+```bash
+uv run "$SKILL_ROOT/scripts/check_asset_usage.py" \
+  --assets-dir assets/Paper03_SudaMuon \
+  --output-dir output/Paper03_SudaMuon \
+  --format text
+```
+
+## What It Checks
+1. `\input{}` and `\include{}` references for `.tex` assets.
+2. `\includegraphics{}` references for figures and diagrams.
+3. bibliography and `\cite{}` coverage for `.bib`, `.yaml`, and `.yml` assets.
+4. signature phrases from `.md` and `.txt` notes that should have been incorporated.
+
+## Expected Output
+- overall utilization rate (`used/total`, percentage)
+- per top-level directory and subdirectory breakdown
+- missing file names for each subgroup
+- machine-readable JSON directory stats when `--format json` is used
+
+## Deliverables
+- overall utilization rate
+- per-directory missing-asset list
+- explicit confirmation when utilization reaches 100%

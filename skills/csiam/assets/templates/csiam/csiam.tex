@@ -1,0 +1,165 @@
+\documentclass[mathpazo]{csiam-am}
+\setcounter{page}{1}
+\renewcommand\thisnumber{x}
+\renewcommand\thisyear {20xx}
+\renewcommand\thismonth{xx}
+\renewcommand\thisvolume{x}
+
+
+%%%%% author macros %%%%%%%%%
+% place your own macros HERE
+%%%%% end %%%%%%%%%
+
+\begin{document}
+%%%%% title : short title may not be used but TITLE is required.
+% \title{TITLE}
+% \title[short title]{TITLE}
+\title{Here is the Title}
+
+%%%%% author(s) :
+% single author:
+% \author[name in running head]{AUTHOR\corrauth}
+% [name in running head] is NOT OPTIONAL, it is a MUST.
+% Use \corrauth to indicate the corresponding author.
+% Use \email to provide email address of author.
+% \footnote and \thanks are not used in the heading section.
+% Another acknowlegments/support of grants, state in Acknowledgments section
+% \section*{Acknowledgments}
+\author[O.~Author]{Only Author\corrauth}
+\address{School of Mathematical Sciences, Beijing Normal University,
+Beijing 100875, P.R. China}
+%\email{{\tt author@email} (O.~Author)}
+
+% multiple authors:
+% Note the use of \affil and \affilnum to link names and addresses.
+% The author for correspondence is marked by \corrauth.
+% use \emails to provide email addresses of authors
+% e.g. below example has 3 authors, first author is also the corresponding
+%      author, author 1 and 3 having the same address.
+% \author[Z. Zhang et~al.]{Zhengru Zhang\affil{1}\comma\corrauth,
+%       Author Chan\affil{2}~and Author Zhao\affil{1}}
+% \address{\affilnum{1}\ School of Mathematical Sciences,
+%          Beijing Normal University,
+%          Beijing 100875, P.R. China. \\
+%           \affilnum{2}\ Department of Mathematics,
+%           Hong Kong Baptist University, Hong Kong SAR.}
+% \emails{{\tt zhang@email} (Z.~Zhang), {\tt chan@email} (A.~Chan),
+%          {\tt zhao@email} (A.~Zhao)}
+% \footnote and \thanks are not used in the heading section.
+% Another acknowlegments/support of grants, state in Acknowledgments section
+% \section*{Acknowledgments}
+\author[F.~Author and A.~Co-Author(s)]{First Author\affil{1}\comma\corrauth\ and Co-Author(s)\affil{2}}
+\address{\affilnum{1}\ address of First Author\\
+\affilnum{2}\ address of Co-Author(s)}
+
+%
+%same address:
+%\author[F. Author and A.~Co-Author,]{First Author and A.~Co-Author\corrauth}
+%\address{address of First Author and His Best Friend}
+%
+\emails{{\tt fauthor@edu.eajam} (F. Author), {\tt Co-Auhor(s)@edu.eajam} (A. Co-Author)}
+
+%%%%% Begin Abstract %%%%%%%%%%%
+\begin{abstract}
+The abstract should provide the application context and briefly summarise the main findings.
+It should not be too long --- normally no longer than half a page.
+\end{abstract}
+%%%%% end %%%%%%%%%%%
+
+%%%%% AMS/PACs/Keywords %%%%%%%%%%%
+%\pac{}
+\ams{XXX, XXX%The information of the AMS subject classification can be found in http://mathscinet.ams.org/msc/msc2010.html
+}
+\keywords{At least 3 items and at most 5 items.}
+
+%%%% maketitle %%%%%
+\maketitle
+
+
+%%%% Start %%%%%%
+
+
+
+\section{Introduction}
+\label{sec1}
+The Introduction should provide details of the application context and previous relevant publications, leading to a brief summary of the
+direction of the research undertaken and the following structure of the article (Sections).
+
+\section{Preparation of Manuscript}\label{sec2}
+
+For preparation of the manuscript we \textbf{strongly recommend} using {\tt Instruction for}\linebreak {\tt Authors} file and examples provided there.
+
+ The Title Page should contain the article title,
+authors' names and complete affiliations,
+and the postal address for manuscript correspondence (including
+e-mail address). The Abstract should provide a brief
+summary of the main findings of the paper.
+
+References should be listed at the end of the paper in alphabetical order according to the surnames of the first author, and should be cited in the text using \verb"\cite" command as \verb"\cite{coutsias1996,firstauthor,Berger,deBoor}". In the text the citations will appear as  \cite{coutsias1996,firstauthor,Berger,deBoor}.
+
+Abbreviations of titles of periodicals/books should be given by using Math. Reviews, see e.g. \verb"https://mathscinet.ams.org/msnhtml/serials.pdf"
+
+For unpublished lectures of symposia, include title of paper, name of
+sponsoring society in full, and date. Give titles of unpublished reports
+with "(unpublished)" following the reference. Only articles that have been
+published or are in press should be included in the references.
+Unpublished results or personal communications should be cited as such in
+the text. Please note the sample at the end of this paper.
+
+Equations should be typewritten whenever possible and the number placed in parentheses at the right margin.
+Reference to equations should use the form "Eq.~(2.1)" or simply "(2.1)."
+
+Figures should be in eps format. Number figures consecutively with Arabic numerals.
+Lettering on drawings should be of professional quality or generated by high-resolution computer graphics and must be
+large enough to withstand appropriate reduction for publication.
+For example, if you use {\sf MATLAB} to do figure plots,
+axis labels should be at least point 18. Title should be 24 points or above. Tick marks labels
+better have 14 points or above. Line width should be 2 (or above).
+
+Illustrations in colors will appear in black and white in printed version unless the authors defray the cost of color printing.
+At the Editor's discretion a limited number of color figures each year of special interest
+will be published (for printed version) at no cost to the author.
+
+%%%% Acknowledgments %%%%%%%%
+\section*{Acknowledgments}
+
+At the end of paper but preceding the References.
+
+The author would like to thank  ....
+
+%%%% Bibliography  %%%%%%%%%%
+\begin{thebibliography}{99}
+
+\bibitem{firstauthor}
+F.~Author and A.~Co-Author, \emph{Preparation of manuscript}, Intern. Public.,  5(1):12--21, 2018.
+
+\bibitem{Berger}
+ M. J.~Berger and P.~Collela, {\em Local adaptive mesh
+refinement for shock hydrodynamics}, J. Comput. Phys.,  82:62--84, 1989.
+
+
+\bibitem{deBoor}
+C.~de~Boor, {\em Good approximation by splines with variable knots II}, Springer Lecture  Notes Series Vol. 363, Springer-Verlag, 1973.
+
+\bibitem{Can09}
+C.~Canuto, {\em High-order methods for {PDE}s: Recent advances and new perspectives},
+ in:    6th {I}nternational {C}ongress on {I}ndustrial  and {A}pplied {M}athematics, pp. 57--87,
+ European Mathematical Society, 2009.
+
+ \bibitem{coutsias1996}
+E. Coutsias, T. Hagstrom, J. S. Hesthaven, and D. Torres,
+ \emph{Integration preconditioners for differential operators in spectral
+  $\tau$-methods},
+ in:   Proceedings of the Third International Conference on Spectral
+  and High Order Methods, A.~Ilin and R.~Scott (Eds.), pp. 21--38,  Houston Journal of Mathematics, 1996.
+
+
+\bibitem{TanTZ}
+Z. J. Tan, T. Tang, and Z. R. Zhang, {\em A simple moving mesh method for one- and two-dimensional phase-field equations}, J. Comput. Appl. Math. (To appear).
+
+\bibitem{Toro}
+ E. F. Toro,  \emph{Riemann Solvers and Numerical Methods for Fluid Dynamics}, Springer-Verlag, 1999.
+\end{thebibliography}
+
+
+\end{document}
