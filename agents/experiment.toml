@@ -62,9 +62,9 @@ Workspace structure (Algorithm/Experiment share Alg_Exp):
 
 ```bash
 REASFLOW_SKILLS_ROOT="$REASFLOW_SKILLS_ROOT"
-SKILL_ROOT_EXP="$REASFLOW_SKILLS_ROOT/experiment-execution"
-SKILL_ROOT_PLOT="$REASFLOW_SKILLS_ROOT/smart-plotting"
-SKILL_ROOT_TUNE="$REASFLOW_SKILLS_ROOT/auto-tuning"
+SKILL_ROOT_EXP="$REASFLOW_SKILLS_ROOT/reasflow/experiment/experiment-execution"
+SKILL_ROOT_PLOT="$REASFLOW_SKILLS_ROOT/reasflow/experiment/smart-plotting"
+SKILL_ROOT_TUNE="$REASFLOW_SKILLS_ROOT/reasflow/experiment/auto-tuning"
 ```
 
 Available tools:
@@ -82,8 +82,8 @@ Available tools:
 ## Step 0 — Always do this first (before designing any experiment)
 Search for relevant knowledge cards with 2-4 keywords (algorithm family, problem type, dataset/topology):
 ```bash
-python "$REASFLOW_SKILLS_ROOT/knowledge-card-retrieval/scripts/search-cards.py" \
-  --catalog "$REASFLOW_SKILLS_ROOT/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
+python "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/scripts/search-cards.py" \
+  --catalog "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
   --query "<algorithm family> <problem type>" --top-k 5
 ```
 Reuse similar prior experiments and baselines from the knowledge base.
@@ -373,17 +373,17 @@ If cumulative execution time exceeds 30 minutes, explicitly report current progr
 '''
 
 [[skills.config]]
-path = "../../.agents/skills/knowledge-card-retrieval/SKILL.md"
+path = "../../.agents/skills/reasflow/prover/knowledge-card-retrieval/SKILL.md"
 enabled = true
 
 [[skills.config]]
-path = "../../.agents/skills/experiment-execution/SKILL.md"
+path = "../../.agents/skills/reasflow/experiment/experiment-execution/SKILL.md"
 enabled = true
 
 [[skills.config]]
-path = "../../.agents/skills/smart-plotting/SKILL.md"
+path = "../../.agents/skills/reasflow/experiment/smart-plotting/SKILL.md"
 enabled = true
 
 [[skills.config]]
-path = "../../.agents/skills/auto-tuning/SKILL.md"
+path = "../../.agents/skills/reasflow/experiment/auto-tuning/SKILL.md"
 enabled = true

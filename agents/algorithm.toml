@@ -51,27 +51,27 @@ From Alg_Exp/document/idea.md, or if no file exists, the idea is in the user's m
 ### Step 2 — Search domain knowledge cards (REQUIRED FIRST)
 Before designing the algorithm, call **twice** with different keyword combinations (algorithm family, problem type, key mechanism):
 ```bash
-python "$REASFLOW_SKILLS_ROOT/knowledge-card-retrieval/scripts/search-cards.py" \
-  --catalog "$REASFLOW_SKILLS_ROOT/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
+python "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/scripts/search-cards.py" \
+  --catalog "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
   --query "<algorithm family> <problem type> <key mechanism>" --top-k 5
 
-python "$REASFLOW_SKILLS_ROOT/knowledge-card-retrieval/scripts/search-cards.py" \
-  --catalog "$REASFLOW_SKILLS_ROOT/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
+python "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/scripts/search-cards.py" \
+  --catalog "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
   --query "<related technique> convergence analysis" --top-k 5
 ```
 
 **After each search, read the returned card files explicitly** — the search result includes file paths (e.g. `references/2410_07698.yaml`). Read each returned card before proceeding:
 ```bash
 # For each path returned by the search, read the full card:
-cat "$REASFLOW_SKILLS_ROOT/knowledge-card-retrieval/assets/knowledge-cards/<returned_card_path>"
+cat "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/assets/knowledge-cards/<returned_card_path>"
 # or use read_file tool with the full path
 ```
 Read ALL returned cards and extract: algorithm variants, key assumptions, convergence bounds, and notation conventions. These inform the algorithm design and plan.
 
 If local cards are insufficient, create new cards from arXiv:
 ```bash
-python "$REASFLOW_SKILLS_ROOT/knowledge-card-retrieval/scripts/create-cards-from-arxiv.py" \
-  --arxiv-id <ID> --output-dir "$REASFLOW_SKILLS_ROOT/knowledge-card-retrieval/assets/knowledge-cards/"
+python "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/scripts/create-cards-from-arxiv.py" \
+  --arxiv-id <ID> --output-dir "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/assets/knowledge-cards/"
 ```
 
 ### Step 3 — Design algorithm
@@ -287,5 +287,5 @@ If cumulative execution time in Phase 2 exceeds 30 minutes, explicitly report cu
 '''
 
 [[skills.config]]
-path = "../../.agents/skills/knowledge-card-retrieval/SKILL.md"
+path = "../../.agents/skills/reasflow/prover/knowledge-card-retrieval/SKILL.md"
 enabled = true

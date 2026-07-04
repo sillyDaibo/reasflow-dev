@@ -294,5 +294,5 @@ Core mission: transform Markdown into a courtroom argument with data, not a code
 '''
 
 [[skills.config]]
-path = "../../.agents/skills/report-integration/SKILL.md"
+path = "../../.agents/skills/reasflow/latex-writer/report-integration/SKILL.md"
 enabled = true

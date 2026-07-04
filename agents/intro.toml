@@ -81,7 +81,7 @@ List workspace root. Identify source directories:
 For every source found in Step 2, call the extraction tools. **Do NOT manually read files and summarize — always use the extraction tools**:
 
 ```bash
-SKILL_ROOT="$REASFLOW_SKILLS_ROOT/introduction-framing"
+SKILL_ROOT="$REASFLOW_SKILLS_ROOT/reasflow/intro/introduction-framing"
 
 # Extract from survey
 python "$SKILL_ROOT/scripts/extract-workspace-info.py" \
@@ -226,5 +226,5 @@ When user requests changes, re-run write-introduction.py with the same paths and
 '''
 
 [[skills.config]]
-path = "../../.agents/skills/introduction-framing/SKILL.md"
+path = "../../.agents/skills/reasflow/intro/introduction-framing/SKILL.md"
 enabled = true

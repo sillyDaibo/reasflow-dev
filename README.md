@@ -18,7 +18,7 @@ curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/instal
 
 这会把内容安装到当前项目：
 
-- `./.agents/skills/`
+- `./.agents/skills/reasflow/`
 - `./.codex/agents/`
 
 ### 全局安装
@@ -29,7 +29,7 @@ curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/instal
 
 这会安装到：
 
-- `~/.agents/skills/`
+- `~/.agents/skills/reasflow/`
 - `~/.codex/agents/`
 
 ### 持续开发模式
@@ -112,15 +112,31 @@ reasflow-dev/
 
 ```text
 skills/
-├── shared/
-│   ├── autosurvey-execution/
-│   └── knowledge-card-retrieval/
-└── private/
-    ├── meta-only/
-    └── prover-only/
+└── reasflow/
+    ├── shared/
+    │   ├── deep-research/
+    │   └── workspace-conventions/
+    ├── prover/
+    │   ├── knowledge-card-retrieval/
+    │   └── reference-download/
+    ├── survey/
+    │   ├── autosurvey-execution/
+    │   └── autosurvey-paper-retrieval/
+    └── experiment/
+        └── smart-plotting/
 ```
 
-安装器会递归收集 `skills/` 下包含 `SKILL.md` 的目录，所以可以安全使用一层子目录来做 `shared/private` 分层。
+安装后会保留顶层命名空间目录，因此上述结构会落成：
+
+```text
+.agents/skills/reasflow/...
+```
+
+也就是说 agent 可以直接引用类似：
+
+```toml
+path = "../../.agents/skills/reasflow/prover/knowledge-card-retrieval/SKILL.md"
+```
 
 当前仓库里的 agent 配置也遵循这个方向：默认只正向声明需要的少量 skill，不再维护大批 `enabled = false` 的排除项。
 

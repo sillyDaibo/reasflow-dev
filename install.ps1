@@ -82,11 +82,7 @@ try {
         "SOURCE $sourceDir"
     )
 
-    $seenSkillNames = @{}
-    foreach ($skillFile in Get-ChildItem -Path (Join-Path $sourceDir "skills") -Filter SKILL.md -File -Recurse) {
-        $skill = $skillFile.Directory
-        if ($seenSkillNames.ContainsKey($skill.Name)) { throw "duplicate skill directory name detected: $($skill.Name)" }
-        $seenSkillNames[$skill.Name] = $true
+    foreach ($skill in Get-ChildItem -Path (Join-Path $sourceDir "skills") -Directory) {
         $dest = Join-Path $skillsDir $skill.Name
         if ((Test-Path $dest) -and -not $Force) { throw "target already exists: $dest" }
         if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
