@@ -9,9 +9,22 @@ $repo = if ($env:REASFLOW_DEV_REPO) { $env:REASFLOW_DEV_REPO } else { "sillyDaib
 $ref = if ($env:REASFLOW_DEV_REF) { $env:REASFLOW_DEV_REF } else { "main" }
 $sourceOverride = $env:REASFLOW_DEV_SOURCE_DIR
 
+function Get-UserHomeDir {
+    if ($env:USERPROFILE) { return $env:USERPROFILE }
+
+    $homeFromDotNet = [Environment]::GetFolderPath("UserProfile")
+    if ($homeFromDotNet) { return $homeFromDotNet }
+
+    if ($HOME) { return $HOME }
+
+    throw "cannot determine user home directory"
+}
+
 if ($Global) {
-    $targetRoot = $HOME
-    $stateDir = if ($env:REASFLOW_DEV_STATE_DIR) { $env:REASFLOW_DEV_STATE_DIR } else { Join-Path $HOME ".local/share/reasflow-dev" }
+    $homeDir = Get-UserHomeDir
+    $targetRoot = $homeDir
+    $defaultStateDir = Join-Path $homeDir ".reasflow-dev"
+    $stateDir = if ($env:REASFLOW_DEV_STATE_DIR) { $env:REASFLOW_DEV_STATE_DIR } else { $defaultStateDir }
 } else {
     $targetRoot = (Get-Location).Path
     $stateDir = if ($env:REASFLOW_DEV_STATE_DIR) { $env:REASFLOW_DEV_STATE_DIR } else { Join-Path $targetRoot ".reasflow-dev" }
@@ -69,7 +82,11 @@ try {
         "SOURCE $sourceDir"
     )
 
-    foreach ($skill in Get-ChildItem -Path (Join-Path $sourceDir "skills") -Directory) {
+    $seenSkillNames = @{}
+    foreach ($skillFile in Get-ChildItem -Path (Join-Path $sourceDir "skills") -Filter SKILL.md -File -Recurse) {
+        $skill = $skillFile.Directory
+        if ($seenSkillNames.ContainsKey($skill.Name)) { throw "duplicate skill directory name detected: $($skill.Name)" }
+        $seenSkillNames[$skill.Name] = $true
         $dest = Join-Path $skillsDir $skill.Name
         if ((Test-Path $dest) -and -not $Force) { throw "target already exists: $dest" }
         if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }

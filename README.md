@@ -62,6 +62,12 @@ irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.ps1 |
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.ps1))) -Global
 ```
 
+Windows 全局安装默认落到当前用户目录下：
+
+- `$env:USERPROFILE\.codex\agents\`
+- `$env:USERPROFILE\.agents\skills\`
+- `$env:USERPROFILE\.reasflow-dev\`
+
 开发模式：
 
 ```powershell
@@ -92,6 +98,31 @@ reasflow-dev/
 ├── install.ps1
 └── README.md
 ```
+
+## 推荐约定
+
+推荐把 skill 当作 **按 agent 显式挂载** 的资源，而不是先全量暴露再逐个排除。
+
+- `agents/*.toml` 里只保留这个 agent 真正需要的 `[[skills.config]]`
+- 不要把项目私有 skill 同时写进全局 `~/.codex/config.toml`
+- 共享 skill 可以被多个 agent 同时引用
+- 私有 skill 只要不被其他 agent 引用，其他 agent 默认就看不到
+
+推荐分层方式：
+
+```text
+skills/
+├── shared/
+│   ├── autosurvey-execution/
+│   └── knowledge-card-retrieval/
+└── private/
+    ├── meta-only/
+    └── prover-only/
+```
+
+安装器会递归收集 `skills/` 下包含 `SKILL.md` 的目录，所以可以安全使用一层子目录来做 `shared/private` 分层。
+
+当前仓库里的 agent 配置也遵循这个方向：默认只正向声明需要的少量 skill，不再维护大批 `enabled = false` 的排除项。
 
 ## 更新
 

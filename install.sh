@@ -154,9 +154,18 @@ printf 'MODE %s\n' "$( [ "$dev_mode" -eq 1 ] && echo dev || echo release )" >> "
 printf 'SCOPE %s\n' "$mode" >> "$manifest_tmp"
 printf 'SOURCE %s\n' "$source_dir" >> "$manifest_tmp"
 
-for skill_path in "$source_dir"/skills/*; do
-  [ -d "$skill_path" ] || continue
+seen_skill_names="$tmp_dir/seen-skill-names.txt"
+: > "$seen_skill_names"
+
+find "$source_dir/skills" -mindepth 1 -maxdepth 2 -type f -name SKILL.md | while IFS= read -r skill_file; do
+  skill_path="$(dirname "$skill_file")"
   skill_name="$(basename "$skill_path")"
+  if grep -Fxq "$skill_name" "$seen_skill_names"; then
+    echo "duplicate skill directory name detected: $skill_name" >&2
+    echo "skill leaf directory names must be unique under skills/" >&2
+    exit 1
+  fi
+  printf '%s\n' "$skill_name" >> "$seen_skill_names"
   dest="$skills_dir/$skill_name"
   ensure_clear_target "$dest"
   if [ "$dev_mode" -eq 1 ]; then
