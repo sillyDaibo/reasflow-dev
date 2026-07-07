@@ -129,6 +129,18 @@ def extract_arxiv_from_key(value: str) -> str:
     return match.group(1) if match else ""
 
 
+def canonical_paper_url(arxiv_id: str, doi: str) -> str:
+    clean_doi = str(doi or "").strip()
+    if clean_doi.startswith("10."):
+        return f"https://doi.org/{clean_doi}"
+    clean_arxiv = extract_arxiv_from_key(arxiv_id) or re.sub(
+        r"v\d+$", "", str(arxiv_id or "").strip()
+    )
+    if clean_arxiv:
+        return f"https://arxiv.org/abs/{clean_arxiv}"
+    return ""
+
+
 def split_reascholar_authors(value: Any) -> list[str]:
     if isinstance(value, list):
         return clean_authors(value)
@@ -189,6 +201,14 @@ def normalize_reascholar_paper(
     if doi.startswith("10."):
         external_ids["DOI"] = doi
 
+    links = paper.get("links") if isinstance(paper.get("links"), dict) else {}
+    links = dict(links)
+    if paper_key:
+        links.setdefault(
+            "reascholar_api",
+            f"{REASCHOLAR_BASE_URL}/api/papers/{urllib.parse.quote(paper_key)}",
+        )
+
     authors = split_reascholar_authors(
         paper.get("authors")
         or raw.get("authors")
@@ -242,9 +262,7 @@ def normalize_reascholar_paper(
         "abs": profile,
         "citationCount": paper.get("citationCount") or 0,
         "referenceCount": paper.get("referenceCount") or 0,
-        "url": f"{REASCHOLAR_BASE_URL}/api/papers/{urllib.parse.quote(paper_key)}"
-        if paper_key
-        else "",
+        "url": canonical_paper_url(arxiv_id, doi),
         "externalIds": external_ids,
         "publicationDate": "",
         "raw_bibtex": bibtex,
@@ -265,7 +283,7 @@ def normalize_reascholar_paper(
             paper.get("summary_markdown"),
         ),
         "weaknesses": "",
-        "links": paper.get("links") if isinstance(paper.get("links"), dict) else {},
+        "links": links,
     }
     return normalized
 
@@ -392,7 +410,9 @@ def search_reascholar(query: str, limit: int, mode: str) -> list[dict[str, Any]]
     for item in payload.get("results", []):
         if not isinstance(item, dict) or item.get("result_type") != "paper":
             continue
-        papers.append(normalize_reascholar_paper(item))
+        paper_key = str(item.get("paper_key") or "")
+        detail = fetch_reascholar_detail(paper_key)
+        papers.append(normalize_reascholar_paper(item, detail))
     return papers
 
 

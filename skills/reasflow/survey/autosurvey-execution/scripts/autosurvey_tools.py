@@ -809,6 +809,26 @@ def _is_arxiv_url(url: str) -> bool:
     return "arxiv.org" in (url or "").lower()
 
 
+def _is_internal_reascholar_url(url: str) -> bool:
+    lowered = (url or "").lower()
+    return "scholar.reaslab.io/api/papers/" in lowered
+
+
+def _canonical_bib_url(paper: dict) -> str:
+    doi = str(paper.get("doi") or (paper.get("externalIds") or {}).get("DOI") or "").strip()
+    if doi.startswith("10."):
+        return f"https://doi.org/{doi}"
+
+    arxiv_id = _paper_arxiv_id(paper)
+    if arxiv_id and re.search(r"\d{4}\.\d{4,5}", arxiv_id):
+        return f"https://arxiv.org/abs/{_clean_arxiv_id(arxiv_id)}"
+
+    url = str(paper.get("url") or "").strip()
+    if not url or _is_internal_reascholar_url(url):
+        return ""
+    return url
+
+
 def _bibtex_source_is_consistent(paper: dict, bibtex: str) -> bool:
     source = str(paper.get("best_citation_source") or "").lower()
     venue = str(paper.get("best_citation_venue") or "").lower()
@@ -848,6 +868,7 @@ def enrich_bibtex_entry(paper: dict, bibtex: str) -> str:
     enriched = _normalize_arxiv_preprint_bibtex(enriched)
     enriched = _insert_bibtex_field(enriched, "year", _paper_year(paper))
     has_published_venue = _bibtex_has_published_venue(enriched)
+    canonical_url = _canonical_bib_url(paper)
 
     arxiv_id = _paper_arxiv_id(paper)
     if (
@@ -857,13 +878,9 @@ def enrich_bibtex_entry(paper: dict, bibtex: str) -> str:
     ):
         enriched = _insert_bibtex_field(enriched, "eprint", arxiv_id)
         enriched = _insert_bibtex_field(enriched, "archiveprefix", "arXiv")
-        enriched = _insert_bibtex_field(
-            enriched,
-            "url",
-            paper.get("url") or f"https://arxiv.org/abs/{_clean_arxiv_id(arxiv_id)}",
-        )
-    elif paper.get("url") and not (has_published_venue and _is_arxiv_url(str(paper.get("url")))):
-        enriched = _insert_bibtex_field(enriched, "url", str(paper.get("url")))
+        enriched = _insert_bibtex_field(enriched, "url", canonical_url)
+    elif canonical_url and not (has_published_venue and _is_arxiv_url(canonical_url)):
+        enriched = _insert_bibtex_field(enriched, "url", canonical_url)
 
     doi = paper.get("doi") or (paper.get("externalIds") or {}).get("DOI")
     if doi:
@@ -885,7 +902,7 @@ def arxiv_id_to_bibtex(paper: dict, key: str) -> str:
     author_str = " and ".join(authors)
 
     arxiv_id = _paper_arxiv_id(paper)
-    url = paper.get("url", f"https://arxiv.org/abs/{arxiv_id}" if arxiv_id else "")
+    url = _canonical_bib_url(paper)
 
     bib = f"@article{{{key},\n"
     bib += f"  title = {{{title}}},\n"
