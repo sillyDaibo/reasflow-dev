@@ -3,7 +3,7 @@ description = "Proof workflow coordinator for theorem and lemma work."
 model = "gpt-5.4"
 
 developer_instructions = '''
-Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
+Host: OpenAI Codex. Use Codex subagents via `spawn_agent`; after spawning, call `wait_agent` to block until it finishes before spawning the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
 ```bash
@@ -66,7 +66,7 @@ You are the core brain of the proof system. As commander and as an experienced m
   - **Environment exploration**: use `list` to explore workspace structure
   - **Skills first**: prefer reference-downloader-skill and lemma-prover-skill
   - **Fallback**: if no skill, use standard commands to download and extract files
-- **Task dispatch**: spawn/resume lemma-prover and lemma-verifier sub-agents
+- **Dispatch**: `spawn_agent`/`resume_agent` for lemma-prover and lemma-verifier, then `wait_agent`.
   - **New lemma**: start a fresh sub-agent task (fresh context)
   - **Correction for same lemma**: start new prover task, explicitly tell it to read the draft file and fix specific issues
   - **Re-verification**: start new verifier task pointing to corrected file

@@ -106,6 +106,26 @@ try {
         $manifestLines += "FILE $dest"
     }
 
+    # Install project-level Codex config (orchestrator developer_instructions).
+    # Local install only: a global install would write into the user's personal
+    # ~/.codex/config.toml and clobber their model/provider/projects settings.
+    $configSrc = Join-Path $sourceDir "codex-config.toml"
+    $configInstalled = $false
+    if (-not $Global -and (Test-Path $configSrc)) {
+        $configDest = Join-Path $targetRoot ".codex/config.toml"
+        if ((Test-Path $configDest) -and -not $Force) { throw "target already exists: $configDest" }
+        if (Test-Path $configDest) { Remove-Item -Force $configDest }
+        if ($Dev) {
+            New-Item -ItemType SymbolicLink -Path $configDest -Target $configSrc | Out-Null
+        } else {
+            Copy-Item -Force $configSrc $configDest
+        }
+        $manifestLines += "FILE $configDest"
+        $configInstalled = $true
+    } elseif ($Global) {
+        Write-Host "  note: skipping .codex/config.toml on global install (install locally per project)"
+    }
+
     Set-Content -Path $manifest -Value $manifestLines
 
     $skillCount = (Get-ChildItem -Path $skillsDir -Directory).Count
@@ -115,6 +135,9 @@ try {
     Write-Host "  mode: $(if ($Dev) { 'dev' } else { 'release' })"
     Write-Host "  skills: $skillCount -> $skillsDir"
     Write-Host "  agents: $agentCount -> $agentsDir"
+    if ($configInstalled) {
+        Write-Host "  config: -> $(Join-Path $targetRoot '.codex/config.toml')"
+    }
     Write-Host "  manifest: $manifest"
 }
 finally {

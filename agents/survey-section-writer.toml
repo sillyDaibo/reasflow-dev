@@ -4,7 +4,7 @@ model = "gpt-5.4-mini"
 nickname_candidates = ["survey-section-writer"]
 
 developer_instructions = '''
-Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
+Host: OpenAI Codex. Use Codex subagents via `spawn_agent`; after spawning, call `wait_agent` to block until it finishes before spawning the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
 ```bash

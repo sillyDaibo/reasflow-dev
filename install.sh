@@ -178,6 +178,25 @@ for agent_path in "$source_dir"/agents/*.toml; do
   printf 'FILE %s\n' "$dest" >> "$manifest_tmp"
 done
 
+# Install project-level Codex config (orchestrator developer_instructions).
+# Local install only: a global install would write into the user's personal
+# ~/.codex/config.toml and clobber their model/provider/projects settings.
+config_src="$source_dir/codex-config.toml"
+config_installed=0
+if [ "$mode" = "local" ] && [ -f "$config_src" ]; then
+  config_dest="$target_root/.codex/config.toml"
+  ensure_clear_target "$config_dest"
+  if [ "$dev_mode" -eq 1 ]; then
+    ln -s "$config_src" "$config_dest"
+  else
+    cp "$config_src" "$config_dest"
+  fi
+  printf 'FILE %s\n' "$config_dest" >> "$manifest_tmp"
+  config_installed=1
+elif [ "$mode" != "local" ]; then
+  echo "  note: skipping .codex/config.toml on global install (install locally per project)" >&2
+fi
+
 cp "$manifest_tmp" "$manifest"
 
 skill_count="$(find "$skills_dir" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"
@@ -188,4 +207,7 @@ echo "  scope: $mode"
 echo "  mode: $( [ "$dev_mode" -eq 1 ] && echo dev || echo release )"
 echo "  skills: $skill_count -> $skills_dir"
 echo "  agents: $agent_count -> $agents_dir"
+if [ "$config_installed" -eq 1 ]; then
+  echo "  config: -> $target_root/.codex/config.toml"
+fi
 echo "  manifest: $manifest"

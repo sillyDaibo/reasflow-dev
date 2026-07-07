@@ -3,7 +3,7 @@ description = "Full-paper coordinator for final manuscript assembly."
 model = "gpt-5.4"
 
 developer_instructions = '''
-Host: OpenAI Codex. Use Codex subagents through the native multi-agent task mechanism. Dispatch one subagent at a time and wait for it to finish before starting the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
+Host: OpenAI Codex. Use Codex subagents via `spawn_agent`; after spawning, call `wait_agent` to block until it finishes before spawning the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
 ```bash
@@ -53,16 +53,16 @@ Therefore:
 
 ## Tool Usage
 
-Use Codex's native `task` tool to dispatch `paper-subwriter`.
+Use `spawn_agent` to dispatch `paper-subwriter`, then `wait_agent` to block until it returns.
 
-Sequential enforcement: only ONE `paper-subwriter` task may be active at a time. Always wait for the current task to finish before launching the next chapter task.
+Sequential enforcement: only ONE `paper-subwriter` may be active at a time. Always call `wait_agent` before spawning the next chapter.
 
 ## Workflow
 
 1. Explore the workspace, read assets/README.md when present, inventory relevant asset files, and identify the active template layout.
 2. Read the template and front matter files. Plan the chapter structure and assign specific asset files to each chapter before any drafting begins.
 Delegate all chapter drafting to paper-subwriter.
-3. Dispatch chapter-writing tasks to paper-subwriter **one at a time using `task`**. Each task MUST include:
+3. Dispatch chapter-writing to paper-subwriter **one at a time via `spawn_agent`**, then `wait_agent`. Each task MUST include:
    - the exact asset files assigned;
    - the exact output file path;
    - venue, template, and style constraints;
@@ -99,7 +99,7 @@ paper-subwriter owns assigned chapter files only.
        - Every empirical claim cites a figure or table
        - Every theorem reference matches an actual theorem label
        - Bibliography entries are complete (no missing fields)
-    d. For each chapter that fails any check: re-dispatch to paper-subwriter with the specific deficiency listed in the task prompt. Then re-run the failed checks.
+    d. For each chapter that fails any check: re-dispatch to paper-subwriter with the specific deficiency listed in the spawn prompt. Then re-run the failed checks.
     e. Only proceed to final compilation after all checks pass.
 
 ## File Ownership
