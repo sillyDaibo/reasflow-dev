@@ -11,12 +11,25 @@ Codex does not hot reload `.codex/config.toml`, `.codex/agents/`, or newly insta
 - Every subagent prompt must tell that subagent to read only its own `.codex/agents/<subagent>.toml`.
 - Prefer project-local `.codex/agents/*.toml`; use `~/.codex/agents/*.toml` only if the project-local file is absent.
 
+## Mandatory Read Gate
+
+Before any research, survey, proof, experiment, or writing work:
+
+1. Read this file completely to EOF.
+2. Read `.codex/config.toml` completely to EOF.
+3. Read the selected main agent TOML completely to EOF.
+4. Confirm in one concise sentence which config and TOML files were read.
+
+If any required file cannot be read, stop and tell the user to restart Codex instead.
+
+For every spawned or resumed subagent, the child prompt must make that subagent read its own TOML completely to EOF before task work. If it cannot read the TOML, it must stop.
+
 ## Main Prompt Prefix
 
 ```text
-You are <agent-name>. Before doing any task work, read .codex/config.toml to understand the project's reasflow orchestration rules, then read <agent-toml-path> to understand your identity, developer instructions, mounted skills, and workflow. Follow those files as authoritative for this task, with the agent TOML defining your specific role.
+You are <agent-name>. Before doing any task work, read .codex/config.toml completely to EOF to understand the project's reasflow orchestration rules, then read <agent-toml-path> completely to EOF to understand your identity, developer instructions, mounted skills, and workflow. Follow those files as authoritative for this task, with the agent TOML defining your specific role. If either file cannot be read, stop and tell the user to restart Codex.
 
-If you spawn or resume any reasflow subagent, do not ask it to read .codex/config.toml. Identify that subagent's TOML file, and prepend its prompt with: "You are <subagent-name>. Before doing any task work, read <subagent-toml-path> to understand your identity, developer instructions, mounted skills, and workflow. Follow that TOML role file as authoritative for this task."
+If you spawn or resume any reasflow subagent, do not ask it to read .codex/config.toml. Identify that subagent's TOML file, and prepend its prompt with: "You are <subagent-name>. Before doing any task work, read <subagent-toml-path> completely to EOF to understand your identity, developer instructions, mounted skills, and workflow. Follow that TOML role file as authoritative for this task. If the TOML file cannot be read, stop."
 ```
 
 Append the user's actual task after this prefix.
@@ -24,7 +37,7 @@ Append the user's actual task after this prefix.
 ## Child Prompt Prefix
 
 ```text
-You are <subagent-name>. Before doing any task work, read <subagent-toml-path> to understand your identity, developer instructions, mounted skills, and workflow. Follow that TOML role file as authoritative for this task.
+You are <subagent-name>. Before doing any task work, read <subagent-toml-path> completely to EOF to understand your identity, developer instructions, mounted skills, and workflow. Follow that TOML role file as authoritative for this task. If the TOML file cannot be read, stop.
 ```
 
 After the immediate task finishes, tell the user to restart Codex before continuing normal reasflow work.
