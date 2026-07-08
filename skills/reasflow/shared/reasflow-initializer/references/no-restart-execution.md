@@ -2,7 +2,7 @@
 
 Use this only when the target project has just been initialized as reasflow and the user explicitly wants to run reasflow before restarting Codex.
 
-Codex does not hot reload `.codex/config.toml`, `.codex/agents/`, or newly installed skills. The workaround is to manually bootstrap the current reasflow role and every reasflow subagent by telling it to read the installed project config and TOML role file before doing any task work.
+Codex does not hot reload `.codex/config.toml`, `.codex/agents/`, or newly installed skills. The workaround is to manually bootstrap the current main agent from project config, and bootstrap every reasflow subagent from its own TOML role file before doing task work.
 
 ## Preconditions
 
@@ -33,26 +33,26 @@ Use global TOML files only if the project-local file is absent:
 ~/.codex/agents/<agent-name>.toml
 ```
 
-Do not assume an identity from memory. Read `.codex/config.toml` and the TOML file for every reasflow agent you start.
+Do not assume an identity from memory. The current main agent reads `.codex/config.toml`; every dispatched subagent reads only its own TOML file.
 
-## Project Config
+## Main Agent Project Config
 
-Every no-restart reasflow prompt must instruct the agent to read project config first:
+The current main agent must read project config first:
 
 ```text
 .codex/config.toml
 ```
 
-This project config contains the reasflow meta-orchestrator instructions and global workflow constraints.
+This project config contains the reasflow meta-orchestrator instructions and global workflow constraints for the main agent. Do not require subagents to read `.codex/config.toml`; their role is defined by their own TOML files.
 
-## Prompt Prefix
+## Main Agent Prompt Prefix
 
-Prepend this to every reasflow agent prompt:
+Prepend this to the current main agent task prompt:
 
 ```text
 You are <agent-name>. Before doing any task work, read .codex/config.toml to understand the project's reasflow orchestration rules, then read <agent-toml-path> to understand your identity, developer instructions, available mounted skills, and workflow. Follow those files as authoritative for this task, with the agent TOML defining your specific role.
 
-If you spawn or resume any reasflow subagent, you must apply the same bootstrap rule: identify that subagent's TOML file, and prepend its prompt with "You are <subagent-name>. Before doing any task work, read .codex/config.toml to understand the project's reasflow orchestration rules, then read <subagent-toml-path> to understand your identity, developer instructions, available mounted skills, and workflow. Follow those files as authoritative for this task, with the agent TOML defining your specific role."
+If you spawn or resume any reasflow subagent, do not ask it to read .codex/config.toml. Identify that subagent's TOML file, and prepend its prompt with "You are <subagent-name>. Before doing any task work, read <subagent-toml-path> to understand your identity, developer instructions, available mounted skills, and workflow. Follow that TOML role file as authoritative for this task."
 ```
 
 Then append the actual user task.
@@ -64,7 +64,7 @@ Survey:
 ```text
 You are survey. Before doing any task work, read .codex/config.toml to understand the project's reasflow orchestration rules, then read .codex/agents/survey.toml to understand your identity, developer instructions, available mounted skills, and workflow. Follow those files as authoritative for this task, with the agent TOML defining your specific role.
 
-If you spawn or resume any reasflow subagent, you must apply the same bootstrap rule: identify that subagent's TOML file, and prepend its prompt with "You are <subagent-name>. Before doing any task work, read .codex/config.toml to understand the project's reasflow orchestration rules, then read <subagent-toml-path> to understand your identity, developer instructions, available mounted skills, and workflow. Follow those files as authoritative for this task, with the agent TOML defining your specific role."
+If you spawn or resume any reasflow subagent, do not ask it to read .codex/config.toml. Identify that subagent's TOML file, and prepend its prompt with "You are <subagent-name>. Before doing any task work, read <subagent-toml-path> to understand your identity, developer instructions, available mounted skills, and workflow. Follow that TOML role file as authoritative for this task."
 
 Task: Conduct a literature review on <topic>.
 ```
@@ -74,14 +74,14 @@ Prover:
 ```text
 You are prover. Before doing any task work, read .codex/config.toml to understand the project's reasflow orchestration rules, then read .codex/agents/prover.toml to understand your identity, developer instructions, available mounted skills, and workflow. Follow those files as authoritative for this task, with the agent TOML defining your specific role.
 
-If you spawn or resume any reasflow subagent, you must apply the same bootstrap rule: identify that subagent's TOML file, and prepend its prompt with "You are <subagent-name>. Before doing any task work, read .codex/config.toml to understand the project's reasflow orchestration rules, then read <subagent-toml-path> to understand your identity, developer instructions, available mounted skills, and workflow. Follow those files as authoritative for this task, with the agent TOML defining your specific role."
+If you spawn or resume any reasflow subagent, do not ask it to read .codex/config.toml. Identify that subagent's TOML file, and prepend its prompt with "You are <subagent-name>. Before doing any task work, read <subagent-toml-path> to understand your identity, developer instructions, available mounted skills, and workflow. Follow that TOML role file as authoritative for this task."
 
 Task: Prove convergence for the algorithm in Alg_Exp/document/pseudocode.tex.
 ```
 
 ## Subagent Dispatch Rule
 
-When a bootstrapped reasflow agent starts another reasflow agent, the child prompt must include the same role-bootstrap prefix for the child role.
+When a bootstrapped reasflow agent starts another reasflow agent, the child prompt must include the TOML-only role-bootstrap prefix for the child role. The child should not read `.codex/config.toml`.
 
 Examples:
 
