@@ -28,9 +28,10 @@ Install or update the initializer skill:
 
 ```bash
 skill_dir="$HOME/.agents/skills/reasflow-initializer"
-mkdir -p "$skill_dir/agents"
+mkdir -p "$skill_dir/agents" "$skill_dir/references"
 curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/SKILL.md -o "$skill_dir/SKILL.md"
 curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/agents/openai.yaml -o "$skill_dir/agents/openai.yaml"
+curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/references/no-restart-main-bootstrap.md -o "$skill_dir/references/no-restart-main-bootstrap.md"
 ```
 
 Verify:
@@ -38,6 +39,7 @@ Verify:
 ```bash
 test -f "$HOME/.agents/skills/reasflow-initializer/SKILL.md"
 test -f "$HOME/.agents/skills/reasflow-initializer/agents/openai.yaml"
+test -f "$HOME/.agents/skills/reasflow-initializer/references/no-restart-main-bootstrap.md"
 ```
 
 ## Windows PowerShell
@@ -47,8 +49,10 @@ Install or update the initializer skill:
 ```powershell
 $skillDir = Join-Path $env:USERPROFILE ".agents\skills\reasflow-initializer"
 New-Item -ItemType Directory -Force -Path (Join-Path $skillDir "agents") | Out-Null
+New-Item -ItemType Directory -Force -Path (Join-Path $skillDir "references") | Out-Null
 irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/SKILL.md -OutFile (Join-Path $skillDir "SKILL.md")
 irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/agents/openai.yaml -OutFile (Join-Path $skillDir "agents\openai.yaml")
+irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/references/no-restart-main-bootstrap.md -OutFile (Join-Path $skillDir "references\no-restart-main-bootstrap.md")
 ```
 
 Verify:
@@ -56,6 +60,7 @@ Verify:
 ```powershell
 Test-Path "$env:USERPROFILE\.agents\skills\reasflow-initializer\SKILL.md"
 Test-Path "$env:USERPROFILE\.agents\skills\reasflow-initializer\agents\openai.yaml"
+Test-Path "$env:USERPROFILE\.agents\skills\reasflow-initializer\references\no-restart-main-bootstrap.md"
 ```
 
 Tell the user to restart Codex after installation so the global skill is reloaded.

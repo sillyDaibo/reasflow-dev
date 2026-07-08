@@ -30,7 +30,7 @@ Only this initializer skill should be installed globally by default. Full reasfl
 
 Codex does not hot reload project config, agents, or skills. Restarting Codex is the default and safest path after initialization.
 
-If the user explicitly wants to run reasflow immediately without restarting Codex, read `references/no-restart-execution.md` and follow its manual role-bootstrap procedure.
+If the user explicitly wants to run reasflow immediately without restarting Codex, read `references/no-restart-main-bootstrap.md` and follow its manual role-bootstrap procedure.
 
 ## Local Source Checkout
 
