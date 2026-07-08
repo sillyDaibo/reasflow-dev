@@ -14,7 +14,7 @@ Paste this into Codex, Claude Code, Cursor, or another shell-capable agent:
 
 ```text
 Install or update only the reasflow initializer skill globally for Codex by following this guide:
-https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/docs/agent-install.md
+https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/docs/install-initializer-skill.md
 ```
 
 Restart Codex after installation.
@@ -31,5 +31,5 @@ The initializer skill teaches Codex how to initialize individual reasflow projec
 
 ## More
 
-- Agent installation guide: [docs/agent-install.md](docs/agent-install.md)
+- Initializer skill installation guide: [docs/install-initializer-skill.md](docs/install-initializer-skill.md)
 - Development notes: [docs/development.md](docs/development.md)

@@ -52,6 +52,6 @@ After local initialization, the target project should contain:
 
 To install or update only this initializer skill globally, follow:
 
-https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/docs/agent-install.md
+https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/docs/install-initializer-skill.md
 
 Do not run the full global installer unless the user explicitly asks for the full global reasflow agent set.
