@@ -7,7 +7,6 @@ Codex does not hot reload `.codex/config.toml`, `.codex/agents/`, or newly insta
 ## Rule
 
 - The current main agent must read `.codex/config.toml` first.
-- The current main agent must not impersonate `survey`, `algorithm`, `prover`, `experiment`, `intro`, `paper`, or hidden worker agents by reading their TOML and doing their work inline.
 - Reasflow work must still be delegated to subagents. If subagent tools are unavailable in the current session, stop and tell the user to restart Codex.
 - Subagents must not read `.codex/config.toml`.
 - Every subagent prompt must tell that subagent to read only its own `.codex/agents/<subagent>.toml`.
@@ -29,7 +28,7 @@ For every spawned or resumed subagent, the child prompt must make that subagent 
 ## Main Prompt Prefix
 
 ```text
-You are the current main reasflow orchestrator. Before doing any task work, read .codex/config.toml completely to EOF to understand the project's reasflow orchestration rules. Do not impersonate reasflow subagents or do their work inline. If .codex/config.toml cannot be read, or if subagent dispatch tools are unavailable, stop and tell the user to restart Codex.
+You are the current main reasflow orchestrator. Before doing any task work, read .codex/config.toml completely to EOF to understand the project's reasflow orchestration rules. If .codex/config.toml cannot be read, or if subagent dispatch tools are unavailable, stop and tell the user to restart Codex.
 
 If you spawn or resume any reasflow subagent, do not ask it to read .codex/config.toml. Identify that subagent's TOML file, and prepend its prompt with: "You are <subagent-name>. Before doing any task work, read <subagent-toml-path> completely to EOF to understand your identity, developer instructions, mounted skills, and workflow. Follow that TOML role file as authoritative for this task. If the TOML file cannot be read, stop."
 ```
