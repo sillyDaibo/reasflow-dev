@@ -12,87 +12,69 @@
 
 ### For Humans
 
-默认是 **local + release**：
+把这段话复制给 Codex、Claude Code、Cursor 或其它能运行 shell 的 agent：
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash
+```text
+Install or update reasflow-dev globally for Codex by following this guide:
+https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/docs/agent-install.md
 ```
 
-这会把内容安装到当前项目：
+装好以后，重启 Codex。之后在任意目标项目里对 Codex 说：
 
-- `./.agents/skills/`
-- `./.codex/reasflow-skills/`
-- `./.codex/agents/`
-
-#### 全局安装
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash -s -- --global
+```text
+Initialize this folder as a reasflow project.
 ```
 
-这会安装到：
+### What This Does
+
+全局安装会让 Codex 以后自动发现 `reasflow-initializer` skill。这个 skill 会告诉 Codex 如何把某个具体文件夹初始化成 reasflow 项目。
+
+全局安装写入：
 
 - `~/.agents/skills/`
 - `~/.codex/reasflow-skills/`
 - `~/.codex/agents/`
 
-#### 持续开发模式
+项目初始化写入目标项目：
 
-如果你想保留一个可 `git pull` 的源码副本并用符号链接联动安装：
+- `./.agents/skills/`
+- `./.codex/reasflow-skills/`
+- `./.codex/agents/`
+- `./.codex/config.toml`
+
+### For Agents
+
+Fetch the guide and follow it step by step:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash -s -- --dev
+curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/docs/agent-install.md
 ```
 
-也可以配合全局安装：
+### Manual Install
+
+Unix/macOS global install:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash -s -- --dev --global
+curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash -s -- --global
 ```
 
-`--dev` 需要本机安装 `git`。默认模式不需要 `git`。
-
-#### Windows
-
-默认本地安装：
-
-```powershell
-irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.ps1 | iex
-```
-
-全局安装：
+Windows PowerShell global install:
 
 ```powershell
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.ps1))) -Global
 ```
 
-Windows 全局安装默认落到当前用户目录下：
-
-- `$env:USERPROFILE\.codex\agents\`
-- `$env:USERPROFILE\.agents\skills\`
-- `$env:USERPROFILE\.reasflow-dev\`
-
-开发模式：
-
-```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.ps1))) -Dev
-```
-
-### For Agents
-
-让 Codex 在一个空项目里初始化 reasflow：
-
-1. 在目标项目根目录运行本地安装命令。
-2. 如果目标目录已有旧的 `.codex/agents` 或 `.agents/skills`，确认可以覆盖后加 `--force`。
-3. 安装后重新启动 Codex，让它重新扫描 `.codex/config.toml`、`.codex/agents/` 和 `.agents/skills/`。
+Local project install:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash
 ```
 
-全局安装只提供可复用的 agents/skills，不会写入项目级 orchestrator 配置。要把某个项目变成 reasflow 项目，仍然需要在项目根目录执行一次本地安装。
+Dev mode keeps a git checkout and installs symlinks:
 
-全局安装后，Codex 会看到 `reasflow-initializer` skill；当用户要求“把当前文件夹初始化成 reasflow”时，agent 应按该 skill 在目标项目根目录执行本地安装。
+```bash
+curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash -s -- --dev
+```
 
 ## 设计
 
