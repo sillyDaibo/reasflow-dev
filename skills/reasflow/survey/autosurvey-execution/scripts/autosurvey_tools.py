@@ -805,6 +805,20 @@ def _normalize_arxiv_preprint_bibtex(bibtex: str) -> str:
     return bibtex
 
 
+def _repair_bibtex_mojibake(bibtex: str) -> str:
+    value = str(bibtex or "")
+    replacements = {
+        "â€“": "--",
+        "â€”": "---",
+        "âˆ’": "-",
+        "Â ": " ",
+        "Â": "",
+    }
+    for bad, good in replacements.items():
+        value = value.replace(bad, good)
+    return value
+
+
 def _is_arxiv_url(url: str) -> bool:
     return "arxiv.org" in (url or "").lower()
 
@@ -864,7 +878,7 @@ def _insert_bibtex_field(bibtex: str, field: str, value: str) -> str:
 
 
 def enrich_bibtex_entry(paper: dict, bibtex: str) -> str:
-    enriched = bibtex.strip()
+    enriched = _repair_bibtex_mojibake(bibtex.strip())
     enriched = _normalize_arxiv_preprint_bibtex(enriched)
     enriched = _insert_bibtex_field(enriched, "year", _paper_year(paper))
     has_published_venue = _bibtex_has_published_venue(enriched)

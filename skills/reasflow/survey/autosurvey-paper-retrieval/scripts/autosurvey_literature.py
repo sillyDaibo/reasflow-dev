@@ -33,6 +33,20 @@ MAX_RETRIES = 3
 BIB_PATTERN = re.compile(r"@\w+\s*\{\s*([^,\s]+)", re.IGNORECASE)
 
 
+def repair_mojibake_text(text: str) -> str:
+    value = str(text or "")
+    replacements = {
+        "â€“": "--",
+        "â€”": "---",
+        "âˆ’": "-",
+        "Â ": " ",
+        "Â": "",
+    }
+    for bad, good in replacements.items():
+        value = value.replace(bad, good)
+    return value
+
+
 def normalize_paper_id(raw: str) -> str:
     paper_id = raw.strip()
     if paper_id.lower().startswith("arxiv:"):
@@ -239,7 +253,9 @@ def normalize_reascholar_paper(
         paper.get("summary_markdown"),
         detail.get("summary_markdown"),
     )
-    bibtex = first_text(publication.get("bibtex"), survey.get("bibtex"))
+    bibtex = repair_mojibake_text(
+        first_text(publication.get("bibtex"), survey.get("bibtex"))
+    )
     domain = paper.get("domain") if isinstance(paper.get("domain"), dict) else {}
     domain_name = first_text(
         domain.get("l2_name_en"),
