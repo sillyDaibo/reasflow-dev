@@ -1,6 +1,6 @@
 # No-Restart Reasflow Execution
 
-Use only when the project was just initialized and the user explicitly wants to run reasflow before restarting Codex.
+Use only when the project was just initialized and the user explicitly confirms they want to force a reasflow run before restarting Codex.
 
 Codex does not hot reload `.codex/config.toml`, `.codex/agents/`, or newly installed skills. Restarting Codex is preferred.
 

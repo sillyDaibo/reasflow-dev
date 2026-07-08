@@ -1,6 +1,6 @@
 ---
 name: reasflow-initializer
-description: Use when the user asks Codex to initialize, set up, convert, or bootstrap a folder/workspace/project as a reasflow project, or asks how an agent should install reasflow into the current directory.
+description: Use when the user asks Codex to initialize, set up, convert, or bootstrap a folder/workspace/project as a reasflow project, or asks how an agent should install reasflow into the current directory. Also use after a just-completed reasflow initialization when the user asks for research, survey, algorithm, proof, experiment, introduction, paper writing, or other academic-paper work that may need reasflow, even if they do not explicitly mention reasflow.
 ---
 
 # Reasflow Initializer
@@ -30,7 +30,15 @@ Only this initializer skill should be installed globally by default. Full reasfl
 
 Codex does not hot reload project config, agents, or skills. Restarting Codex is the default and safest path after initialization.
 
-If the user explicitly wants to run reasflow immediately without restarting Codex, read `references/no-restart-main-bootstrap.md` and follow its manual role-bootstrap procedure.
+## After Initialization
+
+If this session just initialized a folder as reasflow and the user has not restarted Codex yet, treat later academic-paper requests as likely reasflow requests even when the user does not say "reasflow".
+
+Requests in scope include literature survey, related work, algorithm design, convergence proof, theorem/lemma work, experiments, introduction/abstract writing, paper assembly, LaTeX report generation, or other research-paper pipeline work.
+
+Before doing such work, tell the user Codex must restart to load the newly installed `.codex/config.toml`, `.codex/agents/`, and `.agents/skills/`. Ask whether they want to restart Codex or force a no-restart run.
+
+Only if the user explicitly confirms forcing a no-restart run, read `references/no-restart-main-bootstrap.md` and follow its manual role-bootstrap procedure.
 
 ## Local Source Checkout
 
