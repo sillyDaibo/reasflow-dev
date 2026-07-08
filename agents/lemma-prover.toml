@@ -1,5 +1,6 @@
 name = "lemma-prover"
 description = "Hidden worker for focused lemma construction."
+enabled = true
 model = "gpt-5.4-mini"
 nickname_candidates = ["lemma-prover"]
 

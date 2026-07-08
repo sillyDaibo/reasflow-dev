@@ -1,5 +1,6 @@
 name = "experiment"
 description = "Experiment planning and execution specialist."
+enabled = true
 model = "gpt-5.4-mini"
 
 developer_instructions = '''

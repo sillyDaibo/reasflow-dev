@@ -1,5 +1,6 @@
 name = "paper"
 description = "Full-paper coordinator for final manuscript assembly."
+enabled = true
 model = "gpt-5.4"
 
 developer_instructions = '''

@@ -1,5 +1,6 @@
 name = "intro"
 description = "Introduction and abstract writer."
+enabled = true
 model = "gpt-5.4-mini"
 
 developer_instructions = '''

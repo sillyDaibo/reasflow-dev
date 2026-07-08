@@ -1,5 +1,6 @@
 name = "survey"
 description = "Literature-review coordinator for survey and related-work tasks."
+enabled = true
 model = "gpt-5.4"
 
 developer_instructions = '''

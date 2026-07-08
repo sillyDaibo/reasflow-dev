@@ -1,5 +1,6 @@
 name = "algorithm"
 description = "Algorithm design specialist."
+enabled = true
 model = "gpt-5.4"
 
 developer_instructions = '''

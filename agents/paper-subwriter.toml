@@ -1,5 +1,6 @@
 name = "paper-subwriter"
 description = "Hidden worker for chapter-level drafting."
+enabled = true
 model = "gpt-5.4-mini"
 nickname_candidates = ["paper-subwriter"]
 

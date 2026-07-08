@@ -8,7 +8,9 @@
 
 这里没有 Rust 代码，没有 `opencode`，也不需要构建。
 
-## 安装
+## Installation
+
+### For Humans
 
 默认是 **local + release**：
 
@@ -22,7 +24,7 @@ curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/instal
 - `./.codex/reasflow-skills/`
 - `./.codex/agents/`
 
-### 全局安装
+#### 全局安装
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash -s -- --global
@@ -34,7 +36,7 @@ curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/instal
 - `~/.codex/reasflow-skills/`
 - `~/.codex/agents/`
 
-### 持续开发模式
+#### 持续开发模式
 
 如果你想保留一个可 `git pull` 的源码副本并用符号链接联动安装：
 
@@ -50,7 +52,7 @@ curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/instal
 
 `--dev` 需要本机安装 `git`。默认模式不需要 `git`。
 
-### Windows
+#### Windows
 
 默认本地安装：
 
@@ -75,6 +77,20 @@ Windows 全局安装默认落到当前用户目录下：
 ```powershell
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.ps1))) -Dev
 ```
+
+### For Agents
+
+让 Codex 在一个空项目里初始化 reasflow：
+
+1. 在目标项目根目录运行本地安装命令。
+2. 如果目标目录已有旧的 `.codex/agents` 或 `.agents/skills`，确认可以覆盖后加 `--force`。
+3. 安装后重新启动 Codex，让它重新扫描 `.codex/config.toml`、`.codex/agents/` 和 `.agents/skills/`。
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash
+```
+
+全局安装只提供可复用的 agents/skills，不会写入项目级 orchestrator 配置。要把某个项目变成 reasflow 项目，仍然需要在项目根目录执行一次本地安装。
 
 ## 设计
 
@@ -159,7 +175,7 @@ path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
 
 这样才能真正实现“只有某几个 agent 知道某些私有 skill”。
 
-当前仓库里的 agent 配置也遵循这个方向：默认只正向声明需要的少量 skill，不再维护误导性的 `enabled = true/false` 标记。
+当前仓库里的 agent 配置也遵循这个方向：默认只正向声明需要的少量 skill。`enabled = true` 是 Codex agent role schema 要求的顶层字段，不用于控制单个 skill。
 
 ## 更新
 

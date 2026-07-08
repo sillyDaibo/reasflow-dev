@@ -1,5 +1,6 @@
 name = "survey-judge"
 description = "Hidden worker for survey quality review."
+enabled = true
 model = "gpt-5.4-mini"
 nickname_candidates = ["survey-judge"]
 

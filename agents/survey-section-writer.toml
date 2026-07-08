@@ -1,5 +1,6 @@
 name = "survey-section-writer"
 description = "Hidden worker for survey subsection drafting."
+enabled = true
 model = "gpt-5.4-mini"
 nickname_candidates = ["survey-section-writer"]
 
