@@ -13,7 +13,7 @@ This repository ships:
 Paste this into Codex, Claude Code, Cursor, or another shell-capable agent:
 
 ```text
-Install or update reasflow-dev globally for Codex by following this guide:
+Install or update only the reasflow initializer skill globally for Codex by following this guide:
 https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/docs/agent-install.md
 ```
 
@@ -27,7 +27,7 @@ Inside any folder you want to turn into a reasflow project, tell Codex:
 Initialize this folder as a reasflow project.
 ```
 
-The global install teaches Codex how to initialize individual reasflow projects later.
+The initializer skill teaches Codex how to initialize individual reasflow projects later. It does not install the full reasflow agent set globally.
 
 ## More
 

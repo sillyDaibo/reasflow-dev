@@ -9,7 +9,7 @@ description: Use when the user asks Codex to initialize, set up, convert, or boo
 
 Initialize a target folder as a reasflow Codex project by running the reasflow-dev local installer from that folder.
 
-Global reasflow-dev installation only makes reusable agents and shared skills available. It does not write project-level `.codex/config.toml`, so it does not turn the current project into a reasflow project.
+Only this initializer skill should be installed globally by default. Full reasflow agents and private skills should be installed locally into a target project when the user asks to initialize that project.
 
 ## Workflow
 
@@ -50,10 +50,8 @@ After local initialization, the target project should contain:
 .reasflow-dev/manifest.txt
 ```
 
-For a reusable global install, use:
+To install or update only this initializer skill globally, follow:
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash -s -- --global
-```
+https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/docs/agent-install.md
 
-This installs shared resources under the user's home directory, but each reasflow project still needs local initialization.
+Do not run the full global installer unless the user explicitly asks for the full global reasflow agent set.

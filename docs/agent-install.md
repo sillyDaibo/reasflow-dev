@@ -1,71 +1,71 @@
-# Reasflow Agent Installation Guide
+# Reasflow Initializer Skill Installation Guide
 
-Use this guide when a user asks you to install or update reasflow-dev globally for Codex.
+Use this guide when a user asks you to install or update the reasflow initializer skill globally for Codex.
 
 ## Goal
 
-Install the reusable reasflow Codex skills and agents globally so future Codex sessions can discover `reasflow-initializer` and initialize individual folders as reasflow projects.
+Install only the small `reasflow-initializer` skill globally so future Codex sessions know how to initialize a folder as a reasflow project.
 
-Global installation writes to the user's home directory:
+Do not run the full reasflow-dev global installer unless the user explicitly asks for the full global reasflow agent set.
+
+This guide writes only to:
 
 ```text
-~/.agents/skills/
-~/.codex/reasflow-skills/
-~/.codex/agents/
+~/.agents/skills/reasflow-initializer/
 ```
 
-It does not write `~/.codex/config.toml`, and it does not turn the current folder into a reasflow project. Project initialization is a separate local install run from the target project root.
+It does not write:
+
+```text
+~/.codex/agents/
+~/.codex/reasflow-skills/
+~/.codex/config.toml
+```
 
 ## Unix or macOS
 
-Install or update globally:
+Install or update the initializer skill:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash -s -- --global
+skill_dir="$HOME/.agents/skills/reasflow-initializer"
+mkdir -p "$skill_dir/agents"
+curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/SKILL.md -o "$skill_dir/SKILL.md"
+curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/agents/openai.yaml -o "$skill_dir/agents/openai.yaml"
 ```
 
-If an existing reasflow-dev-managed target blocks the install and the user wants to replace it, rerun with `--force`:
+Verify:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash -s -- --global --force
+test -f "$HOME/.agents/skills/reasflow-initializer/SKILL.md"
+test -f "$HOME/.agents/skills/reasflow-initializer/agents/openai.yaml"
 ```
 
 ## Windows PowerShell
 
-Install or update globally:
+Install or update the initializer skill:
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.ps1))) -Global
+$skillDir = Join-Path $env:USERPROFILE ".agents\skills\reasflow-initializer"
+New-Item -ItemType Directory -Force -Path (Join-Path $skillDir "agents") | Out-Null
+irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/SKILL.md -OutFile (Join-Path $skillDir "SKILL.md")
+irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/agents/openai.yaml -OutFile (Join-Path $skillDir "agents\openai.yaml")
 ```
 
-If an existing reasflow-dev-managed target blocks the install and the user wants to replace it, rerun with `-Force`:
-
-```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.ps1))) -Global -Force
-```
-
-## Verify
-
-Check that the global initializer skill exists:
-
-```bash
-test -f "$HOME/.agents/skills/reasflow-initializer/SKILL.md"
-```
-
-On Windows PowerShell:
+Verify:
 
 ```powershell
 Test-Path "$env:USERPROFILE\.agents\skills\reasflow-initializer\SKILL.md"
+Test-Path "$env:USERPROFILE\.agents\skills\reasflow-initializer\agents\openai.yaml"
 ```
 
-Tell the user to restart Codex after installation so the global skills and agents are reloaded.
+Tell the user to restart Codex after installation so the global skill is reloaded.
 
 ## Initialize a Project Later
 
-After global installation, the user can ask Codex:
+After installing this skill, the user can ask Codex from a target project:
 
 ```text
 Initialize this folder as a reasflow project.
 ```
 
-The `reasflow-initializer` skill tells Codex to run the local installer from the target project root.
+The `reasflow-initializer` skill tells Codex to run the local project installer from that project root.
