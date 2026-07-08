@@ -92,6 +92,8 @@ curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/instal
 
 全局安装只提供可复用的 agents/skills，不会写入项目级 orchestrator 配置。要把某个项目变成 reasflow 项目，仍然需要在项目根目录执行一次本地安装。
 
+全局安装后，Codex 会看到 `reasflow-initializer` skill；当用户要求“把当前文件夹初始化成 reasflow”时，agent 应按该 skill 在目标项目根目录执行本地安装。
+
 ## 设计
 
 默认设计只有三件事：

@@ -32,12 +32,13 @@ if ($Global) {
 
 $agentsDir = Join-Path $targetRoot ".codex/agents"
 $skillsDir = Join-Path $targetRoot ".agents/skills"
+$privateSkillsDir = Join-Path $targetRoot ".codex/reasflow-skills"
 $manifest = Join-Path $stateDir "manifest.txt"
 $tmpDir = Join-Path ([System.IO.Path]::GetTempPath()) ("reasflow-dev-" + [guid]::NewGuid())
 New-Item -ItemType Directory -Force -Path $tmpDir | Out-Null
 
 try {
-    New-Item -ItemType Directory -Force -Path $agentsDir, $skillsDir, $stateDir | Out-Null
+    New-Item -ItemType Directory -Force -Path $agentsDir, $skillsDir, $privateSkillsDir, $stateDir | Out-Null
 
     if (Test-Path $manifest) {
         foreach ($line in Get-Content $manifest) {
@@ -82,16 +83,36 @@ try {
         "SOURCE $sourceDir"
     )
 
-    foreach ($skill in Get-ChildItem -Path (Join-Path $sourceDir "skills") -Directory) {
-        $dest = Join-Path $skillsDir $skill.Name
-        if ((Test-Path $dest) -and -not $Force) { throw "target already exists: $dest" }
-        if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
-        if ($Dev) {
-            New-Item -ItemType SymbolicLink -Path $dest -Target $skill.FullName | Out-Null
-        } else {
-            Copy-Item -Recurse -Force $skill.FullName $dest
+    $sharedRoot = Join-Path $sourceDir "skills/reasflow/shared"
+    if (Test-Path $sharedRoot) {
+        foreach ($skill in Get-ChildItem -Path $sharedRoot -Directory) {
+            $dest = Join-Path $skillsDir $skill.Name
+            if ((Test-Path $dest) -and -not $Force) { throw "target already exists: $dest" }
+            if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
+            if ($Dev) {
+                New-Item -ItemType SymbolicLink -Path $dest -Target $skill.FullName | Out-Null
+            } else {
+                Copy-Item -Recurse -Force $skill.FullName $dest
+            }
+            $manifestLines += "FILE $dest"
         }
-        $manifestLines += "FILE $dest"
+    }
+
+    foreach ($category in Get-ChildItem -Path (Join-Path $sourceDir "skills/reasflow") -Directory) {
+        if ($category.Name -eq "shared") { continue }
+        $categoryDest = Join-Path $privateSkillsDir $category.Name
+        New-Item -ItemType Directory -Force -Path $categoryDest | Out-Null
+        foreach ($skill in Get-ChildItem -Path $category.FullName -Directory) {
+            $dest = Join-Path $categoryDest $skill.Name
+            if ((Test-Path $dest) -and -not $Force) { throw "target already exists: $dest" }
+            if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
+            if ($Dev) {
+                New-Item -ItemType SymbolicLink -Path $dest -Target $skill.FullName | Out-Null
+            } else {
+                Copy-Item -Recurse -Force $skill.FullName $dest
+            }
+            $manifestLines += "FILE $dest"
+        }
     }
 
     foreach ($agent in Get-ChildItem -Path (Join-Path $sourceDir "agents") -Filter *.toml -File) {
@@ -128,12 +149,15 @@ try {
 
     Set-Content -Path $manifest -Value $manifestLines
 
-    $skillCount = (Get-ChildItem -Path $skillsDir -Directory).Count
+    $sharedSkillCount = (Get-ChildItem -Path $skillsDir -Directory).Count
+    $privateSkillCount = (Get-ChildItem -Path $privateSkillsDir -Directory | ForEach-Object { (Get-ChildItem -Path $_.FullName -Directory).Count } | Measure-Object -Sum).Sum
+    if ($null -eq $privateSkillCount) { $privateSkillCount = 0 }
     $agentCount = (Get-ChildItem -Path $agentsDir -Filter *.toml -File).Count
     Write-Host "Installed reasflow-dev"
     Write-Host "  scope: $(if ($Global) { 'global' } else { 'local' })"
     Write-Host "  mode: $(if ($Dev) { 'dev' } else { 'release' })"
-    Write-Host "  skills: $skillCount -> $skillsDir"
+    Write-Host "  shared skills: $sharedSkillCount -> $skillsDir"
+    Write-Host "  private skills: $privateSkillCount -> $privateSkillsDir"
     Write-Host "  agents: $agentCount -> $agentsDir"
     if ($configInstalled) {
         Write-Host "  config: -> $(Join-Path $targetRoot '.codex/config.toml')"
