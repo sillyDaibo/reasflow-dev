@@ -38,7 +38,7 @@ Requests in scope include literature survey, related work, algorithm design, con
 
 Before doing such work, tell the user Codex must restart to load the newly installed `.codex/config.toml`, `.codex/agents/`, and `.agents/skills/`. Ask whether they want to restart Codex or force a no-restart run.
 
-Only if the user explicitly confirms forcing a no-restart run, read `references/no-restart-orchestrator-bootstrap.md` completely before doing task work. Follow its manual role-bootstrap procedure exactly; do not start survey, proof, experiment, or writing work until the main project config has been read and subagent dispatch availability has been checked.
+Only if the user explicitly confirms forcing a no-restart run, read `references/no-restart-main-bootstrap.md` completely before doing task work. Follow its manual role-bootstrap procedure exactly; do not start survey, proof, experiment, or writing work until the main project config has been read and subagent dispatch availability has been checked.
 
 ## Local Source Checkout
 
