@@ -5,17 +5,17 @@ description: Use when producing survey and related-work LaTeX with synchronized 
 
 ## Installed Root
 
-Resolve the installed reasflow-dev skills root before running packaged scripts:
+Resolve the installed reasflow-dev private skills root before running packaged scripts:
 
 ```bash
-REASFLOW_SKILLS_ROOT="${REASFLOW_SKILLS_ROOT:-}"
-if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
-  if [ -d ./.agents/skills ]; then
-    REASFLOW_SKILLS_ROOT="$(pwd)/.agents/skills"
-  elif [ -d "$HOME/.agents/skills" ]; then
-    REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
+REASFLOW_PRIVATE_SKILLS_ROOT="${REASFLOW_PRIVATE_SKILLS_ROOT:-}"
+if [ -z "$REASFLOW_PRIVATE_SKILLS_ROOT" ]; then
+  if [ -d ./.codex/reasflow-skills ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$(pwd)/.codex/reasflow-skills"
+  elif [ -d "$HOME/.codex/reasflow-skills" ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$HOME/.codex/reasflow-skills"
   else
-    echo "reasflow-dev skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    echo "reasflow private skills not found in ./.codex/reasflow-skills or $HOME/.codex/reasflow-skills" >&2
     exit 1
   fi
 fi
@@ -29,7 +29,7 @@ Full survey deliveries should end as LaTeX plus BibTeX, not markdown-only drafts
 This skill is the deterministic replacement for the cite/BibTeX validation slice of the upstream survey tooling. Pair it with native file inspection when you need to read or patch generated `.tex` files.
 
 ## Installed Paths
-Set `SKILL_ROOT="$REASFLOW_SKILLS_ROOT/survey-tex-bib-packaging"` before invoking the packaged validator.
+Set `SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/survey/survey-tex-bib-packaging"` before invoking the packaged validator.
 
 ## Helper Script
 - `python "$SKILL_ROOT/scripts/check-cite-bib.py" --tex survey/survey.tex --tex survey/related_works.tex --bib survey/references.bib`

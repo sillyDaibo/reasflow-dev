@@ -5,17 +5,17 @@ description: Use when judging whether a paper draft is complete enough to hand o
 
 ## Installed Root
 
-Resolve the installed reasflow-dev skills root before running packaged scripts:
+Resolve the installed reasflow-dev private skills root before running packaged scripts:
 
 ```bash
-REASFLOW_SKILLS_ROOT="${REASFLOW_SKILLS_ROOT:-}"
-if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
-  if [ -d ./.agents/skills ]; then
-    REASFLOW_SKILLS_ROOT="$(pwd)/.agents/skills"
-  elif [ -d "$HOME/.agents/skills" ]; then
-    REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
+REASFLOW_PRIVATE_SKILLS_ROOT="${REASFLOW_PRIVATE_SKILLS_ROOT:-}"
+if [ -z "$REASFLOW_PRIVATE_SKILLS_ROOT" ]; then
+  if [ -d ./.codex/reasflow-skills ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$(pwd)/.codex/reasflow-skills"
+  elif [ -d "$HOME/.codex/reasflow-skills" ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$HOME/.codex/reasflow-skills"
   else
-    echo "reasflow-dev skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    echo "reasflow private skills not found in ./.codex/reasflow-skills or $HOME/.codex/reasflow-skills" >&2
     exit 1
   fi
 fi
@@ -27,7 +27,7 @@ fi
 Completeness means every promised part of the paper exists and every major claim has visible support. Use deterministic checks before qualitative review.
 
 ## Helper Script
-Set `SKILL_ROOT="$REASFLOW_SKILLS_ROOT/completeness-review"`.
+Set `SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/paper/completeness-review"`.
 
 ```bash
 python3 "$SKILL_ROOT/scripts/review-manuscript.py" --project-dir paper --main-file main.tex
@@ -36,7 +36,7 @@ python3 "$SKILL_ROOT/scripts/review-manuscript.py" --project-dir paper --main-fi
 Then pair it with:
 
 ```bash
-python3 "$REASFLOW_SKILLS_ROOT/check-asset-usage/scripts/check_asset_usage.py" \
+python3 "$REASFLOW_PRIVATE_SKILLS_ROOT/paper/check-asset-usage/scripts/check_asset_usage.py" \
   --assets-dir assets \
   --output-dir paper
 ```

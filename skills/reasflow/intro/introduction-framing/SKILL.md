@@ -15,7 +15,19 @@ if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
   elif [ -d "$HOME/.agents/skills" ]; then
     REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
   else
-    echo "reasflow-dev skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    echo "reasflow shared skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    exit 1
+  fi
+fi
+
+REASFLOW_PRIVATE_SKILLS_ROOT="${REASFLOW_PRIVATE_SKILLS_ROOT:-}"
+if [ -z "$REASFLOW_PRIVATE_SKILLS_ROOT" ]; then
+  if [ -d ./.codex/reasflow-skills ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$(pwd)/.codex/reasflow-skills"
+  elif [ -d "$HOME/.codex/reasflow-skills" ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$HOME/.codex/reasflow-skills"
+  else
+    echo "reasflow private skills not found in ./.codex/reasflow-skills or $HOME/.codex/reasflow-skills" >&2
     exit 1
   fi
 fi
@@ -29,7 +41,7 @@ The intro agent must follow these steps in order. Manual file reading is not a s
 
 Set once:
 ```bash
-SKILL_ROOT="$REASFLOW_SKILLS_ROOT/introduction-framing"
+SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/intro/introduction-framing"
 ```
 
 ### 1. Extract from each source
@@ -84,6 +96,22 @@ python "$SKILL_ROOT/scripts/write-introduction.py" \
   --bib-output intro/references.bib
 ```
 
+### 4. Supplement citations when needed
+If the introduction needs citations that are not already covered by `--bib-input`, supplement them after writing:
+
+```bash
+python "$SKILL_ROOT/scripts/supplement-intro-bib.py" \
+  --workspace . \
+  --tex intro/introduction.tex \
+  --bib-input survey/references.bib \
+  --bib-output intro/references.bib \
+  --citation-json intro/organized_info.json \
+  --trace-output intro/citation_trace.json
+```
+
+Default lookup order is `ReaScholar -> Semantic Scholar`.
+Use `--paper "<title or arXiv id or DOI>"` to explicitly add a paper requested by the user.
+
 `--style`: `ml` (machine learning), `math` (optimization/theory), `default` (other).
 `--bib-input`: pass an existing `.bib` file when available; omit if none exists.
 `--results-preview` and `--bib-input` are optional.
@@ -94,5 +122,5 @@ Both scripts read `OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL` from the e
 - `intro/introduction.tex` + `intro/references.bib`
 - `intro/main.tex` (compilable wrapper)
 - `intro/*_info.json` intermediate extraction files
+- `intro/citation_trace.json` when citation supplementation runs
 - missing-evidence list for any fields that came back empty
-

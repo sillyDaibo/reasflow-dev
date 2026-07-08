@@ -15,7 +15,19 @@ if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
   elif [ -d "$HOME/.agents/skills" ]; then
     REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
   else
-    echo "reasflow-dev skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    echo "reasflow shared skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    exit 1
+  fi
+fi
+
+REASFLOW_PRIVATE_SKILLS_ROOT="${REASFLOW_PRIVATE_SKILLS_ROOT:-}"
+if [ -z "$REASFLOW_PRIVATE_SKILLS_ROOT" ]; then
+  if [ -d ./.codex/reasflow-skills ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$(pwd)/.codex/reasflow-skills"
+  elif [ -d "$HOME/.codex/reasflow-skills" ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$HOME/.codex/reasflow-skills"
+  else
+    echo "reasflow private skills not found in ./.codex/reasflow-skills or $HOME/.codex/reasflow-skills" >&2
     exit 1
   fi
 fi
@@ -75,14 +87,14 @@ Run packaged scripts from `$REASFLOW_SKILLS_ROOT/<skill>/...`.
 4. **搜索相关知识卡片（按需）**：
    ```bash
    REASFLOW_SKILLS_ROOT="$REASFLOW_SKILLS_ROOT"
-   python "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/scripts/read-card.py" --id <CARD_ID>
+   python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/read-card.py" --id <CARD_ID>
    ```
    - 如果 Coordinator 提供了具体的知识卡片路径，使用上述命令读取
    - 检查 `prover/cards/` 目录下是否有用户自定义的相关知识卡片
    - **选取学习率时强制执行**：搜索 HARMONIC-STEP-SIZE 相关卡片：
      ```bash
-     python "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/scripts/search-cards.py" \
-       --catalog "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
+     python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/search-cards.py" \
+       --catalog "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
        --query "harmonic stepsize learning rate selection convergence" --top-k 3
      ```
      在推导最终收敛阶之前必须读取返回的卡片。
@@ -167,5 +179,10 @@ Run packaged scripts from `$REASFLOW_SKILLS_ROOT/<skill>/...`.
 '''
 
 [[skills.config]]
-path = "../../.agents/skills/reasflow/prover/knowledge-card-retrieval/SKILL.md"
-enabled = true
+path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/prover/lemma-proving-workflow/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/prover/reference-download/SKILL.md"

@@ -15,7 +15,19 @@ if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
   elif [ -d "$HOME/.agents/skills" ]; then
     REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
   else
-    echo "reasflow-dev skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    echo "reasflow shared skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    exit 1
+  fi
+fi
+
+REASFLOW_PRIVATE_SKILLS_ROOT="${REASFLOW_PRIVATE_SKILLS_ROOT:-}"
+if [ -z "$REASFLOW_PRIVATE_SKILLS_ROOT" ]; then
+  if [ -d ./.codex/reasflow-skills ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$(pwd)/.codex/reasflow-skills"
+  elif [ -d "$HOME/.codex/reasflow-skills" ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$HOME/.codex/reasflow-skills"
+  else
+    echo "reasflow private skills not found in ./.codex/reasflow-skills or $HOME/.codex/reasflow-skills" >&2
     exit 1
   fi
 fi
@@ -39,7 +51,7 @@ Three layers:
 Retrieval inside the writing stages prefers the local paper pool. When `--library-dir` (default `survey/library`) contains paper JSON produced by the `autosurvey-paper-retrieval` skill, `autosurvey_tools.py` builds an in-memory `ExternalPaperDatabase` from it and never touches AutoSurvey's embedding/Pinecone stack. AutoSurvey is only loaded as a fallback when the library is empty.
 
 ## Environment
-Set `SKILL_ROOT="$REASFLOW_SKILLS_ROOT/autosurvey-execution"`.
+Set `SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/survey/autosurvey-execution"`.
 Use `python3` by default. If AutoSurvey dependencies such as `numpy` are missing, run the helper with the upstream environment:
 
 ```bash

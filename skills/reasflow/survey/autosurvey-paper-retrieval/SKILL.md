@@ -15,7 +15,19 @@ if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
   elif [ -d "$HOME/.agents/skills" ]; then
     REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
   else
-    echo "reasflow-dev skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    echo "reasflow shared skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    exit 1
+  fi
+fi
+
+REASFLOW_PRIVATE_SKILLS_ROOT="${REASFLOW_PRIVATE_SKILLS_ROOT:-}"
+if [ -z "$REASFLOW_PRIVATE_SKILLS_ROOT" ]; then
+  if [ -d ./.codex/reasflow-skills ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$(pwd)/.codex/reasflow-skills"
+  elif [ -d "$HOME/.codex/reasflow-skills" ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$HOME/.codex/reasflow-skills"
+  else
+    echo "reasflow private skills not found in ./.codex/reasflow-skills or $HOME/.codex/reasflow-skills" >&2
     exit 1
   fi
 fi
@@ -37,7 +49,7 @@ This skill is the executable replacement for the upstream `literature_*` tool fa
 Use native Codex web search first when you need broad discovery or freshness. Use this script when you need reproducible paper metadata, citation graphs, reference graphs, or BibTeX output under `survey/`. Set `SEMANTIC_SCHOLAR_API_KEY` in the environment when S2 enrichment or citation/reference graph calls are needed; never store the key in generated files.
 
 ## Installed Paths
-Set `SKILL_ROOT="$REASFLOW_SKILLS_ROOT/autosurvey-paper-retrieval"` before invoking the packaged helper script.
+Set `SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/survey/autosurvey-paper-retrieval"` before invoking the packaged helper script.
 
 ## Helper Script
 - `python "$SKILL_ROOT/scripts/autosurvey_literature.py" search --query "federated optimization" --limit 25 --out survey/library/search_seed.json`

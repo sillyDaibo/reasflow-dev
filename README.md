@@ -18,7 +18,8 @@ curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/instal
 
 这会把内容安装到当前项目：
 
-- `./.agents/skills/reasflow/`
+- `./.agents/skills/`
+- `./.codex/reasflow-skills/`
 - `./.codex/agents/`
 
 ### 全局安装
@@ -29,7 +30,8 @@ curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/instal
 
 这会安装到：
 
-- `~/.agents/skills/reasflow/`
+- `~/.agents/skills/`
+- `~/.codex/reasflow-skills/`
 - `~/.codex/agents/`
 
 ### 持续开发模式
@@ -105,8 +107,8 @@ reasflow-dev/
 
 - `agents/*.toml` 里只保留这个 agent 真正需要的 `[[skills.config]]`
 - 不要把项目私有 skill 同时写进全局 `~/.codex/config.toml`
-- 共享 skill 可以被多个 agent 同时引用
-- 私有 skill 只要不被其他 agent 引用，其他 agent 默认就看不到
+- 共享 skill 放进默认扫描根目录，供多个 agent 复用
+- 私有 skill 放进非默认扫描目录，只通过 agent 显式挂载
 
 推荐分层方式：
 
@@ -114,31 +116,50 @@ reasflow-dev/
 skills/
 └── reasflow/
     ├── shared/
-    │   ├── deep-research/
+    │   ├── asset-inventory/
+    │   ├── citation-hygiene/
     │   └── workspace-conventions/
+    ├── common/
+    │   ├── interactive-vs-auto-execution/
+    │   └── workspace-cartography/
+    ├── intro/
+    │   ├── introduction-framing/
+    │   └── abstract-alignment/
+    ├── paper/
+    │   ├── chapter-writing/
+    │   └── csiam/
     ├── prover/
     │   ├── knowledge-card-retrieval/
     │   └── reference-download/
     ├── survey/
     │   ├── autosurvey-execution/
-    │   └── autosurvey-paper-retrieval/
-    └── experiment/
-        └── smart-plotting/
+    │   ├── autosurvey-paper-retrieval/
+    │   └── survey-tex-bib-packaging/
+    ├── experiment/
+    │   └── smart-plotting/
+    └── algorithm/
+        └── toy-verification/
 ```
 
-安装后会保留顶层命名空间目录，因此上述结构会落成：
+安装后会拆成两棵树：
 
 ```text
-.agents/skills/reasflow/...
+.agents/skills/<shared-skill>/
+.codex/reasflow-skills/<category>/<private-skill>/
 ```
 
-也就是说 agent 可以直接引用类似：
+也就是说：
+
+- 共享 skill 会自动被扫描
+- 私有 skill 必须在 agent 配置里显式引用，例如：
 
 ```toml
-path = "../../.agents/skills/reasflow/prover/knowledge-card-retrieval/SKILL.md"
+path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
 ```
 
-当前仓库里的 agent 配置也遵循这个方向：默认只正向声明需要的少量 skill，不再维护大批 `enabled = false` 的排除项。
+这样才能真正实现“只有某几个 agent 知道某些私有 skill”。
+
+当前仓库里的 agent 配置也遵循这个方向：默认只正向声明需要的少量 skill，不再维护误导性的 `enabled = true/false` 标记。
 
 ## 更新
 

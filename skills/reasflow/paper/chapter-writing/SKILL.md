@@ -5,17 +5,17 @@ description: Use when a chapter owner must turn assigned assets into publication
 
 ## Installed Root
 
-Resolve the installed reasflow-dev skills root before running packaged scripts:
+Resolve the installed reasflow-dev private skills root before running packaged scripts:
 
 ```bash
-REASFLOW_SKILLS_ROOT="${REASFLOW_SKILLS_ROOT:-}"
-if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
-  if [ -d ./.agents/skills ]; then
-    REASFLOW_SKILLS_ROOT="$(pwd)/.agents/skills"
-  elif [ -d "$HOME/.agents/skills" ]; then
-    REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
+REASFLOW_PRIVATE_SKILLS_ROOT="${REASFLOW_PRIVATE_SKILLS_ROOT:-}"
+if [ -z "$REASFLOW_PRIVATE_SKILLS_ROOT" ]; then
+  if [ -d ./.codex/reasflow-skills ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$(pwd)/.codex/reasflow-skills"
+  elif [ -d "$HOME/.codex/reasflow-skills" ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$HOME/.codex/reasflow-skills"
   else
-    echo "reasflow-dev skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    echo "reasflow private skills not found in ./.codex/reasflow-skills or $HOME/.codex/reasflow-skills" >&2
     exit 1
   fi
 fi
@@ -30,7 +30,7 @@ This skill supports `paper-subwriter` after the assignment contract is already f
 Set:
 
 ```bash
-SKILL_ROOT="$REASFLOW_SKILLS_ROOT/chapter-writing"
+SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/paper/chapter-writing"
 ```
 
 ## Asset Handling Rules

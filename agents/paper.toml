@@ -14,7 +14,19 @@ if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
   elif [ -d "$HOME/.agents/skills" ]; then
     REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
   else
-    echo "reasflow-dev skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    echo "reasflow shared skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    exit 1
+  fi
+fi
+
+REASFLOW_PRIVATE_SKILLS_ROOT="${REASFLOW_PRIVATE_SKILLS_ROOT:-}"
+if [ -z "$REASFLOW_PRIVATE_SKILLS_ROOT" ]; then
+  if [ -d ./.codex/reasflow-skills ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$(pwd)/.codex/reasflow-skills"
+  elif [ -d "$HOME/.codex/reasflow-skills" ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$HOME/.codex/reasflow-skills"
+  else
+    echo "reasflow private skills not found in ./.codex/reasflow-skills or $HOME/.codex/reasflow-skills" >&2
     exit 1
   fi
 fi
@@ -118,3 +130,17 @@ paper-subwriter owns assigned chapter files only.
 - Surface missing inputs or unusable assets explicitly instead of inventing material.
 '''
 
+[[skills.config]]
+path = "../../.codex/reasflow-skills/latex-writer/latex-build-and-fix/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/paper/chapter-compilation/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/paper/check-asset-usage/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/paper/completeness-review/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/paper/csiam/SKILL.md"

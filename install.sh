@@ -56,6 +56,7 @@ fi
 
 agents_dir="$target_root/.codex/agents"
 skills_dir="$target_root/.agents/skills"
+private_skills_dir="$target_root/.codex/reasflow-skills"
 manifest="$state_dir/manifest.txt"
 
 tmp_dir="$(mktemp -d)"
@@ -115,7 +116,7 @@ ensure_clear_target() {
   fi
 }
 
-mkdir -p "$agents_dir" "$skills_dir" "$state_dir"
+mkdir -p "$agents_dir" "$skills_dir" "$private_skills_dir" "$state_dir"
 remove_previous
 
 if [ -n "$source_override" ]; then
@@ -154,15 +155,35 @@ printf 'MODE %s\n' "$( [ "$dev_mode" -eq 1 ] && echo dev || echo release )" >> "
 printf 'SCOPE %s\n' "$mode" >> "$manifest_tmp"
 printf 'SOURCE %s\n' "$source_dir" >> "$manifest_tmp"
 
-find "$source_dir/skills" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r skill_root; do
-  dest="$skills_dir/$(basename "$skill_root")"
-  ensure_clear_target "$dest"
-  if [ "$dev_mode" -eq 1 ]; then
-    ln -s "$skill_root" "$dest"
-  else
-    cp -R "$skill_root" "$dest"
-  fi
-  printf 'FILE %s\n' "$dest" >> "$manifest_tmp"
+shared_root="$source_dir/skills/reasflow/shared"
+if [ -d "$shared_root" ]; then
+  find "$shared_root" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r skill_root; do
+    dest="$skills_dir/$(basename "$skill_root")"
+    ensure_clear_target "$dest"
+    if [ "$dev_mode" -eq 1 ]; then
+      ln -s "$skill_root" "$dest"
+    else
+      cp -R "$skill_root" "$dest"
+    fi
+    printf 'FILE %s\n' "$dest" >> "$manifest_tmp"
+  done
+fi
+
+find "$source_dir/skills/reasflow" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r category_root; do
+  category_name="$(basename "$category_root")"
+  [ "$category_name" = "shared" ] && continue
+  category_dest="$private_skills_dir/$category_name"
+  mkdir -p "$category_dest"
+  find "$category_root" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r skill_root; do
+    dest="$category_dest/$(basename "$skill_root")"
+    ensure_clear_target "$dest"
+    if [ "$dev_mode" -eq 1 ]; then
+      ln -s "$skill_root" "$dest"
+    else
+      cp -R "$skill_root" "$dest"
+    fi
+    printf 'FILE %s\n' "$dest" >> "$manifest_tmp"
+  done
 done
 
 for agent_path in "$source_dir"/agents/*.toml; do
@@ -199,13 +220,15 @@ fi
 
 cp "$manifest_tmp" "$manifest"
 
-skill_count="$(find "$skills_dir" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"
+shared_skill_count="$(find "$skills_dir" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"
+private_skill_count="$(find "$private_skills_dir" -mindepth 2 -maxdepth 2 -type d | wc -l | tr -d ' ')"
 agent_count="$(find "$agents_dir" -mindepth 1 -maxdepth 1 -type f -name '*.toml' | wc -l | tr -d ' ')"
 
 echo "Installed reasflow-dev"
 echo "  scope: $mode"
 echo "  mode: $( [ "$dev_mode" -eq 1 ] && echo dev || echo release )"
-echo "  skills: $skill_count -> $skills_dir"
+echo "  shared skills: $shared_skill_count -> $skills_dir"
+echo "  private skills: $private_skill_count -> $private_skills_dir"
 echo "  agents: $agent_count -> $agents_dir"
 if [ "$config_installed" -eq 1 ]; then
   echo "  config: -> $target_root/.codex/config.toml"

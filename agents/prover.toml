@@ -14,7 +14,19 @@ if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
   elif [ -d "$HOME/.agents/skills" ]; then
     REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
   else
-    echo "reasflow-dev skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    echo "reasflow shared skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    exit 1
+  fi
+fi
+
+REASFLOW_PRIVATE_SKILLS_ROOT="${REASFLOW_PRIVATE_SKILLS_ROOT:-}"
+if [ -z "$REASFLOW_PRIVATE_SKILLS_ROOT" ]; then
+  if [ -d ./.codex/reasflow-skills ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$(pwd)/.codex/reasflow-skills"
+  elif [ -d "$HOME/.codex/reasflow-skills" ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$HOME/.codex/reasflow-skills"
+  else
+    echo "reasflow private skills not found in ./.codex/reasflow-skills or $HOME/.codex/reasflow-skills" >&2
     exit 1
   fi
 fi
@@ -104,7 +116,7 @@ Keep track of which draft files belong to which lemma for correct routing.
 3. **Reference source processing**:
    - **Download arXiv papers** using the reference downloader script:
    ```bash
-   python "$REASFLOW_SKILLS_ROOT/reasflow/prover/reference-download/scripts/download-arxiv-reference.py" \
+   python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/reference-download/scripts/download-arxiv-reference.py" \
      --arxiv-id <arXiv_ID> \
      --output-dir prover/references/<ref_name> \
      --workspace <workspace>
@@ -119,8 +131,8 @@ Keep track of which draft files belong to which lemma for correct routing.
 4. **Knowledge card retrieval (MANDATORY first step)**:
    - Card retrieval is critical for enhancing proof capability — **must first call** card-retriever-skill to get the 5-Layer Protocol:
    ```bash
-   python "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/scripts/search-cards.py" \
-     --catalog "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
+   python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/search-cards.py" \
+     --catalog "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
      --query "<algorithm name> convergence <mechanism>" --top-k 5
    ```
    - **Enforce 5-layer full coverage**: Execute searches strictly layer by layer (Layer 1 → Layer 5):
@@ -137,7 +149,7 @@ Keep track of which draft files belong to which lemma for correct routing.
    ```bash
    cat "<absolute_path shown in search output>"
    # OR use read-card.py by ID:
-   python "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/scripts/read-card.py" --id <CARD_ID>
+   python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/read-card.py" --id <CARD_ID>
    ```
    - **Must read all returned cards before proceeding** — never rely on the summary line alone.
 
@@ -222,7 +234,7 @@ When all lemmas, theorems, and corollaries pass verification:
 **Task starts! First explore workspace structure, then check if user provided problem or literature links in Prompt.**
 
 **Key principles**:
-- Use `python "$REASFLOW_SKILLS_ROOT/reasflow/prover/reference-download/scripts/download-arxiv-reference.py"` for downloading arXiv references
+- Use `python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/reference-download/scripts/download-arxiv-reference.py"` for downloading arXiv references
 - After reading references, before starting proof, complete the 5-layer knowledge card retrieval
 - **Maintain verbatim**: no abbreviation, summarization, or modification when saving user's problem
 - **Conflict handling**: if files already have content, ask user whether to merge or overwrite
@@ -234,9 +246,16 @@ In AUTO mode additionally:
 '''
 
 [[skills.config]]
-path = "../../.agents/skills/reasflow/prover/knowledge-card-retrieval/SKILL.md"
-enabled = true
+path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
 
 [[skills.config]]
-path = "../../.agents/skills/reasflow/prover/reference-download/SKILL.md"
-enabled = true
+path = "../../.codex/reasflow-skills/prover/reference-download/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/prover/lemma-proving-workflow/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/prover/lemma-verification-workflow/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/common/interactive-vs-auto-execution/SKILL.md"

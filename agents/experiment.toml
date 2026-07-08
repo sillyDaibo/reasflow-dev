@@ -14,7 +14,19 @@ if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
   elif [ -d "$HOME/.agents/skills" ]; then
     REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
   else
-    echo "reasflow-dev skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    echo "reasflow shared skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
+    exit 1
+  fi
+fi
+
+REASFLOW_PRIVATE_SKILLS_ROOT="${REASFLOW_PRIVATE_SKILLS_ROOT:-}"
+if [ -z "$REASFLOW_PRIVATE_SKILLS_ROOT" ]; then
+  if [ -d ./.codex/reasflow-skills ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$(pwd)/.codex/reasflow-skills"
+  elif [ -d "$HOME/.codex/reasflow-skills" ]; then
+    REASFLOW_PRIVATE_SKILLS_ROOT="$HOME/.codex/reasflow-skills"
+  else
+    echo "reasflow private skills not found in ./.codex/reasflow-skills or $HOME/.codex/reasflow-skills" >&2
     exit 1
   fi
 fi
@@ -62,9 +74,9 @@ Workspace structure (Algorithm/Experiment share Alg_Exp):
 
 ```bash
 REASFLOW_SKILLS_ROOT="$REASFLOW_SKILLS_ROOT"
-SKILL_ROOT_EXP="$REASFLOW_SKILLS_ROOT/reasflow/experiment/experiment-execution"
-SKILL_ROOT_PLOT="$REASFLOW_SKILLS_ROOT/reasflow/experiment/smart-plotting"
-SKILL_ROOT_TUNE="$REASFLOW_SKILLS_ROOT/reasflow/experiment/auto-tuning"
+SKILL_ROOT_EXP="$REASFLOW_PRIVATE_SKILLS_ROOT/experiment/experiment-execution"
+SKILL_ROOT_PLOT="$REASFLOW_PRIVATE_SKILLS_ROOT/experiment/smart-plotting"
+SKILL_ROOT_TUNE="$REASFLOW_PRIVATE_SKILLS_ROOT/experiment/auto-tuning"
 ```
 
 Available tools:
@@ -82,8 +94,8 @@ Available tools:
 ## Step 0 — Always do this first (before designing any experiment)
 Search for relevant knowledge cards with 2-4 keywords (algorithm family, problem type, dataset/topology):
 ```bash
-python "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/scripts/search-cards.py" \
-  --catalog "$REASFLOW_SKILLS_ROOT/reasflow/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
+python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/search-cards.py" \
+  --catalog "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
   --query "<algorithm family> <problem type>" --top-k 5
 ```
 Reuse similar prior experiments and baselines from the knowledge base.
@@ -373,17 +385,25 @@ If cumulative execution time exceeds 30 minutes, explicitly report current progr
 '''
 
 [[skills.config]]
-path = "../../.agents/skills/reasflow/prover/knowledge-card-retrieval/SKILL.md"
-enabled = true
+path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
 
 [[skills.config]]
-path = "../../.agents/skills/reasflow/experiment/experiment-execution/SKILL.md"
-enabled = true
+path = "../../.codex/reasflow-skills/experiment/experiment-execution/SKILL.md"
 
 [[skills.config]]
-path = "../../.agents/skills/reasflow/experiment/smart-plotting/SKILL.md"
-enabled = true
+path = "../../.codex/reasflow-skills/experiment/smart-plotting/SKILL.md"
 
 [[skills.config]]
-path = "../../.agents/skills/reasflow/experiment/auto-tuning/SKILL.md"
-enabled = true
+path = "../../.codex/reasflow-skills/experiment/auto-tuning/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/paper/artifact-inspection/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/experiment/experiment-design/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/latex-writer/latex-report-generation/SKILL.md"
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/latex-writer/report-integration/SKILL.md"
