@@ -31,7 +31,7 @@ skill_dir="$HOME/.agents/skills/reasflow-initializer"
 mkdir -p "$skill_dir/agents" "$skill_dir/references"
 curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/SKILL.md -o "$skill_dir/SKILL.md"
 curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/agents/openai.yaml -o "$skill_dir/agents/openai.yaml"
-curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/references/no-restart-main-bootstrap.md -o "$skill_dir/references/no-restart-main-bootstrap.md"
+curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/references/no-restart-orchestrator-bootstrap.md -o "$skill_dir/references/no-restart-orchestrator-bootstrap.md"
 ```
 
 Verify:
@@ -39,7 +39,7 @@ Verify:
 ```bash
 test -f "$HOME/.agents/skills/reasflow-initializer/SKILL.md"
 test -f "$HOME/.agents/skills/reasflow-initializer/agents/openai.yaml"
-test -f "$HOME/.agents/skills/reasflow-initializer/references/no-restart-main-bootstrap.md"
+test -f "$HOME/.agents/skills/reasflow-initializer/references/no-restart-orchestrator-bootstrap.md"
 ```
 
 ## Windows PowerShell
@@ -52,7 +52,7 @@ New-Item -ItemType Directory -Force -Path (Join-Path $skillDir "agents") | Out-N
 New-Item -ItemType Directory -Force -Path (Join-Path $skillDir "references") | Out-Null
 irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/SKILL.md -OutFile (Join-Path $skillDir "SKILL.md")
 irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/agents/openai.yaml -OutFile (Join-Path $skillDir "agents\openai.yaml")
-irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/references/no-restart-main-bootstrap.md -OutFile (Join-Path $skillDir "references\no-restart-main-bootstrap.md")
+irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/skills/reasflow/shared/reasflow-initializer/references/no-restart-orchestrator-bootstrap.md -OutFile (Join-Path $skillDir "references\no-restart-orchestrator-bootstrap.md")
 ```
 
 Verify:
@@ -60,7 +60,7 @@ Verify:
 ```powershell
 Test-Path "$env:USERPROFILE\.agents\skills\reasflow-initializer\SKILL.md"
 Test-Path "$env:USERPROFILE\.agents\skills\reasflow-initializer\agents\openai.yaml"
-Test-Path "$env:USERPROFILE\.agents\skills\reasflow-initializer\references\no-restart-main-bootstrap.md"
+Test-Path "$env:USERPROFILE\.agents\skills\reasflow-initializer\references\no-restart-orchestrator-bootstrap.md"
 ```
 
 Tell the user to restart Codex after installation so the global skill is reloaded.
