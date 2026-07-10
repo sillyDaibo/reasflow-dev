@@ -1,6 +1,5 @@
 name = "survey-outline"
 description = "Hidden worker for survey outline design."
-enabled = true
 model = "gpt-5.4-mini"
 nickname_candidates = ["survey-outline"]
 
@@ -53,9 +52,12 @@ Return format: Follow the <format> block in each prompt exactly. Do not add extr
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/autosurvey-execution/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/autosurvey-paper-retrieval/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/common/workspace-cartography/SKILL.md"
+enabled = true

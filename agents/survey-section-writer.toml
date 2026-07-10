@@ -1,6 +1,5 @@
 name = "survey-section-writer"
 description = "Hidden worker for survey subsection drafting."
-enabled = true
 model = "gpt-5.4-mini"
 nickname_candidates = ["survey-section-writer"]
 
@@ -60,9 +59,12 @@ Return format: Return only the content as specified in the prompt. No wrapper te
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/autosurvey-paper-retrieval/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/latex-writer/report-integration/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/survey-tex-bib-packaging/SKILL.md"
+enabled = true

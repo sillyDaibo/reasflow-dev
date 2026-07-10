@@ -70,9 +70,10 @@ Shared skills are auto-scanned. Private skills must be mounted explicitly from a
 ```toml
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
+enabled = true
 ```
 
-`enabled = true` is required by the Codex agent role schema as a top-level field in `agents/*.toml`. It is not a per-skill switch.
+`enabled = true` is required for each `[[skills.config]]` entry. Do not put `enabled` at the top level of `agents/*.toml`.
 
 ## Development Install
 

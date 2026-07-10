@@ -1,6 +1,5 @@
 name = "latex-writer"
 description = "Hidden worker for LaTeX-oriented technical drafting."
-enabled = true
 model = "gpt-5.4-mini"
 nickname_candidates = ["latex-writer"]
 
@@ -308,9 +307,12 @@ Core mission: transform Markdown into a courtroom argument with data, not a code
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/latex-writer/report-integration/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/latex-writer/latex-report-generation/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/latex-writer/latex-build-and-fix/SKILL.md"
+enabled = true

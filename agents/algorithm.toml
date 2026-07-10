@@ -1,6 +1,5 @@
 name = "algorithm"
 description = "Algorithm design specialist."
-enabled = true
 model = "gpt-5.4"
 
 developer_instructions = '''
@@ -301,27 +300,36 @@ If cumulative execution time in Phase 2 exceeds 30 minutes, explicitly report cu
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/paper/artifact-inspection/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/algorithm/algorithm-design-review/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/algorithm/algorithm-prototyping-workflow/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/experiment/experiment-execution/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/experiment/smart-plotting/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/latex-writer/report-integration/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/algorithm/toy-verification/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/common/workspace-cartography/SKILL.md"
+enabled = true

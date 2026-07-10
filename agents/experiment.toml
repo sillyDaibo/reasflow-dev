@@ -1,6 +1,5 @@
 name = "experiment"
 description = "Experiment planning and execution specialist."
-enabled = true
 model = "gpt-5.4-mini"
 
 developer_instructions = '''
@@ -387,24 +386,32 @@ If cumulative execution time exceeds 30 minutes, explicitly report current progr
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/experiment/experiment-execution/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/experiment/smart-plotting/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/experiment/auto-tuning/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/paper/artifact-inspection/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/experiment/experiment-design/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/latex-writer/latex-report-generation/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/latex-writer/report-integration/SKILL.md"
+enabled = true

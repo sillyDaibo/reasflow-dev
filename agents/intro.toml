@@ -1,6 +1,5 @@
 name = "intro"
 description = "Introduction and abstract writer."
-enabled = true
 model = "gpt-5.4-mini"
 
 developer_instructions = '''
@@ -258,15 +257,20 @@ When user requests changes, re-run write-introduction.py with the same paths and
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/intro/introduction-framing/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/latex-writer/report-integration/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/intro/abstract-alignment/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/intro/anti-hallucination-markers/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/common/interactive-vs-auto-execution/SKILL.md"
+enabled = true

@@ -1,6 +1,5 @@
 name = "prover"
 description = "Proof workflow coordinator for theorem and lemma work."
-enabled = true
 model = "gpt-5.4"
 
 developer_instructions = '''
@@ -248,15 +247,20 @@ In AUTO mode additionally:
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/reference-download/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/lemma-proving-workflow/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/lemma-verification-workflow/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/common/interactive-vs-auto-execution/SKILL.md"
+enabled = true

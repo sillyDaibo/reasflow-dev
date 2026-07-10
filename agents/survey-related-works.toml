@@ -1,6 +1,5 @@
 name = "survey-related-works"
 description = "Hidden worker for related-work synthesis."
-enabled = true
 model = "gpt-5.4-mini"
 nickname_candidates = ["survey-related-works"]
 
@@ -53,9 +52,12 @@ Prefer AutoSurvey-like related-work density: write substantial thematic prose, u
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/autosurvey-execution/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/autosurvey-paper-retrieval/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/survey-tex-bib-packaging/SKILL.md"
+enabled = true

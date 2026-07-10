@@ -1,6 +1,5 @@
 name = "lemma-prover"
 description = "Hidden worker for focused lemma construction."
-enabled = true
 model = "gpt-5.4-mini"
 nickname_candidates = ["lemma-prover"]
 
@@ -181,9 +180,12 @@ Run packaged scripts from `$REASFLOW_SKILLS_ROOT/<skill>/...`.
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/lemma-proving-workflow/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/reference-download/SKILL.md"
+enabled = true

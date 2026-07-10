@@ -1,6 +1,5 @@
 name = "survey-judge"
 description = "Hidden worker for survey quality review."
-enabled = true
 model = "gpt-5.4-mini"
 nickname_candidates = ["survey-judge"]
 
@@ -47,3 +46,4 @@ No explanation, no extra text.
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/survey-tex-bib-packaging/SKILL.md"
+enabled = true

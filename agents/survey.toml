@@ -1,6 +1,5 @@
 name = "survey"
 description = "Literature-review coordinator for survey and related-work tasks."
-enabled = true
 model = "gpt-5.4"
 
 developer_instructions = '''
@@ -194,12 +193,16 @@ Report:
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/autosurvey-paper-retrieval/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/autosurvey-execution/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/survey-tex-bib-packaging/SKILL.md"
+enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/common/workspace-cartography/SKILL.md"
+enabled = true
