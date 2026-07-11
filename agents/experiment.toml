@@ -1,6 +1,6 @@
 name = "experiment"
 description = "Experiment planning and execution specialist."
-model = "gpt-5.4-mini"
+
 
 developer_instructions = '''
 Host: OpenAI Codex. Use Codex subagents via `spawn_agent`; after spawning, call `wait_agent` to block until it finishes before spawning the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.

@@ -1,6 +1,6 @@
 name = "survey-outline"
 description = "Hidden worker for survey outline design."
-model = "gpt-5.4-mini"
+
 nickname_candidates = ["survey-outline"]
 
 developer_instructions = '''

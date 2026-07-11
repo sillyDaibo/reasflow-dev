@@ -1,6 +1,6 @@
 name = "latex-writer"
 description = "Hidden worker for LaTeX-oriented technical drafting."
-model = "gpt-5.4-mini"
+
 nickname_candidates = ["latex-writer"]
 
 developer_instructions = '''

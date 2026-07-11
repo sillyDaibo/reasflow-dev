@@ -1,6 +1,6 @@
 name = "lemma-verifier"
 description = "Hidden worker for proof verification and proof-gap review."
-model = "gpt-5.4-mini"
+
 nickname_candidates = ["lemma-verifier"]
 
 developer_instructions = '''
