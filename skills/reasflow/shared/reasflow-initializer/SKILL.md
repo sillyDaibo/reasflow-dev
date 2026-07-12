@@ -18,13 +18,32 @@ Only this initializer skill should be installed globally by default. Full reasfl
    ```bash
    find . -maxdepth 3 \( -path './.codex/config.toml' -o -path './.codex/agents' -o -path './.agents/skills' -o -path './.codex/reasflow-skills' \) -print
    ```
-3. If no conflicting reasflow targets exist, run the local installer from the target root:
+3. If no conflicting reasflow targets exist, run the local installer from the target root.
+
+   Unix/macOS or other bash-capable shells:
    ```bash
    curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash
    ```
-4. If targets already exist and the user wants to refresh/replace them, run:
+
+   Windows PowerShell / pwsh:
+   ```powershell
+   $installer = Join-Path $env:TEMP "reasflow-dev-install.ps1"
+   irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.ps1 -OutFile $installer
+   pwsh -NoProfile -ExecutionPolicy Bypass -File $installer
+   ```
+
+4. If targets already exist and the user wants to refresh/replace them, run the same installer with force enabled.
+
+   Unix/macOS or other bash-capable shells:
    ```bash
    curl -fsSL https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.sh | bash -s -- --force
+   ```
+
+   Windows PowerShell / pwsh:
+   ```powershell
+   $installer = Join-Path $env:TEMP "reasflow-dev-install.ps1"
+   irm https://raw.githubusercontent.com/sillyDaibo/reasflow-dev/main/install.ps1 -OutFile $installer
+   pwsh -NoProfile -ExecutionPolicy Bypass -File $installer -Force
    ```
 5. Tell the user to restart Codex in that project so `.codex/config.toml`, `.codex/agents/`, and `.agents/skills/` are reloaded.
 
@@ -48,7 +67,14 @@ When working inside or near a checked-out `reasflow-dev` repository, prefer inst
 REASFLOW_DEV_SOURCE_DIR=/path/to/reasflow-dev bash /path/to/reasflow-dev/install.sh
 ```
 
-Use `--force` only when replacing existing installed reasflow targets is intended.
+On Windows PowerShell / pwsh, the equivalent is:
+
+```powershell
+$env:REASFLOW_DEV_SOURCE_DIR = "C:\path\to\reasflow-dev"
+pwsh -NoProfile -ExecutionPolicy Bypass -File "C:\path\to\reasflow-dev\install.ps1"
+```
+
+Use `--force` for bash or `-Force` for pwsh only when replacing existing installed reasflow targets is intended.
 
 ## Expected Result
 

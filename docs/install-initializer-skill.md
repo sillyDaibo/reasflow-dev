@@ -74,3 +74,4 @@ Initialize this folder as a reasflow project.
 ```
 
 The `reasflow-initializer` skill tells Codex to run the local project installer from that project root.
+For later project initialization, the repository provides both `install.sh` for bash-capable shells and `install.ps1` for Windows PowerShell / pwsh; use the one that matches the user's environment.
