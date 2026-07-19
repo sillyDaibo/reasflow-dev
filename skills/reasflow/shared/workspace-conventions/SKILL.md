@@ -1,6 +1,6 @@
 ---
 name: workspace-conventions
-description: Conventions for tools, skills, and project state in ReasLab workspaces.
+description: Conventions for tools, skills, and project state in reasflow workspaces.
 ---
 
 ## Installed Root
@@ -27,7 +27,7 @@ Standard shell tools are available in PATH. Use them directly.
 
 - Build Lean projects: `lake build`, `lake build Mathlib.Order.Basic`
 - Compile LaTeX documents: `latexmk`
-- Run Python: use `python-execute` (in PATH; run `python-execute --help` for all options), not `python3`/`uv`/`pip`
+- Run Python with the local project environment. Prefer an active or workspace-local virtual environment; otherwise use the available `python`/`python3` command.
 - Search code: `rg`, `fd`, `jq`, `grep`, `find`
 - Open a file in the web UI: `open main.pdf`
 
@@ -38,29 +38,27 @@ When the user asks to use MCP, or asks to compile LaTeX or
 build Lean via MCP, just run the command directly (`latexmk`,
 `lake build`, etc.). All tools are standard shell commands.
 
-### python-execute
+### Python
 
-`python-execute` is the CLI for running Python in the runtime container.
-Invoke it through the shell/terminal tool like any other command.
+Use regular Python tooling for reasflow work. External runtime-specific
+Python wrappers are not required by reasflow.
 
-All Python-related commands (`python3`, `uv`, `pip`, etc.) MUST go through
-`python-execute` — never run them directly via the shell tool.
+For experiment workflows, prefer the workspace-local environment when present:
 
-The runtime container has solver packages and their licenses pre-configured
-(gurobipy, coptpy, mosek, cplex, ortools, pulp, etc.). Do not attempt to
-install, activate, or configure licenses yourself — they are already set up.
+- Windows: `Alg_Exp/.venv/Scripts/python.exe`
+- Unix/macOS: `Alg_Exp/.venv/bin/python`
 
-Pre-installed packages: numpy, scipy, pandas, matplotlib, gurobipy, coptpy,
-mosek, cplex, ortools, pulp, etc.
+If the workflow or shell wrapper auto-selects `.venv`, plain `python` and
+`python -m pip` are fine. If no environment exists yet, create one with
+`python -m venv Alg_Exp/.venv` or `uv venv Alg_Exp/.venv` when `uv` is
+available.
 
-- `python-execute -c 'print(1+1)'` — run inline code
-- `python-execute script.py` — run a file
-- `python-execute install <pkg>` — install a package
-- `python-execute remove <pkg>` — remove a package
-- `python-execute list-packages` — list installed packages
-- `python-execute env-status` — check environment and available packages
-- `python-execute history` — query execution history
-- `python-execute stop <id>` — stop a running execution
+Examples:
+
+- `python -c 'print(1+1)'` - run inline code
+- `python script.py` - run a file
+- `python -m pip install <pkg>` - install a package
+- `python -m pip list` - list installed packages
 
 ## Skills
 
