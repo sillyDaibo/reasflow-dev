@@ -31,7 +31,7 @@ Search topic or arXiv paper ID: $ARGUMENTS
 
 - **PAPER_DIR** - Local directory to save downloaded PDFs. Default: `papers/` in the current project directory.
 - **MAX_RESULTS = 10** - Default number of search results.
-- **PYTHON_RUNNER = python-execute** - All Python execution and package installation must go through `python-execute`; never call `python3`, `pip`, or `uv` directly.
+- **PYTHON_RUNNER = python** - Use the current Python environment; prefer a project virtual environment when available.
 - **FETCH_SCRIPT** - `tools/arxiv_fetch.py` in the skill directory (same level as SKILL.md), or relative to the current project. Fall back to inline Python if not found.
 - **WIKI_SCRIPT** - `tools/research_wiki.py` in the skill directory (same level as SKILL.md), or relative to the current project.
 
@@ -60,13 +60,13 @@ If the argument matches an arXiv ID pattern (`YYMM.NNNNN` or `category/NNNNNNN`)
 Ensure the helper dependency is available in the runtime Python environment:
 
 ```bash
-python-execute install arxiv
+python -m pip install arxiv
 ```
 
 Locate the fetch script:
 
 ```bash
-SCRIPT=$(python-execute -c "
+SCRIPT=$(python -c "
 import pathlib
 import os
 script_path = pathlib.Path(__file__).resolve() if '__file__' in dir() else pathlib.Path.cwd()
@@ -86,13 +86,13 @@ for p in candidates:
 **If SCRIPT is found**, run:
 
 ```bash
-python-execute "$SCRIPT" search "QUERY" --max MAX_RESULTS
+python "$SCRIPT" search "QUERY" --max MAX_RESULTS
 ```
 
 **If SCRIPT is not found**, fall back to inline Python:
 
 ```bash
-python-execute - <<'PYEOF'
+python - <<'PYEOF'
 import json
 import urllib.parse
 import urllib.request
@@ -140,9 +140,9 @@ Present results as a table:
 When a single paper ID is requested (either directly or from Step 2):
 
 ```bash
-python-execute "$SCRIPT" search "id:ARXIV_ID" --max 1
+python "$SCRIPT" search "id:ARXIV_ID" --max 1
 # or fallback:
-python-execute -c "
+python -c "
 import urllib.request, xml.etree.ElementTree as ET
 NS = 'http://www.w3.org/2005/Atom'
 url = 'http://export.arxiv.org/api/query?id_list=ARXIV_ID'
@@ -160,10 +160,10 @@ When download is requested, for each paper ID to download:
 
 ```bash
 # Using fetch script:
-python-execute "$SCRIPT" download ARXIV_ID --dir PAPER_DIR
+python "$SCRIPT" download ARXIV_ID --dir PAPER_DIR
 
 # Fallback:
-mkdir -p PAPER_DIR && python-execute -c "
+mkdir -p PAPER_DIR && python -c "
 import pathlib
 import sys
 import urllib.request
@@ -216,7 +216,7 @@ into the wiki:
 
 ```
 if [ -d research-wiki/ ]:
-    WIKI_SCRIPT=$(python-execute -c "
+    WIKI_SCRIPT=$(python -c "
 import pathlib
 import os
 script_path = pathlib.Path(__file__).resolve() if '__file__' in dir() else pathlib.Path.cwd()
@@ -232,7 +232,7 @@ for p in candidates:
         break
 " 2>/dev/null)
     for each arxiv_id in results:
-        python-execute "$WIKI_SCRIPT" ingest_paper research-wiki/ \
+        python "$WIKI_SCRIPT" ingest_paper research-wiki/ \
             --arxiv-id "<arxiv_id>"
 ```
 
@@ -241,7 +241,7 @@ rebuild, and log append in a single call — **do not handwrite
 `papers/<slug>.md`**. See
 [`shared-references/integration-contract.md`](../shared-references/integration-contract.md)
 for the canonical-helper rule. Missed ingests can be backfilled later
-with `python-execute "$WIKI_SCRIPT" sync research-wiki/ --arxiv-ids <id1>,<id2>,...`.
+with `python "$WIKI_SCRIPT" sync research-wiki/ --arxiv-ids <id1>,<id2>,...`.
 
 ### Step 7: Final Output
 
@@ -267,5 +267,5 @@ Suggest follow-up skills:
 - Never overwrite an existing PDF at the same path - skip it and report "already exists"
 - Handle both arXiv ID formats: new (`2301.07041`) and old (`cs/0601001`)
 - PAPER_DIR is created automatically if it does not exist
-- Install Python packages with `python-execute install <pkg>` and run Python scripts with `python-execute`; do not use `python3`, `pip`, or `uv` directly
+- Install Python packages with `python -m pip install <pkg>` and run Python scripts with `python`; prefer the project virtual environment when available
 - If the arXiv API is unreachable, report the error clearly and suggest using `/research-lit` with `- sources: web` as a fallback
