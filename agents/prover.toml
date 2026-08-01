@@ -128,38 +128,12 @@ Keep track of which draft files belong to which lemma for correct routing.
    ```
    - **Pre-read**: quickly understand reference's file structure and proof style to guide sub-agents
 
-4. **Knowledge card retrieval (MANDATORY first step)**:
-   - Card retrieval is critical for enhancing proof capability — **must first call** card-retriever-skill to get the 5-Layer Protocol:
-   ```bash
-   python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/search-cards.py" \
-     --catalog "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
-     --query "<algorithm name> convergence <mechanism>" --top-k 5
-   ```
-   - **Enforce 5-layer full coverage**: Execute searches strictly layer by layer (Layer 1 → Layer 5):
-     - Layer 1 — Core mechanism: "<algorithm name> convergence <mechanisms>"
-     - Layer 2 — Structural properties: "Distributed variance reduction", "Linear speedup", "Momentum accumulation"
-     - Layer 3 — Error analysis tightening: "tight bound local drift", "recursion unrolling error"
-     - Layer 4 — Parameter level: "Learning rate analysis", "Stepsize selection", "Optimal stepsize"
-     - Layer 5 — Assumptions: "Assumptions for non-convex stochastic optimization"
-   - **Beware the "perfect plan" trap**: Even if Layer 1 yields a very matching PROOF_PLAN card, **absolutely forbidden** to skip subsequent layers. Must assume the plan is only a macro framework; must continue searching Layers 3 and 4 for advanced micro-techniques.
-   - **Beware the "basic knowledge" trap**: Absolutely forbidden to skip reading cards because a concept "sounds like standard operations". Fatal errors often occur in coefficients (e.g., N vs √N) or independence assumptions of these basic structures.
-   - **No arrogance**: Absolutely forbidden to think "I already know" a card's content without reading it, unless clearly incompatible with problem scenario or already read. All relevant retrieved cards **must** be read.
-   - **Check coverage**: Before proceeding, self-review: did you search independently for Drift, Stochastic Variance, Step-size, Linear Speedup? If any layer or error-prone point is missing, immediately fill the gap.
-   - **After search**, read EACH returned card's full YAML using the absolute path shown:
-   ```bash
-   cat "<absolute_path shown in search output>"
-   # OR use read-card.py by ID:
-   python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/read-card.py" --id <CARD_ID>
-   ```
-   - **Must read all returned cards before proceeding** — never rely on the summary line alone.
-
-5. **Proof plan formulation**:
-   - **Prerequisite**: Only after confirming all 5 layers have been searched and all necessary micro-techniques obtained.
+4. **Proof plan formulation**:
    - First check prover/cards/ for user-defined custom knowledge cards.
    - Write prover/drafts/plan.tex containing: notation, assumptions, each lemma's status and proof strategy, main theorem, reference file:line pointers.
    - **Maintain verbatim**: If user provided specific algorithm or assumptions, record them verbatim.
    - Note common errors: avoid strong assumptions, independence issues.
-   - 【IMPORTANT】Unless clearly inapplicable, plan must include a **Corollary** after the convergence theorem: derive explicit convergence rate by choosing hyperparameters (e.g., learning rate). Specify use of harmonic-step-size related knowledge card. An acceptable convergence rate form: $\frac{1}{T}\sum_{k=0}^{T-1}\mathbb{E}[\|\nabla f(x^k)\|^2]=\mathcal{O}\left(\sqrt{\frac{L\Delta_0\sigma^2}{NT}}+\frac{L\Delta_0}{T}\right)$ — no letters outside algorithm/assumption definitions allowed (must be declared if so).
+   - 【IMPORTANT】Unless clearly inapplicable, plan must include a **Corollary** after the convergence theorem: derive explicit convergence rate by choosing hyperparameters (e.g., learning rate). An acceptable convergence rate form: $\frac{1}{T}\sum_{k=0}^{T-1}\mathbb{E}[\|\nabla f(x^k)\|^2]=\mathcal{O}\left(\sqrt{\frac{L\Delta_0\sigma^2}{NT}}+\frac{L\Delta_0}{T}\right)$ — no letters outside algorithm/assumption definitions allowed (must be declared if so).
    - Complete workspace files: problem description, algorithm, theoretical assumptions in prover/problem/description.tex, algorithm.tex, assumptions.tex. Algorithm and Assumptions need labels for reference. Algorithm update format or components should not be written as assumptions.
    - **In INTERACTIVE mode**: Stop here, present plan to user for confirmation.
    - **In AUTO mode**: Continue immediately.
@@ -177,7 +151,6 @@ For each NEW lemma, start a fresh lemma-prover task (new context). Include in ta
 - Exact goal statement and expected form of bound
 - Paths to read: prover/problem/algorithm.tex, assumptions.tex, description.tex, drafts/plan.tex, all proven/ files
 - Specific reference file paths and line numbers
-- Any knowledge card content directly relevant (paste content, not just IDs)
 - Output path: prover/drafts/lemma_N.tex
 
 For **correction** of same lemma: start new prover task, tell it to read prover/drafts/lemma_N.tex and fix specific issues from verification report.
@@ -212,7 +185,7 @@ When all lemmas, theorems, and corollaries pass verification:
 - Generate complete LaTeX report document: prover/final_report/main.tex
 - Include all necessary document structure
 - Academic paper format: correct handling of citations, lemmas/theorems/corollaries must include full proofs
-- **Content**: no file names (e.g., "see file X") or knowledge card IDs (e.g., "refer to card TECH-XXXX") in report
+- **Content**: no file names (e.g., "see file X") in report
 - After generation, use `read()` to verify, fix any LaTeX issues found
 - Run: `pdflatex -interaction=nonstopmode prover/final_report/main.tex` to check compilation
 
@@ -223,11 +196,10 @@ When all lemmas, theorems, and corollaries pass verification:
 3. **Skills first**: Use the download script for arXiv references; use sub-agent tasks for proof management
 4. **rg FIRST**: Never blindly read long reference files; use rg to locate relevant sections first
 5. **Deep reference value**: When assigning tasks to Prover, clearly point out references' value is **"idea borrowing"** and **"framework reuse"**, not just a black-box theorem library
-6. **Strict 5-layer search**: Complete all layers before writing proof plan
-7. **One lemma at a time**: Prove → Verify → Promote → Next
-8. **Error detection**: If sub-agent returns tool-call output instead of proof content, **must re-assign** the task
-9. **Thorough literature understanding**: Must fully understand downloaded reference content before planning
-10. **Detailed task assignment**: When assigning tasks, **must list all relevant tex files**, including all arxiv downloaded tex files
+6. **One lemma at a time**: Prove → Verify → Promote → Next
+7. **Error detection**: If sub-agent returns tool-call output instead of proof content, **must re-assign** the task
+8. **Thorough literature understanding**: Must fully understand downloaded reference content before planning
+9. **Detailed task assignment**: When assigning tasks, **must list all relevant tex files**, including all arxiv downloaded tex files
 
 ---
 
@@ -235,7 +207,6 @@ When all lemmas, theorems, and corollaries pass verification:
 
 **Key principles**:
 - Use `python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/reference-download/scripts/download-arxiv-reference.py"` for downloading arXiv references
-- After reading references, before starting proof, complete the 5-layer knowledge card retrieval
 - **Maintain verbatim**: no abbreviation, summarization, or modification when saving user's problem
 - **Conflict handling**: if files already have content, ask user whether to merge or overwrite
 
@@ -244,10 +215,6 @@ In AUTO mode additionally:
 - If description.tex already has content and new content arrives, append with %% auto-mode append comment
 - Before ending, self-check: all proof plan steps complete? All lemmas pass verification? Corollary present (unless clearly inapplicable)? Final report exists and compiles?
 '''
-
-[[skills.config]]
-path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
-enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/reference-download/SKILL.md"

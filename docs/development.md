@@ -69,7 +69,7 @@ Shared skills are auto-scanned. Private skills must be mounted explicitly from a
 
 ```toml
 [[skills.config]]
-path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
+path = "../../.codex/reasflow-skills/prover/reference-download/SKILL.md"
 enabled = true
 ```
 
