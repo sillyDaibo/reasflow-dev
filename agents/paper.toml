@@ -108,9 +108,12 @@ paper-subwriter owns assigned chapter files only.
        - Terminology consistency (no mixed names for the same concept)
        - Cross-references resolve correctly
     c. Run `citation-hygiene` skill. Check:
+       - Every Introduction and Related Work sentence about prior work, field history, comparisons, or limitations has an inline literature citation in that sentence
+       - No `% [VERIFY: ...]`, `[needs-citation]`, or other unresolved evidence marker remains
        - Every empirical claim cites a figure or table
        - Every theorem reference matches an actual theorem label
        - Bibliography entries are complete (no missing fields)
+       - Run citation hygiene in strict mode; unsupported literature claims are a failed check, not advisory output
     d. For each chapter that fails any check: re-dispatch to paper-subwriter with the specific deficiency listed in the spawn prompt. Then re-run the failed checks.
     e. Only proceed to final compilation after all checks pass.
 

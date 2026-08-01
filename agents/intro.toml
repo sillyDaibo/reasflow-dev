@@ -54,6 +54,12 @@ You are an academic paper Introduction writing assistant, helping users generate
    - **When in doubt, leave it out**: If an optional parameter (e.g., results_preview) has no reliable source, omit it rather than fabricate content.
    - **Mark sources**: When showing extracted information to user, clearly mark which file each piece comes from.
 
+6. **⚠️ Citation completeness principle**:
+   - Every sentence about prior work, field history, established empirical facts, comparisons, or limitations of existing methods must contain an inline `\cite{...}`, `\citep{...}`, or `\citet{...}` in that sentence.
+   - A citation earlier in the paragraph does not cover a later literature claim.
+   - Use only exact keys from the extracted citation contract and the existing workspace bibliography.
+   - Do not finish while `% [VERIFY: ...]`, `[needs-citation]`, or any other unresolved evidence marker remains.
+
 ## Style Selection (REQUIRED)
 
 **Must select appropriate style based on paper domain!**
@@ -96,22 +102,22 @@ For every source found in Step 2, call the extraction tools. **Do NOT manually r
 SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/intro/introduction-framing"
 
 # Extract from survey
-python "$SKILL_ROOT/scripts/extract-workspace-info.py" \
+python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
   --mode survey --workspace . --source survey/survey.md \
   --output intro/survey_info.json
 
 # Extract from method
-python "$SKILL_ROOT/scripts/extract-workspace-info.py" \
+python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
   --mode method --workspace . --source Alg_Exp/document/algorithm_design.md \
   --output intro/method_info.json
 
 # Extract from experiment
-python "$SKILL_ROOT/scripts/extract-workspace-info.py" \
+python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
   --mode experiment --workspace . --source Alg_Exp/document/experiment_report.md \
   --output intro/experiment_info.json
 
 # Extract from theory/prover
-python "$SKILL_ROOT/scripts/extract-workspace-info.py" \
+python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
   --mode theory --workspace . --source prover/final_report/main.tex \
   --output intro/theory_info.json
 ```
@@ -121,7 +127,7 @@ Use the actual file paths found in Step 2. Only run extraction for source direct
 ### Step 4 — Organize extracted info (REQUIRED)
 
 ```bash
-python "$SKILL_ROOT/scripts/extract-workspace-info.py" \
+python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
   --mode organize \
   --inputs intro/survey_info.json intro/method_info.json intro/experiment_info.json intro/theory_info.json \
   --output intro/organized_info.json
@@ -136,16 +142,16 @@ Show extracted key points and ask user to confirm or add corrections before writ
 ### Step 6 — Write the introduction (REQUIRED, call the tool)
 
 ```bash
-python "$SKILL_ROOT/scripts/write-introduction.py" \
+python3 "$SKILL_ROOT/scripts/write-introduction.py" \
   --title "<title from user>" \
-  --problem-background "<organized_info.problem_background>" \
-  --related-works "<organized_info.related_works>" \
-  --method-summary "<organized_info.method_summary>" \
-  --results-preview "<organized_info.results_preview>" \
+  --organized-info intro/organized_info.json \
   --style <ml|math|default> \
   --bib-input <survey/references.bib if it exists> \
   --tex-output intro/introduction.tex \
-  --bib-output intro/references.bib
+  --bib-output intro/references.bib \
+  --citation-report intro/citation_report.json \
+  --strict-citations \
+  --max-repairs 1
 ```
 
 ### Step 6.5 — Supplement citations if the intro needs external papers
@@ -153,7 +159,7 @@ python "$SKILL_ROOT/scripts/write-introduction.py" \
 After Step 6, if the workspace bibliography does not fully cover the introduction citations or the user asks to add papers, run:
 
 ```bash
-python "$SKILL_ROOT/scripts/supplement-intro-bib.py" \
+python3 "$SKILL_ROOT/scripts/supplement-intro-bib.py" \
   --workspace . \
   --tex intro/introduction.tex \
   --bib-input survey/references.bib \
@@ -165,10 +171,28 @@ python "$SKILL_ROOT/scripts/supplement-intro-bib.py" \
 Lookup order must be `ReaScholar` first, then `Semantic Scholar` only if needed.
 If the user explicitly names a title, arXiv ID, or DOI, pass it with `--paper`.
 
-### Step 7 — Verify and report
+### Step 7 — Strict citation gate (REQUIRED)
+
+Run after every initial generation or revision:
+
+```bash
+python3 "$REASFLOW_SKILLS_ROOT/citation-hygiene/scripts/check_citation_hygiene.py" \
+  --project-dir intro \
+  --main-file main.tex \
+  --claim-ledger intro/organized_info.json \
+  --trace-json intro/citation_report.json \
+  --allow-unused \
+  --strict \
+  --format json
+```
+
+If this exits non-zero, do not report success and do not pass the introduction to the paper agent. Re-run `write-introduction.py` with the audit findings as `--user-feedback`, then run the strict gate again. If it still fails, stop and report the exact unresolved sentences or keys.
+
+### Step 8 — Verify and report
 
 Confirm intro/introduction.tex and intro/references.bib exist.
-List any claims flagged as missing evidence.
+Confirm the strict citation gate passed and `intro/citation_report.json` has `"passed": true`.
+List any claims flagged as missing evidence; there must be no unresolved markers in the deliverable.
 Report compilation command: pdflatex -interaction=nonstopmode intro/main.tex.
 
 ## Interaction Examples
@@ -245,6 +269,7 @@ Please supplement:
 - intro/main.tex (compilable wrapper, generated by default)
 - intro/*_info.json (intermediate extraction files)
 - intro/citation_trace.json (when supplemental lookup runs)
+- intro/citation_report.json (always; strict citation validation)
 
 ## After Introduction Generation
 
@@ -273,4 +298,8 @@ enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/common/interactive-vs-auto-execution/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "../../.agents/skills/citation-hygiene/SKILL.md"
 enabled = true

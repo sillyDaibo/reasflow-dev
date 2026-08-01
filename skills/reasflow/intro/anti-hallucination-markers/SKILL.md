@@ -38,6 +38,7 @@ Mark weak spots while drafting instead of letting them ship as confident prose. 
 2. Tag every sentence that depends on evidence outside the current draft.
 3. Resolve or delete marked claims before final polishing.
 4. Remove markers only after the supporting section, figure, table, or citation is real.
+5. Treat any remaining marker as a failed deliverable; markers are drafting aids, not acceptable final output.
 
 ## Deliverables
 - marked-up intro or abstract draft

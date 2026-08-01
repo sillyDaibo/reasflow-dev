@@ -52,6 +52,21 @@ python3 "$SKILL_ROOT/scripts/check_citation_hygiene.py" \
   --format json
 ```
 
+Strict Introduction check with claim provenance and the writer trace:
+
+```bash
+python3 "$SKILL_ROOT/scripts/check_citation_hygiene.py" \
+  --project-dir intro \
+  --main-file main.tex \
+  --claim-ledger intro/organized_info.json \
+  --trace-json intro/citation_report.json \
+  --allow-unused \
+  --strict \
+  --format json
+```
+
+Strict mode fails on sentence-level uncited literature claims, unresolved evidence markers, and invalid claim-to-citation trace entries in addition to cite/BibTeX consistency errors.
+
 Python env fallback:
 
 ```bash

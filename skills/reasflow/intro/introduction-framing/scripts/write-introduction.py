@@ -8,15 +8,14 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
 import sys
-import urllib.request
 from pathlib import Path
+from typing import Any
 
-DEFAULT_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
-DEFAULT_API_KEY = os.getenv("OPENAI_API_KEY", "")
-DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.4")
+from llm_client import call_text, configured_defaults
+
+DEFAULT_BASE_URL, DEFAULT_API_KEY, DEFAULT_MODEL, DEFAULT_WIRE_API = configured_defaults()
 
 # ---------------------------------------------------------------------------
 # Style templates
@@ -67,12 +66,42 @@ Output format — return ONLY the following two sections, clearly delimited:
 [BibTeX entries for all cited papers — empty block if none]
 ===BIB_END===
 
+===TRACE_START===
+{"claims": [{"claim_id": "claim-0001", "bibtex_keys": ["exactKey"]}]}
+===TRACE_END===
+
 Anti-hallucination rules:
 - Every factual claim must be supported by the provided information.
-- Mark unverifiable claims with % [VERIFY: <claim>] comments.
+- Every sentence about prior work, field history, established empirical facts, comparisons,
+  or limitations of existing methods must contain an inline citation in that sentence.
+- Use only exact keys from the provided reference catalog and citation contract.
+- A citation elsewhere in the paragraph does not cover an uncited literature claim.
+- Record every source claim actually used in TRACE with its claim_id and cited keys.
+- If a literature claim has no verified key, omit or weaken it; never emit unresolved markers.
 - Do not invent paper titles, authors, or results.
-- If bib_content is provided, reuse those exact BibTeX keys and entries.
+- Do not invent or rewrite BibTeX. The caller builds the bibliography deterministically.
 """
+
+CITE_PATTERN = re.compile(
+    r"\\cite[a-zA-Z*]*\s*(?:\[[^\]]*\])?\s*(?:\[[^\]]*\])?\{([^}]*)\}"
+)
+UNRESOLVED_MARKER_PATTERN = re.compile(
+    r"\[(?:needs-citation|needs-result|scope-check|terminology-check|remove-if-unproven)\]|\[VERIFY\s*:",
+    re.IGNORECASE,
+)
+LITERATURE_CUE_PATTERN = re.compile(
+    r"\b(?:prior|previous|existing|recent|foundational|classical|literature|studies|researchers|"
+    r"methods?|approaches?|algorithms?|frameworks?|baselines?)\b.{0,180}\b(?:show|shows|shown|"
+    r"demonstrate|demonstrates|establish|establishes|achieve|achieves|require|requires|rely|relies|"
+    r"use|uses|suffer|suffers|lack|lacks|limit|limits|remain|remains|typically|often|widely|can|cannot)\b|"
+    r"\b(?:has emerged|have emerged|widely (?:used|adopted)|line of work|body of work|"
+    r"state[- ]of[- ]the[- ]art|no existing|most existing)\b",
+    re.IGNORECASE,
+)
+FIRST_PERSON_CLAIM_PATTERN = re.compile(
+    r"\b(?:we|our|this paper|this work)\s+(?:propose|introduce|develop|prove|show|establish|present|evaluate|study)\b",
+    re.IGNORECASE,
+)
 
 
 def _build_prompt(
@@ -83,7 +112,8 @@ def _build_prompt(
     style: str,
     results_preview: str,
     user_feedback: str,
-    bib_content: str,
+    reference_catalog: str,
+    citation_claims: list[dict[str, Any]],
 ) -> str:
     template = {"ml": ML_TEMPLATE, "math": MATH_TEMPLATE}.get(style, DEFAULT_TEMPLATE)
     parts = [
@@ -96,57 +126,221 @@ def _build_prompt(
     ]
     if results_preview:
         parts.append(f"\nKey results (optional):\n{results_preview}")
-    if bib_content:
-        parts.append(f"\nExisting BibTeX (reuse these keys):\n{bib_content}")
+    if reference_catalog:
+        parts.append(f"\nVerified reference catalog (cite only these exact keys):\n{reference_catalog}")
+    if citation_claims:
+        parts.append(
+            "\nCitation contract JSON. Each item is a source-backed claim you may use. "
+            "If used or paraphrased, cite one or more of its bibtex_keys in the same sentence "
+            "and record the mapping in TRACE:\n"
+            + json.dumps(citation_claims, ensure_ascii=False, indent=2)
+        )
     if user_feedback:
         parts.append(f"\nRevision feedback:\n{user_feedback}")
     parts.append("\nNow write the Introduction section following the template above.")
     return "\n".join(parts)
 
 
-def _call_llm(prompt: str, base_url: str, api_key: str, model: str) -> str:
-    payload = json.dumps({
-        "model": model,
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": prompt},
-        ],
-        "stream": True,
-    }).encode("utf-8")
-    request = urllib.request.Request(
-        f"{base_url.rstrip('/')}/chat/completions",
-        data=payload,
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-            "User-Agent": "openai-python/1.0",
-        },
-        method="POST",
-    )
-    chunks: list[str] = []
-    with urllib.request.urlopen(request, timeout=180) as response:
-        for raw_line in response:
-            line = raw_line.decode("utf-8").strip()
-            if not line.startswith("data:"):
-                continue
-            data = line[len("data:"):].strip()
-            if data == "[DONE]":
-                break
-            try:
-                delta = json.loads(data)["choices"][0]["delta"].get("content", "")
-                if delta:
-                    chunks.append(delta)
-            except (KeyError, IndexError, json.JSONDecodeError):
-                continue
-    return "".join(chunks)
-
-
-def _parse_response(text: str) -> tuple[str, str]:
+def _parse_response(text: str) -> tuple[str, str, dict[str, Any]]:
     tex_match = re.search(r"===TEX_START===(.*?)===TEX_END===", text, re.DOTALL)
     bib_match = re.search(r"===BIB_START===(.*?)===BIB_END===", text, re.DOTALL)
+    trace_match = re.search(r"===TRACE_START===(.*?)===TRACE_END===", text, re.DOTALL)
     tex = tex_match.group(1).strip() if tex_match else text.strip()
     bib = bib_match.group(1).strip() if bib_match else ""
-    return tex, bib
+    trace: dict[str, Any] = {}
+    if trace_match:
+        try:
+            trace = json.loads(trace_match.group(1).strip())
+        except json.JSONDecodeError:
+            trace = {"parse_error": "invalid TRACE JSON"}
+    return tex, bib, trace
+
+
+def _parse_bib_entries(content: str) -> dict[str, str]:
+    starts = [match.start() for match in re.finditer(r"(?m)^\s*@\w+\s*[({]", content)]
+    entries: dict[str, str] = {}
+    for index, start in enumerate(starts):
+        end = starts[index + 1] if index + 1 < len(starts) else len(content)
+        entry = content[start:end].strip()
+        key_match = re.match(r"@\w+\s*[({]\s*([^,\s]+)\s*,", entry, re.IGNORECASE)
+        if key_match:
+            entries[key_match.group(1).strip()] = entry
+    return entries
+
+
+def _entry_title(entry: str) -> str:
+    title_match = re.search(
+        r"\btitle\s*=\s*[\"{](.*?)(?<!\\)[\"}]\s*,?\s*(?:\n|$)",
+        entry,
+        re.IGNORECASE | re.DOTALL,
+    )
+    if not title_match:
+        return ""
+    return re.sub(r"\s+", " ", title_match.group(1)).strip(" {}\"")
+
+
+def _reference_catalog(entries: dict[str, str]) -> str:
+    lines = []
+    for key, entry in entries.items():
+        title = _entry_title(entry)
+        lines.append(f"- {key}: {title or '(title unavailable)'}")
+    return "\n".join(lines)
+
+
+def _verified_citation_claims(
+    claims: list[dict[str, Any]],
+    entries: dict[str, str],
+) -> tuple[list[dict[str, Any]], list[str]]:
+    verified: list[dict[str, Any]] = []
+    excluded_keys: set[str] = set()
+    seen: set[tuple[str, tuple[str, ...]]] = set()
+    for claim in claims:
+        raw_keys = [str(key) for key in claim.get("bibtex_keys", []) if str(key)]
+        valid_keys = [key for key in raw_keys if key in entries]
+        excluded_keys.update(set(raw_keys) - set(valid_keys))
+        if not valid_keys:
+            continue
+        normalized_text = re.sub(r"\s+", " ", str(claim.get("text", ""))).strip().lower()
+        identity = (normalized_text, tuple(valid_keys))
+        if identity in seen:
+            continue
+        seen.add(identity)
+        verified_claim = dict(claim)
+        verified_claim["bibtex_keys"] = valid_keys
+        verified_claim["citation_required"] = True
+        verified.append(verified_claim)
+    return verified, sorted(excluded_keys)
+
+
+def _ordered_cite_keys(tex: str) -> list[str]:
+    keys: list[str] = []
+    seen: set[str] = set()
+    for match in CITE_PATTERN.finditer(tex):
+        for raw_key in match.group(1).split(","):
+            key = raw_key.strip()
+            if key and key not in seen:
+                keys.append(key)
+                seen.add(key)
+    return keys
+
+
+def _strip_tex_for_classification(sentence: str) -> str:
+    text = CITE_PATTERN.sub("", sentence)
+    text = re.sub(r"\\(?:section|subsection|subsubsection)\*?\{[^}]*\}", "", text)
+    text = re.sub(r"\\[a-zA-Z*]+(?:\[[^\]]*\])?\{([^{}]*)\}", r"\1", text)
+    text = re.sub(r"\\[a-zA-Z*]+", "", text)
+    text = re.sub(r"[$][^$]*[$]", " MATH ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _uncited_literature_sentences(tex: str) -> list[str]:
+    without_comments = re.sub(r"(?m)(?<!\\)%.*$", "", tex)
+    without_displays = re.sub(
+        r"\\begin\{(?:equation|align|gather|multline|table|figure)[^}]*\}.*?"
+        r"\\end\{(?:equation|align|gather|multline|table|figure)\*?\}",
+        " ",
+        without_comments,
+        flags=re.DOTALL,
+    )
+    findings: list[str] = []
+    for paragraph in re.split(r"\n\s*\n", without_displays):
+        for sentence in re.split(r"(?<=[.!?])\s+(?=[A-Z\\])", paragraph.strip()):
+            plain = _strip_tex_for_classification(sentence)
+            if len(plain.split()) < 6 or FIRST_PERSON_CLAIM_PATTERN.search(plain):
+                continue
+            if LITERATURE_CUE_PATTERN.search(plain) and not CITE_PATTERN.search(sentence):
+                findings.append(plain[:300])
+    return findings
+
+
+def _load_organized_info(path: str) -> dict[str, Any]:
+    if not path:
+        return {}
+    loaded = json.loads(Path(path).read_text(encoding="utf-8"))
+    if isinstance(loaded.get("organized_info"), dict):
+        return loaded["organized_info"]
+    return loaded
+
+
+def _validate_output(
+    tex: str,
+    input_entries: dict[str, str],
+    citation_claims: list[dict[str, Any]],
+    trace: dict[str, Any],
+) -> dict[str, Any]:
+    cited_keys = _ordered_cite_keys(tex)
+    cited_key_set = set(cited_keys)
+    missing_keys = sorted(cited_key_set - set(input_entries))
+    unresolved_markers = sorted(set(UNRESOLVED_MARKER_PATTERN.findall(tex)))
+    uncited_sentences = _uncited_literature_sentences(tex)
+
+    claim_by_id = {
+        str(claim.get("claim_id", "")): claim
+        for claim in citation_claims
+        if str(claim.get("claim_id", ""))
+    }
+    trace_errors: list[str] = []
+    trace_items = trace.get("claims", []) if isinstance(trace, dict) else []
+    if cited_keys and citation_claims and not isinstance(trace_items, list):
+        trace_errors.append("TRACE must contain a claims list")
+        trace_items = []
+    if cited_keys and citation_claims and not trace_items:
+        trace_errors.append("TRACE must map cited source claims to their verified keys")
+    traced_key_set: set[str] = set()
+    for item in trace_items if isinstance(trace_items, list) else []:
+        if not isinstance(item, dict):
+            trace_errors.append("TRACE claim entries must be objects")
+            continue
+        claim_id = str(item.get("claim_id", ""))
+        if claim_id not in claim_by_id:
+            trace_errors.append(f"unknown claim_id in TRACE: {claim_id}")
+            continue
+        allowed = {str(key) for key in claim_by_id[claim_id].get("bibtex_keys", [])}
+        traced = {str(key) for key in item.get("bibtex_keys", [])}
+        traced_key_set.update(traced)
+        if not traced or not traced <= allowed:
+            trace_errors.append(f"TRACE keys for {claim_id} are not allowed by the citation contract")
+        if not traced <= cited_key_set:
+            trace_errors.append(f"TRACE keys for {claim_id} do not appear in the TeX output")
+    untraced_keys = sorted(cited_key_set - traced_key_set)
+    if citation_claims and untraced_keys:
+        trace_errors.append(
+            "cited keys missing from TRACE provenance: " + ", ".join(untraced_keys)
+        )
+
+    errors: list[str] = []
+    if missing_keys:
+        errors.append(f"undefined or unverified citation keys: {', '.join(missing_keys)}")
+    if unresolved_markers:
+        errors.append("unresolved evidence markers remain")
+    if citation_claims and not cited_keys:
+        errors.append("no citations were generated despite a non-empty citation contract")
+    if uncited_sentences:
+        errors.append(f"{len(uncited_sentences)} literature claim sentence(s) lack inline citations")
+    errors.extend(trace_errors)
+    return {
+        "passed": not errors,
+        "errors": errors,
+        "cited_keys": cited_keys,
+        "missing_keys": missing_keys,
+        "unresolved_markers": unresolved_markers,
+        "uncited_literature_sentences": uncited_sentences,
+        "trace_errors": trace_errors,
+        "trace": trace,
+    }
+
+
+def _repair_prompt(original_prompt: str, response_text: str, report: dict[str, Any]) -> str:
+    return (
+        original_prompt
+        + "\n\nThe previous draft failed citation validation. Repair it without adding new claims. "
+        "Every reported uncited literature sentence must either receive a verified inline citation "
+        "from the catalog or be removed/weakened. Return all TEX/BIB/TRACE delimiters again.\n\n"
+        + "Validation report:\n"
+        + json.dumps(report, ensure_ascii=False, indent=2)
+        + "\n\nPrevious response:\n"
+        + response_text
+    )
 
 
 def _make_main_tex(tex_output_path: str, bib_output_path: str) -> str:
@@ -167,9 +361,10 @@ def _make_main_tex(tex_output_path: str, bib_output_path: str) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Write academic Introduction (LaTeX)")
     parser.add_argument("--title", required=True)
-    parser.add_argument("--problem-background", required=True)
-    parser.add_argument("--related-works", required=True)
-    parser.add_argument("--method-summary", required=True)
+    parser.add_argument("--organized-info", default="", help="Structured JSON produced by extract-workspace-info.py --mode organize")
+    parser.add_argument("--problem-background", default="")
+    parser.add_argument("--related-works", default="")
+    parser.add_argument("--method-summary", default="")
     parser.add_argument("--tex-output", required=True, help="Output .tex path")
     parser.add_argument("--bib-output", required=True, help="Output .bib path")
     parser.add_argument("--style", default="default", choices=["ml", "math", "default"])
@@ -180,34 +375,113 @@ def main() -> int:
     parser.add_argument("--base-url", default=DEFAULT_BASE_URL)
     parser.add_argument("--api-key", default=DEFAULT_API_KEY)
     parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument(
+        "--wire-api",
+        default=DEFAULT_WIRE_API,
+        choices=["chat_completions", "responses"],
+        help="HTTP API shape used by the configured provider.",
+    )
+    parser.add_argument("--citation-report", default="", help="Write citation validation details as JSON")
+    parser.add_argument("--strict-citations", action="store_true", help="Fail when citations or provenance do not pass validation")
+    parser.add_argument("--max-repairs", type=int, default=1, help="Maximum automatic citation-repair calls in strict mode")
     args = parser.parse_args()
 
     if not args.api_key:
         print("ERROR: OPENAI_API_KEY not set", file=sys.stderr)
         return 1
 
+    if args.max_repairs < 0:
+        print("ERROR: --max-repairs cannot be negative", file=sys.stderr)
+        return 1
+
+    try:
+        organized_info = _load_organized_info(args.organized_info)
+    except Exception as exc:
+        print(f"ERROR: could not read --organized-info: {exc}", file=sys.stderr)
+        return 1
+
+    problem_background = args.problem_background or str(organized_info.get("problem_background", ""))
+    related_works = args.related_works or str(organized_info.get("related_works", ""))
+    method_summary = args.method_summary or str(organized_info.get("method_summary", ""))
+    results_preview = args.results_preview or str(organized_info.get("results_preview", ""))
+    citation_claims_raw = organized_info.get("citation_claims", [])
+    unverified_citation_claims = citation_claims_raw if isinstance(citation_claims_raw, list) else []
+
+    if not problem_background or not related_works or not method_summary:
+        print(
+            "ERROR: problem background, related works, and method summary are required "
+            "through --organized-info or their individual arguments",
+            file=sys.stderr,
+        )
+        return 1
+
     bib_content = ""
     if args.bib_input and Path(args.bib_input).exists():
         bib_content = Path(args.bib_input).read_text(encoding="utf-8")
+    input_entries = _parse_bib_entries(bib_content)
+    citation_claims, excluded_contract_keys = _verified_citation_claims(
+        unverified_citation_claims,
+        input_entries,
+    )
 
     prompt = _build_prompt(
         title=args.title,
-        problem_background=args.problem_background,
-        related_works=args.related_works,
-        method_summary=args.method_summary,
+        problem_background=problem_background,
+        related_works=related_works,
+        method_summary=method_summary,
         style=args.style,
-        results_preview=args.results_preview,
+        results_preview=results_preview,
         user_feedback=args.user_feedback,
-        bib_content=bib_content,
+        reference_catalog=_reference_catalog(input_entries),
+        citation_claims=citation_claims,
     )
 
-    try:
-        response_text = _call_llm(prompt, args.base_url, args.api_key, args.model)
-    except Exception as exc:
-        print(f"ERROR: LLM call failed: {exc}", file=sys.stderr)
-        return 1
+    response_text = ""
+    tex_content = ""
+    model_bib_content = ""
+    validation_report: dict[str, Any] = {"passed": False, "errors": ["generation did not run"]}
+    active_prompt = prompt
+    attempts = 1 + (args.max_repairs if args.strict_citations else 0)
+    for attempt in range(attempts):
+        try:
+            response_text = call_text(
+                system=SYSTEM_PROMPT,
+                user=active_prompt,
+                base_url=args.base_url,
+                api_key=args.api_key,
+                model=args.model,
+                wire_api=args.wire_api,
+                timeout=180,
+                temperature=0.1,
+            )
+        except Exception as exc:
+            print(f"ERROR: LLM call failed: {exc}", file=sys.stderr)
+            return 1
 
-    tex_content, bib_content_out = _parse_response(response_text)
+        tex_content, model_bib_content, trace = _parse_response(response_text)
+        validation_report = _validate_output(
+            tex_content,
+            input_entries,
+            citation_claims,
+            trace,
+        )
+        validation_report["generation_attempt"] = attempt + 1
+        if validation_report["passed"] or not args.strict_citations:
+            break
+        active_prompt = _repair_prompt(prompt, response_text, validation_report)
+
+    cited_keys = _ordered_cite_keys(tex_content)
+    model_entries = _parse_bib_entries(model_bib_content)
+    selected_entries: list[str] = []
+    for key in cited_keys:
+        entry = input_entries.get(key)
+        if entry is None and not args.strict_citations:
+            entry = model_entries.get(key)
+        if entry:
+            selected_entries.append(entry.rstrip())
+    bib_content_out = "\n\n".join(selected_entries)
+    if bib_content_out:
+        bib_content_out += "\n"
 
     tex_path = Path(args.tex_output)
     bib_path = Path(args.bib_output)
@@ -217,9 +491,33 @@ def main() -> int:
     tex_path.write_text(tex_content, encoding="utf-8")
     bib_path.write_text(bib_content_out, encoding="utf-8")
 
+    citation_report_path = (
+        Path(args.citation_report)
+        if args.citation_report
+        else tex_path.parent / "citation_report.json"
+    )
+    citation_report_path.parent.mkdir(parents=True, exist_ok=True)
+    validation_report.update(
+        {
+            "tex_output": str(tex_path),
+            "bib_output": str(bib_path),
+            "citation_contract_claims": len(citation_claims),
+            "unverified_contract_keys_excluded": excluded_contract_keys,
+            "input_bib_entries": len(input_entries),
+            "output_bib_entries": len(selected_entries),
+            "strict": args.strict_citations,
+        }
+    )
+    citation_report_path.write_text(
+        json.dumps(validation_report, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
     output: dict[str, object] = {
         "tex_output": str(tex_path),
         "bib_output": str(bib_path),
+        "citation_report": str(citation_report_path),
+        "citation_validation_passed": validation_report["passed"],
     }
 
     if args.generate_main:
@@ -230,6 +528,12 @@ def main() -> int:
         output["main_tex"] = str(main_path)
 
     print(json.dumps(output, indent=2))
+    if args.strict_citations and not validation_report["passed"]:
+        print(
+            "ERROR: introduction failed strict citation validation; see citation report",
+            file=sys.stderr,
+        )
+        return 1
     return 0
 
 
