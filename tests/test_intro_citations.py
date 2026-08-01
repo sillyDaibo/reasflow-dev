@@ -39,71 +39,10 @@ hygiene = load_module(
     "test_citation_hygiene",
     "skills/reasflow/shared/citation-hygiene/scripts/check_citation_hygiene.py",
 )
-llm_client = load_module(
-    "test_intro_llm_client",
-    "skills/reasflow/intro/introduction-framing/scripts/llm_client.py",
+supplement = load_module(
+    "test_supplement_intro_bib",
+    "skills/reasflow/intro/introduction-framing/scripts/supplement-intro-bib.py",
 )
-
-
-class FakeStreamResponse:
-    def __init__(self, lines: list[str]) -> None:
-        self.lines = [line.encode("utf-8") for line in lines]
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback) -> None:
-        return None
-
-    def __iter__(self):
-        return iter(self.lines)
-
-
-class LlmClientTests(unittest.TestCase):
-    def test_responses_stream_collects_output_text_deltas(self) -> None:
-        stream = FakeStreamResponse(
-            [
-                'event: response.output_text.delta\n',
-                'data: {"type":"response.output_text.delta","delta":"hello "}\n',
-                'data: {"type":"response.output_text.delta","delta":"world"}\n',
-                'data: {"type":"response.completed"}\n',
-            ]
-        )
-        with mock.patch.object(llm_client.urllib.request, "urlopen", return_value=stream):
-            text = llm_client.call_text(
-                system="system",
-                user="user",
-                base_url="https://example.test/v1",
-                api_key="test-key",
-                model="test-model",
-                wire_api="responses",
-                timeout=1,
-                temperature=0.1,
-            )
-
-        self.assertEqual(text, "hello world")
-
-    def test_chat_completions_stream_collects_choice_deltas(self) -> None:
-        stream = FakeStreamResponse(
-            [
-                'data: {"choices":[{"delta":{"content":"hello"}}]}\n',
-                'data: {"choices":[{"delta":{"content":" chat"}}]}\n',
-                'data: [DONE]\n',
-            ]
-        )
-        with mock.patch.object(llm_client.urllib.request, "urlopen", return_value=stream):
-            text = llm_client.call_text(
-                system="system",
-                user="user",
-                base_url="https://example.test/v1",
-                api_key="test-key",
-                model="test-model",
-                wire_api="chat_completions",
-                timeout=1,
-                temperature=0.1,
-            )
-
-        self.assertEqual(text, "hello chat")
 
 
 class ExtractionTests(unittest.TestCase):
@@ -132,6 +71,63 @@ class ExtractionTests(unittest.TestCase):
         self.assertGreater(len(chunks), 1)
         for index in range(100):
             self.assertIn(f"paragraph-{index}-", "\n".join(chunks))
+
+    def test_prepare_task_contains_every_chunk_and_native_output_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            source = workspace / "survey.md"
+            source.write_text("\n\n".join("claim " + "x" * 100 for _ in range(50)), encoding="utf-8")
+            task_path = workspace / "task.json"
+            args = argparse.Namespace(
+                workspace=str(workspace),
+                source="survey.md",
+                source_type="survey",
+                chunk_chars=2000,
+                focus="",
+                extracted_output="intro/survey_info.json",
+                output=str(task_path),
+            )
+            with contextlib.redirect_stdout(io.StringIO()):
+                status = extract.cmd_prepare(args)
+            task = json.loads(task_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(status, 0)
+        self.assertGreater(len(task["chunks"]), 1)
+        self.assertFalse(task["source_metadata"]["truncated"])
+        self.assertEqual(
+            task["output_contract"]["extraction_metadata"]["executor"],
+            "codex_subagent",
+        )
+        self.assertEqual(
+            task["output_contract"]["extraction_metadata"]["processed_chunk_ids"],
+            [chunk["chunk_id"] for chunk in task["chunks"]],
+        )
+
+    def test_validate_extraction_requires_all_prepared_chunks(self) -> None:
+        task = {
+            "source_type": "survey",
+            "source_path": "survey.md",
+            "source_metadata": {"source_chars": 20, "chunk_chars": 2000},
+            "chunks": [{"chunk_id": 1}, {"chunk_id": 2}],
+        }
+        extraction = {
+            "source_type": "survey",
+            "source_path": "survey.md",
+            "extracted": {},
+            "extraction_metadata": {
+                "source_chars": 20,
+                "chunk_chars": 2000,
+                "chunks_processed": 1,
+                "processed_chunk_ids": [1],
+                "truncated": False,
+                "executor": "codex_subagent",
+            },
+        }
+
+        errors = extract.validate_extraction(task, extraction)
+
+        self.assertTrue(any("chunks_processed" in error for error in errors))
+        self.assertTrue(any("processed_chunk_ids" in error for error in errors))
 
     def test_organize_retains_claim_to_bibtex_mapping(self) -> None:
         survey = {
@@ -297,6 +293,150 @@ class WriterValidationTests(unittest.TestCase):
         self.assertEqual([claim["claim_id"] for claim in verified], ["claim-0001"])
         self.assertEqual(excluded, ["missing2025source"])
 
+    def test_native_writer_task_contains_outputs_and_no_api_configuration(self) -> None:
+        task = writer._build_writer_task(
+            title="Title",
+            problem_background="Background",
+            related_works="Related work",
+            method_summary="Method",
+            style="math",
+            results_preview="Result",
+            user_feedback="",
+            reference_catalog="- smith2024method: Method X",
+            citation_claims=self.claims,
+            draft_output="intro/introduction.draft.tex",
+            trace_output="intro/citation_trace.json",
+            excluded_contract_keys=[],
+        )
+
+        self.assertEqual(task["executor"], "codex_subagent")
+        self.assertEqual(task["outputs"]["draft_tex"], "intro/introduction.draft.tex")
+        self.assertNotIn("model", task)
+        self.assertNotIn("api_key", task)
+
+
+class SupplementTests(unittest.TestCase):
+    def test_explicit_identifiers_are_normalized_as_lookup_candidates(self) -> None:
+        candidates = supplement.normalize_candidates(
+            [],
+            ["1602.05629", "10.1000/example", "A Paper Title"],
+        )
+
+        self.assertEqual(candidates[0]["arxiv_id"], "arXiv:1602.05629")
+        self.assertEqual(candidates[0]["paper_title"], "")
+        self.assertEqual(candidates[1]["doi"], "DOI:10.1000/example")
+        self.assertEqual(candidates[2]["paper_title"], "A Paper Title")
+
+    def test_existing_bibliography_entries_expose_raw_bibtex_for_deduplication(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "references.bib"
+            path.write_text(
+                "@article{duplicate, title={First}}\n\n"
+                "@article{duplicate, title={Second}}\n",
+                encoding="utf-8",
+            )
+
+            entries = supplement.tools.parse_bib_entries(path)
+            _, duplicates = supplement.tools.parse_bib_keys(path)
+
+        self.assertEqual(list(entries), ["duplicate"])
+        self.assertIn("title={Second}", entries["duplicate"]["raw_bibtex"])
+        self.assertEqual(duplicates, ["duplicate"])
+
+    def test_required_claim_keys_are_reported_independently_of_candidates(self) -> None:
+        payload = {
+            "organized_info": {
+                "citation_claims": [
+                    {"claim_id": "claim-1", "bibtex_keys": ["keyA", "keyB"]},
+                    {"claim_id": "claim-2", "bibtex_keys": "keyB,keyC"},
+                ]
+            }
+        }
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "organized.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            keys = supplement.required_claim_keys([path])
+
+        self.assertEqual(keys, {"keyA", "keyB", "keyC"})
+
+    def test_required_claim_contexts_preserve_support_for_each_key(self) -> None:
+        payload = {
+            "organized_info": {
+                "citation_claims": [
+                    {"text": "Consensus contracts disagreement.", "bibtex_keys": ["keyA"]},
+                    {"text": "Gossip uses local communication.", "bibtex_keys": ["keyA", "keyB"]},
+                ]
+            }
+        }
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "organized.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            contexts = supplement.required_claim_contexts([path])
+
+        self.assertEqual(len(contexts["keyA"]), 2)
+        self.assertEqual(contexts["keyB"], ["Gossip uses local communication."])
+
+    def test_semantic_scholar_key_accepts_canonical_and_alias_names(self) -> None:
+        with mock.patch.dict(
+            supplement.literature.os.environ,
+            {"SEMANTIC_SCHOLAR_API_KEY": "canonical", "S2_API_KEY": "alias"},
+            clear=True,
+        ):
+            self.assertEqual(supplement.literature.semantic_scholar_api_key(), "canonical")
+        with mock.patch.dict(
+            supplement.literature.os.environ,
+            {"S2_API_KEY": "alias"},
+            clear=True,
+        ):
+            self.assertEqual(supplement.literature.semantic_scholar_api_key(), "alias")
+
+    def test_bibtex_key_fallback_query_and_match_require_key_hints(self) -> None:
+        self.assertEqual(
+            supplement._bibtex_key_query("Nedic2016AchievingGC"),
+            "Nedic 2016 Achieving GC",
+        )
+        matching = {
+            "year": 2016,
+            "authors": ["Angelia Nedic"],
+            "title": "Achieving Geometric Convergence for Distributed Optimization",
+            "abstract": "We study gradient tracking over time-varying graphs.",
+        }
+        wrong_year = {**matching, "year": 2017}
+        wrong_author = {**matching, "authors": ["Other Author"]}
+        wrong_title = {**matching, "title": "A Different Paper"}
+
+        context = "Gradient tracking achieves convergence for distributed optimization."
+        self.assertTrue(supplement._key_match_is_strong("Nedic2016AchievingGC", matching, context))
+        self.assertFalse(supplement._key_match_is_strong("Nedic2016AchievingGC", wrong_year, context))
+        self.assertFalse(supplement._key_match_is_strong("Nedic2016AchievingGC", wrong_author, context))
+        self.assertFalse(supplement._key_match_is_strong("Nedic2016AchievingGC", wrong_title, context))
+
+    def test_bibtex_key_fallback_rejects_related_but_different_title(self) -> None:
+        wrong_paper = {
+            "year": 2010,
+            "authors": ["Ruggero Carli"],
+            "title": "Discrete Partitioning and Coverage Control for Gossiping Robots",
+        }
+        expected_paper = {
+            "year": 2010,
+            "authors": ["Ruggero Carli"],
+            "title": "Gossip Consensus Algorithms via Quantized Communication",
+        }
+        context = "Local gossip communication establishes consensus between network nodes."
+
+        self.assertFalse(supplement._key_match_is_strong("carli2010gossip", wrong_paper, context))
+        self.assertTrue(supplement._key_match_is_strong("carli2010gossip", expected_paper, context))
+
+    def test_context_rejects_same_author_year_and_generic_title_hint(self) -> None:
+        wrong_paper = {
+            "year": 2004,
+            "authors": ["I. L. Boyd"],
+            "title": "Energetics of the moult fast in female macaroni penguins",
+            "abstract": "This study measures energy expenditure during a penguin moult.",
+        }
+        context = "Spectral polynomial filtering accelerates distributed consensus averaging."
+
+        self.assertFalse(supplement._key_match_is_strong("boyd2004fast", wrong_paper, context))
 
 class HygieneTests(unittest.TestCase):
     def test_sentence_level_check_does_not_let_one_citation_cover_a_paragraph(self) -> None:
@@ -321,6 +461,27 @@ class HygieneTests(unittest.TestCase):
 
         self.assertEqual(len(findings), 1)
         self.assertIn("VERIFY", findings[0]["marker"])
+
+    def test_paper_organization_sentence_is_not_a_literature_claim(self) -> None:
+        tex = (
+            "The remainder of the paper derives the algorithms, establishes the results, "
+            "and reports the experiments."
+        )
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "intro.tex"
+            path.write_text(tex, encoding="utf-8")
+            findings = hygiene.detect_unsupported_claims([path])
+
+        self.assertEqual(findings, [])
+
+    def test_first_order_term_is_not_treated_as_a_novelty_claim(self) -> None:
+        tex = "The construction includes the first-order optimality condition and closed form."
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "intro.tex"
+            path.write_text(tex, encoding="utf-8")
+            findings = hygiene.detect_unsupported_claims([path])
+
+        self.assertEqual(findings, [])
 
 
 if __name__ == "__main__":

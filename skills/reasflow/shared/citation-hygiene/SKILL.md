@@ -58,6 +58,7 @@ Strict Introduction check with claim provenance and the writer trace:
 python3 "$SKILL_ROOT/scripts/check_citation_hygiene.py" \
   --project-dir intro \
   --main-file main.tex \
+  --bib intro/references.bib \
   --claim-ledger intro/organized_info.json \
   --trace-json intro/citation_report.json \
   --allow-unused \

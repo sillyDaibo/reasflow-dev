@@ -42,9 +42,9 @@ You are an academic paper Introduction writing assistant, helping users generate
 
 1. **Proactively research workspace content**: At the start of conversation, proactively explore the workspace and read/understand existing research materials.
 
-2. **Proactively use tools**: When user needs to write Introduction, call intro_write tool to complete the task — don't just provide suggestions.
+2. **Use native Codex subagents**: Delegate evidence extraction to `intro-evidence-extractor` and drafting to `intro-writer`. Do not call a model API from a Python script.
 
-3. **NEVER write Introduction draft yourself without calling intro_write tool!**
+3. **NEVER write the Introduction draft yourself**: coordinate, validate, and repair through the assigned native subagents.
 
 4. All writing content is presented in the workspace; conversation only handles information collection and result overview.
 
@@ -94,35 +94,42 @@ List workspace root. Identify source directories:
 - Alg_Exp/document/experiment_report.md or experiment/ → experiment results
 - prover/final_report/ or prover/proven/ → theorems, convergence results
 
-### Step 3 — Extract structured info (REQUIRED, MANDATORY)
+### Step 3 — Prepare and delegate evidence extraction (REQUIRED)
 
-For every source found in Step 2, call the extraction tools. **Do NOT manually read files and summarize — always use the extraction tools**:
+For every source found in Step 2, prepare a deterministic task, dispatch `intro-evidence-extractor`, wait for it, and validate its output before preparing the next source. Never pass `model` or `model_reasoning_effort` in the spawn; the worker must inherit the Codex parent configuration.
 
 ```bash
 SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/intro/introduction-framing"
 
-# Extract from survey
+# Prepare survey task
 python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
-  --mode survey --workspace . --source survey/survey.md \
-  --output intro/survey_info.json
+  --mode prepare --source-type survey --workspace . --source survey/survey.md \
+  --output intro/tasks/survey.json --extracted-output intro/survey_info.json
 
-# Extract from method
+# Prepare method task
 python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
-  --mode method --workspace . --source Alg_Exp/document/algorithm_design.md \
-  --output intro/method_info.json
+  --mode prepare --source-type method --workspace . --source Alg_Exp/document/algorithm_design.md \
+  --output intro/tasks/method.json --extracted-output intro/method_info.json
 
-# Extract from experiment
+# Prepare experiment task
 python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
-  --mode experiment --workspace . --source Alg_Exp/document/experiment_report.md \
-  --output intro/experiment_info.json
+  --mode prepare --source-type experiment --workspace . --source Alg_Exp/document/experiment_report.md \
+  --output intro/tasks/experiment.json --extracted-output intro/experiment_info.json
 
-# Extract from theory/prover
+# Prepare theory task
 python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
-  --mode theory --workspace . --source prover/final_report/main.tex \
-  --output intro/theory_info.json
+  --mode prepare --source-type theory --workspace . --source prover/final_report/main.tex \
+  --output intro/tasks/theory.json --extracted-output intro/theory_info.json
 ```
 
-Use the actual file paths found in Step 2. Only run extraction for source directories that actually exist.
+For each prepared task, spawn one `intro-evidence-extractor` with only the task path and assigned output path, then `wait_agent`. Validate before continuing:
+
+```bash
+python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
+  --mode validate --task intro/tasks/survey.json --input intro/survey_info.json
+```
+
+Use the actual paths found in Step 2. Only prepare existing sources. If validation fails, send the errors back to the same worker once; do not organize a partial or unvalidated extraction.
 
 ### Step 4 — Organize extracted info (REQUIRED)
 
@@ -139,39 +146,56 @@ Only pass --inputs files that actually exist. Read intro/organized_info.json to 
 
 Show extracted key points and ask user to confirm or add corrections before writing. In UNATTENDED mode, proceed directly.
 
-### Step 6 — Write the introduction (REQUIRED, call the tool)
+### Step 6 — Supplement incomplete bibliography (REQUIRED WHEN KEYS ARE MISSING)
+
+```bash
+SUPPLEMENT_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/intro/supplement-intro-literature"
+python3 "$SUPPLEMENT_ROOT/scripts/supplement-intro-literature.py" \
+  --workspace . \
+  --bib-input survey/references.bib \
+  --bib-output intro/source_references.bib \
+  --citation-json intro/organized_info.json \
+  --trace-output intro/literature_retrieval.json
+```
+
+The skill audits missing claim keys and uses `ReaScholar` first, then Semantic Scholar as supplement/fallback. If all keys already exist, it copies the source bibliography without external lookup. Never store an S2 API key in the workspace. If the user explicitly names a title, arXiv ID, or DOI, pass it with `--paper`.
+
+If `survey/references.bib` does not exist, omit `--bib-input`; the output may start empty and contain only verified supplements. Unresolved keys must remain listed in `intro/literature_retrieval.json` and must not enter the writer citation contract.
+
+### Step 7 — Prepare and delegate native Introduction writing (REQUIRED)
+
+Prepare the writer task locally:
 
 ```bash
 python3 "$SKILL_ROOT/scripts/write-introduction.py" \
+  --mode prepare \
   --title "<title from user>" \
   --organized-info intro/organized_info.json \
   --style <ml|math|default> \
-  --bib-input <survey/references.bib if it exists> \
-  --tex-output intro/introduction.tex \
-  --bib-output intro/references.bib \
-  --citation-report intro/citation_report.json \
-  --strict-citations \
-  --max-repairs 1
-```
-
-### Step 6.5 — Supplement citations if the intro needs external papers
-
-After Step 6, if the workspace bibliography does not fully cover the introduction citations or the user asks to add papers, run:
-
-```bash
-python3 "$SKILL_ROOT/scripts/supplement-intro-bib.py" \
-  --workspace . \
-  --tex intro/introduction.tex \
-  --bib-input survey/references.bib \
-  --bib-output intro/references.bib \
-  --citation-json intro/organized_info.json \
+  --bib-input intro/source_references.bib \
+  --task-output intro/tasks/writer.json \
+  --draft-output intro/introduction.draft.tex \
   --trace-output intro/citation_trace.json
 ```
 
-Lookup order must be `ReaScholar` first, then `Semantic Scholar` only if needed.
-If the user explicitly names a title, arXiv ID, or DOI, pass it with `--paper`.
+Spawn `intro-writer` with the exact task path. Do not specify a model or reasoning override. Wait for it to write both assigned outputs, then finalize deterministically:
 
-### Step 7 — Strict citation gate (REQUIRED)
+```bash
+python3 "$SKILL_ROOT/scripts/write-introduction.py" \
+  --mode finalize \
+  --organized-info intro/organized_info.json \
+  --bib-input intro/source_references.bib \
+  --draft-input intro/introduction.draft.tex \
+  --trace-input intro/citation_trace.json \
+  --tex-output intro/introduction.tex \
+  --bib-output intro/references.bib \
+  --citation-report intro/citation_report.json \
+  --strict-citations
+```
+
+The finalizer never calls a model. It validates the draft and trace, then copies exact cited entries from `intro/source_references.bib` into the final bibliography.
+
+### Step 8 — Strict citation gate and one repair (REQUIRED)
 
 Run after every initial generation or revision:
 
@@ -179,6 +203,7 @@ Run after every initial generation or revision:
 python3 "$REASFLOW_SKILLS_ROOT/citation-hygiene/scripts/check_citation_hygiene.py" \
   --project-dir intro \
   --main-file main.tex \
+  --bib intro/references.bib \
   --claim-ledger intro/organized_info.json \
   --trace-json intro/citation_report.json \
   --allow-unused \
@@ -186,9 +211,9 @@ python3 "$REASFLOW_SKILLS_ROOT/citation-hygiene/scripts/check_citation_hygiene.p
   --format json
 ```
 
-If this exits non-zero, do not report success and do not pass the introduction to the paper agent. Re-run `write-introduction.py` with the audit findings as `--user-feedback`, then run the strict gate again. If it still fails, stop and report the exact unresolved sentences or keys.
+If finalization or this gate exits non-zero, send `intro/citation_report.json` and the exact hygiene findings back to the same `intro-writer` thread. Allow one focused repair of `intro/introduction.draft.tex` and `intro/citation_trace.json`, then rerun finalization and the gate. If it still fails, stop and report the exact unresolved sentences or keys. Do not report success or pass a failed Introduction to the paper agent.
 
-### Step 8 — Verify and report
+### Step 9 — Verify and report
 
 Confirm intro/introduction.tex and intro/references.bib exist.
 Confirm the strict citation gate passed and `intro/citation_report.json` has `"passed": true`.
@@ -268,7 +293,9 @@ Please supplement:
 - intro/references.bib
 - intro/main.tex (compilable wrapper, generated by default)
 - intro/*_info.json (intermediate extraction files)
-- intro/citation_trace.json (when supplemental lookup runs)
+- intro/tasks/*.json (native subagent task contracts)
+- intro/citation_trace.json (writer claim provenance)
+- intro/literature_retrieval.json (supplemental lookup trace)
 - intro/citation_report.json (always; strict citation validation)
 
 ## After Introduction Generation
@@ -282,6 +309,10 @@ When user requests changes, re-run write-introduction.py with the same paths and
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/intro/introduction-framing/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/intro/supplement-intro-literature/SKILL.md"
 enabled = true
 
 [[skills.config]]

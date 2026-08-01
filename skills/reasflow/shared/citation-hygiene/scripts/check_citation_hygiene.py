@@ -14,7 +14,7 @@ CITE_PATTERN = re.compile(
 )
 BIB_PATTERN = re.compile(r"@\w+\s*\{\s*([^,\s]+)", re.IGNORECASE)
 CLAIM_HINT_PATTERN = re.compile(
-    r"\b(first|state[- ]of[- ]the[- ]art|outperform|significant(ly)?|novel|prove|superior)\b",
+    r"\b(first(?![- ]order)|state[- ]of[- ]the[- ]art|outperform|significant(ly)?|novel|prove|superior)\b",
     re.IGNORECASE,
 )
 LITERATURE_CUE_PATTERN = re.compile(
@@ -28,6 +28,11 @@ LITERATURE_CUE_PATTERN = re.compile(
 )
 FIRST_PERSON_CLAIM_PATTERN = re.compile(
     r"\b(?:we|our|this paper|this work)\s+(?:propose|introduce|develop|prove|show|establish|present|evaluate|study)\b",
+    re.IGNORECASE,
+)
+ORGANIZATION_SENTENCE_PATTERN = re.compile(
+    r"\b(?:the remainder of (?:this|the) paper|the rest of (?:this|the) paper|"
+    r"(?:this|the) paper is organized as follows)\b",
     re.IGNORECASE,
 )
 UNRESOLVED_MARKER_PATTERN = re.compile(
@@ -138,7 +143,11 @@ def detect_unsupported_claims(tex_files: list[Path]) -> list[dict[str, Any]]:
             ):
                 sentence = sentence_match.group(1).strip()
                 plain = strip_tex_for_classification(sentence)
-                if len(plain.split()) < 6 or FIRST_PERSON_CLAIM_PATTERN.search(plain):
+                if (
+                    len(plain.split()) < 6
+                    or FIRST_PERSON_CLAIM_PATTERN.search(plain)
+                    or ORGANIZATION_SENTENCE_PATTERN.search(plain)
+                ):
                     continue
                 has_claim_hint = bool(
                     CLAIM_HINT_PATTERN.search(plain) or LITERATURE_CUE_PATTERN.search(plain)

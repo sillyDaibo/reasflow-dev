@@ -37,40 +37,47 @@ fi
 
 ## Required pipeline
 
-The intro agent must follow these steps in order. Manual file reading is not a substitute for the extraction scripts — the scripts produce structured JSON and a claim-to-citation ledger that prevent hallucination and citation loss.
+Follow these steps in order. The scripts only prepare and validate deterministic artifacts; native Codex subagents perform evidence extraction and writing. Never call an LLM API from these scripts.
 
 Set once:
 ```bash
 SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/intro/introduction-framing"
 ```
 
-### 1. Extract from each source
-Run one command per source type found in the workspace:
+### 1. Prepare and delegate evidence tasks
+
+Run one prepare command per source type found in the workspace:
 
 ```bash
 # Survey / related works / gap
 python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
-  --mode survey --workspace . --source survey/survey.md \
-  --output intro/survey_info.json
+  --mode prepare --source-type survey --workspace . --source survey/survey.md \
+  --output intro/tasks/survey.json --extracted-output intro/survey_info.json
 
 # Method description
 python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
-  --mode method --workspace . --source Alg_Exp/document/method.md \
-  --output intro/method_info.json
+  --mode prepare --source-type method --workspace . --source Alg_Exp/document/method.md \
+  --output intro/tasks/method.json --extracted-output intro/method_info.json
 
 # Experiment results
 python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
-  --mode experiment --workspace . --source Alg_Exp/experiment/results.md \
-  --output intro/experiment_info.json
+  --mode prepare --source-type experiment --workspace . --source Alg_Exp/experiment/results.md \
+  --output intro/tasks/experiment.json --extracted-output intro/experiment_info.json
 
 # Theory / proofs
 python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
-  --mode theory --workspace . --source prover/proof.md \
-  --output intro/theory_info.json
+  --mode prepare --source-type theory --workspace . --source prover/proof.md \
+  --output intro/tasks/theory.json --extracted-output intro/theory_info.json
 ```
 
-`--source` accepts a file or a directory (auto-scans `.md/.tex/.bib` up to depth 2).
-All four modes are optional — only run modes for sources that exist.
+For each task, spawn `intro-evidence-extractor` without a model or reasoning override, wait for it, and validate its assigned output:
+
+```bash
+python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
+  --mode validate --task intro/tasks/survey.json --input intro/survey_info.json
+```
+
+`--source` accepts a file or directory. All source types are optional; only prepare existing sources. Never organize unvalidated extraction output.
 
 ### 2. Organize
 ```bash
@@ -81,60 +88,76 @@ python3 "$SKILL_ROOT/scripts/extract-workspace-info.py" \
 ```
 Pass only the `--inputs` files that were actually produced in step 1.
 
-### 3. Write
-Read `intro/organized_info.json`, then:
+### 3. Supplement incomplete source bibliography
+
+Use the `supplement-intro-literature` skill before writing. It copies existing entries and resolves missing claim keys with ReaScholar first and Semantic Scholar fallback:
+
+```bash
+SUPPLEMENT_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/intro/supplement-intro-literature"
+python3 "$SUPPLEMENT_ROOT/scripts/supplement-intro-literature.py" \
+  --workspace . \
+  --bib-input survey/references.bib \
+  --bib-output intro/source_references.bib \
+  --citation-json intro/organized_info.json \
+  --trace-output intro/literature_retrieval.json
+```
+
+### 4. Prepare and delegate writing
+
+Prepare a native writer task:
+
 ```bash
 python3 "$SKILL_ROOT/scripts/write-introduction.py" \
+  --mode prepare \
   --title "Paper Title" \
   --organized-info intro/organized_info.json \
   --style math \
-  --bib-input survey/references.bib \
+  --bib-input intro/source_references.bib \
+  --task-output intro/tasks/writer.json \
+  --draft-output intro/introduction.draft.tex \
+  --trace-output intro/citation_trace.json
+```
+
+Spawn `intro-writer` with `intro/tasks/writer.json`, without model or reasoning overrides, and wait for both assigned outputs. Then finalize locally:
+
+```bash
+python3 "$SKILL_ROOT/scripts/write-introduction.py" \
+  --mode finalize \
+  --organized-info intro/organized_info.json \
+  --bib-input intro/source_references.bib \
+  --draft-input intro/introduction.draft.tex \
+  --trace-input intro/citation_trace.json \
   --tex-output intro/introduction.tex \
   --bib-output intro/references.bib \
   --citation-report intro/citation_report.json \
   --strict-citations
 ```
 
-### 4. Supplement citations when needed
-If the introduction needs citations that are not already covered by `--bib-input`, supplement them after writing:
-
-```bash
-python3 "$SKILL_ROOT/scripts/supplement-intro-bib.py" \
-  --workspace . \
-  --tex intro/introduction.tex \
-  --bib-input survey/references.bib \
-  --bib-output intro/references.bib \
-  --citation-json intro/organized_info.json \
-  --trace-output intro/citation_trace.json
-```
-
-Default lookup order is `ReaScholar -> Semantic Scholar`.
-Use `--paper "<title or arXiv id or DOI>"` to explicitly add a paper requested by the user.
-
 `--style`: `ml` (machine learning), `math` (optimization/theory), `default` (other).
-`--bib-input`: pass an existing `.bib` file when available; omit if none exists.
-`--results-preview` and `--bib-input` are optional.
+The scripts do not read model/provider/API-key settings. Codex owns the native subagent model, reasoning, authentication, and tools.
 
-Both scripts read `OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL`, and `OPENAI_WIRE_API` from the environment. When endpoint/model/wire settings are absent, they fall back to the active provider in `~/.codex/config.toml`. Supported wire APIs are `chat_completions` and `responses`.
-
-### 5. Run the strict citation gate
+### 5. Run the strict citation gate and repair once
 
 ```bash
 python3 "$REASFLOW_SKILLS_ROOT/citation-hygiene/scripts/check_citation_hygiene.py" \
   --project-dir intro \
   --main-file main.tex \
+  --bib intro/references.bib \
   --claim-ledger intro/organized_info.json \
   --trace-json intro/citation_report.json \
   --allow-unused \
   --strict
 ```
 
-Do not deliver an introduction that fails this command. An earlier citation in a paragraph does not cover a later sentence that makes its own literature claim.
+Do not deliver an introduction that fails this command. Send the report back to the same `intro-writer` thread for at most one focused repair, then finalize and check again. An earlier citation in a paragraph does not cover a later sentence that makes its own literature claim.
 
 ## Deliverables
 - `intro/introduction.tex` + `intro/references.bib`
 - `intro/main.tex` (compilable wrapper)
 - `intro/*_info.json` intermediate extraction files
-- `intro/citation_trace.json` when citation supplementation runs
+- `intro/tasks/*.json` native subagent contracts
+- `intro/source_references.bib` verified source bibliography
+- `intro/literature_retrieval.json` supplemental search trace
+- `intro/citation_trace.json` writer claim provenance
 - `intro/citation_report.json` for every generated introduction
 - missing-evidence list for any fields that came back empty

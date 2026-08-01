@@ -33,6 +33,14 @@ MAX_RETRIES = 3
 BIB_PATTERN = re.compile(r"@\w+\s*\{\s*([^,\s]+)", re.IGNORECASE)
 
 
+def semantic_scholar_api_key() -> str:
+    """Return the configured S2 key without exposing it in artifacts or logs."""
+    return (
+        os.getenv("SEMANTIC_SCHOLAR_API_KEY", "").strip()
+        or os.getenv("S2_API_KEY", "").strip()
+    )
+
+
 def repair_mojibake_text(text: str) -> str:
     value = str(text or "")
     replacements = {
@@ -69,7 +77,7 @@ def request_json(path: str, params: dict[str, Any] | None = None) -> dict[str, A
         url = f"{url}?{query}"
 
     headers = {"Accept": "application/json"}
-    api_key = os.getenv("SEMANTIC_SCHOLAR_API_KEY", "").strip()
+    api_key = semantic_scholar_api_key()
     if api_key:
         headers["x-api-key"] = api_key
 
@@ -356,20 +364,29 @@ def s2_lookup_paper(identifier: str) -> dict[str, Any] | None:
         return None
 
 
-def s2_search_one(title: str) -> dict[str, Any] | None:
+def s2_search(title: str, limit: int = 5) -> list[dict[str, Any]]:
     if not title:
-        return None
+        return []
     try:
         payload = request_json(
             "/paper/search",
-            {"query": title, "limit": 1, "fields": PAPER_FIELDS},
+            {
+                "query": title,
+                "limit": max(1, min(limit, 20)),
+                "fields": PAPER_FIELDS,
+            },
         )
     except Exception:
-        return None
+        return []
     data = payload.get("data")
-    if isinstance(data, list) and data:
-        return normalize_paper(data[0])
-    return None
+    if not isinstance(data, list):
+        return []
+    return [normalize_paper(paper) for paper in data if isinstance(paper, dict)]
+
+
+def s2_search_one(title: str) -> dict[str, Any] | None:
+    papers = s2_search(title, limit=1)
+    return papers[0] if papers else None
 
 
 def supplement_with_s2(paper: dict[str, Any]) -> dict[str, Any]:
@@ -711,7 +728,7 @@ def command_search(args: argparse.Namespace) -> int:
         papers
         and source in {"auto", "reascholar"}
         and not args.no_s2_supplement
-        and os.getenv("SEMANTIC_SCHOLAR_API_KEY", "").strip()
+        and semantic_scholar_api_key()
     ):
         papers = [supplement_with_s2(paper) for paper in papers]
 
@@ -758,7 +775,7 @@ def command_paper(args: argparse.Namespace) -> int:
     if (
         source in {"auto", "reascholar"}
         and not args.no_s2_supplement
-        and os.getenv("SEMANTIC_SCHOLAR_API_KEY", "").strip()
+        and semantic_scholar_api_key()
     ):
         paper = supplement_with_s2(paper)
 

@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Write an academic paper Introduction section (LaTeX + BibTeX).
-
-Migrated from agentscope-intro-main/agentscope_intro/tools/intro_tools.py.
-Adapted for OpenCode: CLI interface, stream=True, User-Agent header, env-var config.
-"""
+"""Prepare and finalize Introduction drafts written by a native Codex subagent."""
 from __future__ import annotations
 
 import argparse
@@ -12,10 +8,6 @@ import re
 import sys
 from pathlib import Path
 from typing import Any
-
-from llm_client import call_text, configured_defaults
-
-DEFAULT_BASE_URL, DEFAULT_API_KEY, DEFAULT_MODEL, DEFAULT_WIRE_API = configured_defaults()
 
 # ---------------------------------------------------------------------------
 # Style templates
@@ -53,22 +45,10 @@ Structure for General CS papers:
 5. Contributions (3-5 bullets): This paper's answers.
 """.strip()
 
-SYSTEM_PROMPT = """You are a senior academic writing assistant specializing in mathematical optimization and machine learning papers.
-Your task is to write a high-quality Introduction section in LaTeX format.
+WRITER_INSTRUCTIONS = """Write a high-quality academic Introduction in LaTeX.
 
-Output format — return ONLY the following two sections, clearly delimited:
-
-===TEX_START===
-[Full LaTeX Introduction section content — no \\begin{{document}} wrapper]
-===TEX_END===
-
-===BIB_START===
-[BibTeX entries for all cited papers — empty block if none]
-===BIB_END===
-
-===TRACE_START===
-{"claims": [{"claim_id": "claim-0001", "bibtex_keys": ["exactKey"]}]}
-===TRACE_END===
+Write the LaTeX draft and citation trace directly to the exact output paths in the task.
+Do not create or edit BibTeX; the coordinator builds it deterministically.
 
 Anti-hallucination rules:
 - Every factual claim must be supported by the provided information.
@@ -76,10 +56,10 @@ Anti-hallucination rules:
   or limitations of existing methods must contain an inline citation in that sentence.
 - Use only exact keys from the provided reference catalog and citation contract.
 - A citation elsewhere in the paragraph does not cover an uncited literature claim.
-- Record every source claim actually used in TRACE with its claim_id and cited keys.
+- Record every source claim actually used in the trace JSON with its claim_id and cited keys.
 - If a literature claim has no verified key, omit or weaken it; never emit unresolved markers.
 - Do not invent paper titles, authors, or results.
-- Do not invent or rewrite BibTeX. The caller builds the bibliography deterministically.
+- Do not invent citation keys or rewrite BibTeX.
 """
 
 CITE_PATTERN = re.compile(
@@ -102,9 +82,14 @@ FIRST_PERSON_CLAIM_PATTERN = re.compile(
     r"\b(?:we|our|this paper|this work)\s+(?:propose|introduce|develop|prove|show|establish|present|evaluate|study)\b",
     re.IGNORECASE,
 )
+ORGANIZATION_SENTENCE_PATTERN = re.compile(
+    r"\b(?:the remainder of (?:this|the) paper|the rest of (?:this|the) paper|"
+    r"(?:this|the) paper is organized as follows)\b",
+    re.IGNORECASE,
+)
 
 
-def _build_prompt(
+def _build_writer_task(
     title: str,
     problem_background: str,
     related_works: str,
@@ -114,46 +99,39 @@ def _build_prompt(
     user_feedback: str,
     reference_catalog: str,
     citation_claims: list[dict[str, Any]],
-) -> str:
+    draft_output: str,
+    trace_output: str,
+    excluded_contract_keys: list[str],
+) -> dict[str, Any]:
     template = {"ml": ML_TEMPLATE, "math": MATH_TEMPLATE}.get(style, DEFAULT_TEMPLATE)
-    parts = [
-        f"Paper title: {title}",
-        f"\nWriting style: {style}",
-        f"\nTemplate structure:\n{template}",
-        f"\nProblem background:\n{problem_background}",
-        f"\nRelated works:\n{related_works}",
-        f"\nMethod summary:\n{method_summary}",
-    ]
-    if results_preview:
-        parts.append(f"\nKey results (optional):\n{results_preview}")
-    if reference_catalog:
-        parts.append(f"\nVerified reference catalog (cite only these exact keys):\n{reference_catalog}")
-    if citation_claims:
-        parts.append(
-            "\nCitation contract JSON. Each item is a source-backed claim you may use. "
-            "If used or paraphrased, cite one or more of its bibtex_keys in the same sentence "
-            "and record the mapping in TRACE:\n"
-            + json.dumps(citation_claims, ensure_ascii=False, indent=2)
-        )
-    if user_feedback:
-        parts.append(f"\nRevision feedback:\n{user_feedback}")
-    parts.append("\nNow write the Introduction section following the template above.")
-    return "\n".join(parts)
-
-
-def _parse_response(text: str) -> tuple[str, str, dict[str, Any]]:
-    tex_match = re.search(r"===TEX_START===(.*?)===TEX_END===", text, re.DOTALL)
-    bib_match = re.search(r"===BIB_START===(.*?)===BIB_END===", text, re.DOTALL)
-    trace_match = re.search(r"===TRACE_START===(.*?)===TRACE_END===", text, re.DOTALL)
-    tex = tex_match.group(1).strip() if tex_match else text.strip()
-    bib = bib_match.group(1).strip() if bib_match else ""
-    trace: dict[str, Any] = {}
-    if trace_match:
-        try:
-            trace = json.loads(trace_match.group(1).strip())
-        except json.JSONDecodeError:
-            trace = {"parse_error": "invalid TRACE JSON"}
-    return tex, bib, trace
+    return {
+        "task_version": 1,
+        "task_type": "intro_writing",
+        "executor": "codex_subagent",
+        "instructions": WRITER_INSTRUCTIONS,
+        "paper_title": title,
+        "style": style,
+        "template": template,
+        "evidence": {
+            "problem_background": problem_background,
+            "related_works": related_works,
+            "method_summary": method_summary,
+            "results_preview": results_preview,
+        },
+        "verified_reference_catalog": reference_catalog,
+        "citation_contract": citation_claims,
+        "excluded_unverified_keys": excluded_contract_keys,
+        "revision_feedback": user_feedback,
+        "outputs": {
+            "draft_tex": draft_output,
+            "citation_trace_json": trace_output,
+        },
+        "trace_schema": {
+            "claims": [
+                {"claim_id": "claim-0001", "bibtex_keys": ["exactKey"]}
+            ]
+        },
+    }
 
 
 def _parse_bib_entries(content: str) -> dict[str, str]:
@@ -246,7 +224,11 @@ def _uncited_literature_sentences(tex: str) -> list[str]:
     for paragraph in re.split(r"\n\s*\n", without_displays):
         for sentence in re.split(r"(?<=[.!?])\s+(?=[A-Z\\])", paragraph.strip()):
             plain = _strip_tex_for_classification(sentence)
-            if len(plain.split()) < 6 or FIRST_PERSON_CLAIM_PATTERN.search(plain):
+            if (
+                len(plain.split()) < 6
+                or FIRST_PERSON_CLAIM_PATTERN.search(plain)
+                or ORGANIZATION_SENTENCE_PATTERN.search(plain)
+            ):
                 continue
             if LITERATURE_CUE_PATTERN.search(plain) and not CITE_PATTERN.search(sentence):
                 findings.append(plain[:300])
@@ -330,17 +312,11 @@ def _validate_output(
     }
 
 
-def _repair_prompt(original_prompt: str, response_text: str, report: dict[str, Any]) -> str:
-    return (
-        original_prompt
-        + "\n\nThe previous draft failed citation validation. Repair it without adding new claims. "
-        "Every reported uncited literature sentence must either receive a verified inline citation "
-        "from the catalog or be removed/weakened. Return all TEX/BIB/TRACE delimiters again.\n\n"
-        + "Validation report:\n"
-        + json.dumps(report, ensure_ascii=False, indent=2)
-        + "\n\nPrevious response:\n"
-        + response_text
-    )
+def _load_trace(path: str) -> dict[str, Any]:
+    loaded = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(loaded, dict):
+        raise ValueError("citation trace must be a JSON object")
+    return loaded
 
 
 def _make_main_tex(tex_output_path: str, bib_output_path: str) -> str:
@@ -359,40 +335,26 @@ def _make_main_tex(tex_output_path: str, bib_output_path: str) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Write academic Introduction (LaTeX)")
-    parser.add_argument("--title", required=True)
+    parser = argparse.ArgumentParser(
+        description="Prepare or finalize a native Codex Introduction writing task"
+    )
+    parser.add_argument("--mode", required=True, choices=["prepare", "finalize"])
+    parser.add_argument("--title", default="")
     parser.add_argument("--organized-info", default="", help="Structured JSON produced by extract-workspace-info.py --mode organize")
-    parser.add_argument("--problem-background", default="")
-    parser.add_argument("--related-works", default="")
-    parser.add_argument("--method-summary", default="")
-    parser.add_argument("--tex-output", required=True, help="Output .tex path")
-    parser.add_argument("--bib-output", required=True, help="Output .bib path")
+    parser.add_argument("--task-output", default="", help="Prepared writer task JSON")
+    parser.add_argument("--draft-output", default="", help="Draft path assigned to intro-writer")
+    parser.add_argument("--trace-output", default="", help="Trace path assigned to intro-writer")
+    parser.add_argument("--draft-input", default="", help="Draft produced by intro-writer")
+    parser.add_argument("--trace-input", default="", help="Trace produced by intro-writer")
+    parser.add_argument("--tex-output", default="", help="Final output .tex path")
+    parser.add_argument("--bib-output", default="", help="Final output .bib path")
     parser.add_argument("--style", default="default", choices=["ml", "math", "default"])
-    parser.add_argument("--results-preview", default="")
     parser.add_argument("--user-feedback", default="")
     parser.add_argument("--bib-input", default="", help="Existing .bib file to reuse")
-    parser.add_argument("--generate-main", action="store_true", default=True)
-    parser.add_argument("--base-url", default=DEFAULT_BASE_URL)
-    parser.add_argument("--api-key", default=DEFAULT_API_KEY)
-    parser.add_argument("--model", default=DEFAULT_MODEL)
-    parser.add_argument(
-        "--wire-api",
-        default=DEFAULT_WIRE_API,
-        choices=["chat_completions", "responses"],
-        help="HTTP API shape used by the configured provider.",
-    )
+    parser.add_argument("--no-generate-main", action="store_true")
     parser.add_argument("--citation-report", default="", help="Write citation validation details as JSON")
     parser.add_argument("--strict-citations", action="store_true", help="Fail when citations or provenance do not pass validation")
-    parser.add_argument("--max-repairs", type=int, default=1, help="Maximum automatic citation-repair calls in strict mode")
     args = parser.parse_args()
-
-    if not args.api_key:
-        print("ERROR: OPENAI_API_KEY not set", file=sys.stderr)
-        return 1
-
-    if args.max_repairs < 0:
-        print("ERROR: --max-repairs cannot be negative", file=sys.stderr)
-        return 1
 
     try:
         organized_info = _load_organized_info(args.organized_info)
@@ -400,17 +362,17 @@ def main() -> int:
         print(f"ERROR: could not read --organized-info: {exc}", file=sys.stderr)
         return 1
 
-    problem_background = args.problem_background or str(organized_info.get("problem_background", ""))
-    related_works = args.related_works or str(organized_info.get("related_works", ""))
-    method_summary = args.method_summary or str(organized_info.get("method_summary", ""))
-    results_preview = args.results_preview or str(organized_info.get("results_preview", ""))
+    problem_background = str(organized_info.get("problem_background", ""))
+    related_works = str(organized_info.get("related_works", ""))
+    method_summary = str(organized_info.get("method_summary", ""))
+    results_preview = str(organized_info.get("results_preview", ""))
     citation_claims_raw = organized_info.get("citation_claims", [])
     unverified_citation_claims = citation_claims_raw if isinstance(citation_claims_raw, list) else []
 
     if not problem_background or not related_works or not method_summary:
         print(
             "ERROR: problem background, related works, and method summary are required "
-            "through --organized-info or their individual arguments",
+            "through --organized-info",
             file=sys.stderr,
         )
         return 1
@@ -424,59 +386,80 @@ def main() -> int:
         input_entries,
     )
 
-    prompt = _build_prompt(
-        title=args.title,
-        problem_background=problem_background,
-        related_works=related_works,
-        method_summary=method_summary,
-        style=args.style,
-        results_preview=results_preview,
-        user_feedback=args.user_feedback,
-        reference_catalog=_reference_catalog(input_entries),
-        citation_claims=citation_claims,
+    if args.mode == "prepare":
+        if not args.title or not args.task_output or not args.draft_output or not args.trace_output:
+            print(
+                "ERROR: --title, --task-output, --draft-output, and --trace-output "
+                "are required for prepare mode",
+                file=sys.stderr,
+            )
+            return 1
+        task = _build_writer_task(
+            title=args.title,
+            problem_background=problem_background,
+            related_works=related_works,
+            method_summary=method_summary,
+            style=args.style,
+            results_preview=results_preview,
+            user_feedback=args.user_feedback,
+            reference_catalog=_reference_catalog(input_entries),
+            citation_claims=citation_claims,
+            draft_output=args.draft_output,
+            trace_output=args.trace_output,
+            excluded_contract_keys=excluded_contract_keys,
+        )
+        task_path = Path(args.task_output)
+        task_path.parent.mkdir(parents=True, exist_ok=True)
+        task_path.write_text(
+            json.dumps(task, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        print(
+            json.dumps(
+                {
+                    "task_output": str(task_path),
+                    "draft_output": args.draft_output,
+                    "trace_output": args.trace_output,
+                    "citation_contract_claims": len(citation_claims),
+                    "unverified_contract_keys_excluded": excluded_contract_keys,
+                },
+                indent=2,
+                ensure_ascii=False,
+            )
+        )
+        return 0
+
+    required_finalize = {
+        "--draft-input": args.draft_input,
+        "--trace-input": args.trace_input,
+        "--tex-output": args.tex_output,
+        "--bib-output": args.bib_output,
+    }
+    missing_finalize = [name for name, value in required_finalize.items() if not value]
+    if missing_finalize:
+        print(
+            "ERROR: required for finalize mode: " + ", ".join(missing_finalize),
+            file=sys.stderr,
+        )
+        return 1
+    try:
+        tex_content = Path(args.draft_input).read_text(encoding="utf-8").strip()
+        trace = _load_trace(args.trace_input)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        print(f"ERROR: could not read native writer outputs: {exc}", file=sys.stderr)
+        return 1
+
+    validation_report = _validate_output(
+        tex_content,
+        input_entries,
+        citation_claims,
+        trace,
     )
 
-    response_text = ""
-    tex_content = ""
-    model_bib_content = ""
-    validation_report: dict[str, Any] = {"passed": False, "errors": ["generation did not run"]}
-    active_prompt = prompt
-    attempts = 1 + (args.max_repairs if args.strict_citations else 0)
-    for attempt in range(attempts):
-        try:
-            response_text = call_text(
-                system=SYSTEM_PROMPT,
-                user=active_prompt,
-                base_url=args.base_url,
-                api_key=args.api_key,
-                model=args.model,
-                wire_api=args.wire_api,
-                timeout=180,
-                temperature=0.1,
-            )
-        except Exception as exc:
-            print(f"ERROR: LLM call failed: {exc}", file=sys.stderr)
-            return 1
-
-        tex_content, model_bib_content, trace = _parse_response(response_text)
-        validation_report = _validate_output(
-            tex_content,
-            input_entries,
-            citation_claims,
-            trace,
-        )
-        validation_report["generation_attempt"] = attempt + 1
-        if validation_report["passed"] or not args.strict_citations:
-            break
-        active_prompt = _repair_prompt(prompt, response_text, validation_report)
-
     cited_keys = _ordered_cite_keys(tex_content)
-    model_entries = _parse_bib_entries(model_bib_content)
     selected_entries: list[str] = []
     for key in cited_keys:
         entry = input_entries.get(key)
-        if entry is None and not args.strict_citations:
-            entry = model_entries.get(key)
         if entry:
             selected_entries.append(entry.rstrip())
     bib_content_out = "\n\n".join(selected_entries)
@@ -506,6 +489,9 @@ def main() -> int:
             "input_bib_entries": len(input_entries),
             "output_bib_entries": len(selected_entries),
             "strict": args.strict_citations,
+            "executor": "codex_subagent",
+            "draft_input": args.draft_input,
+            "trace_input": args.trace_input,
         }
     )
     citation_report_path.write_text(
@@ -520,7 +506,7 @@ def main() -> int:
         "citation_validation_passed": validation_report["passed"],
     }
 
-    if args.generate_main:
+    if not args.no_generate_main:
         main_path = tex_path.parent / "main.tex"
         main_path.write_text(
             _make_main_tex(args.tex_output, args.bib_output), encoding="utf-8"

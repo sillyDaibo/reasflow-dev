@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Extract structured information from workspace files for Introduction writing.
-
-Migrated from agentscope-intro-main/agentscope_intro/tools/extraction_tools.py.
-Modes: survey | method | experiment | theory | organize
-"""
+"""Prepare, validate, and organize evidence for native Codex Intro subagents."""
 from __future__ import annotations
 
 import argparse
@@ -13,19 +9,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from llm_client import call_text, configured_defaults
-
-DEFAULT_BASE_URL, DEFAULT_API_KEY, DEFAULT_MODEL, DEFAULT_WIRE_API = configured_defaults()
 DEFAULT_CHUNK_CHARS = 14000
-
-SYSTEM_PROMPT = (
-    "You are an information extraction assistant. Extract structured information "
-    "from research documents for writing academic paper introductions.\n"
-    "Rules: (1) Extract ONLY explicitly stated information. "
-    "(2) Do NOT invent or hallucinate. "
-    "(3) Use empty strings/arrays for missing fields. "
-    "(4) Output valid JSON only."
-)
 
 EXTRACT_PROMPTS: dict[str, str] = {
     "survey": """Extract Introduction-relevant information from this literature survey.
@@ -203,14 +187,6 @@ def _read_source(path: str, workspace: Path) -> tuple[str, str | None]:
         return "", json.dumps({"error": str(exc), "extracted": {}})
 
 
-def _parse_json(text: str) -> dict:
-    m = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
-    try:
-        return json.loads(m.group(1) if m else text)
-    except json.JSONDecodeError:
-        return {"parse_error": "could not parse JSON", "raw_response": text[:500]}
-
-
 def _split_content(content: str, chunk_chars: int) -> list[str]:
     if len(content) <= chunk_chars:
         return [content]
@@ -232,42 +208,7 @@ def _split_content(content: str, chunk_chars: int) -> list[str]:
     return [chunk for chunk in chunks if chunk]
 
 
-def _merge_values(existing: Any, incoming: Any) -> Any:
-    if incoming in (None, "", [], {}):
-        return existing
-    if existing in (None, "", [], {}):
-        return incoming
-    if isinstance(existing, dict) and isinstance(incoming, dict):
-        merged = dict(existing)
-        for key, value in incoming.items():
-            merged[key] = _merge_values(merged.get(key), value)
-        return merged
-    if isinstance(existing, list) and isinstance(incoming, list):
-        merged_list = list(existing)
-        seen = {json.dumps(item, sort_keys=True, ensure_ascii=False) for item in merged_list}
-        for item in incoming:
-            identity = json.dumps(item, sort_keys=True, ensure_ascii=False)
-            if identity not in seen:
-                merged_list.append(item)
-                seen.add(identity)
-        return merged_list
-    if isinstance(existing, str) and isinstance(incoming, str):
-        if existing == incoming or incoming in existing:
-            return existing
-        if existing in incoming:
-            return incoming
-        return f"{existing}\n{incoming}"
-    return existing
-
-
-def _merge_extractions(extractions: list[dict]) -> dict:
-    merged: dict[str, Any] = {}
-    for extraction in extractions:
-        merged = _merge_values(merged, extraction)
-    return merged
-
-
-def cmd_extract(mode: str, args: argparse.Namespace) -> int:
+def cmd_prepare(args: argparse.Namespace) -> int:
     workspace = Path(args.workspace).resolve()
     content, err = _read_source(args.source, workspace)
     if err:
@@ -275,52 +216,98 @@ def cmd_extract(mode: str, args: argparse.Namespace) -> int:
         return 1
 
     chunks = _split_content(content, args.chunk_chars)
-    prompt_base = EXTRACT_PROMPTS[mode]
+    prompt_base = EXTRACT_PROMPTS[args.source_type]
     if args.focus:
         prompt_base += f"\n\nFocus especially on: {args.focus}"
-    extracted_chunks: list[dict] = []
-    for index, chunk in enumerate(chunks, start=1):
-        user_prompt = (
-            f"{prompt_base}\n\n---\n\n"
-            f"## Source content chunk {index}/{len(chunks)}:\n\n```\n{chunk}\n```\n\n"
-            "Output JSON only."
-        )
-        try:
-            response = call_text(
-                system=SYSTEM_PROMPT,
-                user=user_prompt,
-                base_url=args.base_url,
-                api_key=args.api_key,
-                model=args.model,
-                wire_api=args.wire_api,
-                timeout=120,
-                temperature=0.3,
-            )
-        except Exception as exc:
-            print(json.dumps({"error": str(exc), "source_type": mode, "source_path": args.source, "extracted": {}}))
-            return 1
-        parsed_response = _parse_json(response)
-        if "parse_error" in parsed_response:
-            print(json.dumps({"error": "could not parse extraction response", "chunk": index, "source_type": mode, "source_path": args.source, "extracted": parsed_response}))
-            return 1
-        extracted_chunks.append(parsed_response)
-
     result = {
-        "source_type": mode,
+        "task_version": 1,
+        "task_type": "intro_evidence_extraction",
+        "source_type": args.source_type,
         "source_path": args.source,
-        "extracted": _merge_extractions(extracted_chunks),
-        "extraction_metadata": {
+        "instructions": (
+            "Read every chunk and extract only explicitly supported information. "
+            "Preserve exact citation keys. Do not infer missing claims, results, or references. "
+            "Write one JSON object to expected_output_path using output_contract.\n\n"
+            + prompt_base
+        ),
+        "chunks": [
+            {"chunk_id": index, "content": chunk}
+            for index, chunk in enumerate(chunks, start=1)
+        ],
+        "source_metadata": {
             "source_chars": len(content),
             "chunk_chars": args.chunk_chars,
-            "chunks_processed": len(chunks),
             "truncated": False,
+        },
+        "expected_output_path": args.extracted_output,
+        "output_contract": {
+            "source_type": args.source_type,
+            "source_path": args.source,
+            "extracted": "object matching the schema in instructions",
+            "extraction_metadata": {
+                "source_chars": len(content),
+                "chunk_chars": args.chunk_chars,
+                "chunks_processed": len(chunks),
+                "processed_chunk_ids": list(range(1, len(chunks) + 1)),
+                "truncated": False,
+                "executor": "codex_subagent",
+            },
         },
     }
     output = json.dumps(result, ensure_ascii=False, indent=2)
     if args.output:
-        Path(args.output).write_text(output, encoding="utf-8")
+        output_path = Path(args.output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(output, encoding="utf-8")
     print(output)
     return 0
+
+
+def validate_extraction(task: dict[str, Any], extraction: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    if extraction.get("source_type") != task.get("source_type"):
+        errors.append("source_type does not match task")
+    if extraction.get("source_path") != task.get("source_path"):
+        errors.append("source_path does not match task")
+    if not isinstance(extraction.get("extracted"), dict):
+        errors.append("extracted must be an object")
+
+    metadata = extraction.get("extraction_metadata")
+    if not isinstance(metadata, dict):
+        errors.append("extraction_metadata must be an object")
+        return errors
+
+    source_metadata = task.get("source_metadata", {})
+    expected_ids = [
+        int(chunk.get("chunk_id"))
+        for chunk in task.get("chunks", [])
+        if isinstance(chunk, dict) and isinstance(chunk.get("chunk_id"), int)
+    ]
+    if metadata.get("source_chars") != source_metadata.get("source_chars"):
+        errors.append("source_chars does not match task")
+    if metadata.get("chunk_chars") != source_metadata.get("chunk_chars"):
+        errors.append("chunk_chars does not match task")
+    if metadata.get("chunks_processed") != len(expected_ids):
+        errors.append("chunks_processed does not cover every task chunk")
+    if metadata.get("processed_chunk_ids") != expected_ids:
+        errors.append("processed_chunk_ids does not cover every task chunk in order")
+    if metadata.get("truncated") is not False:
+        errors.append("truncated must be false")
+    if metadata.get("executor") != "codex_subagent":
+        errors.append("executor must be codex_subagent")
+    return errors
+
+
+def cmd_validate(args: argparse.Namespace) -> int:
+    try:
+        task = json.loads(Path(args.task).read_text(encoding="utf-8"))
+        extraction = json.loads(Path(args.input).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(json.dumps({"passed": False, "errors": [str(exc)]}, ensure_ascii=False))
+        return 1
+    errors = validate_extraction(task, extraction)
+    print(json.dumps({"passed": not errors, "errors": errors}, ensure_ascii=False, indent=2))
+    return 1 if errors else 0
 
 
 def cmd_organize(args: argparse.Namespace) -> int:
@@ -495,22 +482,17 @@ def cmd_organize(args: argparse.Namespace) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Extract structured info from workspace files")
-    parser.add_argument("--mode", required=True, choices=["survey", "method", "experiment", "theory", "organize"])
+    parser = argparse.ArgumentParser(description="Prepare and organize Intro evidence tasks")
+    parser.add_argument("--mode", required=True, choices=["prepare", "validate", "organize"])
+    parser.add_argument("--source-type", choices=["survey", "method", "experiment", "theory"])
     parser.add_argument("--workspace", default=".")
-    parser.add_argument("--source", default="", help="Source file/dir (relative to workspace); required for extract modes")
+    parser.add_argument("--source", default="", help="Source file/dir relative to workspace")
     parser.add_argument("--inputs", nargs="+", default=[], help="JSON files from extract modes; required for organize mode")
+    parser.add_argument("--task", default="", help="Prepared task JSON; required for validate mode")
+    parser.add_argument("--input", default="", help="Subagent extraction JSON; required for validate mode")
     parser.add_argument("--focus", default="", help="Comma-separated focus areas")
     parser.add_argument("--output", default="", help="Write JSON result to this path")
-    parser.add_argument("--base-url", default=DEFAULT_BASE_URL)
-    parser.add_argument("--api-key", default=DEFAULT_API_KEY)
-    parser.add_argument("--model", default=DEFAULT_MODEL)
-    parser.add_argument(
-        "--wire-api",
-        default=DEFAULT_WIRE_API,
-        choices=["chat_completions", "responses"],
-        help="HTTP API shape used by the configured provider.",
-    )
+    parser.add_argument("--extracted-output", default="", help="Output path assigned to the evidence subagent")
     parser.add_argument(
         "--chunk-chars",
         type=int,
@@ -525,16 +507,23 @@ def main() -> int:
             return 1
         return cmd_organize(args)
 
-    if not args.source:
-        print("ERROR: --source required for extract modes", file=sys.stderr)
-        return 1
-    if not args.api_key:
-        print("ERROR: OPENAI_API_KEY not set", file=sys.stderr)
+    if args.mode == "validate":
+        if not args.task or not args.input:
+            print("ERROR: --task and --input required for validate mode", file=sys.stderr)
+            return 1
+        return cmd_validate(args)
+
+    if not args.source_type or not args.source or not args.output or not args.extracted_output:
+        print(
+            "ERROR: --source-type, --source, --output, and --extracted-output "
+            "are required for prepare mode",
+            file=sys.stderr,
+        )
         return 1
     if args.chunk_chars < 2000:
         print("ERROR: --chunk-chars must be at least 2000", file=sys.stderr)
         return 1
-    return cmd_extract(args.mode, args)
+    return cmd_prepare(args)
 
 
 if __name__ == "__main__":

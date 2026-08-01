@@ -5,7 +5,6 @@ import argparse
 import difflib
 import importlib.util
 import json
-import os
 import re
 from pathlib import Path
 from typing import Any
@@ -39,6 +38,16 @@ TOOLS_PATH = (
 
 literature = _load_module("reasflow_intro_literature", LITERATURE_PATH)
 tools = _load_module("reasflow_intro_autosurvey_tools", TOOLS_PATH)
+
+CONTEXT_STOPWORDS = {
+    "about", "according", "achieve", "across", "after", "against", "also",
+    "among", "approach", "approaches", "based", "before", "between", "both",
+    "claim", "comparable", "describe", "describes", "each", "existing", "from",
+    "have", "includes", "including", "into", "method", "methods", "often", "other",
+    "paper", "provides", "results", "show", "shows", "such", "support", "supports",
+    "than", "that", "their", "these", "they", "this", "through", "under", "uses", "using",
+    "while", "with", "work",
+}
 
 
 def ensure_parent(path: Path) -> None:
@@ -87,12 +96,15 @@ def normalize_candidates(
         query = str(paper or "").strip()
         if not query:
             continue
+        normalized = literature.normalize_paper_id(query)
+        arxiv_id = normalized if normalized.startswith("arXiv:") else ""
+        doi = normalized if normalized.startswith("DOI:") else ""
         candidates.append(
             {
-                "paper_title": query,
+                "paper_title": "" if arxiv_id or doi else query,
                 "bibtex_key": "",
-                "arxiv_id": "",
-                "doi": "",
+                "arxiv_id": arxiv_id,
+                "doi": doi,
                 "source_path": "cli",
             }
         )
@@ -117,44 +129,74 @@ def normalize_candidates(
     return deduped
 
 
-def lookup_paper(
+def required_claim_keys(json_paths: list[Path]) -> set[str]:
+    keys: set[str] = set()
+    for path in json_paths:
+        try:
+            loaded = load_json_file(path)
+        except Exception:
+            continue
+        if isinstance(loaded, dict) and isinstance(loaded.get("organized_info"), dict):
+            loaded = loaded["organized_info"]
+        claims = loaded.get("citation_claims", []) if isinstance(loaded, dict) else []
+        for claim in claims if isinstance(claims, list) else []:
+            if not isinstance(claim, dict):
+                continue
+            raw_keys = claim.get("bibtex_keys", [])
+            if isinstance(raw_keys, str):
+                raw_keys = raw_keys.split(",")
+            if isinstance(raw_keys, list):
+                keys.update(str(key).strip() for key in raw_keys if str(key).strip())
+    return keys
+
+
+def required_claim_contexts(json_paths: list[Path]) -> dict[str, list[str]]:
+    contexts: dict[str, list[str]] = {}
+    for path in json_paths:
+        try:
+            loaded = load_json_file(path)
+        except Exception:
+            continue
+        if isinstance(loaded, dict) and isinstance(loaded.get("organized_info"), dict):
+            loaded = loaded["organized_info"]
+        claims = loaded.get("citation_claims", []) if isinstance(loaded, dict) else []
+        for claim in claims if isinstance(claims, list) else []:
+            if not isinstance(claim, dict):
+                continue
+            text = str(claim.get("text") or "").strip()
+            raw_keys = claim.get("bibtex_keys", [])
+            if isinstance(raw_keys, str):
+                raw_keys = raw_keys.split(",")
+            if not text or not isinstance(raw_keys, list):
+                continue
+            for raw_key in raw_keys:
+                key = str(raw_key).strip()
+                if key and text not in contexts.setdefault(key, []):
+                    contexts[key].append(text)
+    return contexts
+
+
+def lookup_reascholar_paper(
     query: str,
-    source: str,
     reascholar_mode: str,
     no_s2_supplement: bool,
 ) -> dict[str, Any] | None:
-    paper = None
-    if source in {"auto", "reascholar"}:
-        try:
-            paper = literature.find_reascholar_paper(query, reascholar_mode)
-        except Exception:
-            paper = None
-
-    if paper is None and source in {"auto", "semantic_scholar"}:
-        normalized = literature.normalize_paper_id(query)
-        try:
-            if normalized.startswith("arXiv:") or normalized.startswith("DOI:"):
-                paper = literature.s2_lookup_paper(normalized)
-            else:
-                paper = literature.s2_search_one(query)
-        except Exception:
-            paper = None
-        if paper:
-            paper["source"] = "semantic_scholar"
-            paper["sources"] = ["semantic_scholar"]
+    try:
+        paper = literature.find_reascholar_paper(query, reascholar_mode)
+    except Exception:
+        paper = None
 
     if (
         paper
-        and source in {"auto", "reascholar"}
         and not no_s2_supplement
-        and os.getenv("SEMANTIC_SCHOLAR_API_KEY", "").strip()
+        and literature.semantic_scholar_api_key()
     ):
         paper = literature.supplement_with_s2(paper)
     return paper
 
 
 def choose_query(candidate: dict[str, str]) -> str:
-    for field in ("arxiv_id", "doi", "paper_title"):
+    for field in ("arxiv_id", "doi", "paper_title", "query_hint"):
         value = str(candidate.get(field) or "").strip()
         if value:
             return value
@@ -177,6 +219,123 @@ def _title_match_is_strong(query_title: str, matched_title: str) -> bool:
         return False
     recall = len(query_tokens & matched_tokens) / len(query_tokens)
     return ratio >= 0.82 or recall >= 0.85
+
+
+def _bibtex_key_query(key: str) -> str:
+    query = re.sub(r"([a-z])([A-Z])", r"\1 \2", key)
+    query = re.sub(r"([A-Za-z])(\d)", r"\1 \2", query)
+    query = re.sub(r"(\d)([A-Za-z])", r"\1 \2", query)
+    return " ".join(re.findall(r"[A-Za-z]+|\d+", query))
+
+
+def _context_tokens(text: str) -> set[str]:
+    return {
+        token
+        for token in _normalize_title(text).split()
+        if len(token) >= 4 and token not in CONTEXT_STOPWORDS
+    }
+
+
+def _context_match_is_strong(claim_context: str, paper: dict[str, Any]) -> bool:
+    context_tokens = _context_tokens(claim_context)
+    if not context_tokens:
+        return False
+    paper_text = " ".join(
+        str(paper.get(field) or "")
+        for field in ("title", "abstract", "venue")
+    )
+    overlap = context_tokens & _context_tokens(paper_text)
+    return bool(overlap)
+
+
+def _key_match_is_strong(
+    key: str,
+    paper: dict[str, Any],
+    claim_context: str,
+) -> bool:
+    year_match = re.search(r"(?:19|20)\d{2}", key)
+    if not year_match:
+        return False
+    if str(paper.get("year") or "") != year_match.group(0):
+        return False
+
+    author_hint = re.sub(r"[^a-z]", "", key[: year_match.start()].lower())
+    if len(author_hint) < 3:
+        return False
+    authors = paper.get("authors", [])
+    author_text = " ".join(
+        str(author.get("name") or "") if isinstance(author, dict) else str(author)
+        for author in authors if author
+    ).lower()
+    author_text = re.sub(r"[^a-z]", "", author_text)
+    if author_hint not in author_text:
+        return False
+
+    title_hint = key[year_match.end():]
+    hint_tokens = [
+        token.lower()
+        for token in _bibtex_key_query(title_hint).split()
+        if len(token) >= 3
+    ]
+    if not hint_tokens:
+        return False
+    long_hint_tokens = [token for token in hint_tokens if len(token) >= 4]
+    required_title_tokens = long_hint_tokens or hint_tokens
+    paper_title_tokens = set(_normalize_title(str(paper.get("title") or "")).split())
+    return (
+        all(token in paper_title_tokens for token in required_title_tokens)
+        and _context_match_is_strong(claim_context, paper)
+    )
+
+
+def _candidate_match_is_strong(
+    candidate: dict[str, str],
+    desired_key: str,
+    paper: dict[str, Any],
+) -> bool:
+    if candidate.get("arxiv_id") or candidate.get("doi"):
+        return True
+    if candidate.get("paper_title"):
+        return _title_match_is_strong(
+            str(candidate.get("paper_title") or ""),
+            str(paper.get("title") or ""),
+        )
+    if candidate.get("query_hint"):
+        return _key_match_is_strong(
+            desired_key,
+            paper,
+            str(candidate.get("claim_context") or ""),
+        )
+    return False
+
+
+def lookup_semantic_scholar_paper(
+    query: str,
+    candidate: dict[str, str],
+    desired_key: str,
+) -> dict[str, Any] | None:
+    normalized = literature.normalize_paper_id(query)
+    try:
+        if normalized.startswith("arXiv:") or normalized.startswith("DOI:"):
+            papers = [literature.s2_lookup_paper(normalized)]
+        else:
+            papers = literature.s2_search(query, limit=5)
+    except Exception:
+        return None
+
+    matches: dict[str, dict[str, Any]] = {}
+    for paper in papers:
+        if not paper or not _candidate_match_is_strong(candidate, desired_key, paper):
+            continue
+        identity = _normalize_title(str(paper.get("title") or ""))
+        if identity:
+            matches.setdefault(identity, paper)
+    if len(matches) != 1:
+        return None
+    paper = next(iter(matches.values()))
+    paper["source"] = "semantic_scholar"
+    paper["sources"] = ["semantic_scholar"]
+    return paper
 
 
 def ensure_unique_key(key: str, used_keys: set[str]) -> str:
@@ -235,10 +394,15 @@ def main() -> int:
         if bib_input_path and bib_input_path.exists()
         else {}
     )
-    existing_text = (
-        bib_input_path.read_text(encoding="utf-8").rstrip()
+    _, duplicate_input_keys = (
+        tools.parse_bib_keys(bib_input_path)
         if bib_input_path and bib_input_path.exists()
-        else ""
+        else (set(), [])
+    )
+    existing_text = "\n\n".join(
+        str(entry.get("raw_bibtex") or "").strip()
+        for entry in existing_entries.values()
+        if str(entry.get("raw_bibtex") or "").strip()
     )
     used_keys = set(existing_entries.keys())
 
@@ -248,7 +412,30 @@ def main() -> int:
         if not path.is_absolute():
             path = (workspace / raw).resolve()
         json_paths.append(path)
+    claim_keys = required_claim_keys(json_paths)
+    claim_context_by_key = required_claim_contexts(json_paths)
+    missing_claim_keys_before = sorted(claim_keys - set(existing_entries))
     candidates = normalize_candidates(json_paths, args.paper)
+    searchable_keys = {
+        str(candidate.get("bibtex_key") or "").strip()
+        for candidate in candidates
+        if choose_query(candidate)
+    }
+    for key in missing_claim_keys_before:
+        if key in searchable_keys:
+            continue
+        contexts = claim_context_by_key.get(key, [])
+        candidates.append(
+            {
+                "paper_title": "",
+                "bibtex_key": key,
+                "arxiv_id": "",
+                "doi": "",
+                "query_hint": _bibtex_key_query(key),
+                "claim_context": " ".join(contexts),
+                "source_path": "citation_claims",
+            }
+        )
 
     traces: list[dict[str, Any]] = []
     new_entries: list[str] = []
@@ -278,23 +465,17 @@ def main() -> int:
             )
             continue
 
-        paper = lookup_paper(
-            query,
-            args.source,
-            args.reascholar_mode,
-            args.no_s2_supplement,
-        )
-        if (
-            paper
-            and not candidate.get("arxiv_id")
-            and not candidate.get("doi")
-            and candidate.get("paper_title")
-            and not _title_match_is_strong(
-                str(candidate.get("paper_title") or ""),
-                str(paper.get("title") or ""),
+        paper = None
+        if args.source in {"auto", "reascholar"}:
+            paper = lookup_reascholar_paper(
+                query,
+                args.reascholar_mode,
+                args.no_s2_supplement,
             )
-        ):
-            paper = None
+            if paper and not _candidate_match_is_strong(candidate, desired_key, paper):
+                paper = None
+        if paper is None and args.source in {"auto", "semantic_scholar"}:
+            paper = lookup_semantic_scholar_paper(query, candidate, desired_key)
         if not paper:
             traces.append(
                 {
@@ -341,6 +522,7 @@ def main() -> int:
     bib_output_path.write_text(output_text, encoding="utf-8")
 
     output_keys, _ = tools.parse_bib_keys(bib_output_path) if output_text else (set(), [])
+    unresolved_claim_keys = sorted(claim_keys - output_keys)
     undefined_citations: list[str] = []
     if tex_path and tex_path.exists():
         cited_keys = tools.parse_cite_keys(tex_path)
@@ -349,8 +531,13 @@ def main() -> int:
     result = {
         "bib_output": str(bib_output_path),
         "existing_entries": len(existing_entries),
+        "duplicate_input_keys_removed": sorted(set(duplicate_input_keys)),
         "new_entries": len(new_entries),
+        "claim_keys": len(claim_keys),
+        "missing_claim_keys_before": missing_claim_keys_before,
+        "unresolved_claim_keys_after": unresolved_claim_keys,
         "undefined_citations": undefined_citations,
+        "s2_api_key_configured": bool(literature.semantic_scholar_api_key()),
         "lookup_order": ["reascholar", "semantic_scholar"]
         if args.source == "auto"
         else [args.source],
