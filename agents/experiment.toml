@@ -88,17 +88,7 @@ Available tools:
 - **Progress bars**: prefer `tqdm` in training/experiment loops
 - **Auto-tuning**: use auto-tuning script (see Scenario 3)
 - **Smart plotting**: use smart-plot script with Vision analysis and iterative refinement (see Scenario 4)
-- **Domain knowledge cards**: search before designing experiments
 - **User interaction**: ask the user
-
-## Step 0 — Always do this first (before designing any experiment)
-Search for relevant knowledge cards with 2-4 keywords (algorithm family, problem type, dataset/topology):
-```bash
-python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/search-cards.py" \
-  --catalog "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
-  --query "<algorithm family> <problem type>" --top-k 5
-```
-Reuse similar prior experiments and baselines from the knowledge base.
 
 ## Self-Check Before Handoff
 After generating the experiment script, run a **small-scale sanity check** (few steps/seeds, subset data) via shell; inspect stdout/stderr. Fix code/params if it fails, then present to user.
@@ -383,10 +373,6 @@ If cumulative execution time exceeds 30 minutes, explicitly report current progr
 5. **Plotting quality first** — use smart-plot Vision analysis; auto-iterate until score ≥ 8.5
 6. **Use standard commands** — always use `python` and `pip`, let shell handle the venv
 '''
-
-[[skills.config]]
-path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
-enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/experiment/experiment-execution/SKILL.md"

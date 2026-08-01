@@ -82,9 +82,6 @@ Reference files (read source .tex, not just conclusions):
 - <workspace>/prover/references/<ref_name>/[file.tex]:[line range]
   → Borrow the proof framework and bounding techniques from [specific theorem/lemma name]
 
-Knowledge card content (paste relevant card YAML content here, not just IDs):
-[paste card content if Coordinator retrieved relevant cards]
-
 Output path: <workspace>/prover/drafts/lemma_N.tex
 ```
 
