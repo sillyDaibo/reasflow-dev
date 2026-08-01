@@ -103,7 +103,7 @@ python "$SKILL_ROOT/scripts/analyze-plot.py" \
   --output Alg_Exp/data/convergence_review.json
 ```
 
-Both scripts read `OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL` from the environment.
+Both scripts read `OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL` from the environment. Defaults fall back to the reaslab production endpoint (`https://llmmelon.cloud/v1`, IP-restricted to the production server); local users must set `OPENAI_API_KEY` (and `OPENAI_BASE_URL`/`OPENAI_MODEL` as needed) to their own provider.
 
 ## Contract
 1. **Do not write matplotlib code manually** — use request mode; let the LLM generate and iterate.

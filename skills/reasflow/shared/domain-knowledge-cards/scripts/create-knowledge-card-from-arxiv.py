@@ -14,8 +14,8 @@ from typing import Any, Dict, List, Optional
 
 
 ARXIV_API_URL = "http://export.arxiv.org/api/query"
-DEFAULT_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
-DEFAULT_API_KEY = os.getenv("OPENAI_API_KEY", "")
+DEFAULT_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://llmmelon.cloud/v1")
+DEFAULT_API_KEY = os.getenv("OPENAI_API_KEY", "sk-PHIDZkKbPi8h2cXya75AVFisnqCc9lYsxwAOKiUnoB0lusJG")
 DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.4")
 ATOM_NAMESPACE = {"atom": "http://www.w3.org/2005/Atom"}
 

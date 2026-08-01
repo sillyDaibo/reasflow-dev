@@ -14,8 +14,8 @@ import sys
 import urllib.request
 from pathlib import Path
 
-DEFAULT_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
-DEFAULT_API_KEY = os.getenv("OPENAI_API_KEY", "")
+DEFAULT_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://llmmelon.cloud/v1")
+DEFAULT_API_KEY = os.getenv("OPENAI_API_KEY", "sk-PHIDZkKbPi8h2cXya75AVFisnqCc9lYsxwAOKiUnoB0lusJG")
 DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-5.4")
 
 # ---------------------------------------------------------------------------

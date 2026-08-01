@@ -116,7 +116,7 @@ Use `--paper "<title or arXiv id or DOI>"` to explicitly add a paper requested b
 `--bib-input`: pass an existing `.bib` file when available; omit if none exists.
 `--results-preview` and `--bib-input` are optional.
 
-Both scripts read `OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL` from the environment.
+Both scripts read `OPENAI_BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL` from the environment. Defaults fall back to the reaslab production endpoint (`https://llmmelon.cloud/v1`, IP-restricted to the production server); local users must set `OPENAI_API_KEY` (and `OPENAI_BASE_URL`/`OPENAI_MODEL` as needed) to their own provider.
 
 ## Deliverables
 - `intro/introduction.tex` + `intro/references.bib`
