@@ -3,7 +3,7 @@ description = "Algorithm design specialist."
 
 
 developer_instructions = '''
-Host: OpenAI Codex. Use Codex subagents via `spawn_agent`; after spawning, call `wait_agent` to block until it finishes before spawning the next. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
+Host: OpenAI Codex. This is a leaf specialist: do not spawn or wait for another agent unless a named workflow step explicitly requires a specialist. For any required specialist dispatch, use a standalone/no-history fork (`fork_turns="none"`), keep exactly one live child, and store the non-empty agent id returned by `spawn_agent`. Then call `wait_agent` with only its supported timeout argument and verify that the completion update belongs to the stored id; never pass `ids` or another target argument to `wait_agent`. Never call `wait_agent` after a failed spawn or without a confirmed id. Prefer project-local installs under `./.agents/skills` and `./.codex/agents`; if they are absent, fall back to the user's global install under `$HOME/.agents/skills` and `$HOME/.codex/agents`.
 
 When you need a packaged reasflow-dev script, resolve the installed skill root first:
 ```bash
@@ -60,7 +60,7 @@ REASFLOW_SKILLS_ROOT="$REASFLOW_SKILLS_ROOT"
 ### Step 1 — Read the algorithm idea
 From Alg_Exp/document/idea.md, or if no file exists, the idea is in the user's message.
 
-### Step 2 — Search domain knowledge cards (REQUIRED FIRST)
+### Step 2A — Search domain knowledge cards (REQUIRED FIRST)
 Before designing the algorithm, call **twice** with different keyword combinations (algorithm family, problem type, key mechanism):
 ```bash
 python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/search-cards.py" \
@@ -80,15 +80,35 @@ cat "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/assets/knowle
 ```
 Read ALL returned cards and extract: algorithm variants, key assumptions, convergence bounds, and notation conventions. These inform the algorithm design and plan.
 
-If local cards are insufficient, create new cards from arXiv:
+### Step 2B — Retrieve ReaScholar algorithm evidence (REQUIRED)
+
+After the local card search, retrieve current paper-specific algorithm evidence. Start with one primary query. Run at most one additional focused query, and only when a key mechanism, formula, assumption, or implementation choice is still unsupported. Raw responses are cached and reused automatically:
 ```bash
-python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/create-cards-from-arxiv.py" \
-  --arxiv-id <ID> --output-dir "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/assets/knowledge-cards/"
+EVIDENCE_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/common/reascholar-evidence-retrieval"
+python3 "$EVIDENCE_ROOT/scripts/retrieve-evidence.py" algorithm \
+  --workspace . \
+  --query "<algorithm family> <problem type> <key mechanism>" \
+  --top-k 5 \
+  --detail-top-k 3 \
+  --output Alg_Exp/evidence/algorithm_evidence.json
 ```
+
+Read `Alg_Exp/evidence/algorithm_evidence.json` and inspect every paper warning. Read the referenced raw response whenever a formula, assumption, theorem, or code location affects the design.
+
+Use the evidence as follows:
+- `algorithm.problem` → task, objectives, assumptions, and constraints;
+- `algorithm.method.initialization` and `update_rules` → pseudocode and implementation;
+- `design_choices` and `implementation_notes` → design review and complexity analysis;
+- `theory` and `theorem_hits` → convergence conditions and test expectations;
+- `code_snippets` → implementation references only; never execute returned code directly.
+
+In `Alg_Exp/algorithm_plan.md`, include a **ReaScholar Evidence** table with decision, paper, evidence location, and whether the decision is copied, adapted, or novel. Keep user-proposed and agent-designed changes visibly separate from paper-reported mechanisms.
+
+If ReaScholar is unavailable, keep the error evidence file. Continue only when local cards and workspace sources are sufficient; otherwise report the evidence gap.
 
 ### Step 3 — Design algorithm
 If the idea is unclear or ambiguous, ask the user. Lock assumptions and complexity claims.
-Check consistency with domain knowledge cards.
+Check consistency with domain knowledge cards and ReaScholar evidence. Resolve conflicting years, DOI-like values, or suspicious proof extraction against the paper Markdown or canonical source.
 
 ### Step 4 — Write pseudocode
 Use algorithm2e or algorithmicx LaTeX style. Write to Alg_Exp/document/pseudocode.tex:
@@ -300,6 +320,10 @@ If cumulative execution time in Phase 2 exceeds 30 minutes, explicitly report cu
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/common/reascholar-evidence-retrieval/SKILL.md"
 enabled = true
 
 [[skills.config]]
