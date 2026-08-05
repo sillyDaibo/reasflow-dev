@@ -27,12 +27,8 @@ class OrchestrationContractTests(unittest.TestCase):
                 instructions = (REPO_ROOT / relative).read_text(encoding="utf-8")
                 self.assertIn("This is a leaf specialist", instructions)
                 self.assertIn('fork_turns="none"', instructions)
-                self.assertIn("with only its supported timeout argument", instructions)
-                self.assertIn("never pass `ids`", instructions)
-                self.assertIn(
-                    "Never call `wait_agent` after a failed spawn",
-                    instructions,
-                )
+                self.assertIn("waits with\n`timeout_ms` only", instructions)
+                self.assertIn("A failed spawn has no wait", instructions)
 
 
 if __name__ == "__main__":
