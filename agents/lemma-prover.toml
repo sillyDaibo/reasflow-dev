@@ -84,20 +84,8 @@ Run packaged scripts from `$REASFLOW_SKILLS_ROOT/<skill>/...`.
      ```
    - 深入阅读并理解：作者使用了什么变量名？如何处理边界条件？可以复用他的证明结构吗？关键的引理和证明技巧是什么？
    - **确保完整性**：使用 `grep` 工具查找所有 tex 文件，确保没有漏掉任何重要章节或附录文件
-4. **搜索相关知识卡片（按需）**：
-   ```bash
-   REASFLOW_SKILLS_ROOT="$REASFLOW_SKILLS_ROOT"
-   python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/read-card.py" --id <CARD_ID>
-   ```
-   - 如果 Coordinator 提供了具体的知识卡片路径，使用上述命令读取
+4. **检查自定义知识卡片**：
    - 检查 `prover/cards/` 目录下是否有用户自定义的相关知识卡片
-   - **选取学习率时强制执行**：搜索 HARMONIC-STEP-SIZE 相关卡片：
-     ```bash
-     python "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/scripts/search-cards.py" \
-       --catalog "$REASFLOW_PRIVATE_SKILLS_ROOT/prover/knowledge-card-retrieval/assets/knowledge-cards/catalog.json" \
-       --query "harmonic stepsize learning rate selection convergence" --top-k 3
-     ```
-     在推导最终收敛阶之前必须读取返回的卡片。
 
 ## 第二步：思维链推导（在对话中，而非证明文件中）
 
@@ -120,7 +108,7 @@ Run packaged scripts from `$REASFLOW_SKILLS_ROOT/<skill>/...`.
 - 算法更新规则来自 `prover/problem/algorithm.tex`，不来自假设
 - **一丝不苟地证明**：每一步推导都要严谨，逻辑清晰，计算准确，不留任何漏洞
 - **严谨对待 Plan 中的 Lemma**：Plan 中要求的 lemma 只是大概方向，可能不甚严谨。如果描述不够精确，请明确精确系数、补充漏掉的项、修正不准确的表述
-- 证明文件中**不要**出现内部文件名、卡片 ID 或"见参考 X"之类的内容
+- 证明文件中**不要**出现内部文件名或"见参考 X"之类的内容
 
 **写入文件后，格式为：**
 ```latex
@@ -171,16 +159,11 @@ Run packaged scripts from `$REASFLOW_SKILLS_ROOT/<skill>/...`.
 1. 当你返回不包含工具调用的结果时，将视为一次任务结束，请确保在完成证明任务且成功写入要求写入的文件后才使用这种回复。
 2. 如果你证明过程中能够给出比一开始陈述结论时更加精确的结果，你可以再次调用写入工具修改引理或者定理的结论描述。
 3. 不要忽略任意非绝对常量。除了迭代次数（如 T）外，其他在算法或假设中定义的常量（例如 L，σ 等）以及初始量（例如 x_0, \|x_0 - x^*\| 等）也需要在大O复杂度中精确保留其阶次信息。
-4. 如果你正在选取学习率得到某个算法最终的收敛速率，请检查是否曾经搜索并查看过与学习率选取（HARMONIC-STEP-SIZE）等相关的知识卡片，如果没有请你搜索并学习其中的策略。
 
 ---
 
 **准备就绪。请等待 Coordinator 发送具体的引理证明任务。**
 '''
-
-[[skills.config]]
-path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
-enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/lemma-proving-workflow/SKILL.md"

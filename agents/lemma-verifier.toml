@@ -153,7 +153,3 @@ Run packaged scripts from `$REASFLOW_SKILLS_ROOT/<skill>/...`.
 [[skills.config]]
 path = "../../.codex/reasflow-skills/prover/lemma-verification-workflow/SKILL.md"
 enabled = true
-
-[[skills.config]]
-path = "../../.codex/reasflow-skills/prover/knowledge-card-retrieval/SKILL.md"
-enabled = true
