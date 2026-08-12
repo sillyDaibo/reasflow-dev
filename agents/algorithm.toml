@@ -93,7 +93,7 @@ Approved execution produces:
 
 - `Alg_Exp/document/pseudocode.tex`;
 - `Alg_Exp/code/algorithm.py` and executable tests;
-- reproducible quick-run data, logs, and plots when the claim needs them;
+- reproducible quick-run data and logs;
 - `Alg_Exp/document/algorithm_design.md`;
 - `Alg_Exp/document/test_experiment_report.md`.
 
@@ -143,9 +143,11 @@ enabled = true
 path = "../../.codex/reasflow-skills/experiment/experiment-execution/SKILL.md"
 enabled = true
 
-[[skills.config]]
-path = "../../.codex/reasflow-skills/experiment/smart-plotting/SKILL.md"
-enabled = true
+# Temporarily disabled for model-selection evaluation. The helper scripts use
+# an independent LLM model configuration that is not yet bound to the Agent.
+# [[skills.config]]
+# path = "../../.codex/reasflow-skills/experiment/smart-plotting/SKILL.md"
+# enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/latex-writer/report-integration/SKILL.md"

@@ -19,6 +19,10 @@ def prompt_for(relative: str) -> str:
     return text.split(PROMPT_MARKER, 1)[1].rsplit("'''", 1)[0]
 
 
+def text_for(relative: str) -> str:
+    return (REPO_ROOT / relative).read_text(encoding="utf-8")
+
+
 class AgentPromptContractTests(unittest.TestCase):
     def test_prompts_keep_a_small_high_signal_context(self) -> None:
         budgets = {
@@ -81,12 +85,32 @@ class AgentPromptContractTests(unittest.TestCase):
             "compact evidence-relevance table",
             "experiment-execution",
             "auto-tuning",
-            "smart-plotting",
             "recomputed from saved artifacts",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, prompt)
         self.assertRegex(prompt, r"at most\s+one focused follow-up")
+
+    def test_smart_plotting_is_disabled_for_evaluation(self) -> None:
+        for relative in (
+            "agents/algorithm.toml",
+            "agents/experiment.toml",
+        ):
+            with self.subTest(agent=relative):
+                text = text_for(relative)
+                prompt = prompt_for(relative)
+                self.assertNotIn("smart-plotting", prompt)
+                self.assertNotIn("Alg_Exp/picture/", prompt)
+                self.assertNotRegex(
+                    text,
+                    r'(?m)^path = "[^\n]*smart-plotting/SKILL\.md"$',
+                )
+
+        workflow = text_for(
+            "skills/reasflow/algorithm/algorithm-prototyping-workflow/SKILL.md"
+        )
+        self.assertNotIn("smart-plotting", workflow)
+        self.assertNotIn("Alg_Exp/picture/", workflow)
 
 
 if __name__ == "__main__":

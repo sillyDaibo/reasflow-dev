@@ -67,8 +67,7 @@ inventing an executable setup.
    same contract to pass `--require-ready`.
 6. During approved execution, use `experiment-execution` for environment
    preparation, logged commands, seeds, and long-run scripts. Route bounded
-   parameter search to `auto-tuning` and claim-relevant figures to
-   `smart-plotting`.
+   parameter search to `auto-tuning`.
 7. Recompute reported metrics from saved data and inspect outputs before drawing
    conclusions.
 
@@ -105,9 +104,8 @@ Approved execution produces:
   `Alg_Exp/config/`, or `Alg_Exp/scripts/`;
 - timestamped logs and seed-level results under `Alg_Exp/logs/` and
   `Alg_Exp/data/`;
-- reproducible figures under `Alg_Exp/picture/` when needed;
 - an append-only `Alg_Exp/document/experiment_report.md` that links claims to
-  the exact data and figures.
+  the exact saved data and execution artifacts.
 
 Final LaTeX or report conversion belongs to the enabled latex-writer workflow;
 Experiment does not directly repair its generated `.tex` output.
@@ -141,9 +139,11 @@ enabled = true
 path = "../../.codex/reasflow-skills/experiment/experiment-execution/SKILL.md"
 enabled = true
 
-[[skills.config]]
-path = "../../.codex/reasflow-skills/experiment/smart-plotting/SKILL.md"
-enabled = true
+# Temporarily disabled for model-selection evaluation. The helper scripts use
+# an independent LLM model configuration that is not yet bound to the Agent.
+# [[skills.config]]
+# path = "../../.codex/reasflow-skills/experiment/smart-plotting/SKILL.md"
+# enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/experiment/auto-tuning/SKILL.md"

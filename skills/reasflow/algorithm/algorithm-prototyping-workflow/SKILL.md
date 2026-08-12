@@ -42,8 +42,7 @@ The minimum bar is pseudocode plus runnable code plus one executed feasibility r
 3. Implement the minimal runnable algorithm API.
 4. Add and run at least one basic executable test.
 5. Run one quick experiment on a controllable toy problem and capture logs.
-6. If numeric traces are available, use `smart-plotting` to save at least one figure under `Alg_Exp/picture/`.
-7. Record commands, metrics, pass or fail judgment, and next steps in `test_experiment_report.md`.
+6. Record commands, metrics, pass or fail judgment, and next steps in `test_experiment_report.md`.
 
 ## Command Logging
 Use `experiment-execution` for reproducible command logging and seed tracking whenever scripts are run from `Alg_Exp/code/`.
