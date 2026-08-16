@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
 import re
@@ -110,6 +111,79 @@ def validate_applicability(
         errors.append(f"{label}.reason is required when not applicable.")
 
 
+def validate_required_object_fields(
+    items: list[Any],
+    label: str,
+    required_fields: tuple[str, ...],
+    ready: bool,
+    errors: list[str],
+) -> None:
+    if not ready:
+        return
+    for index, item in enumerate(items):
+        if not isinstance(item, dict):
+            continue
+        for field in required_fields:
+            if not text(item.get(field)):
+                errors.append(f"{label}[{index}].{field} is required when ready.")
+
+
+def validate_nonempty_strings(
+    items: list[Any],
+    label: str,
+    ready: bool,
+    errors: list[str],
+) -> None:
+    if not ready:
+        return
+    for index, item in enumerate(items):
+        if not isinstance(item, str) or not item.strip():
+            errors.append(f"{label}[{index}] must be a non-empty string when ready.")
+
+
+def validate_entrypoint(
+    entrypoint: str,
+    implementation: Path | None,
+    implementation_text: str,
+    ready: bool,
+    errors: list[str],
+) -> None:
+    if not ready:
+        return
+    if not entrypoint:
+        errors.append("algorithm.entrypoint is required when ready.")
+        return
+    match = re.fullmatch(
+        r"([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*):([A-Za-z_]\w*)",
+        entrypoint,
+    )
+    if match is None:
+        errors.append("algorithm.entrypoint must use module:callable format.")
+        return
+    if implementation is None or not implementation.is_file():
+        return
+    module_name, symbol_name = match.groups()
+    if module_name.rsplit(".", 1)[-1] != implementation.stem:
+        errors.append(
+            "algorithm.entrypoint module must match algorithm.implementation_path."
+        )
+        return
+    try:
+        tree = ast.parse(implementation_text, filename=str(implementation))
+    except SyntaxError as exc:
+        errors.append(f"Algorithm implementation is not valid Python: {exc.msg}.")
+        return
+    top_level_callables = {
+        node.name
+        for node in tree.body
+        if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    if symbol_name not in top_level_callables:
+        errors.append(
+            f"algorithm.entrypoint callable does not exist: {entrypoint}"
+        )
+
+
 def validate_contract(
     contract: dict[str, Any],
     workspace: Path,
@@ -144,6 +218,7 @@ def validate_contract(
 
     implementation_path = text(algorithm.get("implementation_path"))
     implementation = workspace_path(workspace, implementation_path)
+    implementation_text = ""
     if implementation is None:
         errors.append("algorithm.implementation_path must stay inside workspace.")
     elif not implementation.is_file():
@@ -173,17 +248,35 @@ def validate_contract(
 
     state_variables = as_list(algorithm.get("state_variables"))
     update_rules = as_list(algorithm.get("update_rules"))
-    if ready and not text(algorithm.get("entrypoint")):
-        errors.append("algorithm.entrypoint is required when ready.")
+    validate_entrypoint(
+        text(algorithm.get("entrypoint")),
+        implementation,
+        implementation_text,
+        ready,
+        errors,
+    )
     if ready and not state_variables:
         errors.append("algorithm.state_variables must be non-empty when ready.")
     if ready and not update_rules:
         errors.append("algorithm.update_rules must be non-empty when ready.")
+    validate_nonempty_strings(
+        state_variables,
+        "algorithm.state_variables",
+        ready,
+        errors,
+    )
     validate_sources(
         update_rules,
         "algorithm.update_rules",
         errors,
         accepted_paper_keys,
+    )
+    validate_required_object_fields(
+        update_rules,
+        "algorithm.update_rules",
+        ("name", "formula"),
+        ready,
+        errors,
     )
 
     validate_applicability(
@@ -224,6 +317,27 @@ def validate_contract(
         errors,
         accepted_paper_keys,
     )
+    validate_required_object_fields(
+        datasets,
+        "experiment.datasets",
+        ("name",),
+        ready,
+        errors,
+    )
+    validate_required_object_fields(
+        baselines,
+        "experiment.baselines",
+        ("name",),
+        ready,
+        errors,
+    )
+    validate_required_object_fields(
+        metrics,
+        "experiment.metrics",
+        ("name", "computation"),
+        ready,
+        errors,
+    )
     if ready and not datasets:
         errors.append("experiment.datasets must be non-empty when ready.")
     if ready and not baselines:
@@ -234,6 +348,18 @@ def validate_contract(
         errors.append("experiment.seeds must be non-empty when ready.")
     if ready and not commands:
         errors.append("experiment.commands must be non-empty when ready.")
+    if ready:
+        for index, seed in enumerate(seeds):
+            if not isinstance(seed, int) or isinstance(seed, bool):
+                errors.append(
+                    f"experiment.seeds[{index}] must be an integer when ready."
+                )
+    validate_nonempty_strings(
+        commands,
+        "experiment.commands",
+        ready,
+        errors,
+    )
     budget = as_dict(experiment.get("budget"))
     if ready:
         for field in ("unit", "limit", "fairness_rule"):

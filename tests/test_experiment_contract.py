@@ -140,6 +140,67 @@ class ExecutionContractTests(unittest.TestCase):
             any("does not match" in error for error in result["errors"])
         )
 
+    def test_ready_contract_rejects_missing_entrypoint_symbol(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            workspace = Path(temp)
+            algorithm = workspace / "Alg_Exp/code/algorithm.py"
+            algorithm.parent.mkdir(parents=True)
+            algorithm.write_text(
+                "class OptimizationAlgorithm:\n    pass\n",
+                encoding="utf-8",
+            )
+            payload = ready_contract(algorithm, workspace)
+            payload["algorithm"]["entrypoint"] = "algorithm:MissingAlgorithm"
+            result = contract_module.validate_contract(
+                payload,
+                workspace,
+                require_ready=True,
+            )
+        self.assertFalse(result["valid"])
+        self.assertTrue(
+            any("entrypoint" in error for error in result["errors"])
+        )
+
+    def test_ready_contract_rejects_vacuous_execution_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            workspace = Path(temp)
+            algorithm = workspace / "Alg_Exp/code/algorithm.py"
+            algorithm.parent.mkdir(parents=True)
+            algorithm.write_text(
+                "class OptimizationAlgorithm:\n    pass\n",
+                encoding="utf-8",
+            )
+            payload = ready_contract(algorithm, workspace)
+            payload["algorithm"]["state_variables"] = [None]
+            payload["algorithm"]["update_rules"] = [
+                {"source": "local_choice"}
+            ]
+            payload["experiment"]["datasets"] = [{"source": "local_choice"}]
+            payload["experiment"]["baselines"] = [{"source": "local_choice"}]
+            payload["experiment"]["metrics"] = [{"source": "local_choice"}]
+            payload["experiment"]["seeds"] = [None]
+            payload["experiment"]["commands"] = [""]
+            result = contract_module.validate_contract(
+                payload,
+                workspace,
+                require_ready=True,
+            )
+        self.assertFalse(result["valid"])
+        expected_labels = {
+            "algorithm.state_variables",
+            "algorithm.update_rules",
+            "experiment.datasets",
+            "experiment.baselines",
+            "experiment.metrics",
+            "experiment.seeds",
+            "experiment.commands",
+        }
+        for label in expected_labels:
+            self.assertTrue(
+                any(label in error for error in result["errors"]),
+                msg=f"missing validation error for {label}: {result['errors']}",
+            )
+
     def test_paper_source_must_pass_relevance_gate(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             workspace = Path(temp)
