@@ -1,0 +1,4 @@
+interface:
+  display_name: "ReaScholar Evidence Retrieval"
+  short_description: "Retrieve paper-grounded algorithm and experiment evidence"
+  default_prompt: "Use $reascholar-evidence-retrieval to collect traceable algorithm or experiment evidence from ReaScholar."

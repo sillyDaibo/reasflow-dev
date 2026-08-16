@@ -70,9 +70,15 @@ Alg_Exp/.venv/bin/pip install numpy scipy matplotlib pandas scikit-learn optuna 
 For short or medium runs that should execute now, capture a timestamped log with:
 
 ```bash
+python3 "$REASFLOW_PRIVATE_SKILLS_ROOT/experiment/experiment-design/scripts/validate-execution-contract.py" \
+  --workspace . --require-ready
+
 bash "$SKILL_ROOT/scripts/run-with-log.sh" Alg_Exp/logs \
   Alg_Exp/.venv/bin/python Alg_Exp/code/test_algorithm.py
 ```
+
+The validation command is a hard gate. Do not run the following command when it
+fails or when the contract status is `blocked`.
 
 Always record the exact command, output path, and whether the run passed.
 
@@ -116,12 +122,13 @@ python "$SKILL_ROOT/scripts/stage-dataset.py" \
 ```
 
 ## Execution Contract
-1. Bootstrap `Alg_Exp/` before the first serious run if the workspace is not already prepared.
-2. Use the workspace-local `.venv` instead of system Python whenever possible.
-3. For every important run, keep a stable log file under `Alg_Exp/logs/`.
-4. For long jobs, generate scripts before handoff so the user or a later agent can rerun exactly the same command.
-5. Stage downloaded or copied datasets under `Alg_Exp/data/raw/` unless the workspace already uses a stricter convention.
-6. Put result files under `Alg_Exp/data/`, `Alg_Exp/picture/`, or `Alg_Exp/document/` instead of ad hoc locations.
+1. Require a valid, ready `Alg_Exp/document/execution_contract.json`.
+2. Bootstrap `Alg_Exp/` before the first serious run if the workspace is not already prepared.
+3. Use the workspace-local `.venv` instead of system Python whenever possible.
+4. For every important run, keep a stable log file under `Alg_Exp/logs/`.
+5. For long jobs, generate scripts before handoff so the user or a later agent can rerun exactly the same command.
+6. Stage downloaded or copied datasets under `Alg_Exp/data/raw/` unless the workspace already uses a stricter convention.
+7. Put result files under `Alg_Exp/data/`, `Alg_Exp/picture/`, or `Alg_Exp/document/` instead of ad hoc locations.
 
 ## Deliverables
 - executed command ledger with log paths

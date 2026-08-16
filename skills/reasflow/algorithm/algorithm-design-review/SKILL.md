@@ -31,8 +31,11 @@ Review algorithm proposals before implementation hardens them. Focus on assumpti
 2. Identify invariants and the mechanism that maintains them.
 3. Estimate complexity and likely bottlenecks.
 4. Compare against the strongest baseline alternatives.
+5. Read `Alg_Exp/evidence/algorithm_evidence.json` when present. Trace paper-derived assumptions, initialization, update rules, and guarantees to a paper and evidence location.
+6. Separate copied mechanisms, adaptations, and novel design choices. Resolve evidence warnings before relying on a disputed year, DOI, proof card, or formula.
 
 ## Deliverables
 - design review memo
 - risks and failure modes list
 - recommended next prototype or proof task
+- ReaScholar evidence table in `Alg_Exp/algorithm_plan.md`
