@@ -118,8 +118,18 @@ def build(args: argparse.Namespace) -> dict:
         structural_errors.append("survey.tex is not standalone: missing \\documentclass")
     if "\\begin{document}" not in survey_source or "\\end{document}" not in survey_source:
         structural_errors.append("survey.tex has incomplete document boundaries")
-    if "\\documentclass" in related_source or "\\begin{document}" in related_source:
-        structural_errors.append("related_works.tex must remain an embeddable section fragment")
+    related_has_class = "\\documentclass" in related_source
+    related_has_begin = "\\begin{document}" in related_source
+    related_has_end = "\\end{document}" in related_source
+    related_is_standalone = related_has_class and related_has_begin and related_has_end
+    if related_has_class and not related_is_standalone:
+        structural_errors.append(
+            "standalone related_works.tex has incomplete document boundaries"
+        )
+    if not related_has_class and (related_has_begin or related_has_end):
+        structural_errors.append(
+            "fragment related_works.tex contains unmatched document boundaries"
+        )
 
     validation = {
         "survey_distinct_citations": len(survey_keys),
@@ -135,6 +145,9 @@ def build(args: argparse.Namespace) -> dict:
         "missing_survey_keys": missing_survey_keys,
         "missing_related_keys": missing_related_keys,
         "structural_errors": structural_errors,
+        "related_source_format": (
+            "standalone" if related_is_standalone else "embeddable_fragment"
+        ),
     }
     validation["ok"] = not any(
         [
@@ -174,11 +187,14 @@ def build(args: argparse.Namespace) -> dict:
         )
         return report
 
-    related_wrapper = build_root / "related_works_standalone.tex"
-    related_wrapper.write_text(standalone_related_tex(), encoding="utf-8")
+    if related_is_standalone:
+        related_compile_source = related_tex
+    else:
+        related_compile_source = build_root / "related_works_standalone.tex"
+        related_compile_source.write_text(standalone_related_tex(), encoding="utf-8")
     survey_compile = run_tectonic(args.tectonic, survey_tex, build_root / "survey")
     related_compile = run_tectonic(
-        args.tectonic, related_wrapper, build_root / "related_works"
+        args.tectonic, related_compile_source, build_root / "related_works"
     )
     if survey_compile["ok"]:
         shutil.copyfile(survey_compile["pdf"], survey_dir / "survey.pdf")
