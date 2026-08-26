@@ -45,6 +45,8 @@ normalized title. Never guess venue, volume, pages, DOI, author list, or year;
 record unresolved metadata instead. Use only registry-assigned BibTeX keys in
 the manuscripts. Prefer publisher/Crossref metadata for DOI records, then an
 official venue page, arXiv, Semantic Scholar, or OpenAlex.
+Do not send the raw retrieval pool through network metadata validation. First
+write the manuscripts, then validate only their canonical cited-paper union.
 
 Organize the article around a small set of useful comparison axes and a clear
 learning path. Explain the problem to a technically capable beginner, connect

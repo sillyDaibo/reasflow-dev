@@ -62,11 +62,18 @@ papers, citation expansion, unresolved metadata, and later-work checks.
 - A gap is unresolved only after checking later work through the task cutoff.
 - Never infer missing bibliographic fields from memory.
 
-Validate DOI records against Crossref before generating the bibliography:
+Generate the working bibliography, write both manuscripts, then validate only
+the records actually cited by them. Never run network validation over the raw
+candidate pool:
 
 ```bash
+python3 "$SKILL_ROOT/scripts/codex_first_tools.py" bibtex \
+  --registry survey/library/registry.jsonl \
+  --output survey/references.bib
 python3 "$SKILL_ROOT/scripts/codex_first_tools.py" validate-doi \
   --registry survey/library/registry.jsonl \
+  --cited-from survey/survey.tex \
+  --cited-from related_works/related_works.tex \
   --output-registry survey/library/registry.validated.jsonl \
   --report survey/library/doi_validation.json
 python3 "$SKILL_ROOT/scripts/codex_first_tools.py" bibtex \
@@ -76,7 +83,8 @@ python3 "$SKILL_ROOT/scripts/codex_first_tools.py" bibtex \
 
 Read the DOI-validation report and do not silently restore rejected or
 conflicting identifiers. A network-unavailable record remains explicitly
-unverified; a Crossref title mismatch loses the candidate DOI.
+unverified; a Crossref title mismatch loses the candidate DOI. The validated
+registry is intentionally a cited-paper subset; use it for the final BibTeX.
 
 ## Publication
 

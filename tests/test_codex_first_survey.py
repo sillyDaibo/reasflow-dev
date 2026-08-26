@@ -197,6 +197,49 @@ def test_doi_validation_rejects_identifier_for_another_paper(tmp_path, monkeypat
     assert result["rejected"] == 1
 
 
+def test_doi_validation_can_be_limited_to_cited_records(tmp_path, monkeypatch) -> None:
+    registry = tmp_path / "registry.jsonl"
+    MODULE.write_jsonl(
+        registry,
+        [
+            {
+                "title": f"Paper {key}",
+                "authors": ["Researcher"],
+                "year": 2020,
+                "externalIds": {"DOI": f"10.1000/{key}"},
+                "bib_key": key,
+            }
+            for key in ("cited", "unused")
+        ],
+    )
+    manuscript = tmp_path / "survey.tex"
+    manuscript.write_text(r"\citep{cited}", encoding="utf-8")
+    requested = []
+
+    def fake_crossref(doi, timeout):
+        requested.append(doi)
+        return {"title": ["Paper cited"]}
+
+    monkeypatch.setattr(MODULE, "fetch_crossref", fake_crossref)
+    output_registry = tmp_path / "validated.jsonl"
+    report = tmp_path / "doi_report.json"
+
+    code = MODULE.command_validate_doi(
+        SimpleNamespace(
+            registry=registry,
+            cited_from=[manuscript],
+            output_registry=output_registry,
+            report=report,
+            min_title_similarity=0.65,
+            timeout=1.0,
+        )
+    )
+
+    assert code == 0
+    assert requested == ["10.1000/cited"]
+    assert [record["bib_key"] for record in MODULE.load_records(output_registry)] == ["cited"]
+
+
 def test_default_survey_agent_has_no_worker_or_frozen_prompt_contract() -> None:
     agent = (ROOT / "agents/survey.toml").read_text(encoding="utf-8")
 

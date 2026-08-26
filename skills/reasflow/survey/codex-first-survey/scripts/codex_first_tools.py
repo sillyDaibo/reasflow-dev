@@ -581,6 +581,12 @@ def crossref_authors(message: dict[str, Any]) -> list[str]:
 
 def command_validate_doi(args: argparse.Namespace) -> int:
     records = load_records(args.registry)
+    cited_from = getattr(args, "cited_from", [])
+    if cited_from:
+        cited = set()
+        for path in cited_from:
+            cited.update(cite_keys(path.read_text(encoding="utf-8")))
+        records = [paper for paper in records if str(paper.get("bib_key") or "") in cited]
     audit: list[dict[str, Any]] = []
     for paper in records:
         doi = paper_doi(paper)
@@ -628,7 +634,8 @@ def command_validate_doi(args: argparse.Namespace) -> int:
         }
         item["status"] = "validated"
         audit.append(item)
-    assign_bib_keys(records)
+    # TeX manuscripts already refer to the registry keys.  Crossref may improve
+    # display metadata, but validation must never rename those stable keys.
     write_jsonl(args.output_registry, records)
     report = {
         "schema_version": SCHEMA_VERSION,
@@ -727,6 +734,13 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument("--input", type=Path, nargs="+", action="append", required=True)
     command.add_argument("--registry", type=Path, required=True)
     command.add_argument("--report", type=Path, required=True)
+    command.add_argument(
+        "--cited-from",
+        type=Path,
+        action="append",
+        default=[],
+        help="Validate only records cited by one or more TeX manuscripts.",
+    )
     command.set_defaults(handler=command_merge)
 
     command = commands.add_parser("shortlist")
