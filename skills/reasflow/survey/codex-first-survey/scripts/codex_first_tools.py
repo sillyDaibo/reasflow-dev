@@ -9,6 +9,7 @@ import hashlib
 import json
 import re
 import sys
+import unicodedata
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -472,6 +473,43 @@ def command_record(args: argparse.Namespace) -> int:
 
 def tex_escape(value: Any) -> str:
     text = str(value or "")
+    special = {
+        "ı": r"{\i}",
+        "Ł": r"{\L}",
+        "ł": r"{\l}",
+        "Ø": r"{\O}",
+        "ø": r"{\o}",
+        "Æ": r"{\AE}",
+        "æ": r"{\ae}",
+        "Œ": r"{\OE}",
+        "œ": r"{\oe}",
+        "ß": r"{\ss}",
+        "‐": "-",
+        "‑": "-",
+        "–": "--",
+        "—": "---",
+    }
+    accents = {
+        "\u0300": "`", "\u0301": "'", "\u0302": "^", "\u0303": "~",
+        "\u0304": "=", "\u0306": "u", "\u0307": ".", "\u0308": '"',
+        "\u030a": "r", "\u030b": "H", "\u030c": "v", "\u0327": "c",
+        "\u0328": "k",
+    }
+    converted = []
+    for character in text:
+        if character in special:
+            converted.append(special[character])
+            continue
+        decomposed = unicodedata.normalize("NFD", character)
+        base, marks = decomposed[0], decomposed[1:]
+        if marks and base.isascii() and all(mark in accents for mark in marks):
+            rendered = base
+            for mark in marks:
+                rendered = rf"\{accents[mark]}{{{rendered}}}"
+            converted.append("{" + rendered + "}")
+        else:
+            converted.append(character)
+    text = "".join(converted)
     replacements = {"&": r"\&", "%": r"\%", "#": r"\#", "_": r"\_"}
     for old, new in replacements.items():
         text = text.replace(old, new)

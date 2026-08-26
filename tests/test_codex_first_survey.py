@@ -257,6 +257,15 @@ def test_bibtex_uses_identifiers_without_printing_per_entry_urls() -> None:
     assert "https://" not in entry
 
 
+def test_bibtex_transliterates_latin_diacritics_for_t1_latex() -> None:
+    escaped = MODULE.tex_escape("Jakovetić Karakuş Yıldırım Si‐cong")
+
+    assert r"{\'{c}}" in escaped
+    assert r"{\c{s}}" in escaped
+    assert r"{\i}" in escaped
+    assert "‐" not in escaped
+
+
 def test_validate_doi_cli_accepts_cited_manuscripts() -> None:
     args = MODULE.parser().parse_args(
         [
