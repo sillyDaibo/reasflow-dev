@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex-first Survey"
+  short_description: "Research, write, and publish evidence-grounded surveys"
+  default_prompt: "Research the topic iteratively, write the survey directly in LaTeX, and validate its evidence and publication package."

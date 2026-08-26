@@ -1,78 +1,45 @@
 ---
 name: autosurvey-paper-retrieval
-description: Use when building AutoSurvey-style paper pools and retrieval traces for survey writing
+description: Retrieve reproducible scholarly metadata and citation/reference neighbors for a survey when native web discovery needs canonical paper records.
 ---
 
-## Installed Root
+# Paper Retrieval
 
-Resolve the installed reasflow-dev skills root before running packaged scripts:
+Use native Codex web search for broad discovery and current primary sources.
+Use this helper for reproducible Semantic Scholar or ReaScholar metadata and
+graph operations. Keep every response under `survey/library/`; merge it into the
+Codex-first canonical registry before citing it.
+
+Resolve the private skill root:
 
 ```bash
-REASFLOW_SKILLS_ROOT="${REASFLOW_SKILLS_ROOT:-}"
-if [ -z "$REASFLOW_SKILLS_ROOT" ]; then
-  if [ -d ./.agents/skills ]; then
-    REASFLOW_SKILLS_ROOT="$(pwd)/.agents/skills"
-  elif [ -d "$HOME/.agents/skills" ]; then
-    REASFLOW_SKILLS_ROOT="$HOME/.agents/skills"
-  else
-    echo "reasflow shared skills not found in ./.agents/skills or $HOME/.agents/skills" >&2
-    exit 1
-  fi
-fi
-
-REASFLOW_PRIVATE_SKILLS_ROOT="${REASFLOW_PRIVATE_SKILLS_ROOT:-}"
-if [ -z "$REASFLOW_PRIVATE_SKILLS_ROOT" ]; then
-  if [ -d ./.codex/reasflow-skills ]; then
-    REASFLOW_PRIVATE_SKILLS_ROOT="$(pwd)/.codex/reasflow-skills"
-  elif [ -d "$HOME/.codex/reasflow-skills" ]; then
-    REASFLOW_PRIVATE_SKILLS_ROOT="$HOME/.codex/reasflow-skills"
-  else
-    echo "reasflow private skills not found in ./.codex/reasflow-skills or $HOME/.codex/reasflow-skills" >&2
-    exit 1
-  fi
-fi
+SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/survey/autosurvey-paper-retrieval"
 ```
 
-# AutoSurvey Paper Retrieval
+Semantic Scholar credentials are loaded from the process environment, or from
+the nearest `.env.local` when absent. Only `SEMANTIC_SCHOLAR_API_KEY` and
+`S2_API_KEY` are loaded. Never put a key in a command or artifact.
 
-## Overview
-Build a reusable paper pool before drafting survey prose. Keep retrieval traces in `survey/library/` so outline, section writing, and related-work synthesis all cite the same evidence base.
+```bash
+python3 "$SKILL_ROOT/scripts/autosurvey_literature.py" search \
+  --source semantic_scholar --query "<focused query>" --limit 20 \
+  --out survey/library/search_<name>.json
 
-This skill is the executable replacement for the upstream `literature_*` tool family. Its default source policy is ReaScholar first, with Semantic Scholar as a metadata and graph supplement/fallback:
+python3 "$SKILL_ROOT/scripts/autosurvey_literature.py" paper \
+  --source semantic_scholar --paper-id "<DOI, arXiv, or S2 ID>" \
+  --out survey/library/paper_<name>.json
 
-- `search` ~= `literature_search`
-- `paper` ~= `literature_get_paper`
-- `citations` ~= `literature_get_citations`
-- `references` ~= `literature_get_references`
-- `bibtex` turns retrieval JSON into `references.bib`
+python3 "$SKILL_ROOT/scripts/autosurvey_literature.py" references \
+  --paper-id "<ID>" --limit 20 --out survey/library/refs_<name>.json
 
-Use native Codex web search first when you need broad discovery or freshness. Use this script when you need reproducible paper metadata, citation graphs, reference graphs, or BibTeX output under `survey/`. Set `SEMANTIC_SCHOLAR_API_KEY` in the environment when S2 enrichment or citation/reference graph calls are needed; never store the key in generated files.
+python3 "$SKILL_ROOT/scripts/autosurvey_literature.py" citations \
+  --paper-id "<ID>" --limit 20 --out survey/library/cites_<name>.json
+```
 
-## Installed Paths
-Set `SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/survey/autosurvey-paper-retrieval"` before invoking the packaged helper script.
+Search in focused batches. Inspect title, abstract, identifiers, year, venue,
+and retrieval source before adding a record. Citation count is not relevance.
+Use references to recover foundations and citations to check successors or
+later resolutions. A graph edge does not by itself support a lineage claim.
 
-## Helper Script
-
-Semantic Scholar credentials are resolved automatically. Explicit
-`SEMANTIC_SCHOLAR_API_KEY` / `S2_API_KEY` values win; when neither is set, the
-script searches the current workspace and its parents for the nearest
-`.env.local`, loading only those two variables. `REASFLOW_ENV_FILE` can point
-to an alternate file. The key is never emitted in output artifacts or logs.
-- `python "$SKILL_ROOT/scripts/autosurvey_literature.py" search --query "federated optimization" --limit 25 --out survey/library/search_seed.json`
-- `python "$SKILL_ROOT/scripts/autosurvey_literature.py" search --query "gradient tracking update rules" --limit 25 --reascholar-mode algorithm --out survey/library/search_algorithm.json`
-- `python "$SKILL_ROOT/scripts/autosurvey_literature.py" paper --paper-id "arXiv:1602.05629" --out survey/library/fedavg.json`
-- `python "$SKILL_ROOT/scripts/autosurvey_literature.py" citations --paper-id "arXiv:1602.05629" --limit 20 --out survey/library/fedavg_citations.json`
-- `python "$SKILL_ROOT/scripts/autosurvey_literature.py" references --paper-id "arXiv:1602.05629" --limit 20 --out survey/library/fedavg_references.json`
-- `python "$SKILL_ROOT/scripts/autosurvey_literature.py" bibtex --input survey/library/search_seed.json --out survey/references.bib`
-
-## Workflow
-1. Create `survey/library/` early and store every retrieval artifact there.
-2. Use `search` to collect seed papers for each coverage axis in the outline. Use the default `fast` ReaScholar mode for broad retrieval; use `--reascholar-mode algorithm`, `theorem`, `model`, or `code` only for targeted facets.
-3. Use `paper`, `citations`, and `references` to validate metadata and expand missing clusters. `citations` and `references` are S2-backed because ReaScholar does not expose citation graph edges.
-4. Use `bibtex` to create or refresh `survey/references.bib` from retrieved records.
-5. Pass the exact JSON paths and generated citation keys to `survey-section-writer` and `survey-related-works`.
-
-## Deliverables
-- retrieval traces under `survey/library/`
-- normalized paper pool with stable IDs and metadata
-- BibTeX output synchronized with the survey LaTeX files
+Do not generate the final bibliography directly from heterogeneous search
+files. Merge and audit them with the `codex-first-survey` registry tools first.
