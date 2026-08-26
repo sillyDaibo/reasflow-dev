@@ -54,6 +54,8 @@ def test_three_arms_share_exact_prompt_and_task_projection(tmp_path, monkeypatch
     assert len(set(hashes)) == 1
     assert "citation format" not in prompts[0].casefold()
     assert "cite more than 100" in prompts[0].casefold()
+    assert "1,200--2,200 words" in prompts[0]
+    assert "45--55 core papers" in prompts[0]
 
 
 def test_reasflow_profiles_differ_only_by_reascholar_capability() -> None:
