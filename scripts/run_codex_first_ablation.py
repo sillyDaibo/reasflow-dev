@@ -98,6 +98,14 @@ def package_deliverables(workspace: Path, slug: str, arm: str) -> list[str]:
     return outputs
 
 
+def publication_tool_path(workspace: Path) -> Path | None:
+    for parent in (workspace, *workspace.parents):
+        candidate = parent / ".toolchain/survey-pdf"
+        if (candidate / "tectonic").is_file():
+            return candidate
+    return None
+
+
 def install_reasflow(workspace: Path, source: Path) -> None:
     env = dict(os.environ)
     env["REASFLOW_DEV_SOURCE_DIR"] = str(source)
@@ -167,6 +175,9 @@ def prepare_arm(workspace: Path, arm: str, task: dict[str, Any], source: Path) -
 
 def run_arm(workspace: Path, arm: str, model: str, effort: str, timeout: int) -> int:
     env = dict(os.environ)
+    tool_path = publication_tool_path(workspace)
+    if tool_path:
+        env["PATH"] = f"{tool_path}{os.pathsep}{env.get('PATH', '')}"
     if arm != "pure-codex":
         env["REASFLOW_SURVEY_RETRIEVAL_PROFILE"] = retrieval_profile(arm)
         env["REASFLOW_PRIVATE_SKILLS_ROOT"] = str(workspace / ".codex/reasflow-skills")

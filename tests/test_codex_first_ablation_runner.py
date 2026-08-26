@@ -79,3 +79,13 @@ def test_package_deliverables_names_topic_arm_and_author(tmp_path) -> None:
     ]
     assert (tmp_path / outputs[0]).read_bytes() == b"survey"
     assert (tmp_path / outputs[1]).read_bytes() == b"related"
+
+
+def test_publication_tool_path_finds_shared_workspace_toolchain(tmp_path) -> None:
+    toolchain = tmp_path / ".toolchain/survey-pdf"
+    toolchain.mkdir(parents=True)
+    (toolchain / "tectonic").write_bytes(b"binary")
+    workspace = tmp_path / "runs/experiment/task/arm"
+    workspace.mkdir(parents=True)
+
+    assert MODULE.publication_tool_path(workspace) == toolchain
