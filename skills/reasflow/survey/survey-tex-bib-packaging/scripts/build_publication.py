@@ -30,6 +30,25 @@ def citation_keys(text: str) -> set[str]:
     }
 
 
+def read_tex_tree(path: Path, root: Path, seen: set[Path] | None = None) -> str:
+    """Expand local TeX inputs for validation without modifying the sources."""
+    resolved = path.resolve()
+    root = root.resolve()
+    visited = seen if seen is not None else set()
+    if not resolved.is_file() or not resolved.is_relative_to(root) or resolved in visited:
+        return ""
+    visited.add(resolved)
+    text = resolved.read_text(encoding="utf-8", errors="ignore")
+
+    def include(match: re.Match[str]) -> str:
+        relative = Path(match.group(1))
+        if not relative.suffix:
+            relative = relative.with_suffix(".tex")
+        return read_tex_tree(resolved.parent / relative, root, visited)
+
+    return re.sub(r"\\(?:input|include)\{([^}]+)\}", include, text)
+
+
 def bibliography_keys(text: str) -> tuple[set[str], list[str]]:
     ordered = [match.group(1).strip() for match in BIB_PATTERN.finditer(text)]
     seen: set[str] = set()
@@ -104,8 +123,10 @@ def build(args: argparse.Namespace) -> dict:
     if missing:
         raise FileNotFoundError("missing publication inputs: " + ", ".join(missing))
 
-    survey_source = survey_tex.read_text(encoding="utf-8")
-    related_source = related_tex.read_text(encoding="utf-8")
+    survey_entry_source = survey_tex.read_text(encoding="utf-8")
+    related_entry_source = related_tex.read_text(encoding="utf-8")
+    survey_source = read_tex_tree(survey_tex, survey_dir)
+    related_source = read_tex_tree(related_tex, related_dir)
     bib_source = bibliography.read_text(encoding="utf-8")
     survey_keys = citation_keys(survey_source)
     related_keys = citation_keys(related_source)
@@ -114,13 +135,16 @@ def build(args: argparse.Namespace) -> dict:
     missing_related_keys = sorted(related_keys - bib_keys)
 
     structural_errors: list[str] = []
-    if "\\documentclass" not in survey_source:
+    if "\\documentclass" not in survey_entry_source:
         structural_errors.append("survey.tex is not standalone: missing \\documentclass")
-    if "\\begin{document}" not in survey_source or "\\end{document}" not in survey_source:
+    if (
+        "\\begin{document}" not in survey_entry_source
+        or "\\end{document}" not in survey_entry_source
+    ):
         structural_errors.append("survey.tex has incomplete document boundaries")
-    related_has_class = "\\documentclass" in related_source
-    related_has_begin = "\\begin{document}" in related_source
-    related_has_end = "\\end{document}" in related_source
+    related_has_class = "\\documentclass" in related_entry_source
+    related_has_begin = "\\begin{document}" in related_entry_source
+    related_has_end = "\\end{document}" in related_entry_source
     related_is_standalone = related_has_class and related_has_begin and related_has_end
     if related_has_class and not related_is_standalone:
         structural_errors.append(

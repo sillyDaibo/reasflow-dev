@@ -160,6 +160,7 @@ def canonicalize_publication_layout(workspace: Path) -> None:
         destination = workspace / directory
         destination.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source_tex, destination / f"{stem}.tex")
+        copy_tex_dependencies(source_tex, workspace, destination)
         if source_pdf.is_file():
             shutil.copy2(source_pdf, destination / f"{stem}.pdf")
         bibliography = workspace / "references.bib"
@@ -175,6 +176,36 @@ def canonicalize_publication_layout(workspace: Path) -> None:
             intermediate = workspace / f"{stem}{suffix}"
             if intermediate.is_file():
                 intermediate.unlink()
+
+
+def copy_tex_dependencies(source: Path, workspace: Path, destination: Path) -> None:
+    """Copy local TeX inputs while preserving their workspace-relative paths."""
+    workspace_root = workspace.resolve()
+    visited: set[Path] = set()
+
+    def copy_from(path: Path) -> None:
+        resolved = path.resolve()
+        if (
+            resolved in visited
+            or not resolved.is_file()
+            or not resolved.is_relative_to(workspace_root)
+        ):
+            return
+        visited.add(resolved)
+        text = resolved.read_text(encoding="utf-8", errors="ignore")
+        for match in re.finditer(r"\\(?:input|include)\{([^}]+)\}", text):
+            relative = Path(match.group(1))
+            if not relative.suffix:
+                relative = relative.with_suffix(".tex")
+            dependency = (resolved.parent / relative).resolve()
+            if not dependency.is_relative_to(workspace_root) or not dependency.is_file():
+                continue
+            target = destination / dependency.relative_to(workspace_root)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(dependency, target)
+            copy_from(dependency)
+
+    copy_from(source)
 
 
 def read_tex_tree(path: Path, root: Path, seen: set[Path] | None = None) -> str:

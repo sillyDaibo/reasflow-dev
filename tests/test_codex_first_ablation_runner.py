@@ -96,7 +96,12 @@ def test_publication_tool_path_finds_shared_workspace_toolchain(tmp_path) -> Non
 
 
 def test_canonicalize_root_level_publication_without_rewriting_content(tmp_path) -> None:
-    (tmp_path / "survey.tex").write_text("survey source", encoding="utf-8")
+    (tmp_path / "survey.tex").write_text(
+        r"survey source \input{survey_body}", encoding="utf-8"
+    )
+    (tmp_path / "survey_body.tex").write_text(
+        r"body source \input{sections/body}", encoding="utf-8"
+    )
     (tmp_path / "survey.pdf").write_bytes(b"survey pdf")
     (tmp_path / "related_works.tex").write_text("related source", encoding="utf-8")
     (tmp_path / "related_works.pdf").write_bytes(b"related pdf")
@@ -109,7 +114,12 @@ def test_canonicalize_root_level_publication_without_rewriting_content(tmp_path)
 
     MODULE.canonicalize_publication_layout(tmp_path)
 
-    assert (tmp_path / "survey/survey.tex").read_text() == "survey source"
+    assert (tmp_path / "survey/survey.tex").read_text() == (
+        r"survey source \input{survey_body}"
+    )
+    assert (tmp_path / "survey/survey_body.tex").read_text() == (
+        r"body source \input{sections/body}"
+    )
     assert (tmp_path / "survey/survey.pdf").read_bytes() == b"survey pdf"
     assert (tmp_path / "survey/references.bib").read_text() == "bibliography"
     assert (tmp_path / "survey/sections/body.tex").read_text() == "section"
