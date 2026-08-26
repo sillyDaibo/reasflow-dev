@@ -505,11 +505,9 @@ def bib_entry(paper: dict[str, Any]) -> str:
     arxiv = paper_arxiv(paper)
     if doi:
         fields["doi"] = doi
-        fields["url"] = f"https://doi.org/{doi}"
     elif arxiv:
         fields["eprint"] = arxiv
         fields["archivePrefix"] = "arXiv"
-        fields["url"] = f"https://arxiv.org/abs/{arxiv}"
     lines = [f"@{entry_type}{{{key},"]
     for name, value in fields.items():
         if value not in (None, "", []):

@@ -240,6 +240,23 @@ def test_doi_validation_can_be_limited_to_cited_records(tmp_path, monkeypatch) -
     assert [record["bib_key"] for record in MODULE.load_records(output_registry)] == ["cited"]
 
 
+def test_bibtex_uses_identifiers_without_printing_per_entry_urls() -> None:
+    entry = MODULE.bib_entry(
+        {
+            "bib_key": "researcher2020paper",
+            "title": "A Paper",
+            "authors": ["A. Researcher"],
+            "year": 2020,
+            "venue": "A Conference",
+            "externalIds": {"DOI": "10.1000/example", "ArXiv": "2001.00001"},
+        }
+    )
+
+    assert "doi = {10.1000/example}" in entry
+    assert "url =" not in entry
+    assert "https://" not in entry
+
+
 def test_default_survey_agent_has_no_worker_or_frozen_prompt_contract() -> None:
     agent = (ROOT / "agents/survey.toml").read_text(encoding="utf-8")
 
