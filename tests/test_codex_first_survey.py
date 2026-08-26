@@ -257,6 +257,21 @@ def test_bibtex_uses_identifiers_without_printing_per_entry_urls() -> None:
     assert "https://" not in entry
 
 
+def test_validate_doi_cli_accepts_cited_manuscripts() -> None:
+    args = MODULE.parser().parse_args(
+        [
+            "validate-doi",
+            "--registry", "registry.jsonl",
+            "--cited-from", "survey.tex",
+            "--cited-from", "related.tex",
+            "--output-registry", "validated.jsonl",
+            "--report", "report.json",
+        ]
+    )
+
+    assert args.cited_from == [Path("survey.tex"), Path("related.tex")]
+
+
 def test_default_survey_agent_has_no_worker_or_frozen_prompt_contract() -> None:
     agent = (ROOT / "agents/survey.toml").read_text(encoding="utf-8")
 

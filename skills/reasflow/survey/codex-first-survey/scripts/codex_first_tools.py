@@ -732,13 +732,6 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument("--input", type=Path, nargs="+", action="append", required=True)
     command.add_argument("--registry", type=Path, required=True)
     command.add_argument("--report", type=Path, required=True)
-    command.add_argument(
-        "--cited-from",
-        type=Path,
-        action="append",
-        default=[],
-        help="Validate only records cited by one or more TeX manuscripts.",
-    )
     command.set_defaults(handler=command_merge)
 
     command = commands.add_parser("shortlist")
@@ -782,6 +775,13 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument("--registry", type=Path, required=True)
     command.add_argument("--output-registry", type=Path, required=True)
     command.add_argument("--report", type=Path, required=True)
+    command.add_argument(
+        "--cited-from",
+        type=Path,
+        action="append",
+        default=[],
+        help="Validate only records cited by one or more TeX manuscripts.",
+    )
     command.add_argument("--min-title-similarity", type=float, default=0.65)
     command.add_argument("--timeout", type=float, default=20.0)
     command.set_defaults(handler=command_validate_doi)
