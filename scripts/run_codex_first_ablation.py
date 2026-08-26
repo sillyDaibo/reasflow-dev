@@ -22,6 +22,12 @@ FORBIDDEN_TASK_FIELDS = {
     "key_references", "gap_requirements", "future_work_expectations", "logic_chain"
 }
 COMMON_PROMPT = """Read `TASK.md` and `AUTHOR_LABEL.txt` in the current workspace. Write a rigorous, self-contained survey article on the specified topic for expert review. Explain the problem setting to a new researcher, organize the literature into a useful taxonomy, describe the research development, compare representative approaches and their tradeoffs, and identify well-supported limitations, open questions, and future directions. The main survey body must contain at least 10,000 words and should naturally develop to roughly 12,000 words when the evidence supports it. Cite more than 100 distinct papers that are substantively relevant to the topic; do not target a round number and do not satisfy the coverage requirement with peripheral or merely keyword-matching references. The focused Related Works article must contain 1,200--2,200 words and use 45--55 core papers. Use the research resources and tools available in the workspace. Work autonomously and deliver complete LaTeX sources, one bibliography, and compiled PDFs, with the author shown exactly as specified in `AUTHOR_LABEL.txt`."""
+MIN_SURVEY_WORDS = 10_000
+MIN_SURVEY_CITATIONS = 101
+MIN_RELATED_WORDS = 1_200
+MAX_RELATED_WORDS = 2_200
+MIN_RELATED_CITATIONS = 45
+MAX_RELATED_CITATIONS = 55
 
 
 def require_public_task(task: dict[str, Any], path: Path) -> None:
@@ -126,6 +132,80 @@ def canonicalize_publication_layout(workspace: Path) -> None:
             shutil.copytree(sections, destination / "sections", dirs_exist_ok=True)
 
 
+def read_tex_tree(path: Path, root: Path, seen: set[Path] | None = None) -> str:
+    resolved = path.resolve()
+    root = root.resolve()
+    visited = seen if seen is not None else set()
+    if not resolved.is_file() or not resolved.is_relative_to(root) or resolved in visited:
+        return ""
+    visited.add(resolved)
+    text = resolved.read_text(encoding="utf-8", errors="ignore")
+
+    def include(match: re.Match[str]) -> str:
+        relative = Path(match.group(1))
+        if not relative.suffix:
+            relative = relative.with_suffix(".tex")
+        return read_tex_tree(resolved.parent / relative, root, visited)
+
+    return re.sub(r"\\(?:input|include)\{([^}]+)\}", include, text)
+
+
+def tex_metrics(path: Path) -> dict[str, int]:
+    text = read_tex_tree(path, path.parent)
+    if not text:
+        return {"word_count": 0, "distinct_citations": 0}
+    text = re.sub(r"(?m)%.*$", " ", text)
+    citation_keys = {
+        key.strip()
+        for match in re.finditer(r"\\cite\w*\{([^}]*)\}", text)
+        for key in match.group(1).split(",")
+        if key.strip()
+    }
+    prose = re.sub(r"\\cite\w*\{[^}]*\}", " ", text)
+    prose = re.sub(r"\\(?:begin|end)\{[^}]+\}", " ", prose)
+    prose = re.sub(r"\\[A-Za-z@]+\*?(?:\[[^]]*\])?", " ", prose)
+    prose = re.sub(r"[^A-Za-z0-9'-]+", " ", prose)
+    words = re.findall(r"\b[A-Za-z][A-Za-z0-9'-]*\b", prose)
+    return {"word_count": len(words), "distinct_citations": len(citation_keys)}
+
+
+def publication_validation(workspace: Path) -> dict[str, Any]:
+    survey = tex_metrics(workspace / "survey/survey.tex")
+    related = tex_metrics(workspace / "related_works/related_works.tex")
+    checks = {
+        "survey_words": survey["word_count"] >= MIN_SURVEY_WORDS,
+        "survey_citations": survey["distinct_citations"] >= MIN_SURVEY_CITATIONS,
+        "related_words": MIN_RELATED_WORDS <= related["word_count"] <= MAX_RELATED_WORDS,
+        "related_citations": (
+            MIN_RELATED_CITATIONS
+            <= related["distinct_citations"]
+            <= MAX_RELATED_CITATIONS
+        ),
+        "survey_pdf": (workspace / "survey/survey.pdf").is_file(),
+        "related_pdf": (workspace / "related_works/related_works.pdf").is_file(),
+    }
+    return {
+        "ok": all(checks.values()),
+        "survey": survey,
+        "related_works": related,
+        "checks": checks,
+    }
+
+
+def repair_prompt(validation: dict[str, Any]) -> str:
+    survey = validation["survey"]
+    related = validation["related_works"]
+    return f"""Continue the existing survey publication and repair only its measured delivery deficits. This is the same mechanical feedback protocol used for every experimental arm. Preserve correct content, topic scope, author label, and source provenance; do not pad with peripheral citations. The completed main Survey must contain at least {MIN_SURVEY_WORDS:,} substantive words and more than 100 distinct relevant citations. The Related Works article must contain {MIN_RELATED_WORDS:,}--{MAX_RELATED_WORDS:,} substantive words and cite {MIN_RELATED_CITATIONS}--{MAX_RELATED_CITATIONS} core papers. The current mechanical scan found Survey words={survey['word_count']}, Survey distinct citations={survey['distinct_citations']}, Related Works words={related['word_count']}, and Related Works distinct citations={related['distinct_citations']}. Correct every failing requirement, retain complete LaTeX and one bibliography, recompile both PDFs, and verify the final counts before finishing."""
+
+
+def write_publication_validation(workspace: Path) -> dict[str, Any]:
+    result = publication_validation(workspace)
+    (workspace / "publication_validation.json").write_text(
+        json.dumps(result, indent=2) + "\n", encoding="utf-8"
+    )
+    return result
+
+
 def install_reasflow(workspace: Path, source: Path) -> None:
     env = dict(os.environ)
     env["REASFLOW_DEV_SOURCE_DIR"] = str(source)
@@ -193,7 +273,14 @@ def prepare_arm(workspace: Path, arm: str, task: dict[str, Any], source: Path) -
     )
 
 
-def run_arm(workspace: Path, arm: str, model: str, effort: str, timeout: int) -> int:
+def run_arm(
+    workspace: Path,
+    arm: str,
+    model: str,
+    effort: str,
+    timeout: int,
+    prompt_path: Path | None = None,
+) -> int:
     env = dict(os.environ)
     tool_path = publication_tool_path(workspace)
     if tool_path:
@@ -208,8 +295,10 @@ def run_arm(workspace: Path, arm: str, model: str, effort: str, timeout: int) ->
         "-c", f'model_reasoning_effort="{effort}"',
         "-C", str(workspace), "--output-last-message", str(workspace / "last_message.md"), "-",
     ]
-    with (workspace / "prompt.txt").open("r", encoding="utf-8") as prompt, (
-        workspace / "codex_exec.log"
+    selected_prompt = prompt_path or workspace / "prompt.txt"
+    log_name = "repair_exec.log" if prompt_path else "codex_exec.log"
+    with selected_prompt.open("r", encoding="utf-8") as prompt, (
+        workspace / log_name
     ).open("w", encoding="utf-8") as log:
         try:
             result = subprocess.run(
@@ -232,6 +321,7 @@ def main() -> int:
     parser.add_argument("--effort", default="high")
     parser.add_argument("--timeout", type=int, default=14400)
     parser.add_argument("--prepare-only", action="store_true")
+    parser.add_argument("--repair-existing", action="store_true")
     args = parser.parse_args()
     arms = args.arm or list(ARMS)
     exit_code = 0
@@ -241,15 +331,64 @@ def main() -> int:
         slug = task_slug(task, task_path)
         for arm in arms:
             workspace = args.output_root / slug / arm
-            prepare_arm(workspace, arm, task, args.source.resolve())
-            print(f"prepared {workspace}")
+            if not args.repair_existing:
+                prepare_arm(workspace, arm, task, args.source.resolve())
+                print(f"prepared {workspace}")
+            elif not workspace.is_dir():
+                print(f"missing existing workspace {workspace}")
+                if not exit_code:
+                    exit_code = 2
+                continue
             if not args.prepare_only:
-                code = run_arm(workspace, arm, args.model, args.effort, args.timeout)
+                if args.repair_existing:
+                    canonicalize_publication_layout(workspace)
+                    before = write_publication_validation(workspace)
+                    if before["ok"]:
+                        code = 0
+                    else:
+                        repair_path = workspace / "publication_repair_prompt.txt"
+                        repair_path.write_text(
+                            repair_prompt(before) + "\n", encoding="utf-8"
+                        )
+                        code = run_arm(
+                            workspace,
+                            arm,
+                            args.model,
+                            args.effort,
+                            args.timeout,
+                            prompt_path=repair_path,
+                        )
+                else:
+                    code = run_arm(workspace, arm, args.model, args.effort, args.timeout)
                 print(f"finished arm={arm} task={slug} returncode={code}")
                 if code == 0:
                     canonicalize_publication_layout(workspace)
-                    packaged = package_deliverables(workspace, slug, arm)
-                    print(f"packaged arm={arm} task={slug} files={packaged}")
+                    validation = write_publication_validation(workspace)
+                    if not validation["ok"] and not args.repair_existing:
+                        repair_path = workspace / "publication_repair_prompt.txt"
+                        repair_path.write_text(
+                            repair_prompt(validation) + "\n", encoding="utf-8"
+                        )
+                        code = run_arm(
+                            workspace,
+                            arm,
+                            args.model,
+                            args.effort,
+                            args.timeout,
+                            prompt_path=repair_path,
+                        )
+                        if code == 0:
+                            canonicalize_publication_layout(workspace)
+                            validation = write_publication_validation(workspace)
+                    if code == 0 and validation["ok"]:
+                        packaged = package_deliverables(workspace, slug, arm)
+                        print(f"packaged arm={arm} task={slug} files={packaged}")
+                    elif code == 0:
+                        print(
+                            f"publication gate failed arm={arm} task={slug} "
+                            f"validation={validation}"
+                        )
+                        code = 3
                 if code and not exit_code:
                     exit_code = code
     return exit_code

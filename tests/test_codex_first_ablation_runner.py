@@ -110,3 +110,55 @@ def test_canonicalize_root_level_publication_without_rewriting_content(tmp_path)
     assert (tmp_path / "survey/references.bib").read_text() == "bibliography"
     assert (tmp_path / "survey/sections/body.tex").read_text() == "section"
     assert (tmp_path / "related_works/related_works.tex").read_text() == "related source"
+
+
+def test_publication_validation_reports_mechanical_deficits(tmp_path) -> None:
+    survey = tmp_path / "survey"
+    related = tmp_path / "related_works"
+    survey.mkdir()
+    related.mkdir()
+    (survey / "survey.tex").write_text(
+        "A short survey " + r"\cite{one,two}", encoding="utf-8"
+    )
+    (related / "related_works.tex").write_text(
+        "Short related work " + r"\cite{one}", encoding="utf-8"
+    )
+
+    result = MODULE.publication_validation(tmp_path)
+
+    assert result["ok"] is False
+    assert result["survey"]["distinct_citations"] == 2
+    assert result["related_works"]["distinct_citations"] == 1
+    assert result["checks"]["survey_words"] is False
+    assert result["checks"]["related_words"] is False
+
+
+def test_tex_metrics_expands_local_input_files(tmp_path) -> None:
+    sections = tmp_path / "sections"
+    sections.mkdir()
+    (tmp_path / "survey.tex").write_text(
+        r"Opening \cite{one}\input{sections/body}", encoding="utf-8"
+    )
+    (sections / "body.tex").write_text(
+        r"Included prose \cite{two,three}", encoding="utf-8"
+    )
+
+    metrics = MODULE.tex_metrics(tmp_path / "survey.tex")
+
+    assert metrics["distinct_citations"] == 3
+    assert metrics["word_count"] == 3
+
+
+def test_repair_prompt_discloses_only_shared_mechanical_requirements() -> None:
+    validation = {
+        "survey": {"word_count": 2600, "distinct_citations": 86},
+        "related_works": {"word_count": 945, "distinct_citations": 57},
+    }
+
+    prompt = MODULE.repair_prompt(validation)
+
+    assert "Survey words=2600" in prompt
+    assert "Related Works distinct citations=57" in prompt
+    assert "10,000 substantive words" in prompt
+    assert "45--55 core papers" in prompt
+    assert "key reference" not in prompt.casefold()
