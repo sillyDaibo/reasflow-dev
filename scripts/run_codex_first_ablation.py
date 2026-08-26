@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -74,6 +75,27 @@ def retrieval_profile(arm: str) -> str:
         "reasflow-s2": "s2-only",
         "reasflow-reascholar": "reascholar-s2",
     }[arm]
+
+
+def filename_token(value: str) -> str:
+    token = re.sub(r"[^A-Za-z0-9_-]+", "-", value).strip("-")
+    token = re.sub(r"-+", "-", token)
+    return token or "unknown"
+
+
+def package_deliverables(workspace: Path, slug: str, arm: str) -> list[str]:
+    label = filename_token(author_label(arm))
+    outputs = []
+    for source, kind in (
+        (workspace / "survey/survey.pdf", "survey"),
+        (workspace / "related_works/related_works.pdf", "related-works"),
+    ):
+        if not source.is_file():
+            continue
+        destination = workspace / f"{slug}__{kind}__{arm}__{label}.pdf"
+        shutil.copy2(source, destination)
+        outputs.append(destination.name)
+    return outputs
 
 
 def install_reasflow(workspace: Path, source: Path) -> None:
@@ -193,6 +215,9 @@ def main() -> int:
             if not args.prepare_only:
                 code = run_arm(workspace, arm, args.model, args.effort, args.timeout)
                 print(f"finished arm={arm} task={slug} returncode={code}")
+                if code == 0:
+                    packaged = package_deliverables(workspace, slug, arm)
+                    print(f"packaged arm={arm} task={slug} files={packaged}")
                 if code and not exit_code:
                     exit_code = code
     return exit_code

@@ -59,3 +59,23 @@ def test_three_arms_share_exact_prompt_and_task_projection(tmp_path, monkeypatch
 def test_reasflow_profiles_differ_only_by_reascholar_capability() -> None:
     assert MODULE.retrieval_profile("reasflow-s2") == "s2-only"
     assert MODULE.retrieval_profile("reasflow-reascholar") == "reascholar-s2"
+
+
+def test_package_deliverables_names_topic_arm_and_author(tmp_path) -> None:
+    survey = tmp_path / "survey/survey.pdf"
+    related = tmp_path / "related_works/related_works.pdf"
+    survey.parent.mkdir()
+    related.parent.mkdir()
+    survey.write_bytes(b"survey")
+    related.write_bytes(b"related")
+
+    outputs = MODULE.package_deliverables(
+        tmp_path, "error_feedback", "reasflow-reascholar"
+    )
+
+    assert outputs == [
+        "error_feedback__survey__reasflow-reascholar__ReasFlow-ReaScholar.pdf",
+        "error_feedback__related-works__reasflow-reascholar__ReasFlow-ReaScholar.pdf",
+    ]
+    assert (tmp_path / outputs[0]).read_bytes() == b"survey"
+    assert (tmp_path / outputs[1]).read_bytes() == b"related"
