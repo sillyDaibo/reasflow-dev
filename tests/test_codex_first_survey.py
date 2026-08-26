@@ -260,8 +260,8 @@ def test_bibtex_uses_identifiers_without_printing_per_entry_urls() -> None:
 def test_bibtex_transliterates_latin_diacritics_for_t1_latex() -> None:
     escaped = MODULE.tex_escape("Jakovetić Karakuş Yıldırım Si‐cong")
 
-    assert r"{\'{c}}" in escaped
-    assert r"{\c{s}}" in escaped
+    assert r"{\'c}" in escaped
+    assert r"{\c s}" in escaped
     assert r"{\i}" in escaped
     assert "‐" not in escaped
 

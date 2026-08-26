@@ -491,9 +491,9 @@ def tex_escape(value: Any) -> str:
     }
     accents = {
         "\u0300": "`", "\u0301": "'", "\u0302": "^", "\u0303": "~",
-        "\u0304": "=", "\u0306": "u", "\u0307": ".", "\u0308": '"',
-        "\u030a": "r", "\u030b": "H", "\u030c": "v", "\u0327": "c",
-        "\u0328": "k",
+        "\u0304": "=", "\u0306": "u ", "\u0307": ".", "\u0308": '"',
+        "\u030a": "r ", "\u030b": "H ", "\u030c": "v ", "\u0327": "c ",
+        "\u0328": "k ",
     }
     converted = []
     for character in text:
@@ -505,7 +505,7 @@ def tex_escape(value: Any) -> str:
         if marks and base.isascii() and all(mark in accents for mark in marks):
             rendered = base
             for mark in marks:
-                rendered = rf"\{accents[mark]}{{{rendered}}}"
+                rendered = rf"\{accents[mark]}{rendered}"
             converted.append("{" + rendered + "}")
         else:
             converted.append(character)
