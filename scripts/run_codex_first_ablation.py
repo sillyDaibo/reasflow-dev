@@ -106,6 +106,26 @@ def publication_tool_path(workspace: Path) -> Path | None:
     return None
 
 
+def canonicalize_publication_layout(workspace: Path) -> None:
+    """Adapt root-level TeX delivery without changing manuscript content."""
+    for stem, directory in (("survey", "survey"), ("related_works", "related_works")):
+        source_tex = workspace / f"{stem}.tex"
+        source_pdf = workspace / f"{stem}.pdf"
+        if not source_tex.is_file():
+            continue
+        destination = workspace / directory
+        destination.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source_tex, destination / f"{stem}.tex")
+        if source_pdf.is_file():
+            shutil.copy2(source_pdf, destination / f"{stem}.pdf")
+        bibliography = workspace / "references.bib"
+        if bibliography.is_file():
+            shutil.copy2(bibliography, destination / "references.bib")
+        sections = workspace / "sections"
+        if sections.is_dir():
+            shutil.copytree(sections, destination / "sections", dirs_exist_ok=True)
+
+
 def install_reasflow(workspace: Path, source: Path) -> None:
     env = dict(os.environ)
     env["REASFLOW_DEV_SOURCE_DIR"] = str(source)
@@ -227,6 +247,7 @@ def main() -> int:
                 code = run_arm(workspace, arm, args.model, args.effort, args.timeout)
                 print(f"finished arm={arm} task={slug} returncode={code}")
                 if code == 0:
+                    canonicalize_publication_layout(workspace)
                     packaged = package_deliverables(workspace, slug, arm)
                     print(f"packaged arm={arm} task={slug} files={packaged}")
                 if code and not exit_code:
