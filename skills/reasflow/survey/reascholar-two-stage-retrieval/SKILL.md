@@ -54,6 +54,15 @@ Evidence rules:
   verify the source paper before using the claim.
 - Timeline prose with no direct citation edge may suggest a question, but it is
   not a verified method transition.
+- A Domain timeline is a sparse evidence lead, not a complete history. Recover
+  missing foundations and bridge works through backward citations,
+  field-defining surveys, and targeted S2/Web searches. Preserve both the
+  chronological chain and the mechanism transitions; do not replace one with
+  the other.
+- Classify every retained lineage relation as direct citation/explicit
+  influence, chronological succession, parallel work, or survey inference.
+  Use canonical publication metadata for dates; citation-key names are opaque
+  identifiers and must not be interpreted as years.
 - A paper limitation is not automatically a field-wide open problem.
 - Before retaining a gap, search citations and newer papers through the cutoff
   for partial resolution or counterevidence.

@@ -59,6 +59,16 @@ papers, citation expansion, unresolved metadata, and later-work checks.
   topic boundary.
 - Treat categories as comparison hypotheses, not section headings.
 - Treat a citation edge as relationship evidence, not proof of a specific claim.
+- Build the mechanism taxonomy and the historical lineage as separate views. A
+  mechanism-first organization must still give a continuous beginner-facing
+  account from foundational roots through the problem or limitation that
+  motivated each major transition to its successor mechanism. Include older
+  foundations outside a narrow ReaScholar Domain when they are necessary to
+  explain how the field arose.
+- Label lineage strength: distinguish a verified citation or explicit influence
+  from chronological succession, parallel development, and survey inference.
+  Do not turn temporal order into ancestry, and verify publication timing from
+  canonical metadata rather than the year-like text in a BibTeX key.
 - A gap is unresolved only after checking later work through the task cutoff.
 - Derive future work from verified gaps even when the retrieval API has no
   prewritten `future_work` record. Make each direction falsifiable with a proof
