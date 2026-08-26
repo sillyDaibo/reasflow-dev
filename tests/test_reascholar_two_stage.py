@@ -828,6 +828,40 @@ def test_structure_pack_keeps_unresolved_support_out_of_evidence() -> None:
     assert "legacy-id" not in json.dumps(pack["timeline"])
 
 
+def test_structure_pack_includes_s2_fallback_citation_edges() -> None:
+    papers = [
+        {"paper_key": "seed", "title": "Seed", "year": 2024},
+        {
+            "id": "s2:neighbor-id",
+            "paperId": "neighbor-id",
+            "title": "Earlier Neighbor",
+            "year": 2020,
+        },
+    ]
+    records = [
+        {
+            "seed_paper_key": "seed",
+            "expanded_paper_id": "neighbor-id",
+            "direction": "reference",
+        }
+    ]
+
+    pack = MODULE.build_structure_pack(
+        {"domains": []}, [], papers, [], records
+    )
+
+    assert pack["citation_relations"] == [
+        {
+            "relation": "cites",
+            "citing_paper_key": "seed",
+            "citing_title": "Seed",
+            "cited_paper_key": "s2:neighbor-id",
+            "cited_title": "Earlier Neighbor",
+            "status": "within_frozen_paper_pool",
+        }
+    ]
+
+
 def test_s2_only_profile_never_calls_reascholar(tmp_path, monkeypatch) -> None:
     calls: list[tuple[str, str]] = []
 

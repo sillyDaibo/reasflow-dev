@@ -227,6 +227,14 @@ def paper_key_from(value: dict[str, Any]) -> str:
     return str(value.get("paper_key") or value.get("paperKey") or "").strip()
 
 
+def frozen_paper_key(value: dict[str, Any]) -> str:
+    key = paper_key_from(value)
+    if key:
+        return key
+    paper_id = str(value.get("paperId") or "").strip()
+    return str(value.get("id") or (f"s2:{paper_id}" if paper_id else "")).strip()
+
+
 def arxiv_from_key(value: str) -> str:
     match = re.match(r"^(\d{4}\.\d{4,5})(?:v\d+)?(?:__|$)", value)
     return match.group(1) if match else ""
@@ -800,11 +808,11 @@ def build_domain_scaffold(
 
 
 def _paper_pool_index(papers: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
-    """Index papers by ReaScholar key, retaining only papers in the frozen pool."""
+    """Index every frozen paper, preferring its ReaScholar key when available."""
     return {
-        paper_key_from(paper): paper
+        frozen_paper_key(paper): paper
         for paper in papers
-        if paper_key_from(paper) and paper.get("title")
+        if frozen_paper_key(paper) and paper.get("title")
     }
 
 
@@ -836,6 +844,7 @@ def _compact_support_papers(
 def _citation_relations(
     paper_details: Iterable[dict[str, Any]],
     pool_by_key: dict[str, dict[str, Any]],
+    expansion_records: Iterable[dict[str, Any]] = (),
 ) -> list[dict[str, Any]]:
     """Return citation edges whose two endpoints are both in the frozen pool."""
     relations: list[dict[str, Any]] = []
@@ -873,6 +882,21 @@ def _citation_relations(
         for citing in citations.get("cited_by") or []:
             if isinstance(citing, dict):
                 add(paper_key_from(citing), source_key)
+
+    s2_key_by_id = {
+        str(paper.get("paperId") or ""): key
+        for key, paper in pool_by_key.items()
+        if paper.get("paperId")
+    }
+    for record in expansion_records:
+        seed_key = str(record.get("seed_paper_key") or "")
+        expanded_key = s2_key_by_id.get(
+            str(record.get("expanded_paper_id") or ""), ""
+        )
+        if record.get("direction") == "reference":
+            add(seed_key, expanded_key)
+        elif record.get("direction") == "cited_by":
+            add(expanded_key, seed_key)
     return relations
 
 
@@ -881,6 +905,7 @@ def build_structure_pack(
     ledger: list[dict[str, Any]],
     papers: list[dict[str, Any]],
     paper_details: Iterable[dict[str, Any]],
+    citation_expansion_records: Iterable[dict[str, Any]] = (),
 ) -> dict[str, Any]:
     """Build the compact, optional structure-only treatment for a frozen library."""
     pool_by_key = _paper_pool_index(papers)
@@ -958,7 +983,9 @@ def build_structure_pack(
         "paper_pool_reascholar_key_count": len(pool_by_key),
         "domains": domains,
         **grouped,
-        "citation_relations": _citation_relations(paper_details, pool_by_key),
+        "citation_relations": _citation_relations(
+            paper_details, pool_by_key, citation_expansion_records
+        ),
         "warnings": warnings,
     }
 
@@ -2054,6 +2081,7 @@ def run(args: argparse.Namespace) -> int:
         scaffold.get("narrative_items") or [],
         papers,
         detail_map.values(),
+        citation_expansion_records,
     )
     write_json(out / "structure_pack.json", structure_pack)
     (out / "structure_pack.md").write_text(
