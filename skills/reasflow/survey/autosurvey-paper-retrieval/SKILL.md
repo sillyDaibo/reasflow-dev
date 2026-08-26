@@ -52,6 +52,12 @@ Use native Codex web search first when you need broad discovery or freshness. Us
 Set `SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/survey/autosurvey-paper-retrieval"` before invoking the packaged helper script.
 
 ## Helper Script
+
+Semantic Scholar credentials are resolved automatically. Explicit
+`SEMANTIC_SCHOLAR_API_KEY` / `S2_API_KEY` values win; when neither is set, the
+script searches the current workspace and its parents for the nearest
+`.env.local`, loading only those two variables. `REASFLOW_ENV_FILE` can point
+to an alternate file. The key is never emitted in output artifacts or logs.
 - `python "$SKILL_ROOT/scripts/autosurvey_literature.py" search --query "federated optimization" --limit 25 --out survey/library/search_seed.json`
 - `python "$SKILL_ROOT/scripts/autosurvey_literature.py" search --query "gradient tracking update rules" --limit 25 --reascholar-mode algorithm --out survey/library/search_algorithm.json`
 - `python "$SKILL_ROOT/scripts/autosurvey_literature.py" paper --paper-id "arXiv:1602.05629" --out survey/library/fedavg.json`

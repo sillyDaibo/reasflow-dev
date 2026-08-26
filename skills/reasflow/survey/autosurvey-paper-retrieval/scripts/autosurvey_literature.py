@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import fcntl
 import json
 import os
 import re
@@ -14,22 +16,32 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+SURVEY_SKILL_ROOT = Path(__file__).resolve().parents[2]
+if str(SURVEY_SKILL_ROOT) not in sys.path:
+    sys.path.insert(0, str(SURVEY_SKILL_ROOT))
+
+from workspace_env import load_workspace_survey_env
+
+load_workspace_survey_env()
+
 S2_BASE_URL = "https://api.semanticscholar.org/graph/v1"
 REASCHOLAR_BASE_URL = os.getenv(
     "REASCHOLAR_BASE_URL", "https://scholar.reaslab.io"
 ).rstrip("/")
 SEARCH_FIELDS = (
     "paperId,title,authors,year,abstract,citationCount,url,externalIds,"
-    "venue,publicationDate"
+    "venue,publicationDate,publicationTypes,journal"
 )
 PAPER_FIELDS = (
     "paperId,title,authors,year,abstract,citationCount,referenceCount,url,"
-    "externalIds,venue,publicationDate,fieldsOfStudy,s2FieldsOfStudy"
+    "externalIds,venue,publicationDate,publicationTypes,journal,fieldsOfStudy,s2FieldsOfStudy"
 )
 EDGE_FIELDS = "paperId,title,authors,year,citationCount,url,externalIds,venue"
 TIMEOUT_SECONDS = 30
 REASCHOLAR_TIMEOUT_SECONDS = 12
-MAX_RETRIES = 3
+MAX_RETRIES = 6
+S2_MIN_INTERVAL_SECONDS = float(os.getenv("S2_MIN_INTERVAL_SECONDS", "1.1"))
+S2_RATE_LOCK_PATH = "/tmp/reasflow-semantic-scholar-rate.lock"
 BIB_PATTERN = re.compile(r"@\w+\s*\{\s*([^,\s]+)", re.IGNORECASE)
 
 
@@ -39,6 +51,18 @@ def semantic_scholar_api_key() -> str:
         os.getenv("SEMANTIC_SCHOLAR_API_KEY", "").strip()
         or os.getenv("S2_API_KEY", "").strip()
     )
+
+
+@contextlib.contextmanager
+def semantic_scholar_rate_slot():
+    """Serialize S2 calls from paired arms without persisting credentials."""
+    with open(S2_RATE_LOCK_PATH, "a+", encoding="utf-8") as lock_handle:
+        fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX)
+        try:
+            time.sleep(max(0.0, S2_MIN_INTERVAL_SECONDS))
+            yield
+        finally:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
 
 
 def repair_mojibake_text(text: str) -> str:
@@ -84,9 +108,10 @@ def request_json(path: str, params: dict[str, Any] | None = None) -> dict[str, A
     for attempt in range(MAX_RETRIES):
         request = urllib.request.Request(url, headers=headers)
         try:
-            with urllib.request.urlopen(request, timeout=TIMEOUT_SECONDS) as resp:
-                payload = resp.read().decode("utf-8")
-                return json.loads(payload)
+            with semantic_scholar_rate_slot():
+                with urllib.request.urlopen(request, timeout=TIMEOUT_SECONDS) as resp:
+                    payload = resp.read().decode("utf-8")
+                    return json.loads(payload)
         except urllib.error.HTTPError as exc:
             body = exc.read().decode("utf-8", errors="replace")
             if exc.code == 429 and attempt < MAX_RETRIES - 1:
@@ -281,7 +306,9 @@ def normalize_reascholar_paper(
         "title": title,
         "authors": authors,
         "year": year,
-        "venue": first_text(publication.get("venue"), domain_name),
+        "venue": first_text(publication.get("venue")),
+        "publication_venue": first_text(publication.get("venue")),
+        "topic_category": domain_name,
         "abstract": profile,
         "abs": profile,
         "citationCount": paper.get("citationCount") or 0,
@@ -322,7 +349,7 @@ def merge_s2_metadata(
     for field in ("citationCount", "referenceCount", "publicationDate"):
         if not merged.get(field) and s2_paper.get(field):
             merged[field] = s2_paper.get(field)
-    for field in ("venue", "url"):
+    for field in ("venue", "publication_venue", "url"):
         if not merged.get(field) and s2_paper.get(field):
             merged[field] = s2_paper.get(field)
     if not merged.get("abstract") and s2_paper.get("abstract"):
@@ -503,12 +530,18 @@ def normalize_paper(paper: dict[str, Any]) -> dict[str, Any]:
     external = paper.get("externalIds")
     if not isinstance(external, dict):
         external = {}
+    journal = paper.get("journal") if isinstance(paper.get("journal"), dict) else {}
     return {
         "paperId": paper.get("paperId", ""),
         "title": paper.get("title", ""),
         "authors": clean_authors(paper.get("authors", [])),
         "year": paper.get("year"),
         "venue": paper.get("venue", ""),
+        "publication_venue": paper.get("venue") or journal.get("name") or "",
+        "publication_types": paper.get("publicationTypes") or [],
+        "journal": journal,
+        "volume": journal.get("volume") or "",
+        "pages": journal.get("pages") or "",
         "abstract": paper.get("abstract", ""),
         "citationCount": paper.get("citationCount", 0),
         "referenceCount": paper.get("referenceCount", 0),

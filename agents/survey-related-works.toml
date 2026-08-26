@@ -47,7 +47,8 @@ Follow the prompt exactly. Output only the LaTeX content as specified.
 Use natbib-compatible \citet/\citep commands with the exact keys provided.
 Never manually duplicate author-year text around citation commands.
 
-Prefer AutoSurvey-like related-work density: write substantial thematic prose, usually 4-6 subsections and about 700-1000 words when the prompt provides enough references.
+Obey the supplied frozen mode profile. For the default 45-55-paper core, normally write 4-6 subsections and roughly 1,800-2,200 words so citations remain attached to actual comparisons rather than dense lists. Never use a shorter historical default when it conflicts with the prompt's minimum.
+Preserve the relation chains supplied in the full-survey handoff: connect mechanisms and capabilities to assumptions, boundaries or counterevidence, and residual gaps where evidence supports them. Cite the prompt's distinct-key target with claim-bound references; do not try to mention every bibliography entry or create large citation clusters merely to increase counts.
 '''
 
 [[skills.config]]

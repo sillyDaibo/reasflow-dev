@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import html
 import importlib.machinery
 import importlib.util
 import json
+import math
 import os
 import re
 import sys
 import threading
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -17,12 +21,20 @@ DEFAULT_SECTION_NUM = 7
 DEFAULT_SUBSECTION_LEN = 700
 DEFAULT_RAG_NUM = 60
 DEFAULT_OUTLINE_REFERENCE_NUM = 1500
+DEFAULT_NATIVE_EVIDENCE_MAX = 140
 DEFAULT_MIN_CITATIONS = 45
-DEFAULT_MIN_SURVEY_WORDS = 6000
-DEFAULT_MIN_SURVEY_SUBSECTIONS = 36
-DEFAULT_MIN_SURVEY_LINES = 450
-DEFAULT_MIN_RELATED_CITATIONS = 15
-DEFAULT_MIN_RELATED_WORDS = 650
+DEFAULT_MIN_UNIQUE_SURVEY_CITATIONS = 100
+DEFAULT_TARGET_UNIQUE_SURVEY_CITATIONS = 110
+DEFAULT_MIN_SURVEY_WORDS = 10000
+DEFAULT_TARGET_SURVEY_WORDS = 12000
+DEFAULT_MIN_SURVEY_SUBSECTIONS = 24
+# Physical TeX line count is formatting-dependent. Word, subsection, citation,
+# BibTeX, and compilation gates provide the publication-quality contract.
+DEFAULT_MIN_SURVEY_LINES = 0
+DEFAULT_MIN_RELATED_CITATIONS = 45
+DEFAULT_TARGET_RELATED_CITATIONS = 50
+DEFAULT_MAX_RELATED_CITATIONS = 55
+DEFAULT_MIN_RELATED_WORDS = 1500
 DEFAULT_MIN_RELATED_SECTIONS = 3
 DEFAULT_EMBEDDING_MODEL = "nomic-ai/nomic-embed-text-v1"
 
@@ -724,6 +736,24 @@ def generate_bibtex_key(paper: dict) -> str:
     return f"{first_author}{year}{title_key}"
 
 
+def assign_unique_bibtex_keys(papers: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Attach stable, collision-free citation keys without changing paper order."""
+    used: set[str] = set()
+    keyed: list[dict[str, Any]] = []
+    for paper in papers:
+        row = dict(paper)
+        base = generate_bibtex_key(row) or "paper"
+        key = base
+        suffix = 2
+        while key in used:
+            key = f"{base}{suffix}"
+            suffix += 1
+        used.add(key)
+        row["bib_key"] = key
+        keyed.append(row)
+    return keyed
+
+
 def extract_bibtex_key(bibtex: str) -> str:
     if not bibtex or not isinstance(bibtex, str):
         return ""
@@ -750,9 +780,13 @@ def _paper_arxiv_id(paper: dict) -> str:
     external_ids = paper.get("externalIds") or paper.get("external_ids") or {}
     if isinstance(external_ids, dict):
         arxiv_id = external_ids.get("ArXiv") or external_ids.get("arxiv") or ""
-        if arxiv_id:
+        if arxiv_id and re.fullmatch(r"\d{4}\.\d{4,5}(?:v\d+)?", str(arxiv_id)):
             return str(arxiv_id)
-    return str(paper.get("id") or paper.get("arxiv_id") or "")
+    for field in ("arxiv_id", "id"):
+        value = str(paper.get(field) or "").strip()
+        if re.fullmatch(r"\d{4}\.\d{4,5}(?:v\d+)?", value):
+            return value
+    return ""
 
 
 def _paper_year(paper: dict) -> str:
@@ -805,8 +839,52 @@ def _normalize_arxiv_preprint_bibtex(bibtex: str) -> str:
     return bibtex
 
 
+def _normalize_mixed_arxiv_bibtex(paper: dict, bibtex: str) -> str:
+    """Remove S2 records that mix a formal venue with arXiv volume fields.
+
+    Semantic Scholar sometimes exposes the venue of a later publication while
+    retaining ``volume = {abs/...}`` and an arXiv resolver as if those fields
+    described the formal version.  Unless a non-arXiv DOI is present, the
+    conservative publication-safe representation is an explicit preprint.
+    """
+    volume = _bibtex_field(bibtex, "volume")
+    url = _bibtex_field(bibtex, "url")
+    doi = _bibtex_field(bibtex, "doi")
+    arxiv_id = _clean_arxiv_id(_paper_arxiv_id(paper))
+    has_abs_volume = volume.casefold().startswith("abs/")
+    has_arxiv_locator = (
+        _is_arxiv_url(url)
+        or "10.48550/arxiv." in doi.casefold()
+        or "10.48550/arxiv." in url.casefold()
+    )
+    has_formal_doi = bool(doi and not doi.casefold().startswith("10.48550/arxiv."))
+
+    if has_formal_doi:
+        if has_abs_volume:
+            bibtex = _remove_bibtex_fields(bibtex, {"volume"})
+        if has_arxiv_locator:
+            bibtex = _remove_bibtex_fields(bibtex, {"url"})
+        return bibtex
+
+    if has_abs_volume:
+        bibtex = _remove_bibtex_fields(
+            bibtex, {"journal", "booktitle", "volume", "number", "pages", "doi", "url"}
+        )
+        bibtex = re.sub(r"^@\s*(?:article|inproceedings)", "@misc", bibtex, count=1, flags=re.IGNORECASE)
+        if not arxiv_id:
+            arxiv_id = volume.split("/", 1)[-1]
+        bibtex = _insert_bibtex_field(bibtex, "eprint", arxiv_id)
+        bibtex = _insert_bibtex_field(bibtex, "archiveprefix", "arXiv")
+        bibtex = _insert_bibtex_field(
+            bibtex, "url", f"https://arxiv.org/abs/{arxiv_id}" if arxiv_id else ""
+        )
+    elif _bibtex_has_published_venue(bibtex) and has_arxiv_locator:
+        bibtex = _remove_bibtex_fields(bibtex, {"url", "doi"})
+    return bibtex
+
+
 def _repair_bibtex_mojibake(bibtex: str) -> str:
-    value = str(bibtex or "")
+    value = html.unescape(str(bibtex or ""))
     replacements = {
         "â€“": "--",
         "â€”": "---",
@@ -816,11 +894,12 @@ def _repair_bibtex_mojibake(bibtex: str) -> str:
     }
     for bad, good in replacements.items():
         value = value.replace(bad, good)
-    return value
+    return re.sub(r"(?<!\\)&", r"\\&", value)
 
 
 def _is_arxiv_url(url: str) -> bool:
-    return "arxiv.org" in (url or "").lower()
+    lowered = (url or "").lower()
+    return "arxiv.org" in lowered or "10.48550/arxiv." in lowered
 
 
 def _is_internal_reascholar_url(url: str) -> bool:
@@ -841,6 +920,57 @@ def _canonical_bib_url(paper: dict) -> str:
     if not url or _is_internal_reascholar_url(url):
         return ""
     return url
+
+
+def _formal_doi(paper: dict) -> str:
+    doi = str(
+        paper.get("doi") or (paper.get("externalIds") or {}).get("DOI") or ""
+    ).strip()
+    doi = re.sub(r"^https?://(?:dx\.)?doi\.org/", "", doi, flags=re.IGNORECASE)
+    if not doi.startswith("10.") or doi.lower().startswith("10.48550/arxiv."):
+        return ""
+    return doi
+
+
+def _publication_metadata(paper: dict) -> dict[str, str]:
+    journal = paper.get("journal") if isinstance(paper.get("journal"), dict) else {}
+    venue = str(
+        paper.get("publication_venue") or journal.get("name") or ""
+    ).strip()
+    publication_types = " ".join(
+        str(value) for value in (paper.get("publication_types") or [])
+    ).lower()
+    venue_lower = venue.lower()
+    is_conference = "conference" in publication_types or bool(
+        re.search(r"\b(conference|proceedings|workshop|symposium)\b", venue_lower)
+    )
+    is_journal = "journal" in publication_types or bool(journal.get("name"))
+    entry_type = "inproceedings" if is_conference and not is_journal else "article"
+    if not venue:
+        entry_type = "misc"
+    return {
+        "entry_type": entry_type,
+        "venue": venue,
+        "volume": str(paper.get("volume") or journal.get("volume") or "").strip(),
+        "number": str(paper.get("issue") or paper.get("number") or "").strip(),
+        "pages": str(paper.get("pages") or journal.get("pages") or "").strip(),
+        "publisher": str(paper.get("publisher") or "").strip(),
+    }
+
+
+def _protect_bibtex_title(title: str) -> str:
+    protected = str(title or "Untitled")
+    tokens = {
+        "ADMM", "AI", "Byzantine", "CNN", "DGD", "EF21", "FL", "GPU",
+        "LLM", "NLP", "PCA", "SGD", "SVM", "ViT",
+    }
+    for token in sorted(tokens, key=len, reverse=True):
+        protected = re.sub(
+            rf"(?<![{{A-Za-z0-9]){re.escape(token)}(?![}}A-Za-z0-9])",
+            "{" + token + "}",
+            protected,
+        )
+    return re.sub(r"(?<!\{)\b([A-Z][A-Z0-9]{1,})\b(?!\})", r"{\1}", protected)
 
 
 def _bibtex_source_is_consistent(paper: dict, bibtex: str) -> bool:
@@ -880,9 +1010,11 @@ def _insert_bibtex_field(bibtex: str, field: str, value: str) -> str:
 def enrich_bibtex_entry(paper: dict, bibtex: str) -> str:
     enriched = _repair_bibtex_mojibake(bibtex.strip())
     enriched = _normalize_arxiv_preprint_bibtex(enriched)
+    enriched = _normalize_mixed_arxiv_bibtex(paper, enriched)
     enriched = _insert_bibtex_field(enriched, "year", _paper_year(paper))
     has_published_venue = _bibtex_has_published_venue(enriched)
     canonical_url = _canonical_bib_url(paper)
+    formal_doi = _formal_doi(paper)
 
     arxiv_id = _paper_arxiv_id(paper)
     if (
@@ -893,12 +1025,14 @@ def enrich_bibtex_entry(paper: dict, bibtex: str) -> str:
         enriched = _insert_bibtex_field(enriched, "eprint", arxiv_id)
         enriched = _insert_bibtex_field(enriched, "archiveprefix", "arXiv")
         enriched = _insert_bibtex_field(enriched, "url", canonical_url)
-    elif canonical_url and not (has_published_venue and _is_arxiv_url(canonical_url)):
+    elif canonical_url and not formal_doi and not (
+        has_published_venue and _is_arxiv_url(canonical_url)
+    ):
         enriched = _insert_bibtex_field(enriched, "url", canonical_url)
 
-    doi = paper.get("doi") or (paper.get("externalIds") or {}).get("DOI")
-    if doi:
-        enriched = _insert_bibtex_field(enriched, "doi", str(doi))
+    if formal_doi:
+        enriched = _insert_bibtex_field(enriched, "doi", formal_doi)
+        enriched = _remove_bibtex_fields(enriched, {"url"})
     return enriched
 
 
@@ -908,7 +1042,7 @@ def is_weak_bibtex_key(key: str) -> bool:
 
 
 def arxiv_id_to_bibtex(paper: dict, key: str) -> str:
-    title = paper.get("title", "Untitled")
+    title = _protect_bibtex_title(str(paper.get("title") or "Untitled"))
     authors = paper.get("authors", ["Unknown"])
     if isinstance(authors, str):
         authors = [a.strip() for a in authors.split(",")]
@@ -917,15 +1051,27 @@ def arxiv_id_to_bibtex(paper: dict, key: str) -> str:
 
     arxiv_id = _paper_arxiv_id(paper)
     url = _canonical_bib_url(paper)
-
-    bib = f"@article{{{key},\n"
+    formal_doi = _formal_doi(paper)
+    publication = _publication_metadata(paper)
+    entry_type = publication["entry_type"]
+    if not publication["venue"] and not formal_doi:
+        entry_type = "misc"
+    bib = f"@{entry_type}{{{key},\n"
     bib += f"  title = {{{title}}},\n"
     bib += f"  author = {{{author_str}}},\n"
     bib += f"  year = {{{year}}},\n"
-    if arxiv_id:
+    if publication["venue"]:
+        venue_field = "booktitle" if entry_type == "inproceedings" else "journal"
+        bib += f"  {venue_field} = {{{publication['venue']}}},\n"
+    for field in ("volume", "number", "pages", "publisher"):
+        if publication[field]:
+            bib += f"  {field} = {{{publication[field]}}},\n"
+    if formal_doi:
+        bib += f"  doi = {{{formal_doi}}},\n"
+    if arxiv_id and not publication["venue"]:
         bib += f"  eprint = {{{arxiv_id}}},\n"
         bib += f"  archiveprefix = {{arXiv}},\n"
-    if url:
+    if url and not formal_doi:
         bib += f"  url = {{{url}}},\n"
     bib += "}\n"
     return bib
@@ -969,6 +1115,14 @@ def normalize_external_paper(raw: dict[str, Any]) -> dict[str, Any]:
         "url": raw.get("url") or "",
         "externalIds": external_ids,
         "venue": raw.get("venue") or "",
+        "publication_venue": raw.get("publication_venue") or "",
+        "publication_types": raw.get("publication_types") or raw.get("publicationTypes") or [],
+        "journal": raw.get("journal") if isinstance(raw.get("journal"), dict) else {},
+        "volume": raw.get("volume") or "",
+        "issue": raw.get("issue") or raw.get("number") or "",
+        "pages": raw.get("pages") or "",
+        "publisher": raw.get("publisher") or "",
+        "topic_category": raw.get("topic_category") or "",
         "citationCount": raw.get("citationCount") or raw.get("citation_count") or 0,
         "referenceCount": raw.get("referenceCount") or raw.get("reference_count") or 0,
         "publicationDate": raw.get("publicationDate") or "",
@@ -981,6 +1135,8 @@ def normalize_external_paper(raw: dict[str, Any]) -> dict[str, Any]:
         "topics": raw.get("topics") or [],
         "strengths": raw.get("strengths") or raw.get("summary_markdown") or "",
         "weaknesses": raw.get("weaknesses") or "",
+        "limitations": raw.get("limitations") or [],
+        "open_problem_candidates": raw.get("open_problem_candidates") or [],
         "summary_markdown": raw.get("summary_markdown") or "",
     }
 
@@ -1057,6 +1213,542 @@ def load_external_library_papers(workspace_root: Path, library_dir_raw: str) -> 
     return papers
 
 
+def load_frozen_paper_pool(
+    workspace_root: Path, library_dir_raw: str
+) -> list[dict[str, Any]]:
+    """Load only paper_pool.jsonl, preserving its frozen order and identity set."""
+    pool_path = resolve_path(workspace_root, library_dir_raw) / "paper_pool.jsonl"
+    if not pool_path.exists():
+        raise FileNotFoundError(f"Frozen paper pool is missing: {pool_path}")
+    papers: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for line_number, line in enumerate(
+        pool_path.read_text(encoding="utf-8").splitlines(), start=1
+    ):
+        if not line.strip():
+            continue
+        try:
+            paper = normalize_external_paper(json.loads(line))
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                f"Invalid JSON in frozen paper pool at line {line_number}: {pool_path}"
+            ) from exc
+        title = str(paper.get("title") or "").strip()
+        if not title:
+            continue
+        identity = str(
+            paper.get("id")
+            or paper.get("paperId")
+            or paper.get("paper_key")
+            or title.lower()
+        ).lower()
+        if identity in seen:
+            continue
+        seen.add(identity)
+        papers.append(paper)
+    return papers
+
+
+def _load_frozen_task(
+    workspace_root: Path, task_path_raw: str = ""
+) -> tuple[dict[str, Any], Path | None]:
+    """Load the task contract used by an evaluation workspace, when present."""
+    candidates: list[Path] = []
+    if task_path_raw:
+        candidates.append(resolve_path(workspace_root, task_path_raw))
+    candidates.extend(
+        [workspace_root / "frozen_task.yaml", workspace_root / "task.yaml"]
+    )
+    for path in candidates:
+        if not path.exists():
+            continue
+        try:
+            import yaml
+        except ImportError as exc:  # pragma: no cover - deployment dependency guard
+            raise RuntimeError(f"PyYAML is required to read task contract: {path}") from exc
+        payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        if not isinstance(payload, dict):
+            raise ValueError(f"Task contract must be a YAML mapping: {path}")
+        return payload, path
+    return {}, None
+
+
+def _paper_abstract(paper: dict[str, Any]) -> str:
+    return str(paper.get("abs") or paper.get("abstract") or "").strip()
+
+
+def _paper_identity(paper: dict[str, Any]) -> str:
+    return str(
+        paper.get("id")
+        or paper.get("paperId")
+        or paper.get("paper_key")
+        or _normalize_title_for_match(paper_title(paper))
+    )
+
+
+def _paper_information_score(paper: dict[str, Any]) -> float:
+    """Bounded content-quality score; empty records cannot dominate by popularity."""
+    abstract_len = len(_paper_abstract(paper))
+    if abstract_len >= 800:
+        abstract_score = 2.0
+    elif abstract_len >= 300:
+        abstract_score = 1.6
+    elif abstract_len >= 100:
+        abstract_score = 1.1
+    elif abstract_len:
+        abstract_score = 0.2
+    else:
+        abstract_score = -2.0
+
+    metadata_score = 0.0
+    metadata_score += 0.15 if paper.get("authors") else 0.0
+    metadata_score += 0.10 if paper.get("year") else 0.0
+    metadata_score += 0.10 if paper.get("venue") else 0.0
+    metadata_score += 0.10 if paper.get("externalIds") else 0.0
+    metadata_score += 0.15 if paper.get("strengths") else 0.0
+    metadata_score += 0.10 if paper.get("weaknesses") else 0.0
+
+    try:
+        citation_count = max(0.0, float(paper.get("citationCount") or 0))
+    except (TypeError, ValueError):
+        citation_count = 0.0
+    citation_score = min(0.75, math.log1p(citation_count) / 12.0)
+    return abstract_score + metadata_score + citation_score
+
+
+def _paper_query_score(paper: dict[str, Any], query: str) -> float:
+    query_tokens = _query_tokens(query)
+    if not query_tokens:
+        return 0.0
+    title_tokens = _query_tokens(paper_title(paper))
+    abstract_tokens = _query_tokens(_paper_abstract(paper))
+    topic_value = paper.get("topics") or []
+    topic_text = " ".join(topic_value) if isinstance(topic_value, list) else str(topic_value)
+    auxiliary_tokens = _query_tokens(
+        " ".join(
+            [
+                topic_text,
+                str(paper.get("strengths") or ""),
+                str(paper.get("weaknesses") or ""),
+            ]
+        )
+    )
+    title_overlap = len(query_tokens & title_tokens) / len(query_tokens)
+    abstract_overlap = len(query_tokens & abstract_tokens) / len(query_tokens)
+    auxiliary_overlap = len(query_tokens & auxiliary_tokens) / len(query_tokens)
+    return 3.0 * title_overlap + 1.5 * abstract_overlap + 0.5 * auxiliary_overlap
+
+
+def _topic_signature_stems(topic: str) -> set[str]:
+    """Return distinctive prefixes used only as a conservative relevance gate."""
+    generic = {
+        "algorithm",
+        "analysis",
+        "approach",
+        "distributed",
+        "information",
+        "learning",
+        "method",
+        "optimization",
+        "problem",
+        "system",
+    }
+    return {
+        token[:6]
+        for token in _query_tokens(topic)
+        if token not in generic and len(token) >= 5
+    }
+
+
+def _paper_matches_topic_signature(
+    paper: dict[str, Any], signature_stems: set[str]
+) -> bool:
+    if not signature_stems:
+        return True
+    topic_value = paper.get("topics") or []
+    topic_text = " ".join(topic_value) if isinstance(topic_value, list) else str(topic_value)
+    paper_tokens = _query_tokens(
+        " ".join(
+            (
+                paper_title(paper),
+                _paper_abstract(paper),
+                topic_text,
+                str(paper.get("strengths") or ""),
+                str(paper.get("weaknesses") or ""),
+            )
+        )
+    )
+    paper_stems = {token[:6] for token in paper_tokens if len(token) >= 5}
+    return bool(signature_stems & paper_stems)
+
+
+def _structure_supported_titles(
+    workspace_root: Path, library_dir_raw: str
+) -> set[str]:
+    pack_path = resolve_path(workspace_root, library_dir_raw) / "structure_pack.json"
+    if not pack_path.exists():
+        return set()
+    try:
+        pack = json.loads(pack_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return set()
+    titles: set[str] = set()
+    for key in ("timeline", "gaps", "future_work"):
+        for item in pack.get(key) or []:
+            for support in item.get("support_papers") or []:
+                title = _normalize_title_for_match(str(support.get("title") or ""))
+                if title:
+                    titles.add(title)
+    for edge in pack.get("citation_relations") or []:
+        for key in ("citing_title", "cited_title"):
+            title = _normalize_title_for_match(str(edge.get(key) or ""))
+            if title:
+                titles.add(title)
+    return titles
+
+
+def select_native_evidence(
+    papers: list[dict[str, Any]],
+    topic: str,
+    parsed_outline: dict[str, Any],
+    max_papers: int,
+    required_references: list[dict[str, Any]] | None = None,
+    structure_supported_titles: set[str] | None = None,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Select a bounded, section-balanced writer library deterministically."""
+    required_references = required_references or []
+    structure_supported_titles = structure_supported_titles or set()
+
+    deduplicated: dict[str, dict[str, Any]] = {}
+    for raw in papers:
+        paper = normalize_external_paper(raw)
+        title_key = _normalize_title_for_match(paper_title(paper))
+        if not title_key:
+            continue
+        current = deduplicated.get(title_key)
+        if current is None or _paper_information_score(paper) > _paper_information_score(current):
+            deduplicated[title_key] = paper
+    candidates = list(deduplicated.values())
+    signature_stems = _topic_signature_stems(topic)
+    relevant_titles = {
+        _normalize_title_for_match(paper_title(paper))
+        for paper in candidates
+        if _paper_matches_topic_signature(paper, signature_stems)
+    }
+
+    anchor_keys: list[tuple[str, set[str]]] = []
+    for entry in required_references:
+        canonical = _normalize_title_for_match(str(entry.get("title") or ""))
+        aliases = {
+            _normalize_title_for_match(str(alias))
+            for alias in (entry.get("aliases") or [])
+            if str(alias).strip()
+        }
+        if canonical:
+            anchor_keys.append((canonical, aliases))
+
+    pinned: list[dict[str, Any]] = []
+    pinned_titles: set[str] = set()
+    missing_anchors: list[str] = []
+    by_title = {
+        _normalize_title_for_match(paper_title(paper)): paper for paper in candidates
+    }
+    for canonical, aliases in anchor_keys:
+        paper = by_title.get(canonical)
+        if paper is None:
+            paper = next(
+                (
+                    candidate
+                    for title_key, candidate in by_title.items()
+                    if title_key in aliases
+                ),
+                None,
+            )
+        if paper is None:
+            missing_anchors.append(canonical)
+            continue
+        title_key = _normalize_title_for_match(paper_title(paper))
+        if title_key not in pinned_titles:
+            pinned.append(paper)
+            pinned_titles.add(title_key)
+
+    queries: list[str] = [topic]
+    sections = parsed_outline.get("sections") or []
+    section_descriptions = parsed_outline.get("section_descriptions") or []
+    subsections = parsed_outline.get("subsections") or []
+    subsection_descriptions = parsed_outline.get("subsection_descriptions") or []
+    for section_index, section in enumerate(sections):
+        section_desc = (
+            section_descriptions[section_index]
+            if section_index < len(section_descriptions)
+            else ""
+        )
+        queries.append(" ".join(part for part in (section, section_desc) if part))
+        section_subs = subsections[section_index] if section_index < len(subsections) else []
+        section_sub_descs = (
+            subsection_descriptions[section_index]
+            if section_index < len(subsection_descriptions)
+            else []
+        )
+        for subsection_index, subsection in enumerate(section_subs):
+            desc = (
+                section_sub_descs[subsection_index]
+                if subsection_index < len(section_sub_descs)
+                else ""
+            )
+            queries.append(" ".join(part for part in (section, subsection, desc) if part))
+    queries = list(dict.fromkeys(query.strip() for query in queries if query.strip()))
+
+    def score(paper: dict[str, Any], query: str) -> float:
+        title_key = _normalize_title_for_match(paper_title(paper))
+        structure_bonus = 0.35 if title_key in structure_supported_titles else 0.0
+        return _paper_information_score(paper) + _paper_query_score(paper, query) + structure_bonus
+
+    selected = pinned[:max_papers]
+    selected_titles = {
+        _normalize_title_for_match(paper_title(paper)) for paper in selected
+    }
+    per_query_coverage: dict[str, int] = {query: 0 for query in queries}
+
+    # Two round-robin passes prevent one high-frequency branch from monopolizing context.
+    for _ in range(2):
+        for query in queries:
+            if len(selected) >= max_papers:
+                break
+            eligible = [
+                paper
+                for paper in candidates
+                if _normalize_title_for_match(paper_title(paper)) not in selected_titles
+                and (
+                    _normalize_title_for_match(paper_title(paper)) in relevant_titles
+                    or _normalize_title_for_match(paper_title(paper)) in pinned_titles
+                )
+            ]
+            if not eligible:
+                break
+            paper = max(
+                eligible,
+                key=lambda item: (
+                    score(item, query),
+                    _normalize_title_for_match(paper_title(item)),
+                ),
+            )
+            title_key = _normalize_title_for_match(paper_title(paper))
+            selected.append(paper)
+            selected_titles.add(title_key)
+            per_query_coverage[query] += 1
+
+    remaining = [
+        paper
+        for paper in candidates
+        if _normalize_title_for_match(paper_title(paper)) not in selected_titles
+        and (
+            _normalize_title_for_match(paper_title(paper)) in relevant_titles
+            or _normalize_title_for_match(paper_title(paper)) in pinned_titles
+        )
+    ]
+    remaining.sort(
+        key=lambda paper: (
+            max(score(paper, query) for query in queries),
+            _normalize_title_for_match(paper_title(paper)),
+        ),
+        reverse=True,
+    )
+    selected.extend(remaining[: max(0, max_papers - len(selected))])
+
+    selected_ids = [_paper_identity(paper) for paper in selected]
+    selected_payload_hash = hashlib.sha256(
+        json.dumps(selected_ids, ensure_ascii=False).encode("utf-8")
+    ).hexdigest()
+    manifest = {
+        "policy": "deterministic-balanced-topic-gated-evidence-v2",
+        "input_count": len(papers),
+        "deduplicated_count": len(candidates),
+        "selected_count": len(selected),
+        "max_papers": max_papers,
+        "topic_signature_stems": sorted(signature_stems),
+        "topic_relevant_candidate_count": len(relevant_titles),
+        "topic_irrelevant_candidate_count": len(candidates) - len(relevant_titles),
+        "input_with_abstract_ge_100": sum(
+            len(_paper_abstract(paper)) >= 100 for paper in candidates
+        ),
+        "selected_with_abstract_ge_100": sum(
+            len(_paper_abstract(paper)) >= 100 for paper in selected
+        ),
+        "input_empty_abstract": sum(not _paper_abstract(paper) for paper in candidates),
+        "selected_empty_abstract": sum(not _paper_abstract(paper) for paper in selected),
+        "dropped_low_information_count": sum(
+            len(_paper_abstract(paper)) < 100
+            for paper in candidates
+            if _normalize_title_for_match(paper_title(paper)) not in {
+                _normalize_title_for_match(paper_title(item)) for item in selected
+            }
+        ),
+        "pinned_anchor_count": len(pinned_titles),
+        "missing_required_anchors": missing_anchors,
+        "structure_supported_selected_count": sum(
+            _normalize_title_for_match(paper_title(paper)) in structure_supported_titles
+            for paper in selected
+        ),
+        "query_count": len(queries),
+        "per_query_round_robin_coverage": per_query_coverage,
+        "selected_ids": selected_ids,
+        "selected_ids_sha256": selected_payload_hash,
+    }
+    return selected, manifest
+
+
+STRUCTURE_CONTENT_KEYS = (
+    "domains",
+    "timeline",
+    "gaps",
+    "future_work",
+    "citation_relations",
+)
+STRUCTURE_ITEM_KEYS = (*STRUCTURE_CONTENT_KEYS, "warnings")
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def paper_library_metadata(workspace_root: Path, library_dir_raw: str) -> dict[str, Any]:
+    library_dir = resolve_path(workspace_root, library_dir_raw)
+    pool_path = library_dir / "paper_pool.jsonl"
+    return {
+        "library_dir": str(library_dir),
+        "paper_pool_path": str(pool_path) if pool_path.exists() else None,
+        "paper_pool_sha256": _sha256_file(pool_path) if pool_path.exists() else None,
+        "paper_pool_line_count": sum(
+            1
+            for line in pool_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        )
+        if pool_path.exists()
+        else 0,
+    }
+
+
+def _render_structure_prompt(pack: dict[str, Any]) -> str:
+    lines = [
+        "ReaScholar structure treatment (provisional; the paper library above remains the only citation source):",
+        "---",
+        "Use the following structure to test better synthesis, not as a source of facts or citations.",
+    ]
+    domains = pack.get("domains") or []
+    if domains:
+        lines.append("Candidate research branches:")
+        for item in domains[:8]:
+            description = str(item.get("description") or "").strip()
+            suffix = f" — {description}" if description else ""
+            lines.append(f"- {item.get('title')}{suffix}")
+    for key, heading in (
+        ("timeline", "Evolution/lineage candidates"),
+        ("gaps", "Limitation/gap candidates"),
+        ("future_work", "Future-work candidates"),
+    ):
+        items = pack.get(key) or []
+        if not items:
+            continue
+        lines.append(f"{heading}:")
+        for item in items[:16]:
+            support = "; ".join(
+                str(paper.get("title") or "")
+                for paper in item.get("support_papers") or []
+                if paper.get("title")
+            )
+            support_text = support or "NO RESOLVED SUPPORT IN FROZEN POOL"
+            period = ""
+            if item.get("period_start") or item.get("period_end"):
+                period = f" [{item.get('period_start') or '?'}-{item.get('period_end') or '?'}]"
+            lines.append(
+                f"- [PROVISIONAL]{period} {item.get('candidate_claim')} (listed support: {support_text})"
+            )
+    relations = pack.get("citation_relations") or []
+    if relations:
+        lines.append("Within-library citation relations:")
+        for edge in relations[:40]:
+            lines.append(
+                f"- {edge.get('citing_title')} cites {edge.get('cited_title')}"
+            )
+    warnings = pack.get("warnings") or []
+    if warnings:
+        lines.append(
+            f"Evidence warning: {len(warnings)} items have unresolved or out-of-pool support identifiers; never cite those identifiers."
+        )
+    lines.extend(
+        [
+            "Required use when applicable:",
+            "1. Organize the survey around meaningful research branches rather than a paper-by-paper list.",
+            "2. Before naming branches, define 3-6 orthogonal comparison axes that form a reusable coordinate system, such as mechanism, information flow, assumptions, resource cost, and guarantee. Map every major branch to the same axes.",
+            "3. Explain at least one supported evolution or lineage and distinguish chronological succession from a verified citation relation.",
+            "4. Include a compact cross-branch decision table comparing mechanisms, assumptions, guarantees, limitations, and the regime in which each branch should be preferred.",
+            "5. State a timeline, gap, or future direction only when the listed support papers in the frozen library substantiate it; otherwise mark it uncertain or omit it.",
+            "6. Treat every supplied branch as optional. Omit any branch or paper that is only adjacent to the topic and cannot be placed on the common comparison axes with direct evidence.",
+            "7. Do not present Domain prose, unresolved IDs, or absent support papers as evidence.",
+            "8. Internalize these constraints without mentioning ReaScholar, Domain pages, the structure pack, the frozen library/pool, support lists, or the availability/absence of citation edges in the survey itself.",
+            "---",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def load_structure_context(
+    workspace_root: Path, args: argparse.Namespace
+) -> tuple[str, dict[str, Any]]:
+    mode = str(getattr(args, "structure_mode", "auto") or "auto")
+    if mode not in {"auto", "include", "exclude"}:
+        raise ValueError(f"Unknown structure mode: {mode}")
+    metadata: dict[str, Any] = {
+        "requested_mode": mode,
+        "included": False,
+        "structure_pack_path": None,
+        "structure_pack_sha256": None,
+        "counts": {key: 0 for key in STRUCTURE_ITEM_KEYS},
+    }
+    if mode == "exclude":
+        return "", metadata
+
+    raw_path = str(getattr(args, "structure_pack", "") or "").strip()
+    if raw_path:
+        pack_path = resolve_path(workspace_root, raw_path)
+    else:
+        library_dir = resolve_path(workspace_root, getattr(args, "library_dir", "survey/library"))
+        pack_path = library_dir / "structure_pack.json"
+    metadata["structure_pack_path"] = str(pack_path)
+    if not pack_path.exists():
+        if mode == "include":
+            raise FileNotFoundError(f"Structure pack is required but missing: {pack_path}")
+        return "", metadata
+    try:
+        pack = json.loads(pack_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid structure pack JSON: {pack_path}") from exc
+    if pack.get("schema_version") != "reascholar-structure-pack-v1":
+        raise ValueError(f"Unsupported structure pack schema: {pack.get('schema_version')}")
+    counts = {
+        key: len(pack.get(key) or []) if isinstance(pack.get(key), list) else 0
+        for key in STRUCTURE_ITEM_KEYS
+    }
+    metadata.update(
+        {
+            "structure_pack_sha256": _sha256_file(pack_path),
+            "counts": counts,
+        }
+    )
+    useful_count = sum(counts[key] for key in STRUCTURE_CONTENT_KEYS)
+    if useful_count == 0:
+        if mode == "include":
+            raise ValueError(f"Structure pack has no usable structural items: {pack_path}")
+        return "", metadata
+    metadata["included"] = True
+    return _render_structure_prompt(pack), metadata
+
+
 def select_bibtex_entry(paper: dict, fallback_key: str | None = None) -> tuple[str, str]:
     for field in ("raw_bibtex", "best_citation_bibtex"):
         bibtex = paper.get(field)
@@ -1076,6 +1768,34 @@ def select_bibtex_entry(paper: dict, fallback_key: str | None = None) -> tuple[s
 
 def count_words(text: str) -> int:
     return len(re.findall(r"\b[\w'-]+\b", text))
+
+
+def count_tex_content_words(text: str) -> int:
+    """Mirror the benchmark's normalized TeX word-count contract."""
+
+    citation_pattern = (
+        r"\\cite[a-zA-Z]*\*?(?:\s*\[[^\]]*\]){0,2}\s*\{([^{}]+)\}"
+    )
+
+    def replace_citation(match: re.Match[str]) -> str:
+        keys = [key.strip() for key in match.group(1).split(",") if key.strip()]
+        if not keys:
+            return " "
+        return " [" + "; ".join(f"@{key}" for key in keys) + "] "
+
+    text = re.sub(r"(?<!\\)%.*", "", text)
+    text = re.sub(citation_pattern, replace_citation, text)
+    text = re.sub(r"\\(begin|end)\{[^}]+\}", " ", text)
+    text = re.sub(r"\\section\*?\{([^}]+)\}", r"\n## \1\n", text)
+    text = re.sub(r"\\subsection\*?\{([^}]+)\}", r"\n### \1\n", text)
+    text = re.sub(r"\\subsubsection\*?\{([^}]+)\}", r"\n#### \1\n", text)
+    text = re.sub(r"\\(?:textbf|emph)\{([^}]+)\}", r"\1", text)
+    text = re.sub(r"\\[a-zA-Z]+\*?(?:\[[^\]]*\])?", " ", text)
+    text = re.sub(r"[{}$]", "", text)
+    text = text.replace(r"\%", "%")
+    text = unicodedata.normalize("NFKC", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return len(text.split())
 
 
 def count_related_sections(text: str) -> int:
@@ -1116,7 +1836,7 @@ def normalize_reference_key_map(
         key = (
             existing_key
             if existing_key and not is_weak_bibtex_key(existing_key)
-            else selected_key or paper.get("bib_key") or generate_bibtex_key(paper)
+            else paper.get("bib_key") or selected_key or generate_bibtex_key(paper)
         )
         base_key = key
         counter = 1
@@ -1130,6 +1850,121 @@ def normalize_reference_key_map(
 
 def _normalize_title_for_match(title: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", (title or "").lower()).strip()
+
+
+def canonical_reference_tokens(paper: dict[str, Any]) -> set[str]:
+    external = paper.get("externalIds") or paper.get("external_ids") or {}
+    if not isinstance(external, dict):
+        external = {}
+    tokens: set[str] = set()
+    doi = str(paper.get("doi") or external.get("DOI") or "").strip().casefold()
+    for bibtex_field in ("raw_bibtex", "best_citation_bibtex"):
+        if not doi and isinstance(paper.get(bibtex_field), str):
+            doi = _bibtex_field(paper[bibtex_field], "doi").strip().casefold()
+    doi = re.sub(r"^https?://(?:dx\.)?doi\.org/", "", doi)
+    if doi.startswith("10."):
+        tokens.add(f"doi:{doi}")
+    arxiv = _clean_arxiv_id(_paper_arxiv_id(paper)).casefold()
+    if arxiv:
+        tokens.add(f"arxiv:{arxiv}")
+    paper_key = str(paper.get("paper_key") or "").strip().casefold()
+    if paper_key:
+        tokens.add(f"paper_key:{paper_key}")
+    title = _normalize_title_for_match(paper_title(paper))
+    if title:
+        tokens.add(f"title:{title}")
+    return tokens
+
+
+def canonicalize_reference_maps(
+    reference_ids: dict[str, str],
+    references_full: dict[str, dict],
+) -> tuple[dict[str, str], dict[str, dict], dict[str, str], dict[str, Any]]:
+    """Merge transitive cross-source duplicate references before final packaging."""
+    rows: list[tuple[str, str, dict[str, Any]]] = []
+    for ref_num, paper_id in reference_ids.items():
+        paper = references_full.get(paper_id) or references_full.get(ref_num) or {}
+        rows.append((str(ref_num), str(paper_id), paper))
+    parent = list(range(len(rows)))
+
+    def find(index: int) -> int:
+        while parent[index] != index:
+            parent[index] = parent[parent[index]]
+            index = parent[index]
+        return index
+
+    token_owner: dict[str, int] = {}
+    for index, (_, _, paper) in enumerate(rows):
+        for token in canonical_reference_tokens(paper):
+            owner = token_owner.get(token)
+            if owner is None:
+                token_owner[token] = index
+                continue
+            left, right = find(index), find(owner)
+            if left != right:
+                parent[right] = left
+
+    clusters: dict[int, list[int]] = {}
+    for index in range(len(rows)):
+        clusters.setdefault(find(index), []).append(index)
+    canonical_indexes = {min(members) for members in clusters.values()}
+    aliases: dict[str, str] = {}
+    canonical_ids: dict[str, str] = {}
+    canonical_full: dict[str, dict] = {}
+    cluster_report: list[dict[str, Any]] = []
+    for members in sorted(clusters.values(), key=min):
+        canonical_index = min(members)
+        canonical_ref, canonical_paper_id, canonical_paper = rows[canonical_index]
+        canonical_ids[canonical_ref] = canonical_paper_id
+        canonical_full[canonical_paper_id] = canonical_paper
+        for index in members:
+            ref_num = rows[index][0]
+            if ref_num != canonical_ref:
+                aliases[ref_num] = canonical_ref
+        if len(members) > 1:
+            cluster_report.append(
+                {
+                    "canonical_reference_number": canonical_ref,
+                    "merged_reference_numbers": [rows[index][0] for index in members],
+                    "identity_tokens": sorted(
+                        set().union(
+                            *(canonical_reference_tokens(rows[index][2]) for index in members)
+                        )
+                    ),
+                }
+            )
+    residual_owners: dict[str, list[str]] = {}
+    for paper_id, paper in canonical_full.items():
+        for token in canonical_reference_tokens(paper):
+            residual_owners.setdefault(token, []).append(paper_id)
+    residual = {
+        token: paper_ids
+        for token, paper_ids in residual_owners.items()
+        if len(paper_ids) > 1
+    }
+    report = {
+        "schema_version": "canonical-reference-dedup-v1",
+        "input_reference_count": len(rows),
+        "canonical_reference_count": len(canonical_indexes),
+        "merged_reference_count": len(rows) - len(canonical_indexes),
+        "clusters": cluster_report,
+        "duplicate_canonical_identity_count": len(residual),
+        "duplicate_canonical_identities": residual,
+        "gate_passed": not residual,
+    }
+    return canonical_ids, canonical_full, aliases, report
+
+
+def rewrite_numeric_reference_aliases(text: str, aliases: dict[str, str]) -> str:
+    if not aliases:
+        return text
+
+    def replace(match: re.Match[str]) -> str:
+        values = [value.strip() for value in match.group(1).split(",")]
+        mapped = list(dict.fromkeys(aliases.get(value, value) for value in values))
+        return "[" + ", ".join(mapped) + "]"
+
+    return re.sub(r"\[([0-9]+(?:\s*,\s*[0-9]+)*)\]", replace, text)
 
 
 def infer_key_map_from_existing_bib(
@@ -1312,11 +2147,73 @@ def ensure_final_survey_package(
     min_related_words: int = DEFAULT_MIN_RELATED_WORDS,
     min_related_sections: int = DEFAULT_MIN_RELATED_SECTIONS,
     keep_intermediates: bool = False,
+    min_survey_citations: int = DEFAULT_MIN_UNIQUE_SURVEY_CITATIONS,
+    max_related_citations: int = DEFAULT_MAX_RELATED_CITATIONS,
 ) -> dict[str, Any]:
     survey_root = resolve_path(workspace_root, survey_root_raw)
     related_root = resolve_path(workspace_root, related_root_raw)
     survey_root.mkdir(parents=True, exist_ok=True)
     related_root.mkdir(parents=True, exist_ok=True)
+
+    survey_tex_path = survey_root / "survey.tex"
+    if survey_tex_path.exists():
+        bib_path = survey_root / "references.bib"
+        related_path = related_root / "related_works.tex"
+        metadata_path = survey_root / "survey.json"
+        required_report = validate_required_files(
+            [survey_tex_path, metadata_path, bib_path, related_path]
+        )
+        validation = validate_tex_bib([survey_tex_path, related_path], bib_path)
+        survey_text = survey_tex_path.read_text(encoding="utf-8")
+        related_text = (
+            related_path.read_text(encoding="utf-8") if related_path.exists() else ""
+        )
+        survey_keys = parse_cite_keys(survey_tex_path)
+        related_keys = parse_cite_keys(related_path) if related_path.exists() else set()
+        survey_words = count_tex_content_words(survey_text)
+        survey_subsections = len(re.findall(r"\\subsection\*?\s*\{", survey_text))
+        survey_lines = count_lines(survey_text)
+        related_words = count_tex_content_words(related_text)
+        related_sections = count_related_sections(related_text)
+        quality_report = {
+            "survey_min_words": min_survey_words,
+            "survey_words_ok": survey_words >= min_survey_words,
+            "survey_min_subsections": min_survey_subsections,
+            "survey_subsections_ok": survey_subsections >= min_survey_subsections,
+            "survey_min_lines": min_survey_lines,
+            "survey_lines_ok": survey_lines >= min_survey_lines,
+            "survey_min_distinct_citations": min_survey_citations,
+            "survey_citations_ok": len(survey_keys) >= min_survey_citations,
+            "related_citation_range": [min_related_citations, max_related_citations],
+            "related_citations_ok": min_related_citations
+            <= len(related_keys)
+            <= max_related_citations,
+            "min_related_words": min_related_words,
+            "related_words_ok": related_words >= min_related_words,
+            "min_related_sections": min_related_sections,
+            "related_sections_ok": related_sections >= min_related_sections,
+            "required_files_ok": required_report["ok"],
+            "tex_bib_ok": validation["ok"],
+        }
+        quality_report["ok"] = all(
+            value for key, value in quality_report.items() if key.endswith("_ok")
+        )
+        return {
+            "format_contract": "tex-only-v1",
+            "survey_root": str(survey_root),
+            "related_root": str(related_root),
+            "survey_words": survey_words,
+            "survey_subsections": survey_subsections,
+            "survey_lines": survey_lines,
+            "related_words": related_words,
+            "related_sections": related_sections,
+            "reference_count": len(survey_keys),
+            "related_reference_count": len(related_keys),
+            "validation": validation,
+            "required_files": required_report,
+            "quality": quality_report,
+            "removed_intermediates": [],
+        }
 
     survey_json_path = survey_root / "survey.json"
     survey_md_path = survey_root / "survey.md"
@@ -1349,6 +2246,11 @@ def ensure_final_survey_package(
             )
         )
 
+    reference_ids, references_full, reference_aliases, dedup_report = (
+        canonicalize_reference_maps(reference_ids, references_full)
+    )
+    survey_text = rewrite_numeric_reference_aliases(survey_text, reference_aliases)
+
     existing_key_map = (
         json.loads(key_map_path.read_text(encoding="utf-8"))
         if key_map_path.exists()
@@ -1360,6 +2262,11 @@ def ensure_final_survey_package(
         for ref_num, old_key in existing_key_map.items()
         if ref_num in key_map and old_key != key_map[ref_num]
     }
+    for duplicate_ref, canonical_ref in reference_aliases.items():
+        old_key = existing_key_map.get(duplicate_ref)
+        canonical_key = key_map.get(canonical_ref)
+        if old_key and canonical_key and old_key != canonical_key:
+            key_replacements[old_key] = canonical_key
 
     if not survey_text.strip():
         survey_text = f"# Survey on {topic}\n\nNo survey draft was generated.\n"
@@ -1373,8 +2280,14 @@ def ensure_final_survey_package(
     survey_data["survey"] = survey_text
     survey_data["reference"] = reference_ids
     survey_data["reference_full"] = references_full
+    survey_data["canonical_reference_dedup"] = dedup_report
     write_json(survey_json_path, survey_data)
     write_json(key_map_path, key_map)
+
+    if related_path.exists():
+        sanitized, _ = sanitize_related_works(related_path.read_text(encoding="utf-8"))
+        sanitized = rewrite_latex_cite_keys(sanitized, key_replacements)
+        related_path.write_text(sanitized, encoding="utf-8")
 
     if reference_ids and references_full:
         rendered_bib = render_bibtex(reference_ids, references_full, key_map)
@@ -1386,11 +2299,6 @@ def ensure_final_survey_package(
     elif not bib_path.exists():
         bib_path.write_text("", encoding="utf-8")
     survey_bib_path.write_text(bib_path.read_text(encoding="utf-8"), encoding="utf-8")
-
-    if related_path.exists():
-        sanitized, _ = sanitize_related_works(related_path.read_text(encoding="utf-8"))
-        sanitized = rewrite_latex_cite_keys(sanitized, key_replacements)
-        related_path.write_text(sanitized, encoding="utf-8")
 
     related_needs_fallback = not related_path.exists()
     if related_path.exists():
@@ -1471,6 +2379,7 @@ def ensure_final_survey_package(
         "bib_entries_ok": bib_keys > 0,
         "required_files_ok": required_report["ok"],
         "tex_bib_ok": validation["ok"],
+        "reference_identity_ok": dedup_report["gate_passed"],
     }
     quality_report["ok"] = all(
         value for key, value in quality_report.items() if key.endswith("_ok")
@@ -1488,6 +2397,7 @@ def ensure_final_survey_package(
         "validation": validation,
         "required_files": required_report,
         "quality": quality_report,
+        "canonical_reference_dedup": dedup_report,
         "removed_intermediates": removed_intermediates,
     }
 
@@ -1498,14 +2408,38 @@ def ensure_final_survey_package(
 def command_prepare_outline_data(args: argparse.Namespace) -> int:
     prompts = load_prompt_templates()
     workspace_root = resolve_workspace(args.workspace)
-    db = get_database(args)
+    structure_prompt, structure_metadata = load_structure_context(workspace_root, args)
 
-    references_ids = db.get_ids_from_query(
-        args.topic, num=args.reference_num, shuffle=True
+    try:
+        source_papers = load_frozen_paper_pool(workspace_root, args.library_dir)
+        frozen_pool_only = True
+    except FileNotFoundError:
+        source_papers = load_external_library_papers(workspace_root, args.library_dir)
+        frozen_pool_only = False
+    task, task_path = _load_frozen_task(
+        workspace_root, str(getattr(args, "task_path", "") or "")
     )
-    references_infos = db.get_paper_info_from_ids(references_ids)
+    references_infos, evidence_selection = select_native_evidence(
+        source_papers,
+        args.topic,
+        {
+            "sections": [],
+            "section_descriptions": [],
+            "subsections": [],
+            "subsection_descriptions": [],
+        },
+        max_papers=args.reference_num,
+        required_references=task.get("key_references") or [],
+        structure_supported_titles=_structure_supported_titles(
+            workspace_root, args.library_dir
+        ),
+    )
     references_titles = [r["title"] for r in references_infos]
-    references_abs = [r["abs"] for r in references_infos]
+    max_abstract_chars = int(getattr(args, "max_abstract_chars", 1200))
+    references_abs = [
+        _paper_abstract(reference)[:max_abstract_chars]
+        for reference in references_infos
+    ]
 
     abs_chunks, titles_chunks = chunk_papers(
         references_abs, references_titles, args.chunk_size
@@ -1527,6 +2461,8 @@ def command_prepare_outline_data(args: argparse.Namespace) -> int:
                 "SECTION NUM": str(args.section_num),
             },
         )
+        if structure_prompt:
+            prompt_text = f"{prompt_text}\n\n{structure_prompt}"
         prompt_entries.append({"prompt": prompt_text, "titles": titles})
 
     output = {
@@ -1535,6 +2471,12 @@ def command_prepare_outline_data(args: argparse.Namespace) -> int:
         "rag_num": args.rag_num,
         "stage": "rough_outline",
         "prompts": prompt_entries,
+        "paper_library": paper_library_metadata(workspace_root, args.library_dir),
+        "frozen_pool_only": frozen_pool_only,
+        "task_contract_path": str(task_path) if task_path else None,
+        "max_abstract_chars": max_abstract_chars,
+        "evidence_selection": evidence_selection,
+        "structure": structure_metadata,
     }
 
     output_path = resolve_path(workspace_root, args.output_path)
@@ -1587,6 +2529,7 @@ def command_prepare_subsection_outline_data(args: argparse.Namespace) -> int:
     prompts = load_prompt_templates()
     workspace_root = resolve_workspace(args.workspace)
     db = get_database(args)
+    structure_prompt, structure_metadata = load_structure_context(workspace_root, args)
 
     section_outline_path = resolve_path(workspace_root, args.section_outline_path)
     section_outline = section_outline_path.read_text(encoding="utf-8")
@@ -1619,6 +2562,8 @@ def command_prepare_subsection_outline_data(args: argparse.Namespace) -> int:
                 "PAPER LIST": paper_texts,
             },
         )
+        if structure_prompt:
+            prompt_text = f"{prompt_text}\n\n{structure_prompt}"
         prompt_entries.append({"prompt": prompt_text, "section": section_name})
 
     output = {
@@ -1628,6 +2573,8 @@ def command_prepare_subsection_outline_data(args: argparse.Namespace) -> int:
         "sections": sections,
         "descriptions": descriptions,
         "prompts": prompt_entries,
+        "paper_library": paper_library_metadata(workspace_root, args.library_dir),
+        "structure": structure_metadata,
     }
 
     output_path = resolve_path(workspace_root, args.output_path)
@@ -1703,6 +2650,7 @@ def command_prepare_subsection_data(args: argparse.Namespace) -> int:
     prompts = load_prompt_templates()
     workspace_root = resolve_workspace(args.workspace)
     db = get_database(args)
+    structure_prompt, structure_metadata = load_structure_context(workspace_root, args)
 
     outline_path = resolve_path(workspace_root, args.outline_path)
     outline_content = outline_path.read_text(encoding="utf-8")
@@ -1740,6 +2688,8 @@ def command_prepare_subsection_data(args: argparse.Namespace) -> int:
                     "WORD NUM": str(args.subsection_len),
                 },
             )
+            if structure_prompt:
+                writing_prompt = f"{writing_prompt}\n\n{structure_prompt}"
             subsection_prompts.append(
                 {
                     "writing_prompt": writing_prompt,
@@ -1756,6 +2706,8 @@ def command_prepare_subsection_data(args: argparse.Namespace) -> int:
         "parsed_outline": parsed,
         "stage": "subsection_writing",
         "sections": section_entries,
+        "paper_library": paper_library_metadata(workspace_root, args.library_dir),
+        "structure": structure_metadata,
     }
 
     output_path = resolve_path(workspace_root, args.output_path)
@@ -1771,52 +2723,92 @@ def command_prepare_subsection_data(args: argparse.Namespace) -> int:
 
 def command_prepare_native_survey_data(args: argparse.Namespace) -> int:
     workspace_root = resolve_workspace(args.workspace)
-    db = get_database(args)
+    structure_prompt, structure_metadata = load_structure_context(workspace_root, args)
 
     outline_path = resolve_path(workspace_root, args.outline_path)
     outline_content = outline_path.read_text(encoding="utf-8")
     parsed = parse_outline(outline_content)
 
-    query_parts = [args.topic]
-    for descriptions in parsed["subsection_descriptions"]:
-        query_parts.extend(d for d in descriptions if d)
-    if not query_parts:
-        query_parts = [args.topic]
+    # Native writing always consumes the same frozen-pool selection path.  The
+    # old optional query-time path made treatment and control depend on agent-
+    # chosen flags and produced incomparable context sizes.
+    try:
+        source_papers = load_frozen_paper_pool(workspace_root, args.library_dir)
+        frozen_pool_only = True
+    except FileNotFoundError:
+        source_papers = load_external_library_papers(workspace_root, args.library_dir)
+        frozen_pool_only = False
+    task, task_path = _load_frozen_task(
+        workspace_root, str(getattr(args, "task_path", "") or "")
+    )
+    required_references = task.get("key_references") or []
+    supported_titles = _structure_supported_titles(workspace_root, args.library_dir)
+    paper_infos, evidence_selection = select_native_evidence(
+        source_papers,
+        args.topic,
+        parsed,
+        max_papers=args.max_papers,
+        required_references=required_references,
+        structure_supported_titles=supported_titles,
+    )
+    paper_infos = assign_unique_bibtex_keys(paper_infos)
+    paper_ids = [_paper_identity(paper) for paper in paper_infos]
+    external_papers = source_papers
+    max_evidence_chars = int(getattr(args, "max_evidence_chars", 150000))
+    paper_list = _format_papers_text_bounded(paper_infos, max_evidence_chars)
 
-    paper_ids: list[str] = []
-    seen_ids: set[str] = set()
-    per_query = max(5, min(args.rag_num, 25))
-    for query in query_parts:
-        try:
-            ids = db.get_ids_from_query(query, num=per_query, shuffle=False)
-        except Exception:
-            ids = []
-        for paper_id in ids:
-            if paper_id and paper_id not in seen_ids:
-                seen_ids.add(paper_id)
-                paper_ids.append(paper_id)
-        if len(paper_ids) >= args.max_papers:
-            break
-
-    paper_ids = paper_ids[: args.max_papers]
-    paper_infos = db.get_paper_info_from_ids(paper_ids) if paper_ids else []
-    external_papers = load_external_library_papers(workspace_root, args.library_dir)
-    if external_papers:
-        seen_titles = {paper_title(paper).lower() for paper in paper_infos}
-        for paper in external_papers[: args.max_external_papers]:
-            title = paper_title(paper).lower()
-            if title and title not in seen_titles:
-                seen_titles.add(title)
-                paper_infos.append(paper)
-    paper_list = (
-        db.format_papers_text(paper_infos, include_analysis=True)
-        if hasattr(db, "format_papers_text")
-        else _format_papers_text_fallback(paper_infos)
+    bib_output = resolve_path(
+        workspace_root, str(getattr(args, "bib_output", "survey/references.bib"))
+    )
+    bib_entries: list[str] = []
+    for paper in paper_infos:
+        _, entry = select_bibtex_entry(paper, fallback_key=paper["bib_key"])
+        bib_entries.append(entry.rstrip())
+    bib_output.parent.mkdir(parents=True, exist_ok=True)
+    bib_output.write_text("\n\n".join(bib_entries) + "\n", encoding="utf-8")
+    reference_ids = {
+        str(index): _paper_identity(paper)
+        for index, paper in enumerate(paper_infos, start=1)
+    }
+    references_full = {
+        _paper_identity(paper): paper for paper in paper_infos
+    }
+    survey_metadata_output = resolve_path(
+        workspace_root,
+        str(getattr(args, "survey_metadata_output", "survey/survey.json")),
+    )
+    write_json(
+        survey_metadata_output,
+        {
+            "schema_version": "tex-survey-v1",
+            "topic": args.topic,
+            "survey_tex_path": "survey.tex",
+            "survey": "",
+            "reference": reference_ids,
+            "reference_full": references_full,
+            "citation_key_map": {
+                ref_num: references_full[paper_id]["bib_key"]
+                for ref_num, paper_id in reference_ids.items()
+            },
+        },
     )
 
     min_words = args.min_words
     target_words = args.target_words
-    prompt_text = f"""Write a complete academic survey in Markdown about "{args.topic}".
+    min_unique_citations = int(
+        getattr(args, "min_unique_citations", DEFAULT_MIN_UNIQUE_SURVEY_CITATIONS)
+    )
+    target_unique_citations = max(
+        int(
+            getattr(
+                args,
+                "target_unique_citations",
+                DEFAULT_TARGET_UNIQUE_SURVEY_CITATIONS,
+            )
+        ),
+        min_unique_citations,
+    )
+    prompt_text = f"""Write a complete, independently compilable academic survey in LaTeX about "{args.topic}".
 
 Use the outline and paper library below as the only citation source. Rely on your native long-form writing ability: produce the whole survey in one coherent pass, not subsection-by-subsection fragments.
 
@@ -1830,19 +2822,30 @@ Paper library:
 {paper_list}
 ---
 
+{structure_prompt}
+
 Requirements:
-1. Output only Markdown survey content. Do not include a bibliography section and do not include process notes.
+1. Output only one complete LaTeX document from \\documentclass through \\end{{document}}. Do not use Markdown and do not include process notes.
 2. Write in English unless the user instructions explicitly require another language.
 3. Target about {target_words} words and never go below {min_words} words. A shorter draft is incomplete and must be expanded before returning.
-4. Preserve the outline's main section and subsection organization. Use AutoSurvey-style Markdown hierarchy: one # title, 5-7 ## main sections, and about 36-44 ### numbered subsections before the References section.
+4. Preserve the outline's organization as 6-8 \\section blocks and about 24-32 substantive \\subsection blocks. Prefer a coherent learning path over encyclopedic branch proliferation.
 5. Every technical comparison or historical claim should be supported by citations from the paper library.
-6. Citation format is AutoSurvey title-bracket style using exact paper titles from the paper library: [Exact Paper Title] or [Exact Paper Title; Another Exact Paper Title].
-7. Do not use BibTeX keys, author-year citations, Markdown [@key] citations, URLs, or invented paper titles in the survey.
-8. Prefer dense synthesis: group related works by mechanism, assumptions, guarantees, and limitations rather than summarizing papers one by one.
+6. Cite only with natbib-compatible \\citep{{key}} and \\citet{{key}}, using the exact paper_citation_key supplied with each paper. Configure natbib as [numbers,sort&compress] so citations and the bibliography are numbered in first-citation order; the ampersand in the package option must be the literal unescaped `&`, not `\\&`. Never type bracket numbers manually or repeat an author-year string around a citation command.
+7. Do not use manually written numeric citations, Markdown citations, URLs as citations, missing keys, or invented paper titles.
+8. Begin with 3-6 orthogonal comparison axes and use them throughout the survey. Group related works by mechanism, assumptions, guarantees, resource costs, and limitations rather than summarizing papers one by one. Include at least one compact cross-branch decision table.
 9. Cover foundations, major method families, theoretical assumptions/results, empirical/deployment considerations, and open gaps.
-10. Write each ### subsection as 3-5 readable paragraphs with connected prose, comparative claims, assumptions, limitations, and transitions. Prefer paragraph breaks over very long paragraphs so the final Markdown has AutoSurvey-like line density, typically 450+ lines for a full survey.
-11. Do not collapse the survey into only ## sections. A draft with fewer than 36 ### subsections is structurally incomplete.
-12. Before returning, self-check the approximate word count, line count, and subsection count; expand thin sections until the draft is in the {min_words}-{target_words} word range, has at least 36 ### subsections, and is not a compact long-paragraph draft.
+10. Write each subsection as 3-5 readable paragraphs with connected prose, comparative claims, assumptions, limitations, and transitions.
+11. Do not collapse the survey into only sections. A draft with fewer than 24 substantive \\subsection blocks is structurally incomplete; more than 32 usually indicates fragmented, paper-by-paper organization and should be consolidated.
+12. Cite at least {min_unique_citations} distinct citation keys and naturally exceed that lower bound when the evidence supports it. Do not target exactly the minimum, optimize for a conspicuous round count, inflate coverage with irrelevant papers, or add unattached citation lists. Distribute evidence across the document.
+13. Required references named by the task contract must be cited when they are present in the paper library. If a required reference is absent, do not invent it.
+14. Write for a technically capable beginner: define the problem, notation, assumptions, and evaluation units before taxonomy; explain the chronological lineage as problem -> limitation -> successor mechanism; define every field-specific acronym on first use.
+15. Include a dedicated open-problems section. Start from paper_open_problem_candidates, cite their originating papers, check later supplied papers for partial solutions or counterevidence, and distinguish paper-stated limitations from gaps still unresolved at the survey cutoff. For each retained problem state scope, evidence, why current methods do not settle it, and a testable next step.
+16. Use a Unicode-safe XeTeX preamble with fontspec, DejaVu Serif, microtype, amsmath, amssymb, booktabs, longtable, graphicx, xcolor, natbib configured as [numbers,sort&compress], geometry, and hyperref. Do not combine fontspec with inputenc, fontenc, or lmodern. Use A4 paper and sensible margins. End with \\bibliographystyle{{unsrtnat}} and \\bibliography{{references}}.
+17. Keep comparison tables readable: use concise phrases rather than paragraph-length cells; use at most four columns in portrait orientation; place wider five-or-more-column tables in a landscape environment; and choose p-column widths whose sum plus tabular padding fits within \\linewidth.
+18. Write every section's narrative explicitly. Do not define or invoke macros that contain sentences, paragraphs, subsection bodies, generic comparison prose, or reusable filler. Macros are allowed only for short mathematical symbols and notation. The word target must be met by non-repeated, topic-specific source prose.
+17. Escape LaTeX special characters in prose and titles. Put every formula in a valid math environment. Do not emit Unicode math glyphs in place of LaTeX commands.
+18. Exclude a paper when its title, abstract, and extracted mechanism do not directly support the topic or one of the common comparison axes. A structure-pack mention is never sufficient reason to cite an off-topic paper.
+19. Before returning, self-check word count, subsection count, distinct citation-key count, required-reference coverage, beginner-facing lineage, open-problem grounding, topic relevance, balanced braces, and document boundaries.
 """
 
     output = {
@@ -1852,6 +2855,17 @@ Requirements:
         "paper_count": len(paper_infos),
         "paper_ids": paper_ids,
         "external_paper_count": len(external_papers),
+        "paper_library": paper_library_metadata(workspace_root, args.library_dir),
+        "frozen_pool_only": frozen_pool_only,
+        "task_contract_path": str(task_path) if task_path else None,
+        "min_unique_citations": min_unique_citations,
+        "target_unique_citations": target_unique_citations,
+        "bib_output": str(bib_output),
+        "survey_metadata_output": str(survey_metadata_output),
+        "max_evidence_chars": max_evidence_chars,
+        "rendered_evidence_chars": len(paper_list),
+        "evidence_selection": evidence_selection,
+        "structure": structure_metadata,
         "prompt": prompt_text,
     }
 
@@ -1865,6 +2879,8 @@ Requirements:
                 "num_external_papers": len(external_papers),
                 "min_words": min_words,
                 "target_words": target_words,
+                "min_unique_citations": min_unique_citations,
+                "target_unique_citations": target_unique_citations,
             },
             indent=2,
         )
@@ -1875,7 +2891,7 @@ Requirements:
 def _format_papers_text_fallback(papers: list[dict]) -> str:
     texts = ""
     for p in papers:
-        texts += f"---\npaper_title: {p.get('title', '')}\n\npaper_abstract:\n{p.get('abs', '')}\n"
+        texts += f"---\npaper_title: {p.get('title', '')}\npaper_citation_key: {p.get('bib_key', '')}\n\npaper_abstract:\n{p.get('abs', '')}\n"
         topics = p.get("topics", [])
         if topics:
             texts += f"\npaper_topics: {', '.join(topics)}\n"
@@ -1885,8 +2901,56 @@ def _format_papers_text_fallback(papers: list[dict]) -> str:
         weaknesses = p.get("weaknesses", "")
         if weaknesses:
             texts += f"\npaper_weaknesses: {weaknesses}\n"
+        open_problems = p.get("open_problem_candidates") or []
+        if open_problems:
+            texts += "\npaper_open_problem_candidates:\n" + "\n".join(
+                f"- {value}" for value in open_problems
+            ) + "\n"
     texts += "---\n"
     return texts
+
+
+def _format_papers_text_bounded(
+    papers: list[dict[str, Any]], max_total_chars: int
+) -> str:
+    """Render every selected title while bounding profile-dependent context size."""
+    if not papers:
+        return "---\n"
+    per_paper = max(700, max_total_chars // len(papers))
+    blocks: list[str] = []
+    used = 0
+    for paper in papers:
+        title = paper_title(paper)
+        fixed = f"---\npaper_title: {title}\npaper_citation_key: {paper.get('bib_key', '')}\n"
+        remaining = max(200, per_paper - len(fixed))
+        abstract = _paper_abstract(paper)[: int(remaining * 0.68)]
+        strengths = str(paper.get("strengths") or "")[: int(remaining * 0.18)]
+        weaknesses = str(paper.get("weaknesses") or "")[: int(remaining * 0.07)]
+        open_problem_text = "\n".join(
+            str(value) for value in (paper.get("open_problem_candidates") or [])
+        )[: int(remaining * 0.12)]
+        topics_value = paper.get("topics") or []
+        topics = (
+            ", ".join(str(item) for item in topics_value)
+            if isinstance(topics_value, list)
+            else str(topics_value)
+        )[: int(remaining * 0.05)]
+        block = fixed + f"\npaper_abstract:\n{abstract}\n"
+        if topics:
+            block += f"\npaper_topics: {topics}\n"
+        if strengths:
+            block += f"\npaper_strengths: {strengths}\n"
+        if weaknesses:
+            block += f"\npaper_weaknesses: {weaknesses}\n"
+        if open_problem_text:
+            block += f"\npaper_open_problem_candidates:\n{open_problem_text}\n"
+        if used + len(block) > max_total_chars:
+            # Titles are citation identifiers and must never be dropped. Keep a
+            # compact title-only record when the aggregate descriptive budget is exhausted.
+            block = fixed
+        blocks.append(block)
+        used += len(block)
+    return "".join(blocks) + "---\n"
 
 
 def command_prepare_citation_check_data(args: argparse.Namespace) -> int:
@@ -2113,12 +3177,107 @@ def command_assemble_survey(args: argparse.Namespace) -> int:
     return 0
 
 
+def _strip_generated_references(survey_text: str) -> str:
+    match = re.search(
+        r"(?im)^#{1,3}\s+(?:\d+(?:\.\d+)*\s+)?(?:references|bibliography)\s*$",
+        survey_text,
+    )
+    return survey_text[: match.start()].rstrip() if match else survey_text.rstrip()
+
+
+RELATION_BRIEF_TERMS = {
+    "evolution_and_lineage": (
+        "evolve",
+        "evolution",
+        "lineage",
+        "successor",
+        "predecessor",
+        "originally",
+        "subsequent",
+        "later work",
+        "builds on",
+        "extends",
+    ),
+    "mechanism_and_comparison": (
+        "mechanism",
+        "compared",
+        "in contrast",
+        "whereas",
+        "trade-off",
+        "tradeoff",
+        "assumption",
+        "guarantee",
+        "complexity",
+    ),
+    "boundary_and_counterevidence": (
+        "however",
+        "limitation",
+        "limited",
+        "fails",
+        "cannot",
+        "counterexample",
+        "counter-evidence",
+        "boundary",
+        "only when",
+    ),
+    "gaps_and_future_tests": (
+        "gap",
+        "unresolved",
+        "open problem",
+        "future work",
+        "future direction",
+        "remains unclear",
+        "should test",
+        "evaluation protocol",
+    ),
+}
+
+
+def build_relation_brief(survey_text: str, max_per_category: int = 6) -> str:
+    """Extract evidence-bearing relation passages across the complete survey."""
+    body = _strip_generated_references(survey_text)
+    chunks = [
+        re.sub(r"\s+", " ", chunk).strip()
+        for chunk in re.split(r"\n\s*\n+", body)
+        if chunk.strip() and not chunk.lstrip().startswith("#")
+    ]
+    sections: list[str] = []
+    for category, terms in RELATION_BRIEF_TERMS.items():
+        matches: list[str] = []
+        for chunk in chunks:
+            lowered = chunk.lower()
+            has_relation_term = any(term in lowered for term in terms)
+            has_citation = bool(
+                re.search(r"\[[^\]]+\]", chunk) or LATEX_CITE_PATTERN.search(chunk)
+            )
+            if not has_relation_term or not has_citation:
+                continue
+            excerpt = chunk[:900].rstrip()
+            if len(chunk) > 900:
+                excerpt += " …"
+            if excerpt not in matches:
+                matches.append(excerpt)
+            if len(matches) >= max_per_category:
+                break
+        if matches:
+            heading = category.replace("_", " ").title()
+            sections.append(f"### {heading}\n" + "\n".join(f"- {item}" for item in matches))
+    if not sections:
+        return "No citation-bearing relation passages were detected; reconstruct relations conservatively from the full survey context and reference abstracts."
+    return "\n\n".join(sections)
+
+
 def command_prepare_related_works_data(args: argparse.Namespace) -> int:
     workspace_root = resolve_workspace(args.workspace)
 
     survey_path = resolve_path(workspace_root, args.survey_path)
     survey_data = json.loads(survey_path.read_text(encoding="utf-8"))
     survey_text = survey_data.get("survey", "")
+    if not survey_text.strip():
+        tex_name = str(survey_data.get("survey_tex_path") or "survey.tex")
+        tex_path = survey_path.parent / tex_name
+        if tex_path.exists():
+            survey_text = tex_path.read_text(encoding="utf-8")
     references_full = survey_data.get("reference_full", {})
     reference_ids = survey_data.get("reference") or {
         str(index + 1): paper_id for index, paper_id in enumerate(references_full.keys())
@@ -2141,11 +3300,48 @@ def command_prepare_related_works_data(args: argparse.Namespace) -> int:
         paper_list += "\n"
     paper_list += "---\n"
 
+    survey_body = _strip_generated_references(survey_text)
+    context_char_limit = int(getattr(args, "survey_context_chars", 60000))
+    if len(survey_body) <= context_char_limit:
+        survey_context = survey_body
+    else:
+        # Retain both foundations and conclusions/gaps when an unusually long
+        # survey exceeds the context budget.
+        front_chars = context_char_limit * 2 // 3
+        back_chars = context_char_limit - front_chars
+        survey_context = (
+            survey_body[:front_chars]
+            + "\n\n[... middle context omitted for bounded handoff ...]\n\n"
+            + survey_body[-back_chars:]
+        )
+    relation_brief = build_relation_brief(survey_body)
+    available_references = len(reference_ids)
+    min_citations = min(args.min_citations, available_references)
+    target_citations = min(
+        max(
+            int(getattr(args, "target_citations", DEFAULT_TARGET_RELATED_CITATIONS)),
+            min_citations,
+        ),
+        available_references,
+    )
+    max_citations = min(
+        max(
+            int(getattr(args, "max_citations", DEFAULT_MAX_RELATED_CITATIONS)),
+            target_citations,
+        ),
+        available_references,
+    )
+
     prompt_text = f"""Write a Related Works section in LaTeX for a survey about "{args.topic}".
 
-Here is the survey content for context:
+Here is the complete survey body for context (the generated References section has been removed):
 ---
-{survey_text[:5000]}
+{survey_context}
+---
+
+Relation-preservation brief extracted from citation-bearing passages across the complete survey:
+---
+{relation_brief}
 ---
 
 Citation key mapping (use \\cite{{key}} format):
@@ -2157,16 +3353,17 @@ Reference papers:
 Requirements:
 1. Write in LaTeX using \\subsection{{}} for thematic categories.
 2. Use \\citep{{}} and \\citet{{}} commands with the exact keys shown above.
-3. Target at least {args.min_citations} citations.
+3. Use {min_citations}-{max_citations} distinct citation keys and aim for about {target_citations}. This is the focused related-works core, not the full survey's 100+ paper coverage. Citation occurrences and large multi-key citation clusters do not substitute for distinct evidence-bearing references.
 4. Organize by theme, not paper-by-paper.
 5. Highlight limitations and open gaps.
 6. Output only the LaTeX content (no preamble, no \\documentclass).
 7. Each subsection should have 2-3 paragraphs.
 8. Write {args.min_words}-{args.max_words} words total and include at least 3 subsections unless the citation material is insufficient.
-9. Match AutoSurvey related-work density: 4-6 thematic subsections, 700-1000 words when enough references are available, and no overly terse bullet-like paragraphs.
-10. When many references are provided, cite broadly: aim to use every mapped citation key at least once, and use multi-key citations such as \\citep{{key1,key2,key3}} for closely related papers.
-11. Include one explicit future-direction paragraph using phrases such as "future work", "open problems", or "principled extensions".
-12. For gap-motivated topics, explicitly state the motivating gap and distinguish algorithmic constraints from theoretical or topology/linear-speedup constraints.
+9. Use 4-6 thematic subsections and aim for roughly 1,800-2,200 words when enough references are available; do not compress 45-55 papers into terse, list-like paragraphs.
+10. Do not try to cite every mapped key. Select the references that support the comparison being made, attach every citation to a concrete claim, and use multi-key citations only for papers that genuinely support the same claim.
+11. Preserve the survey's relation structure. In each substantive subsection, connect capability or mechanism to its assumptions/boundary, relevant counterevidence or limitation, and the residual gap when the supplied evidence supports that chain. Never invent a counterexample merely to fill the template.
+12. Include one explicit, evidence-grounded future-direction paragraph using phrases such as "future work", "open problems", or "principled extensions", and state a testable comparison or protocol rather than a generic aspiration.
+13. For gap-motivated topics, explicitly state the motivating gap and distinguish algorithmic constraints from theoretical or topology/linear-speedup constraints.
 """
 
     output = {
@@ -2174,6 +3371,12 @@ Requirements:
         "prompt": prompt_text,
         "citation_key_map": citation_key_map,
         "key_map": key_map,
+        "survey_context_chars": len(survey_context),
+        "survey_body_chars": len(survey_body),
+        "relation_brief": relation_brief,
+        "min_distinct_citations": min_citations,
+        "target_distinct_citations": target_citations,
+        "max_distinct_citations": max_citations,
     }
 
     output_path = resolve_path(workspace_root, args.output_path)
@@ -2312,6 +3515,8 @@ def command_finalize_package(args: argparse.Namespace) -> int:
         min_related_words=args.min_related_words,
         min_related_sections=args.min_related_sections,
         keep_intermediates=args.keep_intermediates,
+        min_survey_citations=args.min_survey_citations,
+        max_related_citations=args.max_related_citations,
     )
     if args.json:
         print(json.dumps(report, indent=2, ensure_ascii=False))
@@ -2341,15 +3546,33 @@ def build_parser() -> argparse.ArgumentParser:
         cmd.add_argument("--db-path", default="")
         cmd.add_argument("--embedding-model", default="")
         cmd.add_argument("--library-dir", default="survey/library")
+        cmd.add_argument(
+            "--structure-mode",
+            choices=["auto", "include", "exclude"],
+            default="auto",
+            help="Include the ReaScholar structure pack, exclude it for a clean control, or auto-detect it.",
+        )
+        cmd.add_argument(
+            "--structure-pack",
+            default="",
+            help="Optional structure_pack.json path; defaults to <library-dir>/structure_pack.json.",
+        )
 
     p = subparsers.add_parser("prepare-outline-data")
     add_common(p)
     p.add_argument("--topic", required=True)
     p.add_argument("--output-path", required=True)
     p.add_argument("--section-num", type=int, default=DEFAULT_SECTION_NUM)
-    p.add_argument("--reference-num", type=int, default=DEFAULT_OUTLINE_REFERENCE_NUM)
+    p.add_argument("--reference-num", type=int, default=DEFAULT_NATIVE_EVIDENCE_MAX)
     p.add_argument("--rag-num", type=int, default=DEFAULT_RAG_NUM)
     p.add_argument("--chunk-size", type=int, default=30000)
+    p.add_argument("--task-path", default="")
+    p.add_argument("--max-abstract-chars", type=int, default=1200)
+    p.add_argument(
+        "--frozen-pool-only",
+        action="store_true",
+        help="Use every paper from paper_pool.jsonl in frozen order without query-time selection.",
+    )
 
     p = subparsers.add_parser("merge-outline-data")
     p.add_argument("--workspace", default=".")
@@ -2387,11 +3610,30 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--topic", required=True)
     p.add_argument("--outline-path", required=True)
     p.add_argument("--output-path", required=True)
+    p.add_argument("--bib-output", default="survey/references.bib")
+    p.add_argument("--survey-metadata-output", default="survey/survey.json")
     p.add_argument("--rag-num", type=int, default=DEFAULT_RAG_NUM)
-    p.add_argument("--max-papers", type=int, default=DEFAULT_OUTLINE_REFERENCE_NUM)
+    p.add_argument("--max-papers", type=int, default=DEFAULT_NATIVE_EVIDENCE_MAX)
     p.add_argument("--max-external-papers", type=int, default=50)
     p.add_argument("--min-words", type=int, default=DEFAULT_MIN_SURVEY_WORDS)
-    p.add_argument("--target-words", type=int, default=7000)
+    p.add_argument("--target-words", type=int, default=DEFAULT_TARGET_SURVEY_WORDS)
+    p.add_argument("--task-path", default="")
+    p.add_argument(
+        "--min-unique-citations",
+        type=int,
+        default=DEFAULT_MIN_UNIQUE_SURVEY_CITATIONS,
+    )
+    p.add_argument(
+        "--target-unique-citations",
+        type=int,
+        default=DEFAULT_TARGET_UNIQUE_SURVEY_CITATIONS,
+    )
+    p.add_argument("--max-evidence-chars", type=int, default=150000)
+    p.add_argument(
+        "--frozen-pool-only",
+        action="store_true",
+        help="Use every paper from paper_pool.jsonl in frozen order without outline-dependent selection.",
+    )
 
     p = subparsers.add_parser("prepare-citation-check-data")
     p.add_argument("--workspace", default=".")
@@ -2427,9 +3669,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--topic", required=True)
     p.add_argument("--survey-path", required=True)
     p.add_argument("--output-path", required=True)
-    p.add_argument("--max-words", type=int, default=1000)
     p.add_argument("--min-words", type=int, default=DEFAULT_MIN_RELATED_WORDS)
-    p.add_argument("--min-citations", type=int, default=DEFAULT_MIN_CITATIONS)
+    p.add_argument("--max-words", type=int, default=2500)
+    p.add_argument("--min-citations", type=int, default=DEFAULT_MIN_RELATED_CITATIONS)
+    p.add_argument(
+        "--target-citations", type=int, default=DEFAULT_TARGET_RELATED_CITATIONS
+    )
+    p.add_argument("--max-citations", type=int, default=DEFAULT_MAX_RELATED_CITATIONS)
+    p.add_argument("--survey-context-chars", type=int, default=60000)
 
     p = subparsers.add_parser("prepare-judge-data")
     p.add_argument("--workspace", default=".")
@@ -2458,6 +3705,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--min-survey-lines", type=int, default=DEFAULT_MIN_SURVEY_LINES)
     p.add_argument(
         "--min-related-citations", type=int, default=DEFAULT_MIN_RELATED_CITATIONS
+    )
+    p.add_argument(
+        "--max-related-citations", type=int, default=DEFAULT_MAX_RELATED_CITATIONS
+    )
+    p.add_argument(
+        "--min-survey-citations",
+        type=int,
+        default=DEFAULT_MIN_UNIQUE_SURVEY_CITATIONS,
     )
     p.add_argument("--min-related-words", type=int, default=DEFAULT_MIN_RELATED_WORDS)
     p.add_argument(

@@ -24,7 +24,7 @@ fi
 # Survey TeX and Bib Packaging
 
 ## Overview
-Full survey deliveries should end as LaTeX plus BibTeX, not markdown-only drafts. Keep citation commands and bibliography keys synchronized before handoff.
+Full survey deliveries are TeX-only publication packages. `survey/survey.tex` is the sole manuscript source; `survey/survey.pdf` is mandatory compiled evidence. The survey and related-work fragment share `survey/references.bib`.
 
 This skill is the deterministic replacement for the cite/BibTeX validation slice of the upstream survey tooling. Pair it with native file inspection when you need to read or patch generated `.tex` files.
 
@@ -34,16 +34,21 @@ Set `SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/survey/survey-tex-bib-packaging"`
 ## Helper Script
 - `python "$SKILL_ROOT/scripts/check-cite-bib.py" --tex survey/survey.tex --tex survey/related_works.tex --bib survey/references.bib`
 - `python "$SKILL_ROOT/scripts/check-cite-bib.py" --tex survey/related_works.tex --bib survey/references.bib --json`
+- `python "$SKILL_ROOT/scripts/build_publication.py" --workspace .`
 
 ## Rules
-1. Generate separate `.tex` and `.bib` files for full survey workflows.
+1. Generate `survey/survey.tex` directly. Do not deliver or retain `survey.md` as a second manuscript source.
 2. Keep all `\\cite...{key}` usages aligned with BibTeX entry keys.
-3. Use natbib-compatible citation commands (`\\citet`, `\\citep`, `\\citealp`) and avoid manually repeating author-year text.
+3. Use natbib-compatible citation commands (`\\citet`, `\\citep`, `\\citealp`) with `numbers,sort&compress`; avoid manually typed bracket numbers and repeated author-year text.
 4. Keep references.bib as the single source of citation truth for survey outputs.
 5. Flag missing keys instead of inventing citations.
+6. The complete survey must cite at least 100 distinct, claim-bound papers. Related works targets 45-55 core papers.
+7. Run the publication builder; compilation failure, duplicate BibTeX keys, missing keys, or citation-count gate failure means the delivery is incomplete.
 
 ## Deliverables
 - `survey/survey.tex`
-- `survey/related_works.tex`
 - `survey/references.bib`
-- cite/bib validation report with missing or duplicate keys
+- `survey/survey.pdf`
+- `related_works/related_works.tex`
+- `related_works/related_works.pdf`
+- `build/publication_report.json`

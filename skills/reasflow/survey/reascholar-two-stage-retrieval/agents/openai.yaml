@@ -1,0 +1,4 @@
+interface:
+  display_name: "ReaScholar Two-Stage Retrieval"
+  short_description: "Ground surveys through domain-first paper retrieval"
+  default_prompt: "Use $reascholar-two-stage-retrieval to build an evidence-checked survey paper pool for this topic."

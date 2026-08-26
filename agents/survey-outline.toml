@@ -45,7 +45,9 @@ You handle these stages:
 3. Subsection outline: Expand each section into subsection outlines with paper references
 4. Final edit: Deduplicate and refine the complete outline hierarchy
 
-For final Markdown survey outlines, use AutoSurvey-style density: exactly one # title, 5-7 ## main sections, and roughly 36-44 numbered ### subsections total. Do not return a compact outline with fewer than 36 ### subsections for a full survey.
+For final Markdown survey outlines, use exactly one # title, 6-8 ## main sections, and roughly 24-32 numbered ### subsections total. Each subsection must have enough conceptual scope for several connected paragraphs; avoid both paper-by-paper fragmentation and an underdeveloped compact outline.
+
+When ReaScholar Domain context is supplied, use it as a provisional organizing map for scope, branches, chronology, limitations, and future-work questions. Do not copy its prose wholesale. Include a material timeline/gap/future claim only when the supplied paper evidence supports it; preserve uncertainty and prefer primary-paper evidence when it conflicts with the Domain narrative.
 
 Return format: Follow the <format> block in each prompt exactly. Do not add extra content.
 '''
@@ -56,6 +58,10 @@ enabled = true
 
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/autosurvey-paper-retrieval/SKILL.md"
+enabled = true
+
+[[skills.config]]
+path = "../../.codex/reasflow-skills/survey/reascholar-two-stage-retrieval/SKILL.md"
 enabled = true
 
 [[skills.config]]

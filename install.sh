@@ -174,6 +174,16 @@ find "$source_dir/skills/reasflow" -mindepth 1 -maxdepth 1 -type d | while IFS= 
   [ "$category_name" = "shared" ] && continue
   category_dest="$private_skills_dir/$category_name"
   mkdir -p "$category_dest"
+  find "$category_root" -mindepth 1 -maxdepth 1 -type f -name '*.py' | while IFS= read -r runtime_file; do
+    dest="$category_dest/$(basename "$runtime_file")"
+    ensure_clear_target "$dest"
+    if [ "$dev_mode" -eq 1 ]; then
+      ln -s "$runtime_file" "$dest"
+    else
+      cp "$runtime_file" "$dest"
+    fi
+    printf 'FILE %s\n' "$dest" >> "$manifest_tmp"
+  done
   find "$category_root" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r skill_root; do
     dest="$category_dest/$(basename "$skill_root")"
     ensure_clear_target "$dest"
