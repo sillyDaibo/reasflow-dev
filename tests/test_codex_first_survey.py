@@ -290,3 +290,5 @@ def test_default_survey_agent_has_no_worker_or_frozen_prompt_contract() -> None:
     assert "150000" not in agent
     assert "max-papers 140" not in agent
     assert "do not delegate" in agent
+    assert "falsifiable research directions" in agent
+    assert "negative outcome" in agent

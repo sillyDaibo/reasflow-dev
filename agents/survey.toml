@@ -39,6 +39,11 @@ papers. State a lineage edge only when paper evidence or a citation relation
 supports the predecessor -> limitation -> successor account. For an open
 problem, identify its source paper and check later work for a partial solution
 or counterevidence before calling it unresolved at the cutoff.
+Turn the strongest surviving gaps into falsifiable research directions. For
+each direction, state the unresolved scope, named partial evidence, a concrete
+theorem or experiment that would test it, matched baselines or budgets, and
+what negative outcome would narrow or reject the proposal. Do not leave the
+future-work section as a list of desirable properties.
 
 Maintain one canonical paper registry. Resolve identity by DOI, arXiv ID, then
 normalized title. Never guess venue, volume, pages, DOI, author list, or year;

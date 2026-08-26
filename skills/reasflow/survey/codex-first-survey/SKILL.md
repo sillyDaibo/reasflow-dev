@@ -60,6 +60,10 @@ papers, citation expansion, unresolved metadata, and later-work checks.
 - Treat categories as comparison hypotheses, not section headings.
 - Treat a citation edge as relationship evidence, not proof of a specific claim.
 - A gap is unresolved only after checking later work through the task cutoff.
+- Derive future work from verified gaps even when the retrieval API has no
+  prewritten `future_work` record. Make each direction falsifiable with a proof
+  target or experiment, matched baselines or budgets, and a possible negative
+  result; preserve the source gap and later-work status.
 - Never infer missing bibliographic fields from memory.
 
 Generate the working bibliography, write both manuscripts, then validate only
