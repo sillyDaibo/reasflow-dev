@@ -27,19 +27,3 @@ prose. Report unresolved evidence or metadata honestly.
 [[skills.config]]
 path = "../../.codex/reasflow-skills/survey/codex-first-survey/SKILL.md"
 enabled = true
-
-[[skills.config]]
-path = "../../.codex/reasflow-skills/survey/autosurvey-paper-retrieval/SKILL.md"
-enabled = true
-
-[[skills.config]]
-path = "../../.codex/reasflow-skills/survey/reascholar-two-stage-retrieval/SKILL.md"
-enabled = true
-
-[[skills.config]]
-path = "../../.codex/reasflow-skills/survey/survey-tex-bib-packaging/SKILL.md"
-enabled = true
-
-[[skills.config]]
-path = "../../.codex/reasflow-skills/common/workspace-cartography/SKILL.md"
-enabled = true

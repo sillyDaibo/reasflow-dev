@@ -32,6 +32,11 @@ loading an entire candidate pool. The Semantic Scholar helper is under
 `survey/autosurvey-paper-retrieval`; use it for a focused metadata, reference,
 or citation query, not as a substitute for native research.
 
+Only when the task or `REASFLOW_SURVEY_RETRIEVAL_PROFILE` explicitly requests
+ReaScholar evidence, open
+`survey/reascholar-two-stage-retrieval/SKILL.md` for the focused question at
+hand. Do not load its full domain or evidence output by default.
+
 Before delivery, check every sentence that names an originator, first method,
 or historical foundation. Its attached citation must contain the named author
 and represent the original work. If the original cannot be verified, rewrite

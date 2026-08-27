@@ -569,6 +569,10 @@ def test_default_survey_agent_has_no_worker_or_frozen_prompt_contract() -> None:
     assert "do not follow a fixed staged workflow" in normalized
     assert "native web research remains" in normalized
     assert "do not precompute a candidate pool" in normalized
+    assert agent.count("[[skills.config]]") == 1
+    assert "codex-first-survey/SKILL.md" in agent
+    assert "survey-tex-bib-packaging/SKILL.md" not in agent
+    assert "workspace-cartography/SKILL.md" not in agent
     assert len(agent.split()) < 450
 
 
@@ -581,3 +585,5 @@ def test_compact_survey_skill_keeps_metadata_as_postflight() -> None:
     assert "native web search is the default" in normalized
     assert "do not construct a candidate pool or bibliography first" in normalized
     assert "works that the manuscript actually selects or cites" in normalized
+    assert "only when the task" in normalized
+    assert "explicitly requests reascholar evidence" in normalized
