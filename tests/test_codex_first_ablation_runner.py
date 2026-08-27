@@ -135,6 +135,10 @@ def test_reasflow_profiles_differ_only_by_reascholar_capability() -> None:
     assert MODULE.retrieval_profile("reasflow-reascholar") == "reascholar-s2"
 
 
+def test_augmentation_contract_records_cited_only_version() -> None:
+    assert MODULE.AUGMENTATION_CONTRACT_VERSION == "minimal-reasflow-v2-cited-only"
+
+
 def test_reasflow_only_does_not_load_disabled_reascholar_skill() -> None:
     s2_config = MODULE.direct_survey_config(ROOT, "reasflow-s2")
     treatment_config = MODULE.direct_survey_config(ROOT, "reasflow-reascholar")

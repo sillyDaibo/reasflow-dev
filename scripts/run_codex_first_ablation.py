@@ -23,7 +23,7 @@ FORBIDDEN_TASK_FIELDS = {
 }
 COMMON_PROMPT = """Read `TASK.md` and `AUTHOR_LABEL.txt` in the current workspace. Write a rigorous, self-contained survey article on the specified topic for expert review. Explain the problem setting to a new researcher, organize the literature into a useful taxonomy, describe the research development, compare representative approaches and their tradeoffs, and identify well-supported limitations, open questions, and future directions. The main survey body must contain at least 10,000 words and should naturally develop to roughly 12,000 words when the evidence supports it. Cite more than 100 distinct papers that are substantively relevant to the topic; do not target a round number and do not satisfy the coverage requirement with peripheral or merely keyword-matching references. The focused Related Works article must contain 1,200--2,200 words, use 45--55 core papers, and be organized into at least four titled sections. Resolve duplicate papers across sources by DOI, arXiv identifier, or normalized title so that each canonical paper has only one bibliography entry. Use the research resources and tools available in the workspace. Work autonomously and deliver complete LaTeX sources, one bibliography, and compiled PDFs, with the author shown exactly as specified in `AUTHOR_LABEL.txt`."""
 COMMON_PROMPT_VERSION = "long-form-common-v1"
-AUGMENTATION_CONTRACT_VERSION = "minimal-reasflow-v1"
+AUGMENTATION_CONTRACT_VERSION = "minimal-reasflow-v2-cited-only"
 MIN_SURVEY_WORDS = 10_000
 MIN_SURVEY_CITATIONS = 101
 MIN_RELATED_WORDS = 1_200
