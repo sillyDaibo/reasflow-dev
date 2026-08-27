@@ -34,3 +34,37 @@ def test_read_tex_tree_expands_nested_inputs_and_stays_inside_root(tmp_path) -> 
 
     assert MODULE.citation_keys(source) == {"one", "two", "three"}
     assert "Outside" not in source
+
+
+def test_canonical_duplicate_groups_detects_different_keys_for_same_paper() -> None:
+    bibliography = r"""
+@article{preprint,
+  title={A Forward-Backward Splitting Method for Monotone Inclusions without Cocoercivity},
+  author={Y. Malitsky and M. K. Tam},
+  eprint={1808.04162}
+}
+@article{published,
+  title={A forward-backward splitting method for monotone inclusions without cocoercivity},
+  author={Y. Malitsky and M. K. Tam},
+  journal={SIAM Journal on Optimization}
+}
+"""
+
+    groups = MODULE.canonical_duplicate_groups(bibliography)
+
+    assert len(groups) == 1
+    assert groups[0]["keys"] == ["preprint", "published"]
+    assert groups[0]["identities"][0].startswith("title:")
+
+
+def test_canonical_duplicate_groups_combines_multiple_shared_identities() -> None:
+    bibliography = r"""
+@article{one, title={A Shared Paper Title}, doi={10.1000/shared}}
+@article{two, title={A Shared Paper Title}, doi={10.1000/shared}}
+"""
+
+    groups = MODULE.canonical_duplicate_groups(bibliography)
+
+    assert len(groups) == 1
+    assert groups[0]["keys"] == ["one", "two"]
+    assert len(groups[0]["identities"]) == 2

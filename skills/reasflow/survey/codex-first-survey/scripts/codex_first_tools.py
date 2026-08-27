@@ -13,6 +13,7 @@ import unicodedata
 import urllib.error
 import urllib.parse
 import urllib.request
+from collections import Counter
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -203,6 +204,17 @@ def merge_group(group: list[dict[str, Any]]) -> tuple[dict[str, Any], dict[str, 
     merged["open_problem_candidates"] = list_union(
         *[item.get("open_problem_candidates") for item in group]
     )
+    merged["domain_memberships"] = list_union(
+        *[item.get("domain_memberships") for item in group]
+    )
+    for field in ("classification", "nine_dimensional_tags", "profile_evidence"):
+        values = [item.get(field) for item in reversed(ordered) if item.get(field)]
+        combined: dict[str, Any] = {}
+        for value in values:
+            if isinstance(value, dict):
+                combined.update(value)
+        if combined:
+            merged[field] = combined
     ids = dict(external_ids(merged))
     if dois:
         ids["DOI"] = dois[0]
@@ -331,6 +343,11 @@ def relevance_score(paper: dict[str, Any], query: str, includes: list[str], excl
         str(paper.get("title") or ""), abstract(paper),
         " ".join(map(str, paper.get("topics") or [])),
         str(paper.get("topic_category") or ""),
+        " ".join(
+            tag
+            for values in (paper.get("nine_dimensional_tags") or {}).values()
+            for tag in (values if isinstance(values, list) else [])
+        ),
     ]))
     query_tokens = token_set(query)
     title_tokens = token_set(title)
@@ -425,6 +442,10 @@ def command_inspect(args: argparse.Namespace) -> int:
             card["limitations"] = paper.get("limitations") or []
             card["open_problem_candidates"] = paper.get("open_problem_candidates") or []
             card["retrieval_routes"] = paper.get("retrieval_routes") or []
+            card["classification"] = paper.get("classification") or {}
+            card["domain_memberships"] = paper.get("domain_memberships") or []
+            card["nine_dimensional_tags"] = paper.get("nine_dimensional_tags") or {}
+            card["profile_evidence"] = paper.get("profile_evidence") or {}
             selected.append(card)
     output = {"requested": args.id, "matched": len(selected), "papers": selected}
     if args.output:
@@ -453,7 +474,11 @@ def command_structure(args: argparse.Namespace) -> int:
             "candidate_claim": item.get("candidate_claim"),
             "support_paper_keys": support,
             "verification_status": status,
-            "allowed_use": "research_hypothesis_requiring_paper_check",
+            "allowed_use": (
+                "bounded_adjudicated_structure_requiring_atomic_claim_check"
+                if status.startswith("adjudicated_")
+                else "research_hypothesis_requiring_paper_check"
+            ),
         })
     output = {"kind": args.kind, "returned": min(len(accepted), args.limit), "candidates": accepted[: args.limit]}
     if args.output:
@@ -579,6 +604,30 @@ def fetch_crossref(doi: str, timeout: float = 20.0) -> dict[str, Any]:
     return message if isinstance(message, dict) else {}
 
 
+def fetch_crossref_candidates(
+    paper: dict[str, Any], *, rows: int = 5, timeout: float = 20.0
+) -> list[dict[str, Any]]:
+    """Search Crossref for a missing DOI without treating rank as identity."""
+
+    query_parts = [str(paper.get("title") or "").strip(), *authors(paper)[:2]]
+    query = " ".join(part for part in query_parts if part)
+    url = "https://api.crossref.org/works?" + urllib.parse.urlencode(
+        {"query.bibliographic": query, "rows": max(1, min(rows, 20))}
+    )
+    request = urllib.request.Request(
+        url,
+        headers={
+            "Accept": "application/json",
+            "User-Agent": "ReasFlow-CodexFirstSurvey/1.0",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+    message = payload.get("message") if isinstance(payload, dict) else {}
+    items = message.get("items") if isinstance(message, dict) else []
+    return [item for item in items or [] if isinstance(item, dict)]
+
+
 def crossref_year(message: dict[str, Any]) -> int | None:
     for name in ("published-print", "published-online", "issued", "created"):
         value = message.get(name)
@@ -615,6 +664,170 @@ def crossref_authors(message: dict[str, Any]) -> list[str]:
     return result
 
 
+def author_surnames(items: Iterable[Any]) -> set[str]:
+    result = set()
+    for item in items:
+        tokens = re.findall(r"[^\W_]+", str(item or "").casefold(), flags=re.UNICODE)
+        if tokens:
+            result.add(tokens[-1])
+    return result
+
+
+def crossref_title(message: dict[str, Any]) -> str:
+    titles = message.get("title") or []
+    return str(
+        titles[0] if isinstance(titles, list) and titles else titles or ""
+    ).strip()
+
+
+def crossref_candidate_score(
+    paper: dict[str, Any], message: dict[str, Any]
+) -> dict[str, Any]:
+    title_score = title_similarity(paper.get("title"), crossref_title(message))
+    source_authors = author_surnames(authors(paper))
+    candidate_authors = author_surnames(crossref_authors(message))
+    author_overlap = (
+        len(source_authors & candidate_authors) / len(source_authors)
+        if source_authors
+        else 1.0
+    )
+    source_year = paper.get("year")
+    candidate_year = crossref_year(message)
+    try:
+        year_delta = (
+            abs(int(source_year) - int(candidate_year))
+            if source_year and candidate_year
+            else None
+        )
+    except (TypeError, ValueError):
+        year_delta = None
+    year_score = 1.0 if year_delta is None else max(0.0, 1.0 - year_delta / 5.0)
+    return {
+        "title_similarity": title_score,
+        "author_overlap": author_overlap,
+        "year_delta": year_delta,
+        "score": 0.7 * title_score + 0.2 * author_overlap + 0.1 * year_score,
+    }
+
+
+def apply_crossref_metadata(paper: dict[str, Any], message: dict[str, Any]) -> None:
+    doi = normalize_doi(message.get("DOI"))
+    ids = dict(external_ids(paper))
+    if doi:
+        ids["DOI"] = doi
+        paper["externalIds"] = ids
+    if crossref_title(message):
+        paper["title"] = crossref_title(message)
+    if crossref_authors(message):
+        paper["authors"] = crossref_authors(message)
+    if crossref_year(message):
+        paper["year"] = crossref_year(message)
+    containers = message.get("container-title") or []
+    venue = str(
+        containers[0]
+        if isinstance(containers, list) and containers
+        else containers or ""
+    ).strip()
+    if venue:
+        paper["venue"] = venue
+        paper["publication_venue"] = venue
+    for target, source in (
+        ("volume", "volume"),
+        ("issue", "issue"),
+        ("pages", "page"),
+        ("publisher", "publisher"),
+    ):
+        if message.get(source):
+            paper[target] = message[source]
+
+
+def command_enrich_metadata(args: argparse.Namespace) -> int:
+    """Resolve missing DOI/publication fields using conservative title search."""
+
+    records = load_records(args.registry)
+    cited_from = getattr(args, "cited_from", [])
+    if cited_from:
+        cited = set()
+        for path in cited_from:
+            cited.update(cite_keys(path.read_text(encoding="utf-8")))
+        candidates = [
+            paper for paper in records
+            if str(paper.get("bib_key") or "") in cited and not paper_doi(paper)
+        ]
+    else:
+        candidates = [paper for paper in records if not paper_doi(paper)]
+    candidates = candidates[: max(0, args.max_records)]
+    audit: list[dict[str, Any]] = []
+    for paper in candidates:
+        item: dict[str, Any] = {
+            "bib_key": paper.get("bib_key"),
+            "source_title": paper.get("title"),
+        }
+        try:
+            messages = fetch_crossref_candidates(
+                paper, rows=args.rows, timeout=args.timeout
+            )
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            item.update({"status": "unavailable", "error": type(exc).__name__})
+            audit.append(item)
+            continue
+        ranked = sorted(
+            ((crossref_candidate_score(paper, message), message) for message in messages),
+            key=lambda pair: pair[0]["score"],
+            reverse=True,
+        )
+        if not ranked:
+            item["status"] = "no_candidate"
+            audit.append(item)
+            continue
+        metrics, best = ranked[0]
+        second_score = ranked[1][0]["score"] if len(ranked) > 1 else 0.0
+        item.update({
+            "candidate_doi": normalize_doi(best.get("DOI")),
+            "candidate_title": crossref_title(best),
+            **{key: round(value, 4) if isinstance(value, float) else value for key, value in metrics.items()},
+            "score_margin": round(metrics["score"] - second_score, 4),
+        })
+        passes = (
+            bool(item["candidate_doi"])
+            and metrics["title_similarity"] >= args.min_title_similarity
+            and metrics["author_overlap"] >= args.min_author_overlap
+            and (metrics["year_delta"] is None or metrics["year_delta"] <= args.max_year_delta)
+            and metrics["score"] - second_score >= args.min_score_margin
+        )
+        if not passes:
+            item["status"] = "ambiguous_or_mismatch"
+            audit.append(item)
+            continue
+        apply_crossref_metadata(paper, best)
+        paper["metadata_enrichment"] = {
+            "status": "validated_crossref_title_author_year",
+            "provider": "crossref",
+            "doi": item["candidate_doi"],
+            "title_similarity": item["title_similarity"],
+            "author_overlap": item["author_overlap"],
+            "year_delta": item["year_delta"],
+            "score_margin": item["score_margin"],
+        }
+        item["status"] = "enriched"
+        audit.append(item)
+    write_jsonl(args.output_registry, records)
+    report = {
+        "schema_version": SCHEMA_VERSION,
+        "method": "crossref_title_author_year_conservative_v1",
+        "considered": len(candidates),
+        "enriched": sum(item["status"] == "enriched" for item in audit),
+        "ambiguous_or_mismatch": sum(
+            item["status"] == "ambiguous_or_mismatch" for item in audit
+        ),
+        "unavailable": sum(item["status"] == "unavailable" for item in audit),
+        "no_candidate": sum(item["status"] == "no_candidate" for item in audit),
+        "items": audit,
+    }
+    write_json(args.report, report)
+    return 0
+
+
 def command_validate_doi(args: argparse.Namespace) -> int:
     records = load_records(args.registry)
     cited_from = getattr(args, "cited_from", [])
@@ -635,10 +848,9 @@ def command_validate_doi(args: argparse.Namespace) -> int:
             item.update({"status": "unavailable", "error": type(exc).__name__})
             audit.append(item)
             continue
-        titles = message.get("title") or []
-        crossref_title = str(titles[0] if isinstance(titles, list) and titles else titles or "").strip()
-        similarity = title_similarity(paper.get("title"), crossref_title)
-        item.update({"crossref_title": crossref_title, "title_similarity": round(similarity, 4)})
+        authoritative_title = crossref_title(message)
+        similarity = title_similarity(paper.get("title"), authoritative_title)
+        item.update({"crossref_title": authoritative_title, "title_similarity": round(similarity, 4)})
         if similarity < args.min_title_similarity:
             ids = dict(external_ids(paper))
             ids.pop("DOI", None)
@@ -647,24 +859,12 @@ def command_validate_doi(args: argparse.Namespace) -> int:
             if "doi.org" in str(paper.get("url") or ""):
                 paper["url"] = f"https://arxiv.org/abs/{paper_arxiv(paper)}" if paper_arxiv(paper) else ""
             paper.setdefault("rejected_identifiers", []).append(
-                {"type": "DOI", "value": doi, "reason": "crossref_title_mismatch", "crossref_title": crossref_title}
+                {"type": "DOI", "value": doi, "reason": "crossref_title_mismatch", "crossref_title": authoritative_title}
             )
             item["status"] = "rejected_title_mismatch"
             audit.append(item)
             continue
-        paper["title"] = crossref_title or paper.get("title")
-        if crossref_authors(message):
-            paper["authors"] = crossref_authors(message)
-        if crossref_year(message):
-            paper["year"] = crossref_year(message)
-        containers = message.get("container-title") or []
-        venue = str(containers[0] if isinstance(containers, list) and containers else containers or "").strip()
-        if venue:
-            paper["venue"] = venue
-            paper["publication_venue"] = venue
-        for target, source in (("volume", "volume"), ("issue", "issue"), ("pages", "page"), ("publisher", "publisher")):
-            if message.get(source):
-                paper[target] = message[source]
+        apply_crossref_metadata(paper, message)
         paper["doi_validation"] = {
             "status": "validated_crossref", "title_similarity": round(similarity, 4)
         }
@@ -692,6 +892,148 @@ def cite_keys(tex: str) -> set[str]:
     return result
 
 
+def repeated_keys_within_citations(tex: str) -> list[dict[str, Any]]:
+    """Report redundant keys inside a single citation command.
+
+    A repeated key cannot add evidence.  In practice it is also a useful signal
+    that the writer intended to cite two different sources but accidentally
+    mapped both claims to the same registry entry.
+    """
+
+    issues: list[dict[str, Any]] = []
+    pattern = re.compile(
+        r"\\cite(?:t|p|alp|author|year|yearpar)?\s*"
+        r"(?:\[[^]]*\]\s*){0,2}\{([^}]+)\}"
+    )
+    for match in pattern.finditer(tex):
+        keys = [key.strip() for key in match.group(1).split(",") if key.strip()]
+        repeated = sorted(
+            key for key, count in Counter(keys).items() if count > 1
+        )
+        if repeated:
+            issues.append(
+                {
+                    "citation": match.group(0),
+                    "repeated_keys": repeated,
+                    "character_offset": match.start(),
+                }
+            )
+    return issues
+
+
+ORIGIN_ATTRIBUTION_PATTERNS = (
+    re.compile(r"\b([A-Z][A-Za-zÀ-ÖØ-öø-ÿ-]{2,})[’']s\b"),
+    re.compile(
+        r"\b([A-Z][A-Za-zÀ-ÖØ-öø-ÿ-]{2,})\s+"
+        r"(?i:introduced|proposed|developed|pioneered|originated|established|"
+        r"formulated|connected)\b",
+    ),
+)
+SECONDARY_ACCOUNT_PATTERN = re.compile(
+    r"\b(?:secondary account|later account|historical account|later survey|"
+    r"survey account)\b",
+    re.IGNORECASE,
+)
+NON_PERSON_ATTRIBUTION_TOKENS = {
+    "algorithm",
+    "ascent",
+    "backward",
+    "descent",
+    "forward",
+    "gradient",
+    "method",
+    "mirror",
+    "prox",
+}
+CITATION_PATTERN = re.compile(
+    r"\\cite(?:t|p|alp|author|year|yearpar)?\s*"
+    r"(?:\[[^]]*\]\s*){0,2}\{([^}]+)\}"
+)
+
+
+def named_attribution_issues(
+    tex: str, records: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Flag named historical claims whose citations omit the named author.
+
+    This deliberately narrow check catches a common long-form failure: citing
+    a later analysis as the original work. It does not attempt general
+    claim--citation entailment or prescribe which historical claims to make.
+    """
+
+    by_key = {
+        str(paper.get("bib_key") or ""): paper
+        for paper in records
+        if paper.get("bib_key")
+    }
+    issues: list[dict[str, Any]] = []
+    seen: set[tuple[int, str]] = set()
+    for citation in CITATION_PATTERN.finditer(tex):
+        start = max(
+            tex.rfind(".", 0, citation.start()),
+            tex.rfind("!", 0, citation.start()),
+            tex.rfind("?", 0, citation.start()),
+            tex.rfind("\n\n", 0, citation.start()),
+        ) + 1
+        boundaries = [
+            position
+            for marker in (".", "!", "?", "\n\n")
+            if (position := tex.find(marker, citation.end())) >= 0
+        ]
+        end = min(boundaries) + 1 if boundaries else len(tex)
+        sentence = re.sub(r"\s+", " ", tex[start:end]).strip()
+        if SECONDARY_ACCOUNT_PATTERN.search(sentence):
+            continue
+        keys = [
+            key.strip()
+            for match in CITATION_PATTERN.finditer(sentence)
+            for key in match.group(1).split(",")
+            if key.strip()
+        ]
+        cited_records = [by_key[key] for key in keys if key in by_key]
+        if not cited_records:
+            continue
+        cited_author_tokens = {
+            token
+            for paper in cited_records
+            for author in authors(paper)
+            for token in normalize_text(author).split()
+        }
+        claimed_names = {
+            match.group(1)
+            for pattern in ORIGIN_ATTRIBUTION_PATTERNS
+            for match in pattern.finditer(sentence)
+        }
+        for claimed_name in sorted(claimed_names):
+            if claimed_name.isupper():
+                continue
+            claimed_name_tokens = normalize_text(claimed_name).split()
+            normalized_name = " ".join(claimed_name_tokens)
+            marker = (start, normalized_name)
+            if (
+                marker in seen
+                or NON_PERSON_ATTRIBUTION_TOKENS.intersection(claimed_name_tokens)
+                or all(
+                    token in cited_author_tokens for token in claimed_name_tokens
+                )
+            ):
+                continue
+            seen.add(marker)
+            issues.append(
+                {
+                    "claim_name": claimed_name,
+                    "citation_keys": sorted(set(keys)),
+                    "cited_authors": sorted(
+                        {author for paper in cited_records for author in authors(paper)}
+                    ),
+                    "character_offset": start,
+                    "reason": "named_origin_author_absent_from_attached_citations",
+                    "snippet": sentence[:600],
+                }
+            )
+    return issues
+
+
 def bib_keys(text: str) -> set[str]:
     return set(re.findall(r"@\w+\s*\{\s*([^,\s]+)", text))
 
@@ -704,6 +1046,14 @@ def command_audit(args: argparse.Namespace) -> int:
     bib_text = args.bib.read_text(encoding="utf-8") if args.bib.exists() else ""
     survey_cites = cite_keys(survey_text)
     related_cites = cite_keys(related_text)
+    repeated_citations = {
+        "survey": repeated_keys_within_citations(survey_text),
+        "related_works": repeated_keys_within_citations(related_text),
+    }
+    attribution_issues = {
+        "survey": named_attribution_issues(survey_text, records),
+        "related_works": named_attribution_issues(related_text, records),
+    }
     bibliography = bib_keys(bib_text)
     token_owners: dict[str, list[str]] = {}
     for paper in records:
@@ -735,15 +1085,29 @@ def command_audit(args: argparse.Namespace) -> int:
         "metadata_conflicts": conflicts,
         "minimum_metadata_failure_count": len(missing_metadata),
         "minimum_metadata_failures": missing_metadata,
+        "repeated_citation_key_count": sum(
+            len(items) for items in repeated_citations.values()
+        ),
+        "repeated_citation_keys": repeated_citations,
+        "named_attribution_issue_count": sum(
+            len(items) for items in attribution_issues.values()
+        ),
+        "named_attribution_issues": attribution_issues,
         "gates": {
             "survey_100_plus": len(survey_cites) >= 100,
             "related_works_45_to_55": 45 <= len(related_cites) <= 55,
             "all_citation_keys_resolve": not ((survey_cites | related_cites) - bibliography),
             "canonical_unique": not duplicates,
             "minimum_metadata_present": not missing_metadata,
+            "no_repeated_keys_within_citation": not any(
+                repeated_citations.values()
+            ),
+            "named_origin_attributions_match_cited_authors": not any(
+                attribution_issues.values()
+            ),
         },
         "limitations": [
-            "This deterministic audit does not establish claim-citation entailment.",
+            "The named-origin check is heuristic; this deterministic audit does not establish claim-citation entailment.",
             "Venue and DOI correctness require source-level metadata validation.",
         ],
     }
@@ -823,6 +1187,20 @@ def parser() -> argparse.ArgumentParser:
     command.add_argument("--min-title-similarity", type=float, default=0.65)
     command.add_argument("--timeout", type=float, default=20.0)
     command.set_defaults(handler=command_validate_doi)
+
+    command = commands.add_parser("enrich-metadata")
+    command.add_argument("--registry", type=Path, required=True)
+    command.add_argument("--output-registry", type=Path, required=True)
+    command.add_argument("--report", type=Path, required=True)
+    command.add_argument("--cited-from", type=Path, action="append", default=[])
+    command.add_argument("--max-records", type=int, default=40)
+    command.add_argument("--rows", type=int, default=5)
+    command.add_argument("--min-title-similarity", type=float, default=0.82)
+    command.add_argument("--min-author-overlap", type=float, default=0.5)
+    command.add_argument("--max-year-delta", type=int, default=2)
+    command.add_argument("--min-score-margin", type=float, default=0.05)
+    command.add_argument("--timeout", type=float, default=20.0)
+    command.set_defaults(handler=command_enrich_metadata)
 
     command = commands.add_parser("audit")
     command.add_argument("--state", type=Path, required=True)

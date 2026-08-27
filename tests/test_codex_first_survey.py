@@ -43,6 +43,59 @@ def test_merge_uses_doi_arxiv_and_title_as_canonical_aliases() -> None:
     assert conflicts == []
 
 
+def test_merge_and_inspect_preserve_reascholar_tags_and_profile(tmp_path) -> None:
+    records = [
+        {
+            "id": "reascholar:paper",
+            "title": "A Tagged Method",
+            "authors": ["Researcher"],
+            "year": 2024,
+            "externalIds": {"DOI": "10.1000/tagged"},
+            "source": "reascholar",
+            "sources": ["reascholar"],
+            "nine_dimensional_tags": {
+                "algorithm": ["algorithm.extragradient"],
+                "problem": ["problem.minimax"],
+            },
+            "domain_memberships": [
+                {"domain_id": 104, "label": "Extragradient", "role": "core"}
+            ],
+            "profile_evidence": {
+                "problem": {"task": "Solve a monotone inclusion."},
+                "method": {"summary": "Use an extra-gradient correction."},
+            },
+        },
+        {
+            "id": "s2:paper",
+            "title": "A Tagged Method",
+            "authors": ["Researcher"],
+            "year": 2024,
+            "externalIds": {"DOI": "10.1000/tagged"},
+            "source": "semantic_scholar",
+            "sources": ["semantic_scholar"],
+        },
+    ]
+    merged, conflicts = MODULE.merge_records(records)
+    assert not conflicts
+    registry = tmp_path / "registry.jsonl"
+    MODULE.write_jsonl(registry, merged)
+    output = tmp_path / "inspect.json"
+    code = MODULE.command_inspect(
+        SimpleNamespace(
+            registry=registry,
+            id=["10.1000/tagged"],
+            max_abstract_chars=3000,
+            output=output,
+        )
+    )
+    card = json.loads(output.read_text())["papers"][0]
+    assert code == 0
+    assert card["nine_dimensional_tags"]["algorithm"] == [
+        "algorithm.extragradient"
+    ]
+    assert card["profile_evidence"]["method"]["summary"].startswith("Use")
+
+
 def test_shortlist_penalizes_known_topic_ambiguity(tmp_path) -> None:
     registry = tmp_path / "registry.jsonl"
     MODULE.write_jsonl(
@@ -150,6 +203,136 @@ def test_audit_keeps_publication_and_evidence_limits_explicit(tmp_path) -> None:
     assert code == 0
     assert result["gate_passed"] is True
     assert "does not establish claim-citation entailment" in result["limitations"][0]
+
+
+def test_audit_rejects_repeated_key_inside_one_citation_command(tmp_path) -> None:
+    state = tmp_path / "state.json"
+    state.write_text(json.dumps({"topic": "Example", "profile": "s2-only"}), encoding="utf-8")
+    registry = tmp_path / "registry.jsonl"
+    records = [
+        {
+            "title": f"Paper {index}",
+            "authors": [f"Author {index}"],
+            "year": 2020,
+            "externalIds": {"ArXiv": f"2001.{index:05d}"},
+            "bib_key": f"p{index}",
+        }
+        for index in range(105)
+    ]
+    MODULE.write_jsonl(registry, records)
+    survey = tmp_path / "survey.tex"
+    survey.write_text(
+        "\\citep{p0,p0," + ",".join(f"p{i}" for i in range(1, 101)) + "}",
+        encoding="utf-8",
+    )
+    related = tmp_path / "related.tex"
+    related.write_text(
+        "\\citep{" + ",".join(f"p{i}" for i in range(50)) + "}",
+        encoding="utf-8",
+    )
+    bib = tmp_path / "references.bib"
+    bib.write_text(
+        "\n".join(f"@misc{{p{i}, title={{Paper {i}}}}}" for i in range(105)),
+        encoding="utf-8",
+    )
+    output = tmp_path / "audit.json"
+
+    code = MODULE.command_audit(
+        SimpleNamespace(
+            state=state,
+            registry=registry,
+            survey=survey,
+            related=related,
+            bib=bib,
+            output=output,
+        )
+    )
+    result = json.loads(output.read_text(encoding="utf-8"))
+
+    assert code == 2
+    assert result["gate_passed"] is False
+    assert result["repeated_citation_key_count"] == 1
+    assert result["gates"]["no_repeated_keys_within_citation"] is False
+
+
+def test_named_attribution_audit_rejects_later_paper_as_original_source() -> None:
+    records = [
+        {
+            "bib_key": "solodov2003",
+            "title": "Convergence Rate Analysis of the Extragradient Method",
+            "authors": ["Mikhail Solodov", "Paul Tseng"],
+            "year": 2003,
+        }
+    ]
+    tex = (
+        "Korpelevich's extragradient construction founded the explicit correction "
+        r"line \citep{solodov2003}."
+    )
+
+    issues = MODULE.named_attribution_issues(tex, records)
+
+    assert len(issues) == 1
+    assert issues[0]["claim_name"] == "Korpelevich"
+    assert issues[0]["citation_keys"] == ["solodov2003"]
+
+
+def test_named_attribution_audit_accepts_original_or_qualified_secondary_account() -> None:
+    records = [
+        {
+            "bib_key": "korpelevich1976",
+            "title": "The Extragradient Method",
+            "authors": ["Galina M. Korpelevich"],
+            "year": 1976,
+        },
+        {
+            "bib_key": "solodov2003",
+            "title": "Convergence Rate Analysis of the Extragradient Method",
+            "authors": ["Mikhail Solodov", "Paul Tseng"],
+            "year": 2003,
+        },
+    ]
+    original = r"Korpelevich's method introduced the extra step \citep{korpelevich1976}."
+    qualified = (
+        "A later secondary account describes Korpelevich's method "
+        r"\citep{solodov2003}."
+    )
+
+    assert MODULE.named_attribution_issues(original, records) == []
+    assert MODULE.named_attribution_issues(qualified, records) == []
+
+
+def test_named_attribution_audit_accepts_joint_named_result() -> None:
+    records = [
+        {
+            "bib_key": "eckstein1992",
+            "title": "Douglas--Rachford Splitting and the Proximal Point Algorithm",
+            "authors": ["Jonathan Eckstein", "Dimitri P. Bertsekas"],
+            "year": 1992,
+        }
+    ]
+    tex = (
+        "Eckstein--Bertsekas established the splitting connection "
+        r"\citep{eckstein1992}."
+    )
+
+    assert MODULE.named_attribution_issues(tex, records) == []
+
+
+def test_named_attribution_audit_does_not_treat_method_name_as_person() -> None:
+    records = [
+        {
+            "bib_key": "juditsky2011",
+            "title": "Solving Variational Inequalities with Stochastic Mirror-Prox",
+            "authors": ["Anatoli Juditsky", "Arkadi Nemirovski"],
+            "year": 2011,
+        }
+    ]
+    tex = (
+        "Stochastic Mirror-Prox established a standard baseline "
+        r"\citep{juditsky2011}."
+    )
+
+    assert MODULE.named_attribution_issues(tex, records) == []
 
 
 def test_doi_validation_rejects_identifier_for_another_paper(tmp_path, monkeypatch) -> None:
@@ -281,6 +464,98 @@ def test_validate_doi_cli_accepts_cited_manuscripts() -> None:
     assert args.cited_from == [Path("survey.tex"), Path("related.tex")]
 
 
+def test_metadata_enrichment_repairs_high_confidence_title_artifact(tmp_path, monkeypatch) -> None:
+    registry = tmp_path / "registry.jsonl"
+    MODULE.write_jsonl(
+        registry,
+        [{
+            "title": "A Modified Forward-backward Splitting Method for Maximal Monotone Mappings 1",
+            "authors": ["Paul Tseng"],
+            "year": 1998,
+            "bib_key": "tseng1998modified",
+        }],
+    )
+    monkeypatch.setattr(
+        MODULE,
+        "fetch_crossref_candidates",
+        lambda paper, rows, timeout: [{
+            "DOI": "10.1137/S0363012998338806",
+            "title": ["A Modified Forward-Backward Splitting Method for Maximal Monotone Mappings"],
+            "author": [{"given": "Paul", "family": "Tseng"}],
+            "issued": {"date-parts": [[2000]]},
+            "container-title": ["SIAM Journal on Control and Optimization"],
+            "volume": "38",
+            "issue": "2",
+            "page": "431-446",
+        }],
+    )
+    output = tmp_path / "enriched.jsonl"
+    report = tmp_path / "report.json"
+
+    code = MODULE.command_enrich_metadata(
+        SimpleNamespace(
+            registry=registry,
+            output_registry=output,
+            report=report,
+            cited_from=[],
+            max_records=10,
+            rows=5,
+            min_title_similarity=0.82,
+            min_author_overlap=0.5,
+            max_year_delta=2,
+            min_score_margin=0.05,
+            timeout=1.0,
+        )
+    )
+
+    record = MODULE.load_records(output)[0]
+    assert code == 0
+    assert record["title"].endswith("Maximal Monotone Mappings")
+    assert MODULE.paper_doi(record) == "10.1137/s0363012998338806"
+    assert record["publication_venue"] == "SIAM Journal on Control and Optimization"
+    assert record["pages"] == "431-446"
+    assert record["metadata_enrichment"]["status"] == "validated_crossref_title_author_year"
+
+
+def test_metadata_enrichment_rejects_author_and_year_mismatch(tmp_path, monkeypatch) -> None:
+    registry = tmp_path / "registry.jsonl"
+    MODULE.write_jsonl(
+        registry,
+        [{"title": "A Reliable Method", "authors": ["Alice Author"], "year": 2020}],
+    )
+    monkeypatch.setattr(
+        MODULE,
+        "fetch_crossref_candidates",
+        lambda paper, rows, timeout: [{
+            "DOI": "10.1000/wrong",
+            "title": ["A Reliable Method"],
+            "author": [{"given": "Bob", "family": "Other"}],
+            "issued": {"date-parts": [[2010]]},
+        }],
+    )
+    output = tmp_path / "enriched.jsonl"
+    report = tmp_path / "report.json"
+
+    MODULE.command_enrich_metadata(
+        SimpleNamespace(
+            registry=registry,
+            output_registry=output,
+            report=report,
+            cited_from=[],
+            max_records=10,
+            rows=5,
+            min_title_similarity=0.82,
+            min_author_overlap=0.5,
+            max_year_delta=2,
+            min_score_margin=0.05,
+            timeout=1.0,
+        )
+    )
+
+    assert MODULE.paper_doi(MODULE.load_records(output)[0]) == ""
+    assert json.loads(report.read_text(encoding="utf-8"))["ambiguous_or_mismatch"] == 1
+
+
 def test_default_survey_agent_has_no_worker_or_frozen_prompt_contract() -> None:
     agent = (ROOT / "agents/survey.toml").read_text(encoding="utf-8")
 
@@ -289,6 +564,20 @@ def test_default_survey_agent_has_no_worker_or_frozen_prompt_contract() -> None:
     assert "survey-related-works" not in agent
     assert "150000" not in agent
     assert "max-papers 140" not in agent
-    assert "do not delegate" in agent
-    assert "falsifiable research directions" in agent
-    assert "negative outcome" in agent
+    normalized = " ".join(agent.casefold().split())
+    assert "do not delegate" in normalized
+    assert "do not follow a fixed staged workflow" in normalized
+    assert "native web research remains" in normalized
+    assert "do not precompute a candidate pool" in normalized
+    assert len(agent.split()) < 450
+
+
+def test_compact_survey_skill_keeps_metadata_as_postflight() -> None:
+    skill = (
+        ROOT / "skills/reasflow/survey/codex-first-survey/SKILL.md"
+    ).read_text(encoding="utf-8")
+    normalized = " ".join(skill.casefold().split())
+
+    assert "native web search is the default" in normalized
+    assert "do not construct a candidate pool or bibliography first" in normalized
+    assert "works that the manuscript actually selects or cites" in normalized

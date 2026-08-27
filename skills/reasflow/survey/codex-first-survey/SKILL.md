@@ -3,114 +3,48 @@ name: codex-first-survey
 description: Research and write a full academic survey or related-work section with Codex as the single owner, using compact evidence tools and deterministic publication checks instead of staged drafting agents.
 ---
 
-# Codex-first Survey
+# Minimal ReasFlow augmentation
 
-Own the research map, outline, manuscript, and revisions yourself. Use tools to
-improve evidence reliability; do not turn their output into a mandatory outline
-or paste a whole paper pool into the writing context.
+Keep Codex in charge of the research plan, outline, prose, and revisions. Do
+not impose a staged workflow or convert tool output into section headings.
+Native web search is the default discovery path. Do not construct a candidate
+pool or bibliography first. Research and draft in Codex's native order, then
+apply identity and metadata checks only to works that the manuscript actually
+selects or cites.
 
-## Research state
+Use ReasFlow only for three measured weaknesses of an unaided long-form run:
 
-Resolve the installed private skill root, then set:
+1. canonical paper identity and bibliography metadata;
+2. selective paper or citation-neighbor evidence when a claim cannot be
+   resolved confidently from the web;
+3. deterministic TeX, citation-key, duplicate, and PDF validation.
+
+Resolve the helper root only when one of those needs occurs:
 
 ```bash
 SKILL_ROOT="$REASFLOW_PRIVATE_SKILLS_ROOT/survey/codex-first-survey"
 ```
 
-Initialize an auditable run after defining the topic boundary:
+The optional `merge`, `shortlist`, `inspect`, `enrich-metadata`, `validate-doi`,
+and `bibtex` commands live in
+`$SKILL_ROOT/scripts/codex_first_tools.py`. Read their `--help` instead of
+loading an entire candidate pool. The Semantic Scholar helper is under
+`survey/autosurvey-paper-retrieval`; use it for a focused metadata, reference,
+or citation query, not as a substitute for native research.
 
-```bash
-python3 "$SKILL_ROOT/scripts/codex_first_tools.py" init \
-  --topic "<topic>" --profile "${REASFLOW_SURVEY_RETRIEVAL_PROFILE:-reascholar-s2}" \
-  --include-term "<central concept>" --exclude-term "<known ambiguity>" \
-  --state survey/research_state.json
-```
+Before delivery, check every sentence that names an originator, first method,
+or historical foundation. Its attached citation must contain the named author
+and represent the original work. If the original cannot be verified, rewrite
+the sentence as a qualified secondary account. This check is deliberately
+narrow: it must not prescribe the taxonomy, historical narrative, gap list, or
+future-work agenda.
 
-Use native web search for discovery. Use `autosurvey-paper-retrieval` for
-reproducible S2 search, paper metadata, citations, references, and BibTeX. For
-the ReaScholar profile, use `reascholar-two-stage-retrieval` to obtain Domain
-and paper evidence, but query and inspect it in small batches.
-
-Merge retrieved JSON/JSONL files into one canonical registry:
-
-```bash
-python3 "$SKILL_ROOT/scripts/codex_first_tools.py" merge \
-  --input survey/library/search_*.json \
-  --input survey/library/reascholar-s2/paper_pool.jsonl \
-  --registry survey/library/registry.jsonl \
-  --report survey/library/registry_report.json
-```
-
-Use `shortlist` before reading a large pool, and `inspect` for chosen IDs. Both
-commands return compact JSON and accept `--limit` or explicit IDs. Re-run them
-with a new query when the article reveals a missing branch.
-
-Use `structure` only when evaluating a ReaScholar timeline, limitation, gap, or
-future-work candidate. It excludes unresolved support and reports the supporting
-paper IDs; verify the actual paper evidence before writing the claim.
-
-Use `record` to log consequential choices such as rejected Domains, topic-drift
-papers, citation expansion, unresolved metadata, and later-work checks.
-
-## Evidence decisions
-
-- Resolve duplicate identity by DOI, arXiv ID, then normalized title.
-- Reject keyword matches whose title, abstract, and mechanism do not support the
-  topic boundary.
-- Treat categories as comparison hypotheses, not section headings.
-- Treat a citation edge as relationship evidence, not proof of a specific claim.
-- Build the mechanism taxonomy and the historical lineage as separate views. A
-  mechanism-first organization must still give a continuous beginner-facing
-  account from foundational roots through the problem or limitation that
-  motivated each major transition to its successor mechanism. Include older
-  foundations outside a narrow ReaScholar Domain when they are necessary to
-  explain how the field arose.
-- Label lineage strength: distinguish a verified citation or explicit influence
-  from chronological succession, parallel development, and survey inference.
-  Do not turn temporal order into ancestry, and verify publication timing from
-  canonical metadata rather than the year-like text in a BibTeX key.
-- A gap is unresolved only after checking later work through the task cutoff.
-- Derive future work from verified gaps even when the retrieval API has no
-  prewritten `future_work` record. Make each direction falsifiable with a proof
-  target or experiment, matched baselines or budgets, and a possible negative
-  result; preserve the source gap and later-work status.
-- Never infer missing bibliographic fields from memory.
-
-Generate the working bibliography, write both manuscripts, then validate only
-the records actually cited by them. Never run network validation over the raw
-candidate pool:
-
-```bash
-python3 "$SKILL_ROOT/scripts/codex_first_tools.py" bibtex \
-  --registry survey/library/registry.jsonl \
-  --output survey/references.bib
-python3 "$SKILL_ROOT/scripts/codex_first_tools.py" validate-doi \
-  --registry survey/library/registry.jsonl \
-  --cited-from survey/survey.tex \
-  --cited-from related_works/related_works.tex \
-  --output-registry survey/library/registry.validated.jsonl \
-  --report survey/library/doi_validation.json
-python3 "$SKILL_ROOT/scripts/codex_first_tools.py" bibtex \
-  --registry survey/library/registry.validated.jsonl \
-  --output survey/references.bib
-```
-
-Read the DOI-validation report and do not silently restore rejected or
-conflicting identifiers. A network-unavailable record remains explicitly
-unverified; a Crossref title mismatch loses the candidate DOI. The validated
-registry is intentionally a cited-paper subset; use it for the final BibTeX.
-
-## Publication
-
-Write `survey/survey.tex` and `related_works/related_works.tex` directly. Use one
-bibliography, registry-assigned keys, and natbib numeric citations. Run:
+Write the manuscripts directly in LaTeX, share one bibliography, then run:
 
 ```bash
 python3 "$REASFLOW_PRIVATE_SKILLS_ROOT/survey/survey-tex-bib-packaging/scripts/build_publication.py" --workspace .
-python3 "$SKILL_ROOT/scripts/codex_first_tools.py" audit \
-  --state survey/research_state.json --registry survey/library/registry.jsonl \
-  --survey survey/survey.tex --related related_works/related_works.tex \
-  --bib survey/references.bib --output build/research_audit.json
 ```
 
-Repair only observed publication or evidence failures, then rerun both checks.
+Inspect both PDFs. Repair only observed evidence, metadata, compilation,
+duplicate, citation-key, formula, or layout failures. Keep internal retrieval
+records and audit language out of the article.

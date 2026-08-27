@@ -19,6 +19,10 @@ CITE_PATTERN = re.compile(
     r"\\cite[a-zA-Z*]*\s*(?:\[[^\]]*\])?\s*(?:\[[^\]]*\])?\{([^}]*)\}"
 )
 BIB_PATTERN = re.compile(r"@\w+\s*\{\s*([^,\s]+)", re.IGNORECASE)
+BIB_ENTRY_PATTERN = re.compile(
+    r"^@\w+\s*\{\s*([^,\s]+)\s*,(.*?)(?=^@\w+\s*\{|\Z)",
+    re.IGNORECASE | re.MULTILINE | re.DOTALL,
+)
 
 
 def citation_keys(text: str) -> set[str]:
@@ -58,6 +62,57 @@ def bibliography_keys(text: str) -> tuple[set[str], list[str]]:
             duplicates.append(key)
         seen.add(key)
     return seen, duplicates
+
+
+def bib_field_value(body: str, field: str) -> str:
+    match = re.search(
+        rf"\b{re.escape(field)}\s*=\s*[\{{\"]([^\}}\"]*)",
+        body,
+        re.IGNORECASE | re.DOTALL,
+    )
+    return match.group(1).strip() if match else ""
+
+
+def normalized_title(value: str) -> str:
+    value = re.sub(r"\\[A-Za-z]+", " ", value)
+    return " ".join(re.sub(r"[^a-z0-9]+", " ", value.casefold()).split())
+
+
+def normalized_identifier(value: str) -> str:
+    value = value.casefold().strip()
+    value = re.sub(r"^https?://(?:dx\.)?doi\.org/", "", value)
+    value = re.sub(r"^(?:doi|arxiv)\s*:\s*", "", value)
+    return re.sub(r"\s+", "", value)
+
+
+def canonical_duplicate_groups(text: str) -> list[dict[str, object]]:
+    """Find different BibTeX keys that resolve to the same paper identity."""
+
+    identity_owners: dict[str, set[str]] = {}
+    for match in BIB_ENTRY_PATTERN.finditer(text):
+        key, body = match.groups()
+        title = normalized_title(bib_field_value(body, "title"))
+        doi = normalized_identifier(bib_field_value(body, "doi"))
+        eprint = normalized_identifier(bib_field_value(body, "eprint"))
+        identities = []
+        if title and len(title) >= 16:
+            identities.append(f"title:{title}")
+        if doi:
+            identities.append(f"doi:{doi}")
+        if eprint and re.fullmatch(r"\d{4}\.\d{4,5}(?:v\d+)?", eprint):
+            identities.append(f"arxiv:{eprint}")
+        for identity in identities:
+            identity_owners.setdefault(identity, set()).add(key.strip())
+
+    grouped_identities: dict[tuple[str, ...], list[str]] = {}
+    for identity, owners in identity_owners.items():
+        if len(owners) < 2:
+            continue
+        grouped_identities.setdefault(tuple(sorted(owners)), []).append(identity)
+    return [
+        {"keys": list(keys), "identities": sorted(identities)}
+        for keys, identities in sorted(grouped_identities.items())
+    ]
 
 
 def run_tectonic(tectonic: Path, tex_path: Path, build_dir: Path) -> dict:
@@ -131,6 +186,7 @@ def build(args: argparse.Namespace) -> dict:
     survey_keys = citation_keys(survey_source)
     related_keys = citation_keys(related_source)
     bib_keys, duplicate_bib_keys = bibliography_keys(bib_source)
+    canonical_duplicates = canonical_duplicate_groups(bib_source)
     missing_survey_keys = sorted(survey_keys - bib_keys)
     missing_related_keys = sorted(related_keys - bib_keys)
 
@@ -166,6 +222,7 @@ def build(args: argparse.Namespace) -> dict:
         <= args.max_related_citations,
         "bib_entries": len(bib_keys),
         "duplicate_bib_keys": duplicate_bib_keys,
+        "canonical_duplicate_groups": canonical_duplicates,
         "missing_survey_keys": missing_survey_keys,
         "missing_related_keys": missing_related_keys,
         "structural_errors": structural_errors,
@@ -176,6 +233,7 @@ def build(args: argparse.Namespace) -> dict:
     validation["ok"] = not any(
         [
             duplicate_bib_keys,
+            canonical_duplicates,
             missing_survey_keys,
             missing_related_keys,
             structural_errors,

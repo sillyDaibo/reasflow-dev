@@ -22,6 +22,8 @@ FORBIDDEN_TASK_FIELDS = {
     "key_references", "gap_requirements", "future_work_expectations", "logic_chain"
 }
 COMMON_PROMPT = """Read `TASK.md` and `AUTHOR_LABEL.txt` in the current workspace. Write a rigorous, self-contained survey article on the specified topic for expert review. Explain the problem setting to a new researcher, organize the literature into a useful taxonomy, describe the research development, compare representative approaches and their tradeoffs, and identify well-supported limitations, open questions, and future directions. The main survey body must contain at least 10,000 words and should naturally develop to roughly 12,000 words when the evidence supports it. Cite more than 100 distinct papers that are substantively relevant to the topic; do not target a round number and do not satisfy the coverage requirement with peripheral or merely keyword-matching references. The focused Related Works article must contain 1,200--2,200 words, use 45--55 core papers, and be organized into at least four titled sections. Resolve duplicate papers across sources by DOI, arXiv identifier, or normalized title so that each canonical paper has only one bibliography entry. Use the research resources and tools available in the workspace. Work autonomously and deliver complete LaTeX sources, one bibliography, and compiled PDFs, with the author shown exactly as specified in `AUTHOR_LABEL.txt`."""
+COMMON_PROMPT_VERSION = "long-form-common-v1"
+AUGMENTATION_CONTRACT_VERSION = "minimal-reasflow-v1"
 MIN_SURVEY_WORDS = 10_000
 MIN_SURVEY_CITATIONS = 101
 MIN_RELATED_WORDS = 1_200
@@ -47,8 +49,10 @@ def require_public_task(task: dict[str, Any], path: Path) -> None:
 
 def task_slug(task: dict[str, Any], path: Path) -> str:
     value = str(task.get("task_id") or path.stem)
-    if value.startswith("ontology3k_"):
-        value = value.removeprefix("ontology3k_")
+    for prefix in ("ontology15k_", "ontology3k_"):
+        if value.startswith(prefix):
+            value = value.removeprefix(prefix)
+            break
     slug = "".join(char if char.isalnum() or char in "-_" else "_" for char in value)
     if not slug:
         raise ValueError(f"cannot derive task slug from {path}")
@@ -66,6 +70,23 @@ def render_task(task: dict[str, Any]) -> str:
     ]
     lines.extend(f"- {item}" for item in aspects)
     return "\n".join(lines) + "\n"
+
+
+def frozen_retrieval_task(task: dict[str, Any]) -> dict[str, Any]:
+    """Project only generation-public fields into the retrieval contract."""
+
+    aspects = [
+        {"name": str(item.get("name") or "")}
+        if isinstance(item, dict)
+        else {"name": str(item)}
+        for item in task.get("expected_aspects", [])
+    ]
+    return {
+        "task_id": str(task.get("task_id") or ""),
+        "topic": str(task.get("topic") or ""),
+        "cutoff_date": str(task.get("cutoff_date") or ""),
+        "expected_aspects": aspects,
+    }
 
 
 def author_label(arm: str) -> str:
@@ -88,6 +109,47 @@ def filename_token(value: str) -> str:
     token = re.sub(r"[^A-Za-z0-9_-]+", "-", value).strip("-")
     token = re.sub(r"-+", "-", token)
     return token or "unknown"
+
+
+def json_sha256(value: Any) -> str:
+    payload = json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def source_snapshot_sha256(source: Path) -> str:
+    """Hash the exact ReasFlow survey implementation, including dirty files."""
+
+    roots = [
+        source / "agents/survey.toml",
+        source / "install.sh",
+        source / "scripts/run_codex_first_ablation.py",
+        source / "skills/reasflow/survey",
+    ]
+    files = []
+    for root in roots:
+        if root.is_file():
+            files.append(root)
+        elif root.is_dir():
+            files.extend(
+                path
+                for path in root.rglob("*")
+                if path.is_file() and "__pycache__" not in path.parts
+            )
+    digest = hashlib.sha256()
+    for path in sorted(files, key=lambda item: item.relative_to(source).as_posix()):
+        relative = path.relative_to(source).as_posix().encode("utf-8")
+        digest.update(len(relative).to_bytes(8, "big"))
+        digest.update(relative)
+        payload = path.read_bytes()
+        digest.update(len(payload).to_bytes(8, "big"))
+        digest.update(payload)
+    return digest.hexdigest()
 
 
 def package_deliverables(workspace: Path, slug: str, arm: str) -> list[str]:
@@ -226,10 +288,18 @@ def read_tex_tree(path: Path, root: Path, seen: set[Path] | None = None) -> str:
     return re.sub(r"\\(?:input|include)\{([^}]+)\}", include, text)
 
 
-def tex_metrics(path: Path) -> dict[str, int]:
+def tex_metrics(path: Path) -> dict[str, int | float]:
     text = read_tex_tree(path, path.parent)
     if not text:
-        return {"word_count": 0, "distinct_citations": 0, "section_count": 0}
+        return {
+            "word_count": 0,
+            "unique_substantive_word_count": 0,
+            "distinct_citations": 0,
+            "section_count": 0,
+            "repeated_paragraph_count": 0,
+            "repeated_paragraph_word_count": 0,
+            "duplicate_paragraph_word_ratio": 0.0,
+        }
     text = re.sub(r"(?m)%.*$", " ", text)
     citation_keys = {
         key.strip()
@@ -238,15 +308,44 @@ def tex_metrics(path: Path) -> dict[str, int]:
         if key.strip()
     }
     prose = re.sub(r"\\cite\w*\{[^}]*\}", " ", text)
-    prose = re.sub(r"\\(?:begin|end)\{[^}]+\}", " ", prose)
-    prose = re.sub(r"\\[A-Za-z@]+\*?(?:\[[^]]*\])?", " ", prose)
-    prose = re.sub(r"[^A-Za-z0-9'-]+", " ", prose)
-    words = re.findall(r"\b[A-Za-z][A-Za-z0-9'-]*\b", prose)
+
+    def paragraph_words(value: str) -> list[str]:
+        value = re.sub(r"\\(?:begin|end)\{[^}]+\}", " ", value)
+        value = re.sub(r"\\[A-Za-z@]+\*?(?:\[[^]]*\])?", " ", value)
+        value = re.sub(r"[^A-Za-z0-9'-]+", " ", value)
+        return re.findall(r"\b[A-Za-z][A-Za-z0-9'-]*\b", value)
+
+    words = paragraph_words(prose)
+    paragraph_counts: dict[str, tuple[int, int]] = {}
+    for raw_paragraph in re.split(r"\n\s*\n", prose):
+        tokens = paragraph_words(raw_paragraph)
+        # Short labels, equations, captions, and boilerplate commands should
+        # not be confused with duplicated substantive prose.
+        if len(tokens) < 40:
+            continue
+        normalized = " ".join(token.casefold() for token in tokens)
+        count, token_count = paragraph_counts.get(normalized, (0, len(tokens)))
+        paragraph_counts[normalized] = (count + 1, token_count)
+    repeated_paragraph_count = sum(
+        count - 1 for count, _ in paragraph_counts.values() if count > 1
+    )
+    repeated_paragraph_word_count = sum(
+        (count - 1) * token_count
+        for count, token_count in paragraph_counts.values()
+        if count > 1
+    )
+    unique_substantive_word_count = max(0, len(words) - repeated_paragraph_word_count)
     sections = re.findall(r"\\(?:sub)*section\*?\s*\{", text)
     return {
         "word_count": len(words),
+        "unique_substantive_word_count": unique_substantive_word_count,
         "distinct_citations": len(citation_keys),
         "section_count": len(sections),
+        "repeated_paragraph_count": repeated_paragraph_count,
+        "repeated_paragraph_word_count": repeated_paragraph_word_count,
+        "duplicate_paragraph_word_ratio": round(
+            repeated_paragraph_word_count / len(words), 6
+        ) if words else 0.0,
     }
 
 
@@ -262,8 +361,18 @@ def publication_validation(workspace: Path) -> dict[str, Any]:
         build_report_ok = False
     checks = {
         "survey_words": survey["word_count"] >= MIN_SURVEY_WORDS,
+        "survey_unique_substantive_words": (
+            survey["unique_substantive_word_count"] >= MIN_SURVEY_WORDS
+        ),
+        "survey_no_repeated_paragraphs": survey["repeated_paragraph_count"] == 0,
         "survey_citations": survey["distinct_citations"] >= MIN_SURVEY_CITATIONS,
         "related_words": MIN_RELATED_WORDS <= related["word_count"] <= MAX_RELATED_WORDS,
+        "related_unique_substantive_words": (
+            MIN_RELATED_WORDS
+            <= related["unique_substantive_word_count"]
+            <= MAX_RELATED_WORDS
+        ),
+        "related_no_repeated_paragraphs": related["repeated_paragraph_count"] == 0,
         "related_citations": (
             MIN_RELATED_CITATIONS
             <= related["distinct_citations"]
@@ -285,7 +394,7 @@ def publication_validation(workspace: Path) -> dict[str, Any]:
 def repair_prompt(validation: dict[str, Any]) -> str:
     survey = validation["survey"]
     related = validation["related_works"]
-    return f"""Continue the existing survey publication and repair only its measured delivery deficits. This is the same mechanical feedback protocol used for every experimental arm. Preserve correct content, topic scope, author label, and source provenance; do not pad with peripheral citations. The completed main Survey must contain at least {MIN_SURVEY_WORDS:,} substantive words and more than 100 distinct relevant citations. The Related Works article must contain {MIN_RELATED_WORDS:,}--{MAX_RELATED_WORDS:,} substantive words, cite {MIN_RELATED_CITATIONS}--{MAX_RELATED_CITATIONS} core papers, and contain at least {MIN_RELATED_SECTIONS} titled sections. Resolve duplicate papers by DOI, arXiv identifier, or normalized title so each canonical paper has one bibliography entry. The current mechanical scan found Survey words={survey['word_count']}, Survey distinct citations={survey['distinct_citations']}, Related Works words={related['word_count']}, Related Works distinct citations={related['distinct_citations']}, and Related Works titled sections={related['section_count']}. Correct every failing requirement, retain complete LaTeX and one bibliography, recompile both PDFs, and verify the final counts before finishing."""
+    return f"""Continue the existing survey publication and repair only its measured delivery deficits. This is the same mechanical feedback protocol used for every experimental arm. Preserve correct content, topic scope, author label, and source provenance; do not pad with peripheral citations or repeat a paragraph to inflate length. The completed main Survey must contain at least {MIN_SURVEY_WORDS:,} unique substantive words after exact repeated prose is discounted, no repeated substantive paragraph, and more than 100 distinct relevant citations. The Related Works article must contain {MIN_RELATED_WORDS:,}--{MAX_RELATED_WORDS:,} unique substantive words, no repeated substantive paragraph, cite {MIN_RELATED_CITATIONS}--{MAX_RELATED_CITATIONS} core papers, and contain at least {MIN_RELATED_SECTIONS} titled sections. Resolve duplicate papers by DOI, arXiv identifier, or normalized title so each canonical paper has one bibliography entry. The current mechanical scan found Survey words={survey['word_count']}, Survey unique substantive words={survey['unique_substantive_word_count']}, Survey repeated substantive paragraphs={survey['repeated_paragraph_count']}, Survey distinct citations={survey['distinct_citations']}, Related Works words={related['word_count']}, Related Works unique substantive words={related['unique_substantive_word_count']}, Related Works repeated substantive paragraphs={related['repeated_paragraph_count']}, Related Works distinct citations={related['distinct_citations']}, and Related Works titled sections={related['section_count']}. Correct every failing requirement, retain complete LaTeX and one bibliography, recompile both PDFs, and verify the final counts before finishing."""
 
 
 def write_publication_validation(workspace: Path) -> dict[str, Any]:
@@ -310,29 +419,51 @@ def install_reasflow(workspace: Path, source: Path) -> None:
     )
 
 
-def direct_survey_config(source: Path) -> str:
+def direct_survey_config(source: Path, arm: str) -> str:
     agent_text = (source / "agents/survey.toml").read_text(encoding="utf-8")
     match = re.search(r"developer_instructions\s*=\s*'''(.*?)'''", agent_text, re.DOTALL)
     if not match:
         raise ValueError("survey.toml has no literal developer_instructions block")
     instructions = match.group(1).strip()
+    skill_paths = [
+        ".codex/reasflow-skills/survey/codex-first-survey/SKILL.md",
+    ]
+    if arm == "reasflow-reascholar":
+        skill_paths.append(
+            ".codex/reasflow-skills/survey/reascholar-two-stage-retrieval/SKILL.md",
+        )
     instructions += """
 
-Before acting, read these installed skills completely and follow their routing:
-- `.codex/reasflow-skills/survey/codex-first-survey/SKILL.md`
-- `.codex/reasflow-skills/survey/autosurvey-paper-retrieval/SKILL.md`
-- `.codex/reasflow-skills/survey/reascholar-two-stage-retrieval/SKILL.md`
-- `.codex/reasflow-skills/survey/survey-tex-bib-packaging/SKILL.md`
+Read only the compact arm contract below before acting. Open another installed
+skill or helper only when a concrete research need calls for it:
+"""
+    instructions += "\n".join(f"- `{path}`" for path in skill_paths)
+    instructions += """
 This is a direct single-agent survey run. Do not spawn another survey agent.
 """
     return "developer_instructions = '''\n" + instructions + "\n'''\n"
 
 
-def prepare_arm(workspace: Path, arm: str, task: dict[str, Any], source: Path) -> None:
+def prepare_arm(
+    workspace: Path,
+    arm: str,
+    task: dict[str, Any],
+    source: Path,
+    *,
+    model: str = "gpt-5.6-terra",
+    effort: str = "high",
+    timeout: int = 14_400,
+) -> None:
     workspace.mkdir(parents=True, exist_ok=True)
     (workspace / "TASK.md").write_text(render_task(task), encoding="utf-8")
+    (workspace / "frozen_task.yaml").write_text(
+        yaml.safe_dump(frozen_retrieval_task(task), sort_keys=False),
+        encoding="utf-8",
+    )
     (workspace / "AUTHOR_LABEL.txt").write_text(author_label(arm) + "\n", encoding="utf-8")
-    (workspace / "prompt.txt").write_text(COMMON_PROMPT + "\n", encoding="utf-8")
+    prompt_payload = COMMON_PROMPT + "\n"
+    (workspace / "prompt.txt").write_text(prompt_payload, encoding="utf-8")
+    developer_config = ""
     if arm == "pure-codex":
         (workspace / "AGENTS.md").write_text(
             "# Pure Codex baseline\n\n"
@@ -343,8 +474,9 @@ def prepare_arm(workspace: Path, arm: str, task: dict[str, Any], source: Path) -
         )
     else:
         install_reasflow(workspace, source)
+        developer_config = direct_survey_config(source, arm)
         (workspace / ".codex/config.toml").write_text(
-            direct_survey_config(source), encoding="utf-8"
+            developer_config, encoding="utf-8"
         )
     manifest = {
         "schema_version": "codex-first-ablation-v1",
@@ -352,11 +484,21 @@ def prepare_arm(workspace: Path, arm: str, task: dict[str, Any], source: Path) -
         "retrieval_profile": retrieval_profile(arm),
         "task_topic": task["topic"],
         "task_cutoff": str(task.get("cutoff_date") or ""),
-        "prompt_sha256": hashlib.sha256(COMMON_PROMPT.encode()).hexdigest(),
+        "public_task_payload_sha256": json_sha256(task),
+        "common_prompt_version": COMMON_PROMPT_VERSION,
+        "prompt_sha256": hashlib.sha256(prompt_payload.encode()).hexdigest(),
+        "model": model,
+        "reasoning_effort": effort,
+        "timeout_seconds": timeout,
         "author_label": author_label(arm),
         "source_commit": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=source, text=True
         ).strip(),
+        "source_snapshot_sha256": source_snapshot_sha256(source),
+        "augmentation_contract_version": (
+            None if arm == "pure-codex" else AUGMENTATION_CONTRACT_VERSION
+        ),
+        "developer_instruction_word_count": len(developer_config.split()),
     }
     (workspace / "run_manifest.json").write_text(
         json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
@@ -378,6 +520,7 @@ def run_arm(
     if arm != "pure-codex":
         env["REASFLOW_SURVEY_RETRIEVAL_PROFILE"] = retrieval_profile(arm)
         env["REASFLOW_PRIVATE_SKILLS_ROOT"] = str(workspace / ".codex/reasflow-skills")
+        env["REASFLOW_SURVEY_TASK_PATH"] = str(workspace / "frozen_task.yaml")
     command = [
         "codex", "--search", "exec", "--skip-git-repo-check",
         "--sandbox", "danger-full-access", "-m", model,
@@ -422,7 +565,15 @@ def main() -> int:
         for arm in arms:
             workspace = args.output_root / slug / arm
             if not args.repair_existing:
-                prepare_arm(workspace, arm, task, args.source.resolve())
+                prepare_arm(
+                    workspace,
+                    arm,
+                    task,
+                    args.source.resolve(),
+                    model=args.model,
+                    effort=args.effort,
+                    timeout=args.timeout,
+                )
                 print(f"prepared {workspace}")
             elif not workspace.is_dir():
                 print(f"missing existing workspace {workspace}")

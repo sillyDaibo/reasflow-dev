@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date
 import importlib.util
 import json
 from pathlib import Path
@@ -36,33 +37,115 @@ def test_public_task_rejects_evaluator_only_fields(tmp_path) -> None:
 
 def test_three_arms_share_exact_prompt_and_task_projection(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(MODULE, "install_reasflow", lambda workspace, source: (workspace / ".codex").mkdir(parents=True))
-    monkeypatch.setattr(MODULE, "direct_survey_config", lambda source: "developer_instructions='direct'\n")
+    monkeypatch.setattr(
+        MODULE,
+        "direct_survey_config",
+        lambda source, arm: "developer_instructions='direct'\n",
+    )
     monkeypatch.setattr(MODULE.subprocess, "check_output", lambda *args, **kwargs: "deadbeef\n")
     task = public_task()
     prompts = []
     task_views = []
+    frozen_task_views = []
     hashes = []
     for arm in MODULE.ARMS:
         workspace = tmp_path / arm
         MODULE.prepare_arm(workspace, arm, task, ROOT)
         prompts.append((workspace / "prompt.txt").read_text(encoding="utf-8"))
         task_views.append((workspace / "TASK.md").read_text(encoding="utf-8"))
+        frozen_task_views.append(
+            (workspace / "frozen_task.yaml").read_text(encoding="utf-8")
+        )
         hashes.append(json.loads((workspace / "run_manifest.json").read_text())["prompt_sha256"])
 
     assert len(set(prompts)) == 1
     assert len(set(task_views)) == 1
+    assert len(set(frozen_task_views)) == 1
     assert len(set(hashes)) == 1
+    assert hashes[0] == MODULE.hashlib.sha256(prompts[0].encode()).hexdigest()
     assert "citation format" not in prompts[0].casefold()
     assert "cite more than 100" in prompts[0].casefold()
     assert "1,200--2,200 words" in prompts[0]
     assert "45--55 core papers" in prompts[0]
     assert "at least four titled sections" in prompts[0]
     assert "each canonical paper has only one" in prompts[0]
+    assert MODULE.yaml.safe_load(frozen_task_views[0]) == {
+        "task_id": "ontology3k_example",
+        "topic": "Example Optimization Topic",
+        "cutoff_date": "2026-07-31",
+        "expected_aspects": [{"name": "Foundations"}, {"name": "Methods"}],
+    }
+
+
+def test_15k_task_slug_removes_corpus_prefix() -> None:
+    task = {"task_id": "ontology15k_error_feedback"}
+
+    assert MODULE.task_slug(task, Path("task.yaml")) == "error_feedback"
+
+
+def test_manifest_hashes_actual_source_snapshot_and_run_configuration(
+    tmp_path, monkeypatch
+) -> None:
+    source = tmp_path / "source"
+    (source / "agents").mkdir(parents=True)
+    (source / "agents/survey.toml").write_text("agent", encoding="utf-8")
+    (source / "skills/reasflow/survey/example").mkdir(parents=True)
+    skill = source / "skills/reasflow/survey/example/SKILL.md"
+    skill.write_text("version one", encoding="utf-8")
+    (source / "scripts").mkdir()
+    (source / "scripts/run_codex_first_ablation.py").write_text(
+        "runner", encoding="utf-8"
+    )
+    (source / "install.sh").write_text("install", encoding="utf-8")
+    monkeypatch.setattr(
+        MODULE.subprocess, "check_output", lambda *args, **kwargs: "deadbeef\n"
+    )
+
+    workspace = tmp_path / "workspace"
+    MODULE.prepare_arm(
+        workspace,
+        "pure-codex",
+        public_task(),
+        source,
+        model="test-model",
+        effort="medium",
+        timeout=321,
+    )
+    manifest = json.loads((workspace / "run_manifest.json").read_text())
+    first_snapshot = manifest["source_snapshot_sha256"]
+
+    assert manifest["model"] == "test-model"
+    assert manifest["reasoning_effort"] == "medium"
+    assert manifest["timeout_seconds"] == 321
+    assert manifest["public_task_payload_sha256"] == MODULE.json_sha256(public_task())
+
+    skill.write_text("version two", encoding="utf-8")
+    assert MODULE.source_snapshot_sha256(source) != first_snapshot
+
+
+def test_public_task_hash_normalizes_yaml_dates() -> None:
+    with_date = {"topic": "Example", "cutoff_date": date(2026, 7, 31)}
+    with_text = {"topic": "Example", "cutoff_date": "2026-07-31"}
+
+    assert MODULE.json_sha256(with_date) == MODULE.json_sha256(with_text)
 
 
 def test_reasflow_profiles_differ_only_by_reascholar_capability() -> None:
     assert MODULE.retrieval_profile("reasflow-s2") == "s2-only"
     assert MODULE.retrieval_profile("reasflow-reascholar") == "reascholar-s2"
+
+
+def test_reasflow_only_does_not_load_disabled_reascholar_skill() -> None:
+    s2_config = MODULE.direct_survey_config(ROOT, "reasflow-s2")
+    treatment_config = MODULE.direct_survey_config(ROOT, "reasflow-reascholar")
+
+    assert "reascholar-two-stage-retrieval/SKILL.md" not in s2_config
+    assert "reascholar-two-stage-retrieval/SKILL.md" in treatment_config
+    assert "codex-first-survey/SKILL.md" in s2_config
+    assert "codex-first-survey/SKILL.md" in treatment_config
+    assert "autosurvey-paper-retrieval/SKILL.md" not in s2_config
+    assert "survey-tex-bib-packaging/SKILL.md" not in s2_config
+    assert len(s2_config.split()) < 500
 
 
 def test_package_deliverables_names_topic_arm_and_author(tmp_path) -> None:
@@ -168,11 +251,33 @@ def test_tex_metrics_expands_local_input_files(tmp_path) -> None:
     assert metrics["section_count"] == 0
 
 
+def test_tex_metrics_discounts_exact_repeated_substantive_paragraphs(tmp_path) -> None:
+    paragraph = " ".join(f"researchword{index}" for index in range(45))
+    (tmp_path / "survey.tex").write_text(
+        paragraph + "\n\n" + paragraph + "\n\nA distinct conclusion.",
+        encoding="utf-8",
+    )
+
+    metrics = MODULE.tex_metrics(tmp_path / "survey.tex")
+
+    assert metrics["word_count"] == 93
+    assert metrics["repeated_paragraph_count"] == 1
+    assert metrics["repeated_paragraph_word_count"] == 45
+    assert metrics["unique_substantive_word_count"] == 48
+
+
 def test_repair_prompt_discloses_only_shared_mechanical_requirements() -> None:
     validation = {
-        "survey": {"word_count": 2600, "distinct_citations": 86},
+        "survey": {
+            "word_count": 2600,
+            "unique_substantive_word_count": 2200,
+            "repeated_paragraph_count": 4,
+            "distinct_citations": 86,
+        },
         "related_works": {
             "word_count": 945,
+            "unique_substantive_word_count": 945,
+            "repeated_paragraph_count": 0,
             "distinct_citations": 57,
             "section_count": 1,
         },
@@ -181,8 +286,10 @@ def test_repair_prompt_discloses_only_shared_mechanical_requirements() -> None:
     prompt = MODULE.repair_prompt(validation)
 
     assert "Survey words=2600" in prompt
+    assert "Survey unique substantive words=2200" in prompt
+    assert "Survey repeated substantive paragraphs=4" in prompt
     assert "Related Works distinct citations=57" in prompt
-    assert "10,000 substantive words" in prompt
+    assert "10,000 unique substantive words" in prompt
     assert "45--55 core papers" in prompt
     assert "Related Works titled sections=1" in prompt
     assert "each canonical paper has one" in prompt
