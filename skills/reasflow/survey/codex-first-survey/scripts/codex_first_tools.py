@@ -945,6 +945,7 @@ NON_PERSON_ATTRIBUTION_TOKENS = {
     "mirror",
     "prox",
 }
+NON_PERSON_NAME_FRAGMENTS = {"avg", "sgd"}
 CITATION_PATTERN = re.compile(
     r"\\cite(?:t|p|alp|author|year|yearpar)?\s*"
     r"(?:\[[^]]*\]\s*){0,2}\{([^}]+)\}"
@@ -1009,10 +1010,15 @@ def named_attribution_issues(
                 continue
             claimed_name_tokens = normalize_text(claimed_name).split()
             normalized_name = " ".join(claimed_name_tokens)
+            compact_name = "".join(claimed_name_tokens)
             marker = (start, normalized_name)
             if (
                 marker in seen
                 or NON_PERSON_ATTRIBUTION_TOKENS.intersection(claimed_name_tokens)
+                or any(
+                    fragment in compact_name
+                    for fragment in NON_PERSON_NAME_FRAGMENTS
+                )
                 or all(
                     token in cited_author_tokens for token in claimed_name_tokens
                 )

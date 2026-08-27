@@ -327,9 +327,15 @@ def test_named_attribution_audit_does_not_treat_method_name_as_person() -> None:
             "year": 2011,
         }
     ]
-    tex = (
-        "Stochastic Mirror-Prox established a standard baseline "
-        r"\citep{juditsky2011}."
+    tex = " ".join(
+        [
+            "Stochastic Mirror-Prox established a standard baseline",
+            r"\citep{juditsky2011}.",
+            "SignSGD's variants use related ideas",
+            r"\citep{juditsky2011}.",
+            "FedAvg's local steps change communication",
+            r"\citep{juditsky2011}.",
+        ]
     )
 
     assert MODULE.named_attribution_issues(tex, records) == []
