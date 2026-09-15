@@ -1,0 +1,332 @@
+{
+  "paper_id": "2102.06704",
+  "evaluated_at": "2026-09-04T05:48:59.400219+00:00",
+  "summary": {
+    "total_score": 0.6889,
+    "algorithm_impl_score": 0.7778,
+    "exp_setup_score": 0.6296,
+    "exp_results_score": 0.0,
+    "total_rubrics": 27,
+    "passed": 17,
+    "failed": 10,
+    "errors": 0,
+    "pass_threshold": 0.8,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.7778,
+      "passed": 14,
+      "total": 18
+    },
+    "secondary": {
+      "score": 0.375,
+      "passed": 3,
+      "total": 8
+    },
+    "tertiary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "id": "alg-001",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "In ProxRR (Algorithm 1), the inner loop iterates for i = 0,...,n-1: x_t^{i+1} = x_t^i - γ_t ∇f_{π_i}(x_t^i), with x_t^0 = x_t.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In rr_prox_fed/algorithms.py, the ProxRR.run() method (lines 57-83) implements the inner loop: (1) x_t^0 = x_t is established at epoch start — x is carried over from the previous epoch or initialized as zeros; (2) the inner for-loop (line 61) iterates over the shuffled permutation indices, and at each step computes grad = objective.gradient(x, idx, ...) then x -= step * grad (lines 66-67), exactly implementing x_t^{i+1} = x_t^i - γ_t ∇f_{π_i}(x_t^i); (3) the proximal operator is NOT applied during the inner loop (only at epoch end, line 78), consistent with Algorithm 1 where the prox step is outside the inner loop. The inner loop iterates over n steps (all permutation indices, one per sample when batch_size=1), matching i=0,...,n-1.",
+      "note": "The implementation uses in-place update of x within the epoch (not separate x_t^i variables), but this is mathematically equivalent. The batch_size parameter generalizes from the paper's single-sample case, but default behavior (batch_size=1) matches the algorithm exactly.",
+      "error": false
+    },
+    {
+      "id": "alg-002",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "In ProxRR (Algorithm 1), the epoch ends with a single proximal operator step: x_{t+1} = prox_{γ_t n ψ}(x_t^n).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In rr_prox_fed/algorithms.py, lines 77-79, the ProxRR.run() method applies a single proximal step at the end of each epoch (when `prox_every_iteration` is False): `x = self.objective.regularizer(x, step * steps_per_epoch)`. Here `step` corresponds to γ_t (per-iteration step size) and `steps_per_epoch` corresponds to n (number of data points), so the effective proximal parameter is γ_t * n, matching the paper's `prox_{γ_t n ψ}(x_t^n)`. The comment on line 80 confirms: \"The epoch-end proximal point is the algorithm iterate.\"",
+      "note": "The `regularizer` method of ElasticNetLogistic implements the proximal operator of ψ scaled by the given step size argument, so `regularizer(x, step * steps_per_epoch)` is exactly `prox_{γ_t n ψ}(x)`.",
+      "error": false
+    },
+    {
+      "id": "alg-003",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "ProxSO uses a single permutation sampled at the beginning (line 1 of Algorithm 1), while ProxRR samples a new permutation each epoch (line 3 of Algorithm 1).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In rr_prox_fed/algorithms.py, the ProxRR class handles both algorithms via the `reshuffle` flag. Line 55: `permutation = rng.permutation(expanded)` — one permutation sampled before the epoch loop. Lines 57-59: `for epoch in range(self.epochs): if epoch > 0 and self.reshuffle: permutation = rng.permutation(expanded)`. When `reshuffle=False` (ProxSO, per line 93: `\"ProxRR\" if self.reshuffle else \"ProxSO\"`), the permutation is never updated — i.e., the single permutation from line 55 is used throughout. When `reshuffle=True` (ProxRR), a new permutation is sampled at the start of each epoch (epoch>0 check ensures it re-draws every subsequent epoch). This exactly implements the claim.",
+      "note": "Both algorithms share the same class; they are distinguished by the `reshuffle` boolean. The behavior is equivalent to Algorithm 1, lines 1 and 3 as described in the rubric.",
+      "error": false
+    },
+    {
+      "id": "alg-004",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Proximal SGD (Algorithm 2) updates x_{k+1} = prox_{γ_k ψ}(x_k - γ_k ∇f_{i_k}(x_k)), where i_k is sampled uniformly at random from [n].",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "rr_prox_fed/algorithms.py, lines 96-117: The `ProxSGD` class implements exactly the Algorithm 2 update. Line 110: `idx = rng.integers(0, self.objective.n, size=self.batch_size)` samples i_k uniformly at random from {0,...,n-1}. Line 112: `x -= step * self.objective.gradient(x, idx)` computes the gradient step x_k - γ_k ∇f_{i_k}(x_k). Line 113: `x = self.objective.regularizer(x, step)` applies the proximal operator prox_{γ_k ψ}(·), giving x_{k+1} = prox_{γ_k ψ}(x_k - γ_k ∇f_{i_k}(x_k)).",
+      "note": "batch_size defaults to 1 (true SGD), but the implementation supports mini-batches too. The uniform random sampling is done via rng.integers with replacement (not a permutation), consistent with standard SGD.",
+      "error": false
+    },
+    {
+      "id": "alg-005",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "In FedRR (Algorithm 3), each device m updates its local model in parallel: x_m^{i+1} = x_m^i - γ_t ∇f_{m,π_i}(x_m^i) for i = 0,...,n-1.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "rr_prox_fed/federated.py, lines 39-45: The FedRR.run() method loops over each client m (line 39), initializes local model z = x.copy() (line 41), then iterates over the permuted data indices (line 42-43) with update z -= step * local.gradient(z, idx, normalization=len(idx)) (line 44). This directly implements x_m^{i+1} = x_m^i - γ_t ∇f_{m,π_i}(x_m^i) for i=0,...,n-1, using a random permutation (perm) of local data indices matching Algorithm 3's reshuffling. Each client's local model is collected independently (line 45: local_models.append(z)), representing parallel execution across devices.",
+      "note": "The parallel execution is simulated sequentially via a for-loop over clients, which is standard for simulation code. The mathematical update rule is exactly as claimed.",
+      "error": false
+    },
+    {
+      "id": "alg-006",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "In FedRR (Algorithm 3), after the local epochs, the global model is updated via the proximal operator of the consensus-regularized objective: x_{t+1} = prox_{γ_t N (R + ψ_C)}(x_1^n, ..., x_M^n).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In `rr_prox_fed/federated.py`, the FedRR.run() method (lines 34-53) implements Algorithm 3. After the local epochs loop (lines 39-45) producing `local_models`, line 46 computes `x = np.mean(local_models, axis=0)` (the consensus/aggregation), then lines 48-50 apply the proximal operator: `x = np.sign(x) * np.maximum(np.abs(x) - self.step_size * total_n / M * self.l1, 0.0)` followed by `x /= 1.0 + self.step_size * total_n / M * self.l2`. This implements `prox_{γ_t N (R + ψ_C)}(x_1^n, ..., x_M^n)` with step size `γ_t * total_n / M` applied to the elastic-net regularizer R. The comment on line 47 explicitly states: \"Algorithm 3 has prox_{gamma N/M R}; l2 is kept in R only here.\"",
+      "note": "The proximal operator is applied to the averaged local models (post-averaging), which is mathematically equivalent to applying the consensus+regularization prox to the concatenated local models when the objective is separable and the consensus constraint is enforced by averaging.",
+      "error": false
+    },
+    {
+      "id": "alg-007",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The proximal operator of R+ψ_C in FedRR is computed as: for each block m, prox_{γ_t N (R+ψ_C)}(x_1^n,...,x_M^n) = (prox_{γ_t N / M R}((1/M)∑_m x_m^n), ..., prox_{γ_t N / M R}((1/M)∑_m x_m^n)).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In rr_prox_fed/federated.py, FedRR.run() (lines 37-50): after each epoch, local models are collected from all M clients (lines 37-45), then x = np.mean(local_models, axis=0) computes (1/M)*sum_m x_m^n (line 46). Then the proximal operator is applied to this mean with coefficient step_size * total_n / M (lines 48-50): soft-threshold with threshold = step_size * total_n / M * l1, followed by ridge shrinkage /= 1 + step_size * total_n / M * l2. The inline comment on line 47 explicitly states \"Algorithm 3 has prox_{gamma N/M R}\". This implements prox_{γ_t N/M R}((1/M) ∑_m x_m^n), consistent with Lemma 8's formula where all M blocks produce the same output.",
+      "note": "The code returns a single shared vector (not an M-tuple), which is equivalent to the all-same tuple (v,...,v) described in Lemma 8, since all blocks get the same result and FedRR uses a single shared model.",
+      "error": false
+    },
+    {
+      "id": "alg-008",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The proximal operator is defined as prox_{γψ}(x) = argmin_y {ψ(y) + 1/(2γ)||y - x||^2}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "rr_prox_fed/objectives.py, lines 11-24: class ProximalOperator defines __call__(self, x, step) that computes the closed-form solution to prox_{γψ}(x) = argmin_y {ψ(y) + 1/(2γ)||y-x||²} for ψ = l1*||·||₁ + (l2/2)||·||². The formula is z = sign(x)*max(|x| - step*l1, 0) / (1 + step*l2), which is exactly the elastic-net proximal map with γ=step. The test in tests/test_core.py line 18 validates this against expected = np.sign(x)*np.maximum(np.abs(x) - 0.4*0.5, 0.0)/(1 + 0.4*0.25). The operator is used in algorithms.py lines 68-70 and 77-79 as self.objective.regularizer(x, step).",
+      "note": "The implementation is the closed-form solution rather than a general argmin formulation, but this is mathematically equivalent and standard for the elastic-net proximal operator.",
+      "error": false
+    },
+    {
+      "id": "alg-009",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "For ProxRR and FedRR, the stepsize must satisfy γ_t ≤ 1/L_max, where L_max = max_i L_i.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched rr_prox_fed/algorithms.py, rr_prox_fed/federated.py, rr_prox_fed/objectives.py, run_experiment.py, and tests/test_core.py. ProxRR defaults step_size to 1/batch_smoothness(batch_size) (algorithms.py:41), which is a weighted combination of L and Lmax (objectives.py:73-74), not purely 1/L_max=max_i L_i. FedRR (federated.py:17-20) requires step_size as a user-provided float with no default and no enforcement. No assertion, clamp, warning, or check enforces γ_t ≤ 1/L_max anywhere in the codebase. The experiment script (run_experiment.py:117) uses batch_smoothness, not per-component L_max. The Lmax variable in objectives.py:73 is the maximum per-sample smoothness used only for computing batch_smoothness, not stored or compared against the stepsize.",
+      "note": "The paper's condition γ_t ≤ 1/L_max (Theorems 2,4,7) is a theoretical requirement but is neither enforced nor validated in the implementation. The default stepsize for ProxRR uses a batch smoothness formula that incorporates Lmax but is not identical to 1/L_max.",
+      "error": false
+    },
+    {
+      "id": "alg-010",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "When using decreasing stepsizes in ProxRR, the schedule is γ_t = 1/L_max for t ≤ ⌈T/2⌉, and γ_t = (s/(s + t - t_0))^3 * 1/L_max for t > t_0, where s = 7L_max/(4μn).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In rr_prox_fed/algorithms.py (ProxRR.run), the stepsize is computed as: `step = 1.0 / (1.0 / self.step_size + self.decay_coefficient * steps_per_epoch * max(0, epoch - self.epoch_start_decay) ** self.decay_power)`. In run_experiment.py, this is called with decay_power=1.0 (default) and decay_coefficient=l2/7.0, giving an O(1/t) schedule — not the cubic O(1/t^3) schedule from Eq.(11). There is no piecewise structure (constant for t≤⌈T/2⌉, then decreasing for t>t_0), and no computation of s=7L_max/(4μn). The code comments in run_experiment.py explicitly state 'decay is O(1/t)' as a supplementary implementation detail, confirming a different formula is used.",
+      "note": "The repository implements a general O(1/t) decay for ProxRR, not the specific Equation (11) piecewise schedule with cubic decay γ_t=(s/(s+t-t_0))^3 * 1/L_max. Neither the cubic exponent (decay_power=3), the s=7L_max/(4μn) constant, nor the piecewise structure (constant first half, decreasing second half) are present.",
+      "error": false
+    },
+    {
+      "id": "alg-011",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The importance sampling variant of ProxRR first constructs a new problem with n_i = ⌈L_i / L̄⌉ copies of (L̄/L_i) f_i, where L̄ = (1/n)∑ L_i, and then applies Algorithm 1 to this reformulation.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In rr_prox_fed/algorithms.py lines 48-65, the importance sampling variant exists but uses copies = ceil(sqrt(row_sq / mean)) (line 51) rather than ceil(L_i / L̄) as specified in the rubric (Eq. 12). The row_sq values are ‖a_i‖² (proportional to L_i for logistic regression), and mean is their average (proportional to L̄). The square root in the formula contradicts the paper's n_i = ⌈L_i / L̄⌉. Furthermore, the weights applied are 1/copies (line 65) rather than (L̄/L_i) as required by the reformulation of f_i.",
+      "note": "The importance sampling framework exists and applies Algorithm 1 to the reformulation (reuses ProxRR's main loop), but the specific formula for the number of copies does not match the rubric's claim of ⌈L_i/L̄⌉ — a square root is applied instead.",
+      "error": false
+    },
+    {
+      "id": "alg-012",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "In FedRR, all devices use the same permutation π at each epoch.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In rr_prox_fed/federated.py, the FedRR.run() method generates a separate permutation per client: `perms = [rng.permutation(A.shape[0]) for A, _ in self.clients]` (list comprehension iterating over all clients). This is repeated at each reshuffling epoch: `if epoch and self.reshuffle: perms = [rng.permutation(A.shape[0]) for A, _ in self.clients]`. Each client then uses its own distinct permutation via `for (A, b), perm in zip(self.clients, perms)`. There is no single shared permutation π broadcast to all devices.",
+      "note": "The paper's Algorithm 3 lines 3 and 5-6 specify a single shared permutation π used by all devices at each epoch. The implementation instead draws one independent permutation per client from a sequential RNG, which is a different (heterogeneous) scheme.",
+      "error": false
+    },
+    {
+      "id": "setup-001",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The experiment uses the 'a1a' dataset.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Multiple files confirm the a1a dataset is used: run_experiment.py:76 and :145 call load_libsvm(\"a1a\", args.data_dir); configs/figure1.json:3 and configs/importance.json:3 set \"dataset\": \"a1a\"; formal results exist in results/formal/figure1_a1a/ with config.json:7 recording \"name\": \"a1a\"; the dataset file itself exists at .run-data/datasets/a1a; CLAIMS.json lists \"datasets\": [\"a1a\"] for the proximal logistic regression experiment.",
+      "note": "The experiment corresponds to proximal logistic regression (elastic-net, eq. 14 in paper) on the a1a libsvm dataset, matching the rubric's experiment_id exp1_prox_logreg_a1a.",
+      "error": false
+    },
+    {
+      "id": "setup-002",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "Minibatch size is set to 1 for all methods.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "run_experiment.py line 81: `batch_size = 1` hardcoded; this value is passed to all three methods (ProxSGD line 89, ProxRR reshuffle line 90, ProxRR prox_every_iteration line 91). Confirmed in configs/figure1.json (\"batch_size\": 1) and results/formal/figure1_a1a/config.json (\"batch_size\": 1).",
+      "note": "This applies to exp1 (figure1, prox logreg, a1a). The federated experiment (figure2) uses local_batch_size=8, but that is a different experiment.",
+      "error": false
+    },
+    {
+      "id": "setup-003",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "Stepsizes are decreased as O(1/t) for all methods.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "run_experiment.py line 85-91: explicit comment \"decay is O(1/t)\" with non-zero decay_coefficients passed to all methods (ProxSGD: sgd_decay=l2/2.0, ProxRR: rr_decay=l2/7.0, RR_heuristic: rr_decay=l2/7.0). In rr_prox_fed/algorithms.py line 60 (ProxRR) and line 111 (ProxSGD), step is computed as `1.0/(1.0/step_size + decay_coefficient * t ** decay_power)` where `decay_power=1.0` by default, yielding O(1/t) decay. Same pattern in federated.py line 38 for FedRR/LocalSGD. The resolved config (results/formal/figure1_a1a/config.json) confirms non-zero decay_coefficients: ProxRR=0.000139, ProxSGD=0.000488, RR_heuristic=0.000139.",
+      "note": "The formula `1/(1/η₀ + c·t)` equals O(1/t) for large t. The decay_power defaults to 1.0 throughout, making this precisely O(1/t).",
+      "error": false
+    },
+    {
+      "id": "setup-004",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For each data point i, the smoothness constant L_i is set to 1/4 \\|a_i\\|^2.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In rr_prox_fed/objectives.py lines 72-73, the batch_smoothness method computes `row_sq = np.asarray(self.A.multiply(self.A).sum(axis=1)).ravel()` (which is ||a_i||^2 for each row/sample i) and then `Lmax = 0.25 * float(row_sq.max())`. This establishes L_i = 0.25 * ||a_i||^2 per data point. Additionally, line 83 uses `0.25 * smax * smax / self.n` for the global smoothness, consistent with logistic regression's smoothness formula. The importance sampling code in algorithms.py lines 49-51 also uses `row_sq` (= ||a_i||^2) per sample to compute expansion counts, confirming per-sample L_i = 1/4 * ||a_i||^2 is the underlying design.",
+      "note": "The per-sample L_i values are not stored as an explicit array named \"L_i\", but the formula 0.25 * ||a_i||^2 is clearly computed and used in batch_smoothness and importance sampling logic.",
+      "error": false
+    },
+    {
+      "id": "setup-005",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "λ_2 is set to L/N, where L = (1/N)∑_{i=1}^N (1/4)\\|a_i\\|^2.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In run_experiment.py line 78-79 (run_figure1 for a1a), `L = base.smoothness` and `l2 = L / A.shape[0]` (i.e., l2 = L/N). However, `base.smoothness` is computed in objectives.py line 83 as `0.25 * smax * smax / self.n`, where `smax` is the largest singular value of A (spectral norm). This is L = (1/N) * (1/4) * ||A||²_spec. The rubric claims L = (1/N)∑_{i=1}^N (1/4)||a_i||² (average of per-row squared norms times 1/4), which is a different formula. The batch_smoothness method in objectives.py line 72-74 does compute per-row squared norms (`row_sq = np.asarray(self.A.multiply(self.A).sum(axis=1)).ravel()`) and `Lmax = 0.25 * float(row_sq.max())`, but this is only used for `batch_smoothness`, not for setting l2.",
+      "note": "The code sets λ_2 = L/N where L is the global smoothness constant based on the spectral norm (0.25 * σ_max²/N), not the average of per-sample squared norms. The formula in the rubric (average per-row squared norm) differs from what is implemented.",
+      "error": false
+    },
+    {
+      "id": "setup-006",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "λ_1 is tuned to obtain a solution with less than 50% non-zero coordinates (exact values provided in the code).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In run_experiment.py (run_figure1 function, line ~77), λ_1 is hardcoded as `l1 = 1e-3` with no comment or code verifying that this produces a solution with less than 50% non-zero coordinates. Searched for keywords: non_zero, spars, nnz, frac, percent, 0.5, 50 across all Python files and configs — none reference a sparsity criterion or threshold check. The resolved_config.json confirms l1=0.001 but contains no sparsity metadata.",
+      "note": "The value l1=1e-3 may empirically yield <50% non-zeros (as implied by the paper), but the claim requires that this tuning criterion be explicit in the code with exact values provided — it is not.",
+      "error": false
+    },
+    {
+      "id": "setup-007",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "No hyperparameter tuning is performed beyond λ_1; theoretical stepsizes are used without tuning.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In run_experiment.py (run_figure1 function), the step size is set as `step = 1.0 / objective.batch_smoothness(batch_size)` (line ~84), which is the theoretical stepsize 1/L_b. The only non-theoretical parameter is l1=1e-3 (λ_1). The decay coefficients are also theory-derived: `rr_decay = l2 / 7.0`, `sgd_decay = l2 / 2.0`. The config file configs/figure1.json documents `\"step_size\": \"1 / batch_smoothness(batch_size=1)\"`. No hyperparameter search or tuning loop exists anywhere in the codebase. The algorithms.py default step also falls back to `1.0 / objective.batch_smoothness(batch_size)` (line 41, 101).",
+      "note": "The decay coefficients (l2/7 for ProxRR, l2/2 for ProxSGD) are fixed theory-consistent values derived from l2, not tuned via search. This is consistent with the paper's claim of using theoretical stepsizes without tuning beyond λ_1.",
+      "error": false
+    },
+    {
+      "id": "setup-008",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The method 'RR (heuristic)' applies the proximal operator after each iteration, unlike the proposed ProxRR which applies the proximal operator only at the end of each epoch.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "rr_prox_fed/algorithms.py lines 68-70 and 77-83: when prox_every_iteration=True, the proximal step `x = self.objective.regularizer(x, step)` is called inside the inner loop after every gradient step; when False (ProxRR), it is called once at the end of each epoch. The name property (lines 89-90) returns \"RR_heuristic\" for prox_every_iteration=True. In run_experiment.py line 91, the heuristic is instantiated as ProxRR(..., prox_every_iteration=True, ...) confirming the behavior.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-009",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The experiment uses the 'mushrooms' dataset.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/figure2.json line 3: \"dataset\": \"mushrooms\"; run_experiment.py line 110: `A, b, provenance = load_libsvm(\"mushrooms\", args.data_dir)` inside the `run_figure2` function; results directory named `results/formal/figure2_mushrooms/` also confirms mushrooms is used for Figure 2 experiments.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-010",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The loss function is logistic regression with elastic net regularization, using no ℓ1 regularization (λ_1 = 0) and λ_2 = L_max/N, where L_max = max_i (1/4)||a_i|| is the maximum smoothness constant.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In run_experiment.py (run_figure2, lines 112-114), the mushrooms experiment sets l1=0.0 (correct) and l2 = L / usable, where L = base.smoothness = 0.25 * smax^2 / n (the global logistic smoothness), and usable = 8120 rows. The resolved config confirms l2=0.000318499, logistic_smoothness=2.58621, usable_rows=8120, matching L/N. However, the rubric specifies λ_2 = L_max/N where L_max = max_i (1/4)||a_i||². In objectives.py line 73, L_max is implemented as `Lmax = 0.25 * float(row_sq.max())` — the per-sample maximum smoothness — which is a different quantity from the global smoothness L = 0.25 * smax^2 / n used in the code. The code uses global smoothness L divided by N, not the maximum per-sample smoothness L_max divided by N as the rubric requires.",
+      "note": "The λ_1 = 0 part is correctly implemented. The discrepancy is only in λ_2: the code uses L (global smoothness of the full dataset) / N, while the rubric specifies L_max (maximum per-sample smoothness) / N. These are related but distinct quantities.",
+      "error": false
+    },
+    {
+      "id": "setup-011",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The data is distributed homogeneously (i.i.d.) across clients.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In run_experiment.py (run_figure2, line 111), the mushrooms dataset is loaded and immediately partitioned: `clients, usable = partition_clients(A, b, args.clients)`. The `partition_clients` function in rr_prox_fed/data.py explicitly creates \"deterministic contiguous, equal-size client shards\" (line: `return [(A[i * n:(i + 1) * n], b[i * n:(i + 1) * n]) for i in range(n_clients)], usable`), i.e., sequential slices with no shuffling or randomization before splitting. There is no shuffle/permutation step anywhere in the pipeline for this experiment. Sequential contiguous splits of the mushrooms dataset (which has labels grouped by class in libsvm format) produce heterogeneous (non-i.i.d.) client distributions.",
+      "note": "The claim requires i.i.d. (homogeneous) distribution; the code implements non-i.i.d. contiguous splits without any pre-shuffle.",
+      "error": false
+    },
+    {
+      "id": "setup-012",
+      "dimension": "exp_setup",
+      "priority": "tertiary",
+      "description": "The parallelization of local runs is done using the Ray package.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "requirements.txt lists only numpy, scipy, scikit-learn, matplotlib, pytest — no ray package. Grepping all Python files for \"import ray\" found zero matches. Searching run_experiment.py and all source files for \"ray\", \"parallel\", \"multiprocess\", \"concurrent\", \"joblib\" found no parallelization code. The experiment runner appears to execute runs sequentially with no Ray-based or any other parallelization.",
+      "note": "The paper (§16) may describe Ray-based parallelization, but this reproduction repository does not implement it.",
+      "error": false
+    },
+    {
+      "id": "setup-013",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For Local-SGD (full pass), the number of local steps is set to the number of local data points per client (a full pass over the local data).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In run_experiment.py, line 119: `client_n = clients[0][0].shape[0]` (number of data points per client), and line 121: `full = LocalSGD(clients, rounds, client_n, ...)` — the `local_steps` parameter (3rd positional arg, per federated.py line 58-59) is set to `client_n`, i.e., the number of local data points per client. The `full_pass` variant is confirmed by line 124 (`full_trace.method = \"LocalSGD_full_pass\"`) and the config file configs/figure2.json which lists `\"local_budgets\": [\"full_pass\", \"one_fifth_pass\"]`.",
+      "note": "The local_batch_size (8) controls the mini-batch size within each local step loop, but the total number of local steps equals client_n (the full local dataset size), confirming a full pass.",
+      "error": false
+    },
+    {
+      "id": "setup-014",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For Local-SGD (partial pass), the number of local steps is set to 1/5 of the number of local data points per client.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In run_experiment.py line 122, Local-SGD (partial pass) is created with `max(1, client_n // 5)` local steps, where `client_n` is the number of local data points per client. The resolved config at results/formal/figure2_mushrooms/resolved_config.json confirms: client_rows=1015, local_partial_steps=203 (1015//5=203), matching exactly 1/5 of the local data points.",
+      "note": "The config uses integer division (`//`), so the result is floor(client_n/5), which is the natural interpretation of \"1/5 of the number of local data points\".",
+      "error": false
+    },
+    {
+      "id": "setup-015",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "The stepsize for FedRR is chosen to satisfy γ ≤ 1/L_max, where L_max is the maximum smoothness constant of the individual loss functions.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In run_experiment.py (figure2 experiment, mushrooms dataset, line 117): `step_rr = 1.0 / max(1e-12, objective.batch_smoothness(local_batch_size))` where `local_batch_size=8`. The `batch_smoothness(batch_size)` method (objectives.py lines 69-74) returns a weighted average: `n/(n-1) * (1 - 1/batch_size) * L + (n/batch_size - 1)/(n-1) * Lmax`, where `Lmax = 0.25 * max_row_squared_norm` is the max per-sample smoothness. For batch_size=8, this formula gives a value strictly less than Lmax (it is a convex combination of L and Lmax with L ≤ Lmax), meaning step_rr = 1/batch_smoothness(8) > 1/Lmax. The stored config confirms fedrr_step_size=0.34252 while logistic_smoothness (global)=2.586, so 1/L_global≈0.387 > step_rr, but 1/L_max (per-sample) would be even smaller. The step size is NOT bounded by 1/L_max; it is determined by the mini-batch smoothness formula with batch_size=8.",
+      "note": "The claim requires γ ≤ 1/L_max where L_max is the maximum smoothness of individual loss functions. The code uses 1/batch_smoothness(8), which exceeds 1/L_max since batch_smoothness(8) < L_max.",
+      "error": false
+    }
+  ]
+}

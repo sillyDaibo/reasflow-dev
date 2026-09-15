@@ -1,0 +1,26 @@
+{
+  "common": {
+    "anll_test": 0.7033568089282198,
+    "anll_train": 0.6926070670013583
+  },
+  "dataset": "U.S. Senate elections",
+  "nodes": 1050,
+  "paper_reference": {
+    "common_test_anll": 0.7,
+    "stratified_test_anll": 0.61
+  },
+  "separate": {
+    "anll_test": 0.6931471805599454,
+    "anll_train": 1.0000050000287823e-05
+  },
+  "stratified": {
+    "anll_test": 0.5375385515895127,
+    "anll_train": 0.32999849797630726,
+    "iterations": 64,
+    "parameter_count": 1050
+  },
+  "test_records": 68,
+  "train_records": 639,
+  "wall_time_seconds": 0.8750335359945893,
+  "resource": {"cpu_count_visible": 16, "python": "3.10", "platform": "Linux CPU"}
+}

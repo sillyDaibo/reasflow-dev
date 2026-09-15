@@ -1,0 +1,3 @@
+# Archived evidence retains its original whitespace; collapse bulk records in reviews.
+experiments/cpu30-ab-v3-sixteen-20260915/** -whitespace linguist-generated=true
+experiments/cpu30-ab-v3-sixteen-20260915/README.md whitespace=blank-at-eol,blank-at-eof,space-before-tab linguist-generated=false

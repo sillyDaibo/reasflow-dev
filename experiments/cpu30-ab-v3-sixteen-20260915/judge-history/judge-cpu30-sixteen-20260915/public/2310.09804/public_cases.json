@@ -1,0 +1,965 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2310.09804",
+    "title": "Communication Compression for Byzantine Robust Learning: New Efficient Algorithms and Improved Rates",
+    "sha256": "d4f2427abc729e228c76d5850fdae85925ef58b3ea305058394a7ebffa2ac26c"
+  },
+  "algorithm": {
+    "name": "Byz-DASHA-PAGE (Algorithm 2), Rand-1 and bucketed coordinatewise median",
+    "citations": [
+      "PDF p.6, Algorithm 2 lines 1-17",
+      "PDF p.17, Appendix B.1 Coordinate-wise Median and Algorithm 5",
+      "PDF p.18, Appendix B.2 RandK sparsification"
+    ],
+    "core_mechanisms": [
+      "page_estimator_recursion",
+      "dasha_momentum_compression",
+      "local_estimator_memory",
+      "byzantine_bucket_aggregation"
+    ],
+    "assumptions": [
+      "Smooth strongly convex finite-sum quadratic objectives on regular workers.",
+      "One Byzantine worker with explicit arbitrary estimator states; no objective assigned to it.",
+      "Unbiased uniform one-component gradient differences and Rand-1 compression, conditioned on supported draws.",
+      "Recurrence validation only; no assertion that this finite fixture verifies asymptotic robustness constants or theorem stepsize restrictions.",
+      "Other proposed methods (Byz-VR-MARINA 2.0, Byz-EF21 and Byz-EF21-BC) are outside this contract."
+    ]
+  },
+  "cases": [
+    {
+      "id": "difference_difference_refresh",
+      "purpose": "Exercise both PAGE refresh/difference branches, Rand-1 compression with nonzero momentum memory, and bucketed robust aggregation under a malicious worker.",
+      "covers": [
+        "page_estimator_recursion",
+        "dasha_momentum_compression",
+        "local_estimator_memory",
+        "byzantine_bucket_aggregation"
+      ],
+      "inputs": {
+        "network": "One synchronous server and 6 workers, indices 0..5; workers 0..4 honest, worker 5 Byzantine.",
+        "objective": "f=(1/5)*sum_i f_i over honest workers only; f_i=(f_i0+f_i1)/2, f_ij(x)=sum_k(q[i][j][k]*x[k]^2/2+b[i][j][k]*x[k]).",
+        "q": [
+          [
+            [
+              1.0,
+              2.0
+            ],
+            [
+              3.0,
+              1.0
+            ]
+          ],
+          [
+            [
+              2.0,
+              3.0
+            ],
+            [
+              4.0,
+              2.0
+            ]
+          ],
+          [
+            [
+              3.0,
+              4.0
+            ],
+            [
+              5.0,
+              3.0
+            ]
+          ],
+          [
+            [
+              4.0,
+              5.0
+            ],
+            [
+              6.0,
+              4.0
+            ]
+          ],
+          [
+            [
+              5.0,
+              6.0
+            ],
+            [
+              7.0,
+              5.0
+            ]
+          ]
+        ],
+        "b": [
+          [
+            [
+              -2.0,
+              2.0
+            ],
+            [
+              1.0,
+              -1.0
+            ]
+          ],
+          [
+            [
+              -1.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              -1.0,
+              1.0
+            ]
+          ],
+          [
+            [
+              1.0,
+              -1.0
+            ],
+            [
+              -2.0,
+              2.0
+            ]
+          ],
+          [
+            [
+              2.0,
+              -2.0
+            ],
+            [
+              -3.0,
+              3.0
+            ]
+          ]
+        ],
+        "x0": [
+          1,
+          -1
+        ],
+        "h0_regular": [
+          [
+            1.5,
+            -1.0
+          ],
+          [
+            2.5,
+            -2.0
+          ],
+          [
+            3.5,
+            -3.0
+          ],
+          [
+            4.5,
+            -4.0
+          ],
+          [
+            5.5,
+            -5.0
+          ]
+        ],
+        "g0_regular": [
+          [
+            1.5,
+            -1.0
+          ],
+          [
+            2.5,
+            -2.0
+          ],
+          [
+            3.5,
+            -3.0
+          ],
+          [
+            4.5,
+            -4.0
+          ],
+          [
+            5.5,
+            -5.0
+          ]
+        ],
+        "initialization": "h_i^0=g_i^0=full local gradient at x0. Server g0 is computed by the specified bucketed median using Byzantine state at index 0 and permutation at index 0.",
+        "page_coins": [
+          0,
+          0,
+          1
+        ],
+        "sampled_component_indices": [
+          [
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "rand1_kept_coordinate": [
+          [
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            1,
+            0
+          ]
+        ],
+        "byzantine_g_states": [
+          [
+            20.0,
+            -20.0
+          ],
+          [
+            -15.0,
+            30.0
+          ],
+          [
+            40.0,
+            25.0
+          ],
+          [
+            -35.0,
+            -20.0
+          ]
+        ],
+        "bucket_permutations": [
+          [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          [
+            2,
+            0,
+            4,
+            5,
+            1,
+            3
+          ],
+          [
+            5,
+            2,
+            1,
+            4,
+            3,
+            0
+          ],
+          [
+            4,
+            1,
+            3,
+            5,
+            0,
+            2
+          ]
+        ],
+        "aggregator": "Algorithm 5 with bucket size s=2 and coordinatewise median: permute all 6 g_i states, average consecutive disjoint pairs, then take median separately in each coordinate over 3 pair means. No extra averaging.",
+        "oracle": "On refresh, full mean of two component gradients. Otherwise sample exactly one listed component j and set delta_hat_i=grad f_ij(x_next)-grad f_ij(x_old), same j at both points. Component indices are zero-based and ignored at refresh steps.",
+        "compressor": "Unbiased Rand-1 in d=2: keep exactly the listed coordinate and multiply it by 2; zero other coordinate. Uniform independent coordinate selection before conditioning.",
+        "randomness": "Fixed supported realizations: listed Bernoulli PAGE coins (p=1/2), uniform component indices, uniform compressor coordinates, and uniform permutations. All arrays chronological; rows of samples/keep cover five honest workers. Byzantine states include initialization plus each post-update state; a malicious increment may equivalently be chosen as consecutive state difference.",
+        "observations": "step s=t+1 after Algorithm 2 line 16. x uses previous server g; h is after lines 7-11; compression_input is the argument to Q in line 12; message is Q output; g_regular after line 13; bucket_means and g_aggregate come from current complete local states (not raw increments); objective at updated x."
+      },
+      "parameters": {
+        "gamma": 0.02,
+        "a": 0.3333333333333333,
+        "a_exact": "1/3",
+        "p": 0.5,
+        "updates": 3,
+        "local_finite_sum_size": 2,
+        "batch_size": 1,
+        "bucket_size": 2,
+        "compression_omega": 1
+      },
+      "atol": 1e-10,
+      "rtol": 1e-10,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "h_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "compression_input_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "message_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "g_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "bucket_means",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "g_aggregate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "h_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "compression_input_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "message_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "g_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "bucket_means",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "g_aggregate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "h_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "compression_input_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "message_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "g_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "bucket_means",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "g_aggregate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "shape": []
+        }
+      ]
+    },
+    {
+      "id": "refresh_difference_difference",
+      "purpose": "Exercise both PAGE refresh/difference branches, Rand-1 compression with nonzero momentum memory, and bucketed robust aggregation under a malicious worker.",
+      "covers": [
+        "page_estimator_recursion",
+        "dasha_momentum_compression",
+        "local_estimator_memory",
+        "byzantine_bucket_aggregation"
+      ],
+      "inputs": {
+        "network": "One synchronous server and 6 workers, indices 0..5; workers 0..4 honest, worker 5 Byzantine.",
+        "objective": "f=(1/5)*sum_i f_i over honest workers only; f_i=(f_i0+f_i1)/2, f_ij(x)=sum_k(q[i][j][k]*x[k]^2/2+b[i][j][k]*x[k]).",
+        "q": [
+          [
+            [
+              1.0,
+              2.0
+            ],
+            [
+              3.0,
+              1.0
+            ]
+          ],
+          [
+            [
+              2.0,
+              3.0
+            ],
+            [
+              4.0,
+              2.0
+            ]
+          ],
+          [
+            [
+              3.0,
+              4.0
+            ],
+            [
+              5.0,
+              3.0
+            ]
+          ],
+          [
+            [
+              4.0,
+              5.0
+            ],
+            [
+              6.0,
+              4.0
+            ]
+          ],
+          [
+            [
+              5.0,
+              6.0
+            ],
+            [
+              7.0,
+              5.0
+            ]
+          ]
+        ],
+        "b": [
+          [
+            [
+              -2.0,
+              2.0
+            ],
+            [
+              1.0,
+              -1.0
+            ]
+          ],
+          [
+            [
+              -1.0,
+              1.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              -1.0,
+              1.0
+            ]
+          ],
+          [
+            [
+              1.0,
+              -1.0
+            ],
+            [
+              -2.0,
+              2.0
+            ]
+          ],
+          [
+            [
+              2.0,
+              -2.0
+            ],
+            [
+              -3.0,
+              3.0
+            ]
+          ]
+        ],
+        "x0": [
+          -2,
+          1
+        ],
+        "h0_regular": [
+          [
+            -4.5,
+            2.0
+          ],
+          [
+            -6.5,
+            3.0
+          ],
+          [
+            -8.5,
+            4.0
+          ],
+          [
+            -10.5,
+            5.0
+          ],
+          [
+            -12.5,
+            6.0
+          ]
+        ],
+        "g0_regular": [
+          [
+            -4.5,
+            2.0
+          ],
+          [
+            -6.5,
+            3.0
+          ],
+          [
+            -8.5,
+            4.0
+          ],
+          [
+            -10.5,
+            5.0
+          ],
+          [
+            -12.5,
+            6.0
+          ]
+        ],
+        "initialization": "h_i^0=g_i^0=full local gradient at x0. Server g0 is computed by the specified bucketed median using Byzantine state at index 0 and permutation at index 0.",
+        "page_coins": [
+          1,
+          0,
+          0
+        ],
+        "sampled_component_indices": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1,
+            0,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            1,
+            0
+          ]
+        ],
+        "rand1_kept_coordinate": [
+          [
+            1,
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            1
+          ]
+        ],
+        "byzantine_g_states": [
+          [
+            -30.0,
+            40.0
+          ],
+          [
+            20.0,
+            -30.0
+          ],
+          [
+            -25.0,
+            35.0
+          ],
+          [
+            45.0,
+            -40.0
+          ]
+        ],
+        "bucket_permutations": [
+          [
+            4,
+            1,
+            3,
+            5,
+            0,
+            2
+          ],
+          [
+            5,
+            2,
+            1,
+            4,
+            3,
+            0
+          ],
+          [
+            2,
+            0,
+            4,
+            5,
+            1,
+            3
+          ],
+          [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        "aggregator": "Algorithm 5 with bucket size s=2 and coordinatewise median: permute all 6 g_i states, average consecutive disjoint pairs, then take median separately in each coordinate over 3 pair means. No extra averaging.",
+        "oracle": "On refresh, full mean of two component gradients. Otherwise sample exactly one listed component j and set delta_hat_i=grad f_ij(x_next)-grad f_ij(x_old), same j at both points. Component indices are zero-based and ignored at refresh steps.",
+        "compressor": "Unbiased Rand-1 in d=2: keep exactly the listed coordinate and multiply it by 2; zero other coordinate. Uniform independent coordinate selection before conditioning.",
+        "randomness": "Fixed supported realizations: listed Bernoulli PAGE coins (p=1/2), uniform component indices, uniform compressor coordinates, and uniform permutations. All arrays chronological; rows of samples/keep cover five honest workers. Byzantine states include initialization plus each post-update state; a malicious increment may equivalently be chosen as consecutive state difference.",
+        "observations": "step s=t+1 after Algorithm 2 line 16. x uses previous server g; h is after lines 7-11; compression_input is the argument to Q in line 12; message is Q output; g_regular after line 13; bucket_means and g_aggregate come from current complete local states (not raw increments); objective at updated x."
+      },
+      "parameters": {
+        "gamma": 0.02,
+        "a": 0.3333333333333333,
+        "a_exact": "1/3",
+        "p": 0.5,
+        "updates": 3,
+        "local_finite_sum_size": 2,
+        "batch_size": 1,
+        "bucket_size": 2,
+        "compression_omega": 1
+      },
+      "atol": 1e-10,
+      "rtol": 1e-10,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "h_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "compression_input_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "message_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "g_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "bucket_means",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "g_aggregate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "h_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "compression_input_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "message_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "g_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "bucket_means",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "g_aggregate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "h_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "compression_input_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "message_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "g_regular",
+          "shape": [
+            5,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "bucket_means",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "g_aggregate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "shape": []
+        }
+      ]
+    }
+  ]
+}

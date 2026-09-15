@@ -1,0 +1,14 @@
+[
+  {
+    "path": "scaffold_reproduction/algorithms.py",
+    "symbol": "scaffold"
+  },
+  {
+    "path": "scaffold_reproduction/algorithms.py",
+    "symbol": "_run"
+  },
+  {
+    "path": "scaffold_reproduction/algorithms.py",
+    "symbol": "_batched_gradients"
+  }
+]

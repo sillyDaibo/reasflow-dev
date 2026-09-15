@@ -1,0 +1,33 @@
+{
+  "common": {
+    "anll_test": 0.2782979849974284,
+    "anll_train": 0.2792624014205714
+  },
+  "dataset": "Chicago crimes",
+  "grid_shape": [
+    20,
+    20,
+    52,
+    7,
+    24
+  ],
+  "nodes": 3494400,
+  "paper_reference": {
+    "common_test_anll": 0.278,
+    "stratified_test_anll": 0.234
+  },
+  "separate": {
+    "anll_test": 0.7388921404156688,
+    "anll_train": 0.06751761193074735
+  },
+  "stratified": {
+    "anll_test": 0.2445224683762124,
+    "anll_train": 0.23050928060173914,
+    "iterations": 80,
+    "parameter_count": 3494400
+  },
+  "test_records": 262351,
+  "train_records": 263710,
+  "wall_time_seconds": 186.5951661290601,
+  "resource": {"cpu_count_visible": 16, "python": "3.10", "platform": "Linux CPU"}
+}

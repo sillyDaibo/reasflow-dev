@@ -1,0 +1,1941 @@
+{
+  "contract_digest": "4eea6b9e967d71cc362e51c693ca5f34d5fc6b2225a782d44d456af6f7eca06d",
+  "precision_decimal_digits": 70,
+  "checked_scalar_count": 120,
+  "maximum_absolute_error": 0.0,
+  "all_within_tolerance": true,
+  "checks": [
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "X_before",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 7e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "X_before",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 9e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "riemannian_gradient",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 3.892e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "riemannian_gradient",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.944e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "B_matrix",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "B_matrix",
+      "path": [
+        0,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "B_matrix",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "B_matrix",
+      "path": [
+        1,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "metric_diagonal",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "metric_diagonal",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "damping_beta",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "V",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 3.668e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "V",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.776e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "tangent_metric_norm_squared",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.99916e-07,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "line_search_reference",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 4.22e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "alpha",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 3.5e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "backtracks",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 2.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "X",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.9496041168903253e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "X",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0808111122300985e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 1,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.7193683270062962e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "X_before",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.9496041168903253e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "X_before",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0808111122300985e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "riemannian_gradient",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 4.285744006467938e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "riemannian_gradient",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.653122702442912e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "B_matrix",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 4.643267345635414e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "B_matrix",
+      "path": [
+        0,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.9143000442337908e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "B_matrix",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.9143000442337908e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "B_matrix",
+      "path": [
+        1,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 3.094454274945958e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "metric_diagonal",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 4.643267345635414e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "metric_diagonal",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 3.094454274945958e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "damping_beta",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "V",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.0764625696372347e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "V",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2139734992063121e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "tangent_metric_norm_squared",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.5401709527287257e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "line_search_reference",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 4.22e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "alpha",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "backtracks",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "X",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.867929842854959e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "X",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0962263687931664e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 2,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.72080428080386e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "X_before",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.867929842854959e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "X_before",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0962263687931664e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "riemannian_gradient",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 7.965732300340883e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "riemannian_gradient",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.6068667855206896e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "B_matrix",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 9.434172313784503e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "B_matrix",
+      "path": [
+        0,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.105122716842566e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "B_matrix",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.105122716842566e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "B_matrix",
+      "path": [
+        1,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2207993989564935e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "metric_diagonal",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 9.434172313784503e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "metric_diagonal",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2207993989564935e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "damping_beta",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "V",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.5558198960824636e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "V",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0484240018307195e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "tangent_metric_norm_squared",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.28862877331433e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "line_search_reference",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.72080428080386e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "alpha",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "backtracks",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "X",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.4215389702163264e-09,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "X",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0898445683851395e-08,
+      "passed": true
+    },
+    {
+      "case_id": "quadratic_l1",
+      "step": 3,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.7062690857918554e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "X_before",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 9e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "X_before",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 7e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "riemannian_gradient",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.072e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "riemannian_gradient",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.396e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "B_matrix",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "B_matrix",
+      "path": [
+        0,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "B_matrix",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "B_matrix",
+      "path": [
+        1,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "metric_diagonal",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "metric_diagonal",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "damping_beta",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "V",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 9e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "V",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1666666666666667e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "tangent_metric_norm_squared",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.8777777777777776e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "line_search_reference",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.24e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "alpha",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "backtracks",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "X",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "X",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 1,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "X_before",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "X_before",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "riemannian_gradient",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.6e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "riemannian_gradient",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "B_matrix",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 5.2394748755092804e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "B_matrix",
+      "path": [
+        0,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.192575826165686e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "B_matrix",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.192575826165686e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "B_matrix",
+      "path": [
+        1,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 5.274513354459031e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "metric_diagonal",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 5.2394748755092804e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "metric_diagonal",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 5.274513354459031e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "damping_beta",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 8.978723404255318e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "V",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.930539241857982e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "V",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "tangent_metric_norm_squared",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 3.496647090229578e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "line_search_reference",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.24e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "alpha",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "backtracks",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "X",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0428871903213081e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "X",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 4.331122128172269e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 2,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 2.3579907467947176e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "X_before",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0428871903213081e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "X_before",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 4.331122128172269e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "riemannian_gradient",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 6.803999141787829e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "riemannian_gradient",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.74284473305405e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "B_matrix",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.182594466983632e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "B_matrix",
+      "path": [
+        0,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.7506433746384784e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "B_matrix",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.7506433746384784e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "B_matrix",
+      "path": [
+        1,
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.315933235215009e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "metric_diagonal",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.182594466983632e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "metric_diagonal",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.315933235215009e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "damping_beta",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "V",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 3.359974670318156e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "V",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 7.680000914126394e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "tangent_metric_norm_squared",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.204792554154307e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "line_search_reference",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 2.3579907467947176e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "alpha",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-08,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "backtracks",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "X",
+      "path": [
+        0,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 6.768042117711107e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "X",
+      "path": [
+        1,
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 9.168824280660636e-09,
+      "passed": true
+    },
+    {
+      "case_id": "indefinite_l1",
+      "step": 3,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.1057991765025941e-08,
+      "passed": true
+    }
+  ],
+  "recomputed_observations": [
+    {
+      "id": "quadratic_l1",
+      "observations": [
+        {
+          "step": 1,
+          "name": "X_before",
+          "value": [
+            [
+              0.6
+            ],
+            [
+              0.8
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              3.792
+            ],
+            [
+              -2.844
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "B_matrix",
+          "value": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "metric_diagonal",
+          "value": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "damping_beta",
+          "value": 1.0
+        },
+        {
+          "step": 1,
+          "name": "V",
+          "value": [
+            [
+              -3.568
+            ],
+            [
+              2.676
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "tangent_metric_norm_squared",
+          "value": 19.8916
+        },
+        {
+          "step": 1,
+          "name": "line_search_reference",
+          "value": 4.12
+        },
+        {
+          "step": 1,
+          "name": "alpha",
+          "value": 0.25
+        },
+        {
+          "step": 1,
+          "name": "backtracks",
+          "value": 2.0
+        },
+        {
+          "step": 1,
+          "name": "X",
+          "value": [
+            [
+              -0.19496041168903253
+            ],
+            [
+              0.9808111122300985
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "value": 1.6193683270062962
+        },
+        {
+          "step": 2,
+          "name": "X_before",
+          "value": [
+            [
+              -0.19496041168903253
+            ],
+            [
+              0.9808111122300985
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              -0.3285744006467938
+            ],
+            [
+              -0.0653122702442912
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "B_matrix",
+          "value": [
+            [
+              4.543267345635414,
+              -2.8143000442337907
+            ],
+            [
+              -2.8143000442337907,
+              2.994454274945958
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "metric_diagonal",
+          "value": [
+            4.543267345635414,
+            2.994454274945958
+          ]
+        },
+        {
+          "step": 2,
+          "name": "damping_beta",
+          "value": 1.0
+        },
+        {
+          "step": 2,
+          "name": "V",
+          "value": [
+            [
+              0.10764625696372346
+            ],
+            [
+              0.021397349920631213
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "tangent_metric_norm_squared",
+          "value": 0.054017095272872566
+        },
+        {
+          "step": 2,
+          "name": "line_search_reference",
+          "value": 4.12
+        },
+        {
+          "step": 2,
+          "name": "alpha",
+          "value": 1.0
+        },
+        {
+          "step": 2,
+          "name": "backtracks",
+          "value": 0.0
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "value": [
+            [
+              -0.08679298428549592
+            ],
+            [
+              0.9962263687931663
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "value": 1.62080428080386
+        },
+        {
+          "step": 3,
+          "name": "X_before",
+          "value": [
+            [
+              -0.08679298428549592
+            ],
+            [
+              0.9962263687931663
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              0.6965732300340884
+            ],
+            [
+              0.060686678552068954
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "B_matrix",
+          "value": [
+            [
+              9.334172313784503,
+              1.005122716842566
+            ],
+            [
+              1.005122716842566,
+              1.1207993989564935
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "metric_diagonal",
+          "value": [
+            9.334172313784503,
+            1.1207993989564935
+          ]
+        },
+        {
+          "step": 3,
+          "name": "damping_beta",
+          "value": 1.0
+        },
+        {
+          "step": 3,
+          "name": "V",
+          "value": [
+            [
+              -0.05558198960824635
+            ],
+            [
+              -0.004842400183071941
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "tangent_metric_norm_squared",
+          "value": 0.028862877331432984
+        },
+        {
+          "step": 3,
+          "name": "line_search_reference",
+          "value": 1.62080428080386
+        },
+        {
+          "step": 3,
+          "name": "alpha",
+          "value": 1.0
+        },
+        {
+          "step": 3,
+          "name": "backtracks",
+          "value": 0.0
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "value": [
+            [
+              -0.14215389702163264
+            ],
+            [
+              0.9898445683851395
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "value": 1.6062690857918553
+        }
+      ]
+    },
+    {
+      "id": "indefinite_l1",
+      "observations": [
+        {
+          "step": 1,
+          "name": "X_before",
+          "value": [
+            [
+              0.8
+            ],
+            [
+              0.6
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              0.972
+            ],
+            [
+              -1.296
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "B_matrix",
+          "value": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "metric_diagonal",
+          "value": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "damping_beta",
+          "value": 1.0
+        },
+        {
+          "step": 1,
+          "name": "V",
+          "value": [
+            [
+              -0.8
+            ],
+            [
+              1.0666666666666667
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "tangent_metric_norm_squared",
+          "value": 1.7777777777777777
+        },
+        {
+          "step": 1,
+          "name": "line_search_reference",
+          "value": 1.14
+        },
+        {
+          "step": 1,
+          "name": "alpha",
+          "value": 1.0
+        },
+        {
+          "step": 1,
+          "name": "backtracks",
+          "value": 0.0
+        },
+        {
+          "step": 1,
+          "name": "X",
+          "value": [
+            [
+              1.2e-70
+            ],
+            [
+              1.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "value": -0.9
+        },
+        {
+          "step": 2,
+          "name": "X_before",
+          "value": [
+            [
+              1.2e-70
+            ],
+            [
+              1.0
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              1.5
+            ],
+            [
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "B_matrix",
+          "value": [
+            [
+              0.42394748755092804,
+              1.092575826165686
+            ],
+            [
+              1.092575826165686,
+              5.174513354459031
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "metric_diagonal",
+          "value": [
+            0.42394748755092804,
+            5.174513354459031
+          ]
+        },
+        {
+          "step": 2,
+          "name": "damping_beta",
+          "value": 0.7978723404255319
+        },
+        {
+          "step": 2,
+          "name": "V",
+          "value": [
+            [
+              -2.830539241857982
+            ],
+            [
+              3.3966470902295785e-70
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "tangent_metric_norm_squared",
+          "value": 3.3966470902295782
+        },
+        {
+          "step": 2,
+          "name": "line_search_reference",
+          "value": 1.14
+        },
+        {
+          "step": 2,
+          "name": "alpha",
+          "value": 1.0
+        },
+        {
+          "step": 2,
+          "name": "backtracks",
+          "value": 0.0
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "value": [
+            [
+              -0.9428871903213081
+            ],
+            [
+              0.33311221281722686
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "value": -0.13579907467947175
+        },
+        {
+          "step": 3,
+          "name": "X_before",
+          "value": [
+            [
+              -0.9428871903213081
+            ],
+            [
+              0.33311221281722686
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              -0.5803999141787829
+            ],
+            [
+              -1.6428447330540499
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "B_matrix",
+          "value": [
+            [
+              2.082594466983632,
+              0.17506433746384786
+            ],
+            [
+              0.17506433746384786,
+              2.215933235215009
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "metric_diagonal",
+          "value": [
+            2.082594466983632,
+            2.215933235215009
+          ]
+        },
+        {
+          "step": 3,
+          "name": "damping_beta",
+          "value": 1.0
+        },
+        {
+          "step": 3,
+          "name": "V",
+          "value": [
+            [
+              0.2359974670318156
+            ],
+            [
+              0.6680000914126394
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "tangent_metric_norm_squared",
+          "value": 1.104792554154307
+        },
+        {
+          "step": 3,
+          "name": "line_search_reference",
+          "value": -0.13579907467947175
+        },
+        {
+          "step": 3,
+          "name": "alpha",
+          "value": 1.0
+        },
+        {
+          "step": 3,
+          "name": "backtracks",
+          "value": 0.0
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "value": [
+            [
+              -0.5768042117711107
+            ],
+            [
+              0.8168824280660636
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "value": -1.0057991765025942
+        }
+      ]
+    }
+  ]
+}

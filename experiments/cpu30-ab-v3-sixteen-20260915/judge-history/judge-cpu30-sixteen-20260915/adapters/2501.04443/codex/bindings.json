@@ -1,0 +1,18 @@
+[
+  {
+    "path": "localsgd_repro/core.py",
+    "symbol": "run_algorithm"
+  },
+  {
+    "path": "localsgd_repro/core.py",
+    "symbol": "_Worker.oracle"
+  },
+  {
+    "path": "localsgd_repro/core.py",
+    "symbol": "_Worker.gradient"
+  },
+  {
+    "path": "localsgd_repro/core.py",
+    "symbol": "_loss_gradient"
+  }
+]

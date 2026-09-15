@@ -1,0 +1,541 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2504.19004",
+    "title": "Setwise Coordinate Descent for Dual Asynchronous Decentralized Optimization",
+    "sha256": "4fe686f80dfa8d1f1cb35b45614252ef4bb24527d114c6f16bba3f173723915c"
+  },
+  "algorithm": {
+    "name": "Setwise Gauss-Southwell CD (SGS-CD), Algorithm 2",
+    "citations": [
+      "PDF p.4 Eq.(3), conjugate definition and incidence convention",
+      "PDF p.5 Eq.(4), p.6 Eq.(6), p.8 Algorithm 2 and Section 4.2"
+    ],
+    "core_mechanisms": [
+      "dual_conjugate_gradient",
+      "restricted_gauss_southwell_selection",
+      "single_edge_dual_update_and_endpoint_refresh"
+    ],
+    "assumptions": [
+      "Connected undirected graph, scalar strongly convex smooth local quadratics, serial asynchronous activations.",
+      "All incident edges are queried before SGS selection; use current dual gradients with the supplied fixed orientation.",
+      "Fixed eta=1/8 is conservative: ||A||^2/min(a)<=4 for these graphs, so eta<=1/L_upper.",
+      "Scope is unweighted SGS-CD; SU-CD, coordinate-Lipschitz variants, communication latency, and convergence rates are not tested."
+    ]
+  },
+  "cases": [
+    {
+      "id": "triangle_cycle",
+      "purpose": "Four serial SGS-CD activations on a cycle with redundant dual coordinates.",
+      "covers": [
+        "dual_conjugate_gradient",
+        "restricted_gauss_southwell_selection",
+        "single_edge_dual_update_and_endpoint_refresh"
+      ],
+      "inputs": {
+        "dimension": 1,
+        "nodes": 3,
+        "edges": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "incidence_matrix": [
+          [
+            1.0,
+            0.0,
+            1.0
+          ],
+          [
+            -1.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            -1.0
+          ]
+        ],
+        "quadratic_centers": [
+          -1.0,
+          2.0,
+          0.5
+        ],
+        "quadratic_curvatures": [
+          1.0,
+          2.0,
+          4.0
+        ],
+        "lambda_initial": [
+          0.5,
+          -0.25,
+          0.125
+        ],
+        "primal_objective": "f_i(theta)=a_i*(theta-c_i)^2/2; original objective sum_i f_i(theta) subject to consensus",
+        "dual_definition": "F(lambda)=sum_i f_i^*((A lambda)_i), f_i^*(y)=c_i*y+y^2/(2*a_i); theta_i(lambda)=grad f_i^*((A lambda)_i)=c_i+(A lambda)_i/a_i",
+        "active_nodes": [
+          0,
+          1,
+          2,
+          0
+        ],
+        "randomness": "Uniform independent active node sampling; condition on listed zero-based active_nodes. Serial events, no overlapping in-flight updates. SGS neighbor selection itself is deterministic.",
+        "graph": "Undirected graph defined by edges; each edge orientation is +1 at first endpoint and -1 at second. All node and edge identifiers are zero-based."
+      },
+      "parameters": {
+        "algorithm": "SGS-CD Algorithm 2",
+        "eta": 0.125,
+        "iterations": 4,
+        "selection": "At each event select the edge incident to active node with largest absolute current dual partial gradient. No ties occur; no global max over inaccessible edges. Only selected lambda changes.",
+        "initial_primal": "Initialize theta_i to grad f_i^*((A lambda_initial)_i), as used for local conjugate-gradient caches. theta observations mean these cached conjugate gradients, not an independent gradient-descent primal state.",
+        "observation_timing": "step=k is serial event k. theta_before and full dual_gradient_before use lambda at start. selected_edge is zero-based chosen edge. lambda_after,theta_after,dual_objective_after are after one update. Refresh only the selected edge endpoints; full theta is observable through caches."
+      },
+      "atol": 1e-12,
+      "rtol": 1e-12,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "theta_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 1,
+          "name": "dual_gradient_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 1,
+          "name": "selected_edge",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "dual_objective_before",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "lambda_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 1,
+          "name": "dual_objective_after",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "theta_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 2,
+          "name": "dual_gradient_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 2,
+          "name": "selected_edge",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "dual_objective_before",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "lambda_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 2,
+          "name": "dual_objective_after",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "theta_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "name": "dual_gradient_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "name": "selected_edge",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "dual_objective_before",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "lambda_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "name": "theta_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "name": "dual_objective_after",
+          "shape": []
+        },
+        {
+          "step": 4,
+          "name": "theta_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 4,
+          "name": "dual_gradient_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 4,
+          "name": "selected_edge",
+          "shape": []
+        },
+        {
+          "step": 4,
+          "name": "dual_objective_before",
+          "shape": []
+        },
+        {
+          "step": 4,
+          "name": "lambda_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 4,
+          "name": "dual_objective_after",
+          "shape": []
+        }
+      ]
+    },
+    {
+      "id": "path_restricted",
+      "purpose": "Four serial SGS-CD activations on a path, including single-neighbor and two-neighbor active sets.",
+      "covers": [
+        "dual_conjugate_gradient",
+        "restricted_gauss_southwell_selection",
+        "single_edge_dual_update_and_endpoint_refresh"
+      ],
+      "inputs": {
+        "dimension": 1,
+        "nodes": 4,
+        "edges": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "incidence_matrix": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            -1.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ]
+        ],
+        "quadratic_centers": [
+          -1.0,
+          2.0,
+          0.5,
+          -2.0
+        ],
+        "quadratic_curvatures": [
+          1.0,
+          2.0,
+          4.0,
+          3.0
+        ],
+        "lambda_initial": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "primal_objective": "f_i(theta)=a_i*(theta-c_i)^2/2; original objective sum_i f_i(theta) subject to consensus",
+        "dual_definition": "F(lambda)=sum_i f_i^*((A lambda)_i), f_i^*(y)=c_i*y+y^2/(2*a_i); theta_i(lambda)=grad f_i^*((A lambda)_i)=c_i+(A lambda)_i/a_i",
+        "active_nodes": [
+          1,
+          2,
+          0,
+          2
+        ],
+        "randomness": "Uniform independent active node sampling; condition on listed zero-based active_nodes. Serial events, no overlapping in-flight updates. SGS neighbor selection itself is deterministic.",
+        "graph": "Undirected graph defined by edges; each edge orientation is +1 at first endpoint and -1 at second. All node and edge identifiers are zero-based."
+      },
+      "parameters": {
+        "algorithm": "SGS-CD Algorithm 2",
+        "eta": 0.125,
+        "iterations": 4,
+        "selection": "At each event select the edge incident to active node with largest absolute current dual partial gradient. No ties occur; no global max over inaccessible edges. Only selected lambda changes.",
+        "initial_primal": "Initialize theta_i to grad f_i^*((A lambda_initial)_i), as used for local conjugate-gradient caches. theta observations mean these cached conjugate gradients, not an independent gradient-descent primal state.",
+        "observation_timing": "step=k is serial event k. theta_before and full dual_gradient_before use lambda at start. selected_edge is zero-based chosen edge. lambda_after,theta_after,dual_objective_after are after one update. Refresh only the selected edge endpoints; full theta is observable through caches."
+      },
+      "atol": 1e-12,
+      "rtol": 1e-12,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "theta_before",
+          "shape": [
+            4
+          ]
+        },
+        {
+          "step": 1,
+          "name": "dual_gradient_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 1,
+          "name": "selected_edge",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "dual_objective_before",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "lambda_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_after",
+          "shape": [
+            4
+          ]
+        },
+        {
+          "step": 1,
+          "name": "dual_objective_after",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "theta_before",
+          "shape": [
+            4
+          ]
+        },
+        {
+          "step": 2,
+          "name": "dual_gradient_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 2,
+          "name": "selected_edge",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "dual_objective_before",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "lambda_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_after",
+          "shape": [
+            4
+          ]
+        },
+        {
+          "step": 2,
+          "name": "dual_objective_after",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "theta_before",
+          "shape": [
+            4
+          ]
+        },
+        {
+          "step": 3,
+          "name": "dual_gradient_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "name": "selected_edge",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "dual_objective_before",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "lambda_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "name": "theta_after",
+          "shape": [
+            4
+          ]
+        },
+        {
+          "step": 3,
+          "name": "dual_objective_after",
+          "shape": []
+        },
+        {
+          "step": 4,
+          "name": "theta_before",
+          "shape": [
+            4
+          ]
+        },
+        {
+          "step": 4,
+          "name": "dual_gradient_before",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 4,
+          "name": "selected_edge",
+          "shape": []
+        },
+        {
+          "step": 4,
+          "name": "dual_objective_before",
+          "shape": []
+        },
+        {
+          "step": 4,
+          "name": "lambda_after",
+          "shape": [
+            3
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_after",
+          "shape": [
+            4
+          ]
+        },
+        {
+          "step": 4,
+          "name": "dual_objective_after",
+          "shape": []
+        }
+      ]
+    }
+  ]
+}

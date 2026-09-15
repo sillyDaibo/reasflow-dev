@@ -1,0 +1,20 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "Required by original algorithm and proximal operators.",
+    "source": "strat_models/solvers.py:8 import numpy as np"
+  },
+  {
+    "kind": "install_package",
+    "package": "scipy",
+    "reason": "Original sparse consensus solve and special functions.",
+    "source": "strat_models/solvers.py:9-11 scipy imports"
+  },
+  {
+    "kind": "install_package",
+    "package": "networkx",
+    "reason": "Original GraphOperator module import; missing during public smoke, installed only in temporary venv.",
+    "source": "strat_models/graph.py:8 import networkx as nx"
+  }
+]

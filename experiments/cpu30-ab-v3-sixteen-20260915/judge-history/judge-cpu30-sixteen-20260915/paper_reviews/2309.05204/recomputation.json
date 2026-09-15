@@ -1,0 +1,1113 @@
+{
+  "contract_digest": "79672c9fb80be2db961eefac7f2f2cb5efb52911bbc06f31173f648e788047a2",
+  "precision_decimal_digits": 70,
+  "checked_scalar_count": 78,
+  "maximum_absolute_error": 0.0,
+  "all_within_tolerance": true,
+  "checks": [
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "gradient_before",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "gradient_before",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "gradient_before",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.3e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "thresholds",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1982169362960343e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "thresholds",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.3619146889603865e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "thresholds",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.366620577498155e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "z",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0801783063703966e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "z",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "z",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2633379422501844e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "u",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.1902290868962359e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "u",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1624155073077517e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "u",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 9.066074013818718e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 1,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.102498809425302e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "gradient_before",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2814384159973752e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "gradient_before",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 3.558081059258799e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "gradient_before",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0256303100714953e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "thresholds",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2017845586110255e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "thresholds",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.3619146889603865e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "thresholds",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1732005203507754e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "z",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2612599601362727e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "z",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "z",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.008310258036418e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "u",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.9751133619569182e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "u",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2150938065850975e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "u",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 8.324175296105944e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 2,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.0377715418365983e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "gradient_before",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.3126051427807893e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "gradient_before",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 4.826762769745033e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "gradient_before",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 9.299288658062861e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "thresholds",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1734770500034873e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "thresholds",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.3619146889603865e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "thresholds",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2159431854837046e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "z",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2952574377804406e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "z",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "z",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 9.083345472579156e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "u",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.7831766837479456e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "u",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2249839818997644e-09,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "u",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 8.0333368647503e-10,
+      "passed": true
+    },
+    {
+      "case_id": "mixed_threshold",
+      "step": 3,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.029800239623922e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "gradient_before",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 3.1e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "gradient_before",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.6e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "gradient_before",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.6e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "thresholds",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 5.509946702449932e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "thresholds",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.585735490368275e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "thresholds",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 7.518123988325788e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "z",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "z",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.4414264509631726e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "z",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 9.481876011674212e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "u",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.3672742196561085e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "u",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0746489057114129e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "u",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.3401906709150326e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 1,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 2.89619800963876e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "gradient_before",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.37473911022725e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "gradient_before",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.347655561486174e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "gradient_before",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2708354874107612e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "thresholds",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0195317511683092e-08,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "thresholds",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.2201319770308263e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "thresholds",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.836098477714725e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "z",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "z",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2256423637830912e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "z",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "u",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1483870967741934e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "u",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.482213254753313e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "u",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.503391577750475e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 2,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.8528731701850592e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "gradient_before",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1001657712988623e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "gradient_before",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.4551702522751439e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "gradient_before",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 4.550044809762816e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "thresholds",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0195317511683092e-08,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "thresholds",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 2.426929630148942e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "thresholds",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.0195317511683092e-08,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "z",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "z",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.3124772892602496e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "z",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "u",
+      "path": [
+        0
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.1483870967741934e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "u",
+      "path": [
+        1
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.2581231244896783e-10,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "u",
+      "path": [
+        2
+      ],
+      "absolute_error": 0.0,
+      "tolerance": 1.5258005907768386e-09,
+      "passed": true
+    },
+    {
+      "case_id": "signed_reweight",
+      "step": 3,
+      "name": "objective",
+      "path": [],
+      "absolute_error": 0.0,
+      "tolerance": 1.849857911336108e-09,
+      "passed": true
+    }
+  ],
+  "recomputed_observations": [
+    {
+      "id": "mixed_threshold",
+      "observations": [
+        {
+          "step": 1,
+          "name": "gradient_before",
+          "value": [
+            1.0,
+            0.2,
+            -1.2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "thresholds",
+          "value": [
+            0.019821693629603437,
+            1.2619146889603865,
+            0.0366620577498155
+          ]
+        },
+        {
+          "step": 1,
+          "name": "z",
+          "value": [
+            0.9801783063703966,
+            0.0,
+            -1.1633379422501844
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u",
+          "value": [
+            -0.11902290868962358,
+            1.0624155073077517,
+            0.8066074013818718
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "value": 1.002498809425302
+        },
+        {
+          "step": 2,
+          "name": "gradient_before",
+          "value": [
+            1.1814384159973752,
+            -0.2558081059258799,
+            -0.9256303100714954
+          ]
+        },
+        {
+          "step": 2,
+          "name": "thresholds",
+          "value": [
+            0.02017845586110255,
+            1.2619146889603865,
+            0.017320052035077537
+          ]
+        },
+        {
+          "step": 2,
+          "name": "z",
+          "value": [
+            1.1612599601362728,
+            -0.0,
+            -0.9083102580364179
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u",
+          "value": [
+            -0.09751133619569183,
+            1.1150938065850975,
+            0.7324175296105943
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "value": 0.9377715418365983
+        },
+        {
+          "step": 3,
+          "name": "gradient_before",
+          "value": [
+            1.2126051427807893,
+            -0.38267627697450324,
+            -0.8299288658062861
+          ]
+        },
+        {
+          "step": 3,
+          "name": "thresholds",
+          "value": [
+            0.017347705000348723,
+            1.2619146889603865,
+            0.02159431854837046
+          ]
+        },
+        {
+          "step": 3,
+          "name": "z",
+          "value": [
+            1.1952574377804406,
+            -0.0,
+            -0.8083345472579156
+          ]
+        },
+        {
+          "step": 3,
+          "name": "u",
+          "value": [
+            -0.07831766837479456,
+            1.1249839818997645,
+            0.70333368647503
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "value": 0.9298002396239221
+        }
+      ]
+    },
+    {
+      "id": "signed_reweight",
+      "observations": [
+        {
+          "step": 1,
+          "name": "gradient_before",
+          "value": [
+            -3.0,
+            1.5,
+            1.5
+          ]
+        },
+        {
+          "step": 1,
+          "name": "thresholds",
+          "value": [
+            5.409946702449932,
+            0.1585735490368275,
+            0.6518123988325788
+          ]
+        },
+        {
+          "step": 1,
+          "name": "z",
+          "value": [
+            -0.0,
+            1.3414264509631726,
+            0.8481876011674212
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u",
+          "value": [
+            1.2672742196561086,
+            -0.007464890571141289,
+            1.2401906709150325
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "value": 2.79619800963876
+        },
+        {
+          "step": 2,
+          "name": "gradient_before",
+          "value": [
+            -1.27473911022725,
+            1.247655561486174,
+            0.027083548741076133
+          ]
+        },
+        {
+          "step": 2,
+          "name": "thresholds",
+          "value": [
+            10.095317511683092,
+            0.12201319770308262,
+            0.18360984777147252
+          ]
+        },
+        {
+          "step": 2,
+          "name": "z",
+          "value": [
+            -0.0,
+            1.1256423637830912,
+            0.0
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u",
+          "value": [
+            1.0483870967741935,
+            0.04822132547533129,
+            1.403391577750475
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "value": 1.7528731701850593
+        },
+        {
+          "step": 3,
+          "name": "gradient_before",
+          "value": [
+            -1.0001657712988623,
+            1.3551702522751439,
+            -0.3550044809762816
+          ]
+        },
+        {
+          "step": 3,
+          "name": "thresholds",
+          "value": [
+            10.095317511683092,
+            0.1426929630148942,
+            10.095317511683092
+          ]
+        },
+        {
+          "step": 3,
+          "name": "z",
+          "value": [
+            -0.0,
+            1.2124772892602496,
+            -0.0
+          ]
+        },
+        {
+          "step": 3,
+          "name": "u",
+          "value": [
+            1.0483870967741935,
+            0.02581231244896783,
+            1.4258005907768385
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "value": 1.749857911336108
+        }
+      ]
+    }
+  ]
+}

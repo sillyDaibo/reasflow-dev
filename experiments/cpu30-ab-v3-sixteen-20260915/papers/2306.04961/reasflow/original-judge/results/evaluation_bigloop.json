@@ -1,0 +1,222 @@
+{
+  "paper_id": "2306.04961",
+  "evaluated_at": "2026-09-05T01:53:04.381508+00:00",
+  "summary": {
+    "total_score": 0.0,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.0,
+    "total_rubrics": 17,
+    "passed": 0,
+    "failed": 17,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 11
+    },
+    "secondary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 5
+    },
+    "tertiary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "IRLS achieves a larger region of successful recovery than SPF and RiemAdaIHT, requiring a significantly lower oversampling factor.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/phase_transition_20260905/metrics.csv: At oversampling=3.0 (m=237), SPF achieves success=1 (seed 0, rel_error=5.46e-5) while IRLS-LRRS has success=0 (both seeds, rel_error≈0.962–0.977) and RiemAdaIHT has success=0 (both seeds, rel_error≈0.874–0.911). At oversampling=2.0, all methods fail. IRLS-LRRS never achieves successful recovery in any run output, so it cannot be ranked as requiring a lower oversampling factor than SPF. The required order IRLS>SPF (IRLS needs lower oversampling) is contradicted by the data: SPF succeeds at oversampling=3.0 while IRLS-LRRS does not.",
+      "note": "The run outputs use the method name 'IRLS-LRRS' (not 'IRLS'), but per CLAIMS.json this is the same algorithm. The experiment only sampled oversampling ∈ {2.0, 3.0} with 2 seeds — an extremely sparse sweep — so it cannot reproduce the full Figure 1 phase transition curve from the paper. Within the available outputs, the claim is not supported.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "IRLS requires a significantly lower oversampling factor than both SPF and RiemAdaIHT to achieve high empirical success probability for recovery of rank-5 row-sparse matrices from Gaussian measurements.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Found phase_transition_rank5 outputs at /home/hzy/optirepro/agent_reproduction/runs/2306.04961/Codex原生-完整复现-Goal/第003次运行/workspace/results/formal/phase_transition_rank5/metrics.csv. Config: n1=256, n2=40, rank=5, sparsity=40, Gaussian dense measurements at m=700/900/1100, 8 instances each. Success rates: ALL three methods (IRLS-LRRS, SparsePowerFactorization, RiemannianIHT) show 0/8 successes at every tested m value. No method achieves any positive success rate. The ReasFlow run for this paper only has rank=1 phase transition data (2 oversampling values, rank=1). No run outputs show a phase transition curve from which the oversampling factor required for high success probability could be extracted for any method, making the ranking claim unverifiable from run outputs.",
+      "note": "The experiment was run but only at 3 measurement values (m=700, 900, 1100) and all instances failed. No full phase transition sweep exists in the run outputs that would allow comparing the oversampling factors at which IRLS, SPF, and RiemAdaIHT achieve high success probability for rank-5 Gaussian problems.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "IRLS achieves a higher empirical success rate than SPF and RiemAdaIHT when the rank and sparsity parameters are overestimated.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all output files in results/formal/phase_transition_20260905/ (the only phase-transition run present). The metrics.csv contains only rank=1 data across 12 rows (methods: IRLS-LRRS, SPF, RiemAdaIHT; seeds 0 and 1; oversampling 2.0 and 3.0). There is no run with rank=5, no overestimated-parameter setting, and no experiment matching exp3_phase_transition_r5_overestimated_gaussian. The config.json confirms: {\"rank\": 1, \"n1\": 256, \"n2\": 40, \"sparsities\": [40], \"oversampling\": [2.0, 3.0]}. No other result files (CSV, JSON, log, NPY, MAT) exist in the repository that contain r=5 or overestimated-parameter data.",
+      "note": "The method name in the run outputs is \"IRLS-LRRS\", not \"IRLS\" as specified in the rubric. Even if that were a naming match, the required r=5 overestimated-parameters data simply does not exist in any run output.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "IRLS converges to a matrix that is still low-rank and row-sparse (with larger r and s) satisfying the data constraint, even when it does not recover X⋆.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs for experiment exp3_phase_transition_r5_overestimated_gaussian exist anywhere in the repository. Exhaustive search of results/formal/ (4 subdirectories: phase_transition_20260905, convergence_20260905, operator_comparison_20260905, noise_20260905), results/figures/, CLAIMS.json, and CLAIM_RESULTS.json found no files recording overestimated rank/sparsity parameters (r=5 larger than true rank, inflated s), no metrics for low-rank/row-sparsity of the converged solution, and no data-constraint residual measurements at convergence. The phase_transition_20260905 run used rank=1 (not r=5) with no sensitivity-to-parameter-choice variant. No other output directory exists.",
+      "note": "The claim pertains to Section 4, Sensitivity to Parameter Choice, which is not among the executed experiments in this reproduction. The boolean statement cannot be verified as no corresponding run output was produced.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "SPF and RiemAdaIHT fail to converge to a low-rank and row-sparse matrix satisfying the data constraint under overestimated parameters.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run output for experiment exp3_phase_transition_r5_overestimated_gaussian exists in the repository. The four formal experiment directories are: convergence_20260905 (rank-5 convergence traces), phase_transition_20260905 (rank-1 dense Gaussian phase transition; not overestimated), operator_comparison_20260905, and noise_20260905. Grep across all CSV/JSON/TXT output files for \"overestimated\", \"overestimate\", \"sensitivity\", and \"r5\" returned no matches. The CLAIMS.json and CLAIM_RESULTS.json contain no entry covering this experiment or overestimated-parameter behavior. The experiment_report.md documents no such run. Case (a): no relevant run output exists after a thorough search.",
+      "note": "The phase_transition_20260905 metrics do show SPF and RiemAdaIHT failing (success=0, relative errors ~0.8–1.1) in the rank-1 regime, but this is unrelated to overestimated parameters (rank 5 given when true rank is lower), which is what the rubric specifically requires.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the convergence rate experiment with Gaussian measurements, s = 40, and m = 1125, IRLS exhibits empirical quadratic convergence within a few iterations (around 10), whereas SPF and RiemAdaIHT clearly only exhibit linear convergence.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/convergence_20260905/metrics.csv (config: n1=256, n2=40, r=5, s=40, m=1125, dense Gaussian — matches claim). Final errors: IRLS-LRRS avg=0.749, SPF avg=0.997, RiemAdaIHT avg=0.636. (1) Ranking violation: RiemAdaIHT (0.636) beats IRLS (0.749) — the required order IRLS > RiemAdaIHT does not hold. (2) Quadratic convergence claim unsupported: IRLS relative_change per iteration is INCREASING (0.092→0.127, ratios ~1.02–1.09 per step), showing no convergence at all, not quadratic convergence. RiemAdaIHT relative_change decreases consistently (0.322→0.055, ratios ~0.73–0.84), showing linear convergence as stated in the paper for it, but IRLS does NOT outperform it on the error metric.",
+      "note": "The CSV uses method name 'IRLS-LRRS' (not 'IRLS'), but config and context confirm this is the IRLS method in the claim. The metric column 'relative_change' appears to capture per-iteration step size, not relative Frobenius error to the true solution; 'final_error' captures the terminal relative Frobenius error. Neither metric supports the claim.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "For rank-1 random rank-one measurements, IRLS performs clearly best among the compared methods.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/operator_comparison_20260905/metrics.csv: For operator=\"rank1\" (random rank-1 measurements, r=1), all three methods have success=0 across all 3 seeds. IRLS-LRRS (IRLS): 0/3 = 0% success rate. SPF: 0/3 = 0% success rate. RiemAdaIHT: 0/3 = 0% success rate. Required ranking constraints IRLS > SPF and IRLS > RiemAdaIHT are both violated (tied at 0%). Confirmed by CLAIM_RESULTS.json (C4): \"bounded early-iteration errors remained above the 1e-4 success threshold.\"",
+      "note": "The experiment outputs cover rank1 operator with 3 seeds at m=237. All methods fail (success=0) in all runs, so no empirical success rate advantage for IRLS exists. This is a case (b) failure: outputs exist but numbers do not satisfy the claim.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "For rank-1 random rank-one measurements, the paper reports that it is somewhat unclear whether RiemAdaIHT or SPF performs better.",
+      "verdict": 0,
+      "confidence": "medium",
+      "evidence": "results/formal/operator_comparison_20260905/metrics.csv, operator=rank1, rank=1: RiemAdaIHT relative errors [0.9681, 0.9678, 0.9826] (mean 0.9728); SPF relative errors [1.5646, 1.3468, 0.8024] (mean 1.238). All 9 rows have success=0. RiemAdaIHT beats SPF in seeds 0 and 1; SPF beats RiemAdaIHT only in seed 2. The mean error clearly favors RiemAdaIHT (0.97 vs 1.24), making it not \"somewhat unclear\" — RiemAdaIHT appears the better performer in these runs.",
+      "note": "All methods failed to recover (success=0 throughout), so these runs are not faithful reproductions of the paper's scenario. With only 3 seeds and one reversal (seed 2 favors SPF), there is some variability, but the average strongly favors RiemAdaIHT, which does not support the \"somewhat unclear\" characterization. Additionally, no separate exp5-specific output file was found; the closest matching data is from the operator_comparison experiment with rank=1 and operator=rank1.",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "For rank-5 matrices, IRLS achieves the highest success rate, SPF the second highest, and RiemAdaIHT the lowest.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all run output directories: results/formal/convergence_20260905/, results/formal/operator_comparison_20260905/, results/formal/phase_transition_20260905/, results/formal/noise_20260905/. No experiment named exp6 or random_rank1_measurements_r5 exists. No output file contains rank=5 success-rate data for methods IRLS, SPF, and RiemAdaIHT. The nearest dataset (operator_comparison metrics.csv) covers rank-1 matrices and all success values are 0 for all methods across all seeds, making a success-rate ranking impossible. CLAIM_RESULTS.json explicitly states claim C4 (operator comparison) is \"not_reproduced\" and C2 (phase transition) is \"not_reproduced\".",
+      "note": "The repository appears to be a partial reproduction that never ran the rank-5 phase transition (Figure 4 / Appendix A.2) experiment at all.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "IRLS exhibits the best empirical data-efficiency with sharpest phase transition curves, outperforming both RiemAdaIHT and SPF in terms of recovery success rate from Fourier rank-one measurements with rank-1 ground truth.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No dedicated exp7 (Fourier rank-one phase transition) run output exists. The only Fourier operator output is results/formal/operator_comparison_20260905/metrics.csv at a single fixed m=237. All three methods score success=0 there: IRLS-LRRS seeds 0/1/2 = 0/0/0, RiemAdaIHT seeds 0/1/2 = 0/0/0, SPF seeds 0/1/2 = 0/0/0. CLAIM_RESULTS.json also records claim C4 (operator comparison including Fourier) as \"not_reproduced\". No phase-transition sweep (varying m) over Fourier rank-one measurements was found in any results directory.",
+      "note": "The experiment searches were exhaustive: all directories under results/, CLAIM_RESULTS.json, metrics.csv files for all four formal runs. The operator_comparison run is the closest match but covers only one measurement count and shows universal failure, making it impossible to compare phase transition sharpness or overall success rate ordering.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "IRLS exhibits the best empirical data-efficiency with sharpest phase transition curves among IRLS, SPF, and RiemAdaIHT for Fourier rank-one measurements with rank-5 ground truth.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs exist for exp8_fourier_rank1_measurements_r5 (rank-5 ground truth, Fourier rank-one measurements, phase transition sweep). The only fourier-related outputs are in results/formal/operator_comparison_20260905/metrics.csv, which uses rank=1 (not rank-5), a single m=237 (no sweep), and shows success=0 for all methods (IRLS-LRRS, SPF, RiemAdaIHT) across all 3 seeds. The phase_transition_20260905 experiment only covers dense Gaussian operators at rank=1. CLAIM_RESULTS.json explicitly labels the operator comparison claim as 'not_reproduced'. No multi-m Fourier phase transition data exists to evaluate the IRLS > SPF, IRLS > RiemAdaIHT ranking.",
+      "note": "The operator_comparison experiment used rank=1 instead of rank=5, and did not sweep over m values, so no phase transition curves were produced. Even if rank were matched, all success rates were 0 for all methods, making a ranking impossible.",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the left panel (n2=40, m=875), the relative Frobenius error ∥X^{(k)} - X⋆∥_F / ∥X⋆∥_F is less than 10^{-11} after 12 iterations.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run output for exp9_objective_evolution exists in the repository. The only convergence run (results/formal/convergence_20260905/metrics.csv) uses m=1125 (not m=875), tracks methods IRLS-LRRS/SPF/RiemAdaIHT (not IRLS), and records only relative_change and final_error columns — no per-iteration relative_frobenius_error. CLAIM_RESULTS.json explicitly states that C3 (convergence) is only \"partially_reproduced\" and \"final errors remain non-negligible\". Searched all of results/formal/, results/figures/, and the full workspace; no file matching synthetic_left, m=875, or relative_frobenius_error < 1e-11 at iteration 12 was found.",
+      "note": "The convergence experiment that was run uses n2=40 but m=1125, and different methods than claimed. The claim's parameters (m=875, IRLS, relative_frobenius_error) do not match any executed experiment in the repository.",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the right panel (n2=20, m=175), the (εk,δk)-smoothed logarithmic surrogate objective F_{εk,δk}(X^{(k)}) reaches approximately 10^{-12} within 86 iterations.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs exist for experiment exp9_objective_evolution or the synthetic_right dataset (n2=20, m=175). Searched all files in results/, configs/, and root-level JSON files. The only formal experiment directories are: results/formal/convergence_20260905/, results/formal/operator_comparison_20260905/, results/formal/phase_transition_20260905/, results/formal/noise_20260905/. None contain the smoothed_logarithmic_surrogate_objective metric, any reference to n2=20/m=175, Figure 6, or any iteration trace reaching 1e-12. The CLAIM_RESULTS.json lists only claims C1–C4 with no mention of exp9 or objective evolution data. Grep searches for \"exp9\", \"objective_evolution\", \"synthetic_right\", \"smoothed_logarithmic\", \"n2=20\", \"m=175\", \"1e-12\" across all JSON/CSV/log/txt files returned no matches.",
+      "note": "This is a case (a) verdict — no relevant run output exists after a thorough search of the repository.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the right panel, the final iterate at iteration 86 is 20-row-sparse and has rank at most 6.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs for exp9_objective_evolution exist in the repository. Searched all results/ subdirectories: convergence_20260905, phase_transition_20260905, operator_comparison_20260905, noise_20260905 — none contain data for the synthetic_right dataset (n2=20, m=175) or any per-iterate row-sparsity/rank measurements. Grep over all files for \"exp9\", \"objective_evolution\", \"synthetic_right\", \"row.sparse\", \"iteration.*86\", \"n2.*20\", \"m.*175\" returned only source code files (CLAIMS.json, README.md, simirls/core.py), not any run output. The CLAIM_RESULTS.json and CLAIMS.json confirm only 5 claims were executed (C1-C5), none corresponding to Appendix A.4, Figure 6 right.",
+      "note": "This is verdict=0 case (a): no relevant run output exists after a thorough search.",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "In the right panel, after the first 20 iterations, the decrease of the smoothed logarithmic surrogate objective is characterized by alternating drops of the sparsity objective F_{sp,δk} and the rank objective F_{lr,εk}, which typically do not occur simultaneously.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs exist for experiment exp9_objective_evolution. The repository contains results only for four experiments: phase_transition_20260905, convergence_20260905, operator_comparison_20260905, and noise_20260905. None of these tracks per-objective (F_sp or F_lr) values per iteration, and none uses the synthetic_right dataset with n2=20, m=175. The metrics CSVs only contain columns: experiment, method, seed, iteration, relative_change, final_error, seconds. CLAIM_RESULTS.json lists only claims C1–C5 with no entry for exp9. Searched: results/formal/*, all *.csv, *.json, *.log files; grep for 'sparsity', 'F_sp', 'F_lr', 'rank', 'objective', 'n2=20', 'm=175', 'exp9', 'objective_evolution', 'synthetic_right'.",
+      "note": "The claim describes a qualitative visual pattern (alternating drops) from Figure 6 right panel. No corresponding run output with per-component objective traces was produced or stored in this reproduction repository.",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The median relative Frobenius reconstruction error of IRLS, SPF, and RiemAdaIHT is roughly proportional to the inverse square root of the signal-to-noise ratio (SNR).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Run outputs found in results/formal/noise_20260905/metrics.csv (27 rows, SNR ∈ {10, 1000, 1000000}, 3 seeds each). Computed median relative Frobenius errors per method per SNR:\n\nIRLS-LRRS: SNR=10 → 0.9851, SNR=1000 → 0.9835, SNR=1e6 → 0.9834. Ratios (SNR10→1000, 1000→1e6): 0.9984, 0.9999. Expected ~0.1 for 1/sqrt(SNR) scaling — observed ratio is ~1 (no scaling).\n\nRiemAdaIHT: SNR=10 → 0.9560, SNR=1000 → 0.9540, SNR=1e6 → 0.9538. Ratios: 0.9979, 0.9998. Again essentially constant — no 1/sqrt(SNR) dependence.\n\nSPF: SNR=10 → 0.4161, SNR=1000 → 0.0442, SNR=1e6 → 0.0351. Ratio SNR10→1000: 0.106 (consistent with 1/sqrt(SNR)), but ratio SNR1000→1e6: 0.793 (far from 0.1). Inconsistent.\n\nAll three methods fail to show 1/sqrt(SNR) scaling consistently. IRLS and RiemAdaIHT produce near-constant errors (~0.98 and ~0.95) regardless of SNR, indicating they are not converging to the signal. The experiment also only covers SNR up to 1e6, not the 10 to 10^12 range stated in the claim.",
+      "note": "The config shows seeds: [0, 1] but the CSV contains 3 seeds (0, 1, 2). The SNR range is limited to {10, 1000, 1e6} versus the claimed 10 to 10^12. The near-unity errors for IRLS and RiemAdaIHT suggest algorithmic failure (non-convergence), so the 1/sqrt(SNR) claim cannot be verified from these outputs.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "IRLS is as noise robust as SPF and RiemAdaIHT, achieving reconstruction error of the order of the noise norm.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/noise_20260905/metrics.csv: IRLS-LRRS has relative_error ≈ 0.983 (mean across seeds) at SNR=10, 0.983 at SNR=1000, and 0.983 at SNR=1,000,000. The error/noise_norm ratio grows to ~1000 at SNR=1,000,000 (noise_norm≈0.001 but error≈0.983), showing IRLS does NOT achieve error of the order of the noise norm. RiemAdaIHT behaves similarly (relative_error ≈ 0.951 across all SNR, ratio ~1000 at high SNR). SPF actually does improve with SNR (mean error drops from 0.557 at SNR=10 to 0.058 at SNR=1000), contradicting the claim that all three are equally noise-robust. IRLS is far worse than SPF at high SNR, not comparable.",
+      "note": "The run outputs for exp10_noise_robustness (noise_20260905) directly contradict the claim. IRLS errors remain flat near ~0.983 regardless of noise level, which means it is NOT noise-robust and does NOT achieve reconstruction error of the order of the noise norm. SPF outperforms both IRLS and RiemAdaIHT at higher SNR, so the \"equally robust\" comparison also fails.",
+      "error": false
+    }
+  ]
+}

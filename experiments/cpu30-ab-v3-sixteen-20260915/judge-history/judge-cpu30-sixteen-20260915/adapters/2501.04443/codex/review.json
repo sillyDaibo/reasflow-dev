@@ -1,0 +1,29 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "adapter16_c",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Original sum-of-squares Worker loss expresses public quadratics; RNG and observation wrappers leave all LocalSGD/SCAFFOLD updates and broadcasts intact.",
+  "scope_notes": [
+    "localsgd_repro/core.py:155-163 and 180-187: A=sqrt(a), x_star=-b/a, mu=rho=0 yields the public gradient; d=1,sigma=1 preserves noise scaling.",
+    "core.py:217-235 runs original local updates and alternating frozen control estimation. Pending array references are read only after original in-place subtraction; trace lines 227/239 observe true controls and broadcast mean.",
+    "Only supplied common x_initial[0] is used; both listed worker initial values are equal. Worker-indexed RNG sequences consume one public noise value per original oracle call.",
+    "Independent smoke used only public cases under execution._readonly_tree; checked successful invocation and observation schema coverage. No private expected values, papers, prior verdicts or Judge numeric comparisons were read. Approval is fidelity only."
+  ],
+  "substitutions": [
+    {
+      "symbol": "SyntheticDataset and _Worker.__init__ RNG",
+      "role": "problem_input",
+      "reason": "Supply public quadratic data/common initial point and conditioned per-worker noise; original Worker constructor and loss execute."
+    },
+    {
+      "symbol": "_Worker.oracle and run_algorithm trace",
+      "role": "observation",
+      "reason": "Call original oracle unchanged; snapshot pre-oracle state, actual updated arrays, true controls, and broadcast state. Corrected-gradient expression is observation only."
+    }
+  ],
+  "public_digest": "f2b7b02c09a3853b6d809c371ce67d6cfe41f8d72bd5982cb24e18fe39cdf0ec",
+  "adapter_sha256": "355202568e4d0bb1bb59f0b8de3464402c662c8ee67a8f3a7080fb578d59efe9",
+  "workspace_digest": "c5a106ccb54d8ecd6a722ff2effc233cabf6b1109c20f74e2e9f7551a0b77b05",
+  "bindings_digest": "4ddb9707f57cb722ab691f01259e921a1465c11dbb028620e5c3224210b56fcb"
+}

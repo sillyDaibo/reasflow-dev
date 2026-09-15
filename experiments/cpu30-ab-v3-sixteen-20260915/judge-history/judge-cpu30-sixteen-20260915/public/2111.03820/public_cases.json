@@ -1,0 +1,385 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2111.03820",
+    "title": "Distributed stochastic proximal algorithm with random reshuffling for non-smooth finite-sum optimization",
+    "sha256": "3ce09777be924669f8649b920477e4df968f8adce511e8b980d6883e1604b761"
+  },
+  "algorithm": {
+    "name": "DPG-RR, Algorithm 1",
+    "citations": [
+      "PDF p.4 Algorithm 1 and Eqs.(7)-(10)",
+      "PDF p.3 Eq.(5), Assumption III.1; p.4 logistic Example 1 and Assumption III.2"
+    ],
+    "core_mechanisms": [
+      "ordered_without_replacement_inner_gradients",
+      "post_epoch_consensus",
+      "one_prox_per_epoch"
+    ],
+    "assumptions": [
+      "Convex logistic sample losses with bounded gradients and Lipschitz gradients; convex L1 regularizer with bounded subgradients.",
+      "Fixed connected undirected two-node network with positive diagonal and doubly stochastic weights.",
+      "Explicit Lambda mappings avoid the paper communication-count indexing inconsistency; only numerical Eq.(8) is tested."
+    ]
+  },
+  "cases": [
+    {
+      "id": "logistic_mixed_sign",
+      "purpose": "Three DPG-RR epochs with changing sample order, nontrivial mixing, and L1 shrinkage.",
+      "covers": [
+        "ordered_without_replacement_inner_gradients",
+        "post_epoch_consensus",
+        "one_prox_per_epoch"
+      ],
+      "inputs": {
+        "dimension": 1,
+        "agents": 2,
+        "samples_per_agent": 2,
+        "x_initial": [
+          1.2,
+          -0.8
+        ],
+        "signed_features": [
+          [
+            1,
+            -2
+          ],
+          [
+            2,
+            -1
+          ]
+        ],
+        "sample_objective": "f[j,i](x)=log(1+exp(-signed_features[j][i]*x)); labels absorbed into signed_features; gradient=-a/(1+exp(a*x))",
+        "regularizer": "phi(x)=regularizer_strength*abs(x)",
+        "network": "Two connected agents; same constant doubly stochastic A=[[.75,.25],[.25,.75]].",
+        "mixing_matrices": [
+          [
+            [
+              0.75,
+              0.25
+            ],
+            [
+              0.25,
+              0.75
+            ]
+          ],
+          [
+            [
+              0.625,
+              0.375
+            ],
+            [
+              0.375,
+              0.625
+            ]
+          ],
+          [
+            [
+              0.5625,
+              0.4375
+            ],
+            [
+              0.4375,
+              0.5625
+            ]
+          ]
+        ],
+        "permutations": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "randomness": "Condition on the listed shared zero-based sample permutations; no replacement within an epoch; no other random draws."
+      },
+      "parameters": {
+        "gamma": 0.05,
+        "regularizer_strength": 0.4,
+        "epochs": 3,
+        "consensus_convention": "Use explicitly supplied Lambda[t] in Eq.(8), equal to A^(t+1). Eq.(9) writes t+1 factors although nearby prose says t communications; this contract tests the supplied Eq.(8) mapping, not the ambiguous schedule.",
+        "observation_timing": "step=t+1 after epoch t. inner_x rows are before gradients, after first, after second; columns agent. inner_gradient rows are evaluated before each update. consensus_v is before prox; x_next is after the single prox."
+      },
+      "atol": 1e-11,
+      "rtol": 1e-11,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "inner_x",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "inner_gradient",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "consensus_v",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x_next",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_x",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_gradient",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "consensus_v",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_next",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_x",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_gradient",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "consensus_v",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_next",
+          "shape": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logistic_threshold",
+      "purpose": "Three DPG-RR epochs with changing sample order, nontrivial mixing, and L1 shrinkage.",
+      "covers": [
+        "ordered_without_replacement_inner_gradients",
+        "post_epoch_consensus",
+        "one_prox_per_epoch"
+      ],
+      "inputs": {
+        "dimension": 1,
+        "agents": 2,
+        "samples_per_agent": 2,
+        "x_initial": [
+          0.4,
+          -0.1
+        ],
+        "signed_features": [
+          [
+            1,
+            -2
+          ],
+          [
+            2,
+            -1
+          ]
+        ],
+        "sample_objective": "f[j,i](x)=log(1+exp(-signed_features[j][i]*x)); labels absorbed into signed_features; gradient=-a/(1+exp(a*x))",
+        "regularizer": "phi(x)=regularizer_strength*abs(x)",
+        "network": "Two connected agents; same constant doubly stochastic A=[[.75,.25],[.25,.75]].",
+        "mixing_matrices": [
+          [
+            [
+              0.75,
+              0.25
+            ],
+            [
+              0.25,
+              0.75
+            ]
+          ],
+          [
+            [
+              0.625,
+              0.375
+            ],
+            [
+              0.375,
+              0.625
+            ]
+          ],
+          [
+            [
+              0.5625,
+              0.4375
+            ],
+            [
+              0.4375,
+              0.5625
+            ]
+          ]
+        ],
+        "permutations": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "randomness": "Condition on the listed shared zero-based sample permutations; no replacement within an epoch; no other random draws."
+      },
+      "parameters": {
+        "gamma": 0.05,
+        "regularizer_strength": 0.8,
+        "epochs": 3,
+        "consensus_convention": "Use explicitly supplied Lambda[t] in Eq.(8), equal to A^(t+1). Eq.(9) writes t+1 factors although nearby prose says t communications; this contract tests the supplied Eq.(8) mapping, not the ambiguous schedule.",
+        "observation_timing": "step=t+1 after epoch t. inner_x rows are before gradients, after first, after second; columns agent. inner_gradient rows are evaluated before each update. consensus_v is before prox; x_next is after the single prox."
+      },
+      "atol": 1e-11,
+      "rtol": 1e-11,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "inner_x",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "inner_gradient",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "consensus_v",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x_next",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_x",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_gradient",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "consensus_v",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_next",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_x",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_gradient",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "consensus_v",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_next",
+          "shape": [
+            2
+          ]
+        }
+      ]
+    }
+  ]
+}

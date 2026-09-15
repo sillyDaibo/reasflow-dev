@@ -1,0 +1,299 @@
+{
+  "paper_id": "2501.18312",
+  "evaluated_at": "2026-09-04T16:48:16.421981+00:00",
+  "summary": {
+    "total_score": 0.575,
+    "algorithm_impl_score": 0.5455,
+    "exp_setup_score": 0.6111,
+    "exp_results_score": 0.0,
+    "total_rubrics": 24,
+    "passed": 14,
+    "failed": 10,
+    "errors": 0,
+    "pass_threshold": 0.8,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.5625,
+      "passed": 9,
+      "total": 16
+    },
+    "secondary": {
+      "score": 0.8,
+      "passed": 4,
+      "total": 5
+    },
+    "tertiary": {
+      "score": 0.3333,
+      "passed": 1,
+      "total": 3
+    }
+  },
+  "results": [
+    {
+      "id": "alg-001",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The PPS quantized gradient oracle is defined as PPS(x, ξ, k, l) = (‖[G]_+‖_1 / M) Σ_{i=1}^M e_{k_i} - (‖[-G]_+‖_1 / M) Σ_{i=1}^M e_{l_i}, where G = G(x, ξ) is the mini-batch gradient, [G]_+ is the component-wise positive part, P_G(k) = [G_k]_+ / ‖[G]_+‖_1, and k, l ∈ {1,…,n}^M are samples from P_G and P_{-G} respectively.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_quantization.py, function pps_quantize (lines ~23-38): `positive = max(G,0)`, `negative = max(-G,0)`, returns `positive.sum() * _categorical_counts(positive, M, rng) - negative.sum() * _categorical_counts(negative, M, rng)`. The helper `_categorical_counts` draws M multinomial samples from the normalized distribution and returns the empirical frequency vector (counts/M), so the full expression equals (‖[G]_+‖_1/M)Σe_{k_i} - (‖[-G]_+‖_1/M)Σe_{l_i}, exactly matching Eq. (1). The docstring also cites \"Pasechniuk et al. (2025) Eq. (1)\" and \"positive and negative parts are sampled independently from categorical distributions.\"",
+      "note": "The implementation uses dense output (sum of multinomial count vectors) rather than explicit index samples k and l, but this is mathematically equivalent to the formula.",
+      "error": false
+    },
+    {
+      "id": "alg-002",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 1 initialization: y_0 = 0; sample ξ_0, k_0, l_0; G_0 = PPS(y_0, ξ_0, k_0, l_0); x_0 = -(α_0/β_0) G_0; A_0 = α_0.",
+      "verdict": 0,
+      "confidence": "medium",
+      "evidence": "In src/algorithms.py lines 51-62, the initialization sets y_0=lambdas=zeros (line 51), samples xi_0 (line 57), computes gradient at y_0 via gradient_from_samples (line 58), and applies simplex_pps (lines 60-61). cumulative_weight=alpha=1/(2*sqrt(2)) matches A_0=alpha_0. However, x_0 = -(alpha_0/beta_0)*G_0 is never explicitly computed before the loop. beta is only computed inside the loop (line 71-73), so beta_0 is never set. Instead the code pre-computes weighted_gradient=alpha*(laplacian@transmitted) (line 62), which is alpha_0*G_0, but x_0 as -(alpha_0/beta_0)*G_0 is not formed. The first iteration (t=0) computes z=-weighted_gradient/beta where beta is for t+2=2, not the initialization step's beta_0. The k_0, l_0 parameters for PPS (quantization_samples and rng) are sampled implicitly, but the explicit initialization formula x_0 = -(alpha_0/beta_0)*G_0 is absent.",
+      "note": "The code does implement most of the initialization spirit (y_0=0, PPS applied to initial gradient, A_0=alpha_0), but the explicit assignment x_0 = -(alpha_0/beta_0)*G_0 is missing because beta_0 is never computed during initialization. The pre-loop weighted_gradient could be seen as storing alpha_0*G_0, and the first z in the loop effectively computes -(alpha_0/beta)*G_0 but with a beta from t=1 not t=0.",
+      "error": false
+    },
+    {
+      "id": "alg-003",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 1 loop updates: z_t = -(1/β_t) Σ_{i=0}^t α_i G_i; A_{t+1} = A_t + α_{t+1}; τ_t = α_{t+1}/A_{t+1}; y_{t+1} = τ_t z_t + (1-τ_t) x_t; sample ξ_{t+1}, k_{t+1}, l_{t+1}; G_{t+1} = PPS(y_{t+1}, ξ_{t+1}, k_{t+1}, l_{t+1}); ŷ_{t+1} = z_t - (α_{t+1}/β_t) G_{t+1}; x_{t+1} = τ_t ŷ_{t+1} + (1-τ_t) x_t.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/algorithms.py lines 66-84 implement all steps of Algorithm 1 loop:\n- z_t = -(1/β_t)Σα_i G_i → `z = -weighted_gradient / beta` (line 74), with `weighted_gradient` accumulating `alpha*G` sums\n- A_{t+1} = A_t + α_{t+1} → `next_weight = cumulative_weight + alpha_next` (line 68)\n- τ_t = α_{t+1}/A_{t+1} → `tau = alpha_next / next_weight` (line 69)\n- y_{t+1} = τ_t z_t + (1-τ_t) x_t → `mu = tau * z + (1.0 - tau) * lambdas` (line 75)\n- sample ξ_{t+1}, compute G_{t+1} = PPS(y_{t+1},...) → lines 76-81 (draw samples, compute gradient_from_samples on mu, apply simplex_pps per node, multiply by laplacian)\n- ŷ_{t+1} = z_t - (α_{t+1}/β_t) G_{t+1} → `chi = z - alpha_next * next_gradient / beta` (line 82)\n- x_{t+1} = τ_t ŷ_{t+1} + (1-τ_t) x_t → `lambdas = tau * chi + (1.0 - tau) * lambdas` (line 83)\n- weighted_gradient update for next iteration → `weighted_gradient += alpha_next * next_gradient` (line 84)",
+      "note": "Variable names differ from the paper (x↔lambdas, y↔mu, ŷ↔chi, G↔next_gradient) but the mathematical structure is identical. The gradient G includes the graph Laplacian multiplication consistent with the decentralized setting described in the paper.",
+      "error": false
+    },
+    {
+      "id": "alg-004",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 2 initialization: μ_0 = 0; sample ξ_0, k_0, l_0; G_0 = PPS(μ_0, ξ_0, k_0, l_0); λ_0 = -(α_0/β_0) G_0; A_0 = α_0.",
+      "verdict": 0,
+      "confidence": "medium",
+      "evidence": "In src/algorithms.py, the pre-loop initialization does: lambdas = np.zeros(...) [line ~52], alpha = 1/(2*sqrt(2)) [~56], cumulative_weight = alpha (A_0 = α_0 ✓), samples drawn (ξ_0 ✓), local = gradient_from_samples(lambdas, ...) (gradient at μ_0=0 ✓), transmitted[i] = simplex_pps(...) (G_0 via PPS ✓), and weighted_gradient = alpha * (laplacian @ transmitted). However, λ_0 is never set to -(α_0/β_0)*G_0; it stays as np.zeros throughout. The paper's Algorithm 2 line 4 requires λ_0 = -(α_0/β_0)*G_0, but the code leaves lambdas=0 and uses weighted_gradient to carry the α_0*L@G_0 information. The update z = -weighted_gradient/beta in the loop approximates the intent, but the explicit initialization λ_0 = -(α_0/β_0)*G_0 is absent.",
+      "note": "The code's pre-loop structure partially reflects Algorithm 2 (A_0, sampling, PPS step) but restructures the λ initialization. Whether this is mathematically equivalent depends on the exact recurrence in the paper — the absence of the explicit λ_0 assignment as described makes this a partial/not-matching implementation of lines 1-4 as stated.",
+      "error": false
+    },
+    {
+      "id": "alg-005",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 2 loop updates: z_t = -(1/β_t) Σ_{i=0}^t α_i G_i; A_{t+1} = A_t + α_{t+1}; τ_t = α_{t+1}/A_{t+1}; μ_{t+1} = τ_t z_t + (1-τ_t) λ_t; sample ξ_{t+1}, k_{t+1}, l_{t+1}; G_{t+1} = PPS(μ_{t+1}, ξ_{t+1}, k_{t+1}, l_{t+1}); μ̂_{t+1} = z_t - (α_{t+1}/β_t) G_{t+1}; λ_{t+1} = τ_t μ̂_{t+1} + (1-τ_t) λ_t; x_{t+1} = (1/A_{t+1}) Σ_{i=0}^{t+1} α_i x(-A^⊤ μ_i, ξ_i).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/algorithms.py lines 66-86 implement all Algorithm 2 loop updates: z = -weighted_gradient/beta (line 74, where weighted_gradient = Σα_i G_i); A_t update via next_weight = cumulative_weight + alpha_next (line 68); tau = alpha_next/next_weight (line 69); mu = tau*z + (1-tau)*lambdas (line 75); PPS sampling via simplex_pps(local[i], quantization_samples, quant_rng) (line 80); chi = z - alpha_next * next_gradient / beta for μ̂ (line 82); lambdas = tau*chi + (1-tau)*lambdas for λ update (line 83); barycenter = (cumulative_weight*barycenter + alpha_next*transmitted) / next_weight for x_{t+1} (line 85); and weighted_gradient += alpha_next * next_gradient to maintain Σα_i G_i (line 84).",
+      "note": "The implementation uses laplacian @ transmitted as G (the graph gradient), matching the decentralized setting where G_i corresponds to the PPS-quantized gradient through the Laplacian. The paper's A^⊤μ in the primal update maps to gradient_from_samples(mu, ...) which uses the negative dual variable.",
+      "error": false
+    },
+    {
+      "id": "alg-006",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "In Algorithm 2, the primal variable restoring function is x(μ, ξ) = ∇F^*(-A^⊤ μ, ξ), where F^* is the stochastic oracle for the conjugate function f^*.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py line 77, the primal variable is recovered as `local = gradient_from_samples(mu, samples, support, gamma)`, where `mu` (the dual variable) is passed directly to the conjugate gradient oracle — not `-A^⊤ mu`. The Laplacian (A) is applied only after the gradient computation, at line 81: `next_gradient = laplacian @ transmitted`. The function `gradient_from_samples` in src/wasserstein.py (lines 32-41) computes softmax((λ[i] - cost) / γ), which is ∇f^*(λ), but with λ=mu directly rather than -A^⊤ mu as the paper's equation (5) / Algorithm 2 line 13 specifies.",
+      "note": "The code implements a decentralized Wasserstein barycenter algorithm where the conjugate gradient (softmax estimator) is computed at the current dual iterate mu, and the graph Laplacian mixing is applied afterward. The formulation x(μ,ξ)=∇F^*(-A^⊤μ,ξ) with the -A^⊤ transformation inside the oracle input is not present.",
+      "error": false
+    },
+    {
+      "id": "alg-007",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The coefficients α and β in Algorithms 1-3 must satisfy: α_0 ∈ (0,1], L < β_t ≤ β_{t+1}, and α_t^2 β_t ≤ β_{t-1} Σ_{i=0}^t α_i for all t, where L is the Lipschitz constant of ∇φ.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py, α_0 = 1/(2√2) ≈ 0.354 ∈ (0,1] satisfies condition 1. For β: the quantized (PPS) branch sets beta = smoothness + sigma_pps*(t+2)^1.5/(...), which is strictly > smoothness (≈L) and strictly increasing, satisfying L < β_t ≤ β_{t+1}. However, the non-quantized (AGM) branch sets beta = smoothness (a constant equal to L), which violates the strict inequality L < β_t. For condition 3 (α_t^2 β_t ≤ β_{t-1} Σ_{i=0}^t α_i), there is no assertion, check, or explicit enforcement anywhere in the code (searched tests/test_core.py, src/algorithms.py, run_experiment.py). The code simply uses specific parameterized formulas without validating the coupled constraint.",
+      "note": "The AGM branch uses beta=smoothness=L, violating the strict inequality L < β_t required by the paper. The coupling condition (condition 3) is never checked in code. The implementation partially satisfies the conditions only for the PPS branch.",
+      "error": false
+    },
+    {
+      "id": "alg-008",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The dual oracle g(λ, ξ) used to construct the PPS oracle in the primal-dual method is defined as g(λ, ξ) = b - A ∇F^*(-A^⊤ λ, ξ), and satisfies E_ξ[g(λ, ξ)] = ∇φ(λ).",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "The paper's Section 3 (affine.tex, line 26) defines: \"the oracle g: (λ, ξ) ↦ b − A ∇F*(−A⊤ λ, ξ) is defined, which enjoys E_ξ[g(λ, ξ)] = ∇φ(λ) by construction.\" In the code, src/wasserstein.py's `gradient_from_samples()` computes the softmax estimator which implements ∇F*(λ, ξ) for the entropic Wasserstein conjugate. In src/algorithms.py (lines ~74-80), `local = gradient_from_samples(mu, samples, support, gamma)` computes the per-node conjugate gradient, and `next_gradient = laplacian @ transmitted` applies the graph Laplacian A to the transmitted gradients, realizing the A·∇F* part. The b=0 case for the distributed barycenter's consensus constraint means g(λ,ξ) = −A·∇F*(λ,ξ). The property E_ξ[g] = ∇φ(λ) is satisfied by the unbiasedness of the softmax Monte-Carlo estimator (gradient_from_samples computes mean over samples).",
+      "note": "The implementation is specialized to the Wasserstein barycenter problem (b=0 consensus, A=Laplacian), rather than a generic g(λ,ξ) = b − A∇F*(−A⊤λ, ξ) interface. The sign/direction of A⊤λ is absorbed into the Laplacian structure. The claim about E_ξ[g]=∇φ is satisfied by construction through the mean of softmax estimators.",
+      "error": false
+    },
+    {
+      "id": "alg-009",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 3 (decentralised) initializes per node: μ_0^i = 0; sample ξ_0^i, k_0^i, l_0^i; G_0^i = PPS^i(μ_0^i, ξ_0^i, k_0^i, l_0^i); send G_0^i to neighbors; λ_0^i = -(α_0/β_0) Σ_{j∼i} W_{ij} G_0^j; A_0 = α_0.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py lines 51-62, the initialization sets: lambdas = np.zeros(...) (μ_0^i=0 ✓), draws samples ✓, computes local = gradient_from_samples(lambdas=0, ...) as G_0^i ✓, applies simplex_pps to get transmitted ✓, sets cumulative_weight = alpha (A_0=α_0) ✓. However, λ_0^i is LEFT AS ZEROS — the code stores weighted_gradient = alpha * (laplacian @ transmitted) but does NOT divide by beta_0 and does NOT assign to lambdas. The rubric requires λ_0^i = -(α_0/β_0) Σ_{j∼i} W_{ij} G_0^j, but lambdas remains np.zeros at the end of initialization. The division by beta only happens inside the loop (line 74: z = -weighted_gradient / beta), and lambdas is only updated at line 83. So the required explicit λ_0 initialization is missing.",
+      "note": "The code partially matches: μ_0=0, G_0=PPS(μ=0,...), A_0=α_0 are all correct. Only the λ_0^i = -(α_0/β_0) Σ W_{ij} G_0^j step is absent — lambdas stays zero and weighted_gradient (which represents the sum without the β divisor) is used in the next iteration rather than being applied to initialize λ.",
+      "error": false
+    },
+    {
+      "id": "alg-010",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 3 loop for each node i: z_t^i = -(1/β_t) Σ_{k=0}^t α_k Σ_{j∼i} W_{ij} G_k^j; μ_{t+1}^i = τ_t z_t^i + (1-τ_t) λ_t^i; sample ξ_{t+1}^i, k_{t+1}^i, l_{t+1}^i; G_{t+1}^i = PPS^i(μ_{t+1}^i, ξ_{t+1}^i, k_{t+1}^i, l_{t+1}^i); send G_{t+1}^i to neighbors; μ̂_{t+1}^i = z_t^i - (α_{t+1}/β_t) Σ_{j∼i} W_{ij} G_{t+1}^j; λ_{t+1}^i = τ_t μ̂_{t+1}^i + (1-τ_t) λ_t^i; x_{t+1}^i = (α_{t+1}/A_{t+1}) x^i(μ^i, ξ^i) + (A_t/A_{t+1}) x_t^i.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/algorithms.py lines 66-86 implement all steps of Algorithm 3's inner loop: (1) z = -weighted_gradient/beta (line 74, where weighted_gradient accumulates α_k * L@G_k); (2) mu = tau*z + (1-tau)*lambdas (line 75); (3) samples drawn and G via simplex_pps per node (lines 76-80); (4) next_gradient = laplacian @ transmitted (line 81, neighbor exchange); (5) chi = z - alpha_next * next_gradient / beta (line 82, μ̂); (6) lambdas = tau*chi + (1-tau)*lambdas (line 83, λ update); (7) barycenter = (A_t*barycenter + α_{t+1}*transmitted) / A_{t+1} (line 85, x update). All seven substeps match the rubric exactly.",
+      "note": "The Laplacian is used in place of the explicit neighbor-weight sum W_{ij}G^j, which is equivalent. The barycenter update uses transmitted (the PPS gradient) as the x(μ,ξ) proxy, consistent with the paper.",
+      "error": false
+    },
+    {
+      "id": "alg-011",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "In the simplified PPS oracle for the log-sum-exp problem when the gradient lies in the simplex (‖∇f(x)‖_1 = 1), the PPS oracle is defined as PPS(x, ξ, k) = (1/M) Σ_{i=1}^M e_{k_i}, with communicated bits M log_2 n.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_quantization.py, simplex_pps() (line 38–46): calls _categorical_counts(probabilities, samples, rng) which executes rng.multinomial(samples, probabilities/mass).astype(float64) / samples — exactly (1/M)Σe_{k_i} with k_i drawn proportional to the simplex probabilities. Communication bits computed in src/algorithms.py line 100: bits_per_round = nodes * degree_factor * quantization_samples * np.log2(dimension), matching M log_2(n) per edge per round.",
+      "note": "The implementation returns a dense frequency vector rather than explicit basis vectors, but this is mathematically equivalent to the sum-of-one-hots formula in eq. (10). The bits formula at line 100 uses the average node degree as an edge-count factor, consistent with per-node communication of M log_2 n bits.",
+      "error": false
+    },
+    {
+      "id": "alg-012",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "In the Wasserstein barycenter problem, the dual function is W_{γ,μ}^*(λ) = γ log( (1/n) Σ_{i=1}^n exp( (λ_i - c(y_i, x))/γ ) ) + C, and its gradient with respect to λ_i is given by the softmax over the terms (λ_i - c(y_i, x))/γ, as stated in Lemma 3.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/wasserstein.py: (1) `dual_value()` computes `gamma * np.mean(logsumexp(logits, axis=1))` where `logits = (lambdas[i][None,:] - squared_cost(samples[i], support)) / gamma`, which is exactly γ log((1/n)Σ exp((λ_i - c(y_i,x))/γ)) matching Lemma 3's dual formula. (2) `gradient_from_samples()` computes `logits = (lambdas[i][None,:] - squared_cost(samples[i], support)) / gamma` then returns `np.mean(softmax(logits, axis=1), axis=0)`, implementing the softmax gradient ∂W*/∂λ_i = softmax((λ_i - c(y_i,x))/γ) as stated in Lemma 3. The `softmax` helper is defined at lines 12-15 of the same file.",
+      "note": "The implementation uses Monte Carlo averaging (mean over samples) which is the stochastic estimator variant consistent with the paper's Section 6.1 setting.",
+      "error": false
+    },
+    {
+      "id": "setup-001",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The distributions µ^i are Gaussian with randomly generated mean and variance parameters.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In run_experiment.py, the `_gaussian_setup` function (lines ~54-58) creates per-node Gaussian distributions with randomly generated parameters: `means = rng.uniform(-4.0, 4.0, size=nodes)` and `stds = rng.uniform(0.1, 0.6, size=nodes)`, where `rng = np.random.default_rng(config[\"seed\"])`. This is used when `config[\"dataset\"] == \"gaussian\"`, which is set in configs/gaussian_er.json and configs/gaussian_topology.json. The dataset metadata confirms `\"type\": \"Gaussian\"` with means and stds stored as lists.",
+      "note": "The means and stds are randomly generated via a seeded uniform distribution, so results are reproducible but random relative to no seed. The support is a fixed grid [-5, 5] in steps of 0.1.",
+      "error": false
+    },
+    {
+      "id": "setup-002",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "The network topologies considered are Path, Cycle, Star, Erdős–Rényi, and Complete.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "src/graphs.py implements only 4 topologies: path/bi_path (lines 20-22), cycle/ring (lines 23-25), complete/clique (lines 26-28), and erdos_renyi/er (lines 29-37). There is no 'star' case anywhere in the function. The configs directory contains gaussian_er.json, gaussian_topology.json, mnist.json, and mnist_long.json — none reference a star topology, and none use experiment_id 'exp1_gaussian_wb'. A search for 'star' in graphs.py returned no results.",
+      "note": "Four of the five required topologies (Path, Cycle, Erdős–Rényi, Complete) are implemented, but Star is entirely absent. The claim requires all five to be present.",
+      "error": false
+    },
+    {
+      "id": "setup-003",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "The number of nodes in the network is 30 for the experiments with different graph topologies.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/gaussian_topology.json sets \"nodes\": 30 for experiment_id \"gaussian_topology_m30\" (the graph topology experiment with Gaussian dataset). The run log at results/formal/gaussian_topology_m30/run.log line 2 also confirms: \"dataset=gaussian nodes=30 support=101 iterations=1500\".",
+      "note": "The config file is named gaussian_topology.json and matches experiment_id exp1_gaussian_wb / gaussian_topology_m30 for graph topology comparisons.",
+      "error": false
+    },
+    {
+      "id": "setup-004",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "Algorithm 3 was run with M_t = 1 and r_t = 10.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The paper's exp.tex explicitly describes running Algorithm 3 with M_t=1, r_t=10 on Gaussian data (\"even with a small number of samples, that is M_t=1 and r_t=10, Algorithm 3 can rapidly converge\"). In the code, M_t maps to `batch_size` and r_t maps to `quantization_samples`. All configs checked: gaussian_er.json (batch_size=10, quantization_samples=10), gaussian_topology.json (batch_size=10, quantization_samples=10), mnist.json (batch_size=20, quantization_samples=10), mnist_long.json (batch_size=1, quantization_samples=1). No config has batch_size=1 with quantization_samples=10 for the Gaussian dataset. The run_formal.sh script runs only these four configs. No config named gaussian_er_constant or similar was found in configs/ that matches M_t=1,r_t=10.",
+      "note": "The result directory results/formal/gaussian_er_constant/ exists with run.log, but that experiment uses batch_size=10 and quantization_samples=10 based on configs/gaussian_er.json. The variant M_t=1, r_t=10 for Gaussian is mentioned in the paper but is not implemented in any repository config or script.",
+      "error": false
+    },
+    {
+      "id": "setup-005",
+      "dimension": "exp_setup",
+      "priority": "tertiary",
+      "description": "Algorithm 3 was run for k = 10, 100, 200, and 500 iterations to produce the visualizations in Figure 2(b).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The paper text in .run-data/paper/src/exp.tex confirms that Figure 2(b) (fig:gaussians2vis) shows Algorithm 3 run at k={10,100,200,500} iterations. However, the repository code (run_experiment.py, src/algorithms.py, configs/) has no implementation of this: there is no config, script, or code path that runs Algorithm 3 to k=10, 100, 200, 500 separately or captures intermediate barycenter snapshots at those iteration counts. The configs only define single long runs (e.g., gaussian_er.json: 5000 iterations). run_experiment.py produces only a convergence-curve plot, not the barycenter visualization at specific iteration snapshots. No figure-2b or Gaussian WB visualization code exists anywhere in the repository.",
+      "note": "The paper describes this as the experiment_id exp1_gaussian_wb producing Figure 2(b), but the repository does not implement this experiment. The closest configs run 5000 iterations with no intermediate barycenter snapshots at k=10/100/200/500.",
+      "error": false
+    },
+    {
+      "id": "setup-006",
+      "dimension": "exp_setup",
+      "priority": "tertiary",
+      "description": "The simulation was performed on a single personal computer with an Apple M2 chip, 8-core CPU, and 8GB of unified memory.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Found in .run-data/paper/src/exp.tex line 1: \"All the results in this section were obtained by a simulation of distributed execution performed on a single personal computer with the Apple M2 chip with an 8-core CPU and 8GB of unified memory.\" This exactly matches the rubric claim about the hardware used for the simulation.",
+      "note": "The hardware specification appears in the paper source (exp.tex) bundled in the repository. The code itself (run_experiment.py, README.md) does not mention the hardware, but the included paper source file documents it as required by the rubric's reference to §6.2.",
+      "error": false
+    },
+    {
+      "id": "setup-007",
+      "dimension": "exp_setup",
+      "priority": "tertiary",
+      "description": "The experiments were run on a single personal computer with an Apple M2 chip, 8-core CPU, and 8GB of unified memory.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The paper source file .run-data/paper/src/exp.tex states: \"All the results in this section were obtained by a simulation of distributed execution performed on a single personal computer with the Apple M2 chip with an 8-core CPU and 8GB of unified memory.\" However, the repository code (run_experiment.py, src/, configs/, scripts/) contains no implementation that specifies, requires, or documents running on Apple M2 hardware. The run_experiment.py only records generic platform info (platform.platform(), os.cpu_count()) without any Apple M2/8GB constraint. The README and CLAIMS.json explicitly mention running experiments on CPU without specifying Apple M2 hardware.",
+      "note": "The claim appears in the paper source text (archived in .run-data) but is not reproduced or enforced anywhere in the repository's actual experimental code or configuration. The repository's experiments are designed to run on any CPU.",
+      "error": false
+    },
+    {
+      "id": "setup-008",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "In the MNIST experiment, the dataset consists of 40 images of the digit '2' from MNIST, each of size 100×100 pixels, vectorized to dimension n = 10^4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/data.py load_mnist_digit() (line 36): default digit=2, count=40. Lines 49-51: grid computed as floor(arange(100)*28/100) giving 100 indices, images resized to shape (count,100,100), then flattened to dimension 10000. configs/mnist.json: \"nodes\": 40, \"experiment_id\": \"mnist_digit2_100x100\". run_experiment.py line 52: _mnist_setup calls load_mnist_digit(..., digit=2, count=int(config[\"nodes\"])) with nodes=40.",
+      "note": "The vectorization dimension is 100*100=10000=10^4 as required. All three claims (40 images, digit '2', 100x100 / n=10^4) are explicitly implemented.",
+      "error": false
+    },
+    {
+      "id": "setup-009",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "The network for the MNIST experiment is a random Erdős–Rényi graph.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/mnist.json and configs/mnist_long.json both set \"graph\": \"erdos_renyi\". src/graphs.py line 29 handles the \"erdos_renyi\"/\"er\" case. Formal result files (results/formal/mnist_digit2_100x100/run.log, resolved_config.json, metrics.json) all confirm graph=erdos_renyi was used in the MNIST experiment runs.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-010",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "Algorithm 3 (decentralised primal-dual fast gradient method) with PPS quantization is used for the MNIST experiment.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/algorithms.py: `run_decentralized()` implements the accelerated decentralised primal-dual fast gradient method (Algorithm 3). When `quantized=True`, it applies `simplex_pps` (PPS quantization) from src/pps_quantization.py at each node before the Laplacian gossip step. configs/mnist.json sets dataset=\"mnist\" with nodes=40, experiment_id=\"mnist_digit2_100x100\". run_experiment.py calls run_decentralized with quantized=True for the \"PPS\" method on MNIST data. results/formal/mnist_digit2_100x100/metrics.json confirms the experiment was executed. CLAIMS.json claim \"wasserstein-barycenter-application\" explicitly lists PPS with MNIST digit-2.",
+      "note": "The paper refers to the algorithm as \"Algorithm 3 (decentralised primal-dual fast gradient method)\"; the code calls it `run_decentralized` with the same mathematical structure (primal-dual, accelerated, gossip via Laplacian, PPS quantization). The experiment_id in the configs is \"mnist_digit2_100x100\", not \"exp2_mnist_wb\", but it clearly corresponds to the MNIST Wasserstein barycenter experiment (§6.2/§8).",
+      "error": false
+    },
+    {
+      "id": "setup-011",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "Algorithm 3 is run for 5000 iterations on the MNIST experiment.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/mnist_long.json sets \"iterations\": 5000 for the MNIST experiment (\"dataset\": \"mnist\", \"experiment_id\": \"mnist_digit2_100x100_long\"). results/formal/mnist_digit2_100x100_long/run.log confirms execution: \"dataset=mnist nodes=40 support=10000 iterations=5000\". results/formal/mnist_digit2_100x100_long/metrics.json records \"iterations\": 5000 at the top-level and shows data at \"iteration\": 5000. src/algorithms.py implements run_decentralized(), the paper's accelerated graph primal-dual method (Algorithm 3), which accepts an `iterations` parameter and loops for exactly that many steps.",
+      "note": "The experiment_id in the config is \"mnist_digit2_100x100_long\" rather than \"exp2_mnist_wb\", but the dataset is MNIST, the method matches Algorithm 3 (accelerated decentralized primal-dual with PPS), and 5000 iterations are confirmed in both config and run artifacts.",
+      "error": false
+    },
+    {
+      "id": "setup-012",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "In one configuration, Algorithm 3 uses constant batch size r_t = 100 and quantization sample size M_t = 100.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all configs and source files. The MNIST config at configs/mnist.json sets batch_size=20 and quantization_samples=10 (not 100). The mnist_long.json sets both to 1. No config, resolved_config, or script sets both r_t (batch_size) and M_t (quantization_samples) to 100. The name \"100x100\" in the experiment_id refers to the image resolution (MNIST images resized to 100×100), not to batch/quantization sizes. Grep for 'batch_size.*100' and 'quantization.*100' across all .py and .json files returned no results.",
+      "note": "The experiment name \"mnist_digit2_100x100\" is misleading — it refers to image dimensions, not to the r_t/M_t parameter values described in the rubric.",
+      "error": false
+    }
+  ]
+}

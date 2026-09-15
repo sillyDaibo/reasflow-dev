@@ -1,0 +1,115 @@
+{
+  "paper_count": 16,
+  "rubric_judgments": 3262,
+  "aggregate": {
+    "midloop": {
+      "A_mean": 0.74219375,
+      "B_mean": 0.75130625,
+      "B_minus_A_mean": 0.009112499999999992,
+      "A_median": 0.72645,
+      "B_median": 0.7826,
+      "B_wins": 7,
+      "B_losses": 6,
+      "ties": 3,
+      "A_gate_passed": 7,
+      "B_gate_passed": 8,
+      "A_micro_score": 0.7581893984514592,
+      "A_item_count": 997,
+      "B_micro_score": 0.7486599166170339,
+      "B_item_count": 997
+    },
+    "bigloop": {
+      "A_mean": 0.461625,
+      "B_mean": 0.40725,
+      "B_minus_A_mean": -0.05437499999999999,
+      "A_median": 0.45565,
+      "B_median": 0.38375000000000004,
+      "B_wins": 4,
+      "B_losses": 10,
+      "ties": 2,
+      "A_gate_passed": 2,
+      "B_gate_passed": 2,
+      "A_micro_score": 0.22002085505735142,
+      "A_item_count": 634,
+      "B_micro_score": 0.18665276329509906,
+      "B_item_count": 634
+    },
+    "leave_one_paper_out_bigloop_delta_range": [
+      -0.07133333333333333,
+      -0.035779999999999985
+    ]
+  },
+  "sensitivity": {
+    "boolean": {
+      "A": {
+        "n": 52,
+        "weight": 62,
+        "earned": 28
+      },
+      "B": {
+        "n": 52,
+        "weight": 62,
+        "earned": 23
+      }
+    },
+    "extensible": {
+      "A": {
+        "n": 8,
+        "weight": 10,
+        "earned": 8
+      },
+      "B": {
+        "n": 8,
+        "weight": 10,
+        "earned": 8
+      }
+    },
+    "numerical": {
+      "A": {
+        "n": 429,
+        "weight": 626,
+        "earned": 61
+      },
+      "B": {
+        "n": 429,
+        "weight": 626,
+        "earned": 47
+      }
+    },
+    "ranking": {
+      "A": {
+        "n": 145,
+        "weight": 261,
+        "earned": 114
+      },
+      "B": {
+        "n": 145,
+        "weight": 261,
+        "earned": 101
+      }
+    }
+  },
+  "cross_run_flags": [
+    {
+      "paper_id": "1904.12017",
+      "loop": "bigloop",
+      "condition": "B",
+      "id": "res-001",
+      "verdict": 1,
+      "flag": "other_run_reference",
+      "runs": [
+        "第001次运行"
+      ],
+      "evidence": "File: /home/hzy/optirepro/agent_reproduction/runs/1904.12017/仅PDF论文-没有任何网络限制-Goal/第001次运行/workspace/results/paper/mesothelioma/metrics.json. Under methods.separate: test_anll = 1.3091791588901212. Expected value = 1.31. |1.3092 - 1.31| = 0.0008, which is within the absolute tolerance of 0.1. The file also confirms paper_reference.separate.test_anll = 1.31, matching the claim's source (Table 1). A second run (仅依据结构化资料) produced Separate test_anll = 0.866, which does not match; however the primary paper-scale run (仅PDF论文) clearly supports the claim."
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "condition": "B",
+      "id": "res-002",
+      "verdict": 0,
+      "flag": "other_condition_path_reference",
+      "evidence": "Found phase_transition_rank5 outputs at /home/hzy/optirepro/agent_reproduction/runs/2306.04961/Codex原生-完整复现-Goal/第003次运行/workspace/results/formal/phase_transition_rank5/metrics.csv. Config: n1=256, n2=40, rank=5, sparsity=40, Gaussian dense measurements at m=700/900/1100, 8 instances each. Success rates: ALL three methods (IRLS-LRRS, SparsePowerFactorization, RiemannianIHT) show 0/8 successes at every tested m value. No method achieves any positive success rate. The ReasFlow run for this paper only has rank=1 phase transition data (2 oversampling values, rank=1). No run outputs show a phase transition curve from which the oversampling factor required for high success probability could be extracted for any method, making the ranking claim unverifiable from run outputs. The experiment was run but only at 3 measurement values (m=700, 900, 1100) and all instances failed. No full phase transition sweep exists in the run outputs that would allow comparing the oversampling factors at which IRLS, SPF, and RiemAdaIHT achieve high success probability for rank-5 Gaussian problems."
+    }
+  ]
+}

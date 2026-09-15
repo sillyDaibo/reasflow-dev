@@ -1,0 +1,47 @@
+{
+  "schema_version": "optirepro.claim_results.v1",
+  "paper_id": "2201.13320",
+  "summary": "Five real-data CPU formal runs completed. BEER's recursion and a9a compressed optimization trend are reproduced; MNIST and broader topology/compressor comparisons are partial because the finite CPU runs differ from the paper's GPU implementation and the single formal topology/compressor members do not reproduce every panel.",
+  "claims": [
+    {
+      "claim_id": "C1_beer_fast_compressed_optimization",
+      "status": "reproduced",
+      "observation": "The BEER state machine executes Algorithm 1's model/gradient tracker recursions and on the official label-sorted a9a split reaches training minibatch gradient norm 0.18655 after 80 rounds, below its initial 0.65863 while recording compressed communication bits. The finite baseline ranking is mixed, so this result supports execution and descent rather than a universal speedup.",
+      "code_paths": ["beer_repro/algorithms.py", "beer_repro/compression.py", "beer_repro/runner.py"],
+      "test_paths": ["tests/test_core.py", "tests/test_data_and_runner.py"],
+      "config_paths": ["configs/exp_001_a9a_comparison.json", "configs/exp_002_mnist_comparison.json"],
+      "formal_result_paths": ["results/formal/exp_001_a9a_comparison/metrics.json", "results/formal/exp_001_a9a_comparison/run.log", "results/formal/exp_001_a9a_comparison/resolved_config.json", "results/formal/exp_001_a9a_comparison/figures/gradient_norm.png", "results/formal/exp_002_mnist_comparison/metrics.json", "results/formal/exp_002_mnist_comparison/run.log", "results/formal/exp_002_mnist_comparison/resolved_config.json", "results/formal/exp_002_mnist_comparison/figures/gradient_norm.png"],
+      "notes": "The formal MNIST result is included because it is required by the paper scope, but its finite-run ranking is mixed; the reproduced part of this claim is the algorithmic recursion and a9a compressed trend."
+    },
+    {
+      "claim_id": "C2_heterogeneous_real_data",
+      "status": "partially_reproduced",
+      "observation": "Real a9a and MNIST label-skewed partitions run end to end. On the official label-sorted a9a split BEER reaches 0.7648 test accuracy after 80 rounds; on MNIST it reaches 0.294 in the compressed comparison and 0.359 in the uncompressed heterogeneity run, below the uncompressed baselines in these finite CPU budgets.",
+      "code_paths": ["beer_repro/data.py", "beer_repro/objectives.py", "beer_repro/runner.py"],
+      "test_paths": ["tests/test_data_and_runner.py"],
+      "config_paths": ["configs/exp_001_a9a_comparison.json", "configs/exp_002_mnist_comparison.json", "configs/exp_005_mnist_heterogeneity.json"],
+      "formal_result_paths": ["results/formal/exp_001_a9a_comparison/metrics.json", "results/formal/exp_002_mnist_comparison/metrics.json", "results/formal/exp_005_mnist_heterogeneity/metrics.json", "results/formal/exp_005_mnist_heterogeneity/run.log", "results/formal/exp_005_mnist_heterogeneity/resolved_config.json", "results/formal/exp_005_mnist_heterogeneity/figures/test_accuracy.png"],
+      "notes": "Data loading, objective definitions, label-skew partitioning, and execution are reproduced; the exact paper ranking is not claimed for MNIST."
+    },
+    {
+      "claim_id": "C3_topology_robustness",
+      "status": "partially_reproduced",
+      "observation": "The formal forty-client Erdos-Renyi p=0.5 run is successful, records spectral gap 0.54217, and reduces a9a training minibatch gradient norm from 0.23246 to 0.02873 with BEER. The code supports ring, star, grid, complete, and Erdos-Renyi matrices, but only one topology member was run formally.",
+      "code_paths": ["beer_repro/graphs.py", "beer_repro/algorithms.py"],
+      "test_paths": ["tests/test_core.py"],
+      "config_paths": ["configs/exp_003_a9a_topology.json"],
+      "formal_result_paths": ["results/formal/exp_003_a9a_topology/metrics.json", "results/formal/exp_003_a9a_topology/run.log", "results/formal/exp_003_a9a_topology/resolved_config.json", "results/formal/exp_003_a9a_topology/figures/gradient_norm.png"],
+      "notes": "The implementation and one paper-scale topology are evidenced; a complete Figure 3 panel-by-panel sweep remains outside this finite CPU run."
+    },
+    {
+      "claim_id": "C4_compression_tradeoff",
+      "status": "partially_reproduced",
+      "observation": "Identity, gsgd, top-k, and random-k compressors are implemented with payload-bit accounting. The formal ring/top-10 run reduces a9a training minibatch gradient norm from 0.23599 to 0.09080 and records 590800 bits.",
+      "code_paths": ["beer_repro/compression.py", "beer_repro/algorithms.py"],
+      "test_paths": ["tests/test_core.py"],
+      "config_paths": ["configs/exp_004_a9a_compression.json"],
+      "formal_result_paths": ["results/formal/exp_004_a9a_compression/metrics.json", "results/formal/exp_004_a9a_compression/run.log", "results/formal/exp_004_a9a_compression/resolved_config.json", "results/formal/exp_004_a9a_compression/figures/test_accuracy.png"],
+      "notes": "The compression API and one formal compressor setting are verified; a complete same-bit sweep across all Figure 4 operators is not asserted."
+    }
+  ]
+}

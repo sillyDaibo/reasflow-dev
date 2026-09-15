@@ -1,0 +1,145 @@
+{
+  "paper_id": "2501.04443",
+  "evaluated_at": "2026-09-04T18:36:27.259198+00:00",
+  "summary": {
+    "total_score": 0.8333,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.8333,
+    "total_rubrics": 10,
+    "passed": 8,
+    "failed": 2,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "secondary": {
+      "score": 0.8571,
+      "passed": 6,
+      "total": 7
+    },
+    "primary": {
+      "score": 1.0,
+      "passed": 2,
+      "total": 2
+    },
+    "tertiary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "MbSGD converges at the same rate for δ ≈ 0.01, 0.02, and 0.03.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure1_hessian_similarity/metrics.json and metrics.csv contain full per-round score trajectories for MbSGD on LocalSGD_data at δ=0.01, 0.02, and 0.03 (3 seeds each, 50 rounds). Average final scores: δ=0.01 → 6.087e-07, δ=0.02 → 6.080e-07, δ=0.03 → 6.074e-07. The average trajectories are nearly identical at every round — the maximum relative difference across all 50 rounds is only 0.24%, well within numerical noise. The convergence curve shapes (first 5 rounds: ~[6.82e-01, 6.97e-02, 1.39e-02, 3.77e-03, 1.40e-03] for all three δ values) are indistinguishable, directly supporting the claim that MbSGD converges at the same rate regardless of δ ∈ {0.01, 0.02, 0.03}.",
+      "note": "The metrics.json contains per-round scores (51 values including initial) for each seed/delta combination. The experiment_id in the rubric is exp1_local_sgd_vs_mbsgd_delta but the actual output is stored under figure1_hessian_similarity — confirmed to be the correct experiment by the δ sweep and algorithm names in the data.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "LocalSGD converges faster as δ decreases: δ=0.01 > δ=0.02 > δ=0.03 in terms of convergence speed (lower squared gradient norm).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/figure1_hessian_similarity/metrics.csv (and metrics.json). LocalSGD final_score (squared gradient norm) at round 50, averaged over seeds 111/222/333:\n- δ=0.01: [4.382e-07, 4.588e-07, 7.666e-07] → avg = 5.545e-07\n- δ=0.02: [4.623e-07, 4.826e-07, 7.791e-07] → avg = 5.746e-07\n- δ=0.03: [4.998e-07, 5.208e-07, 8.074e-07] → avg = 6.093e-07\nBoth required ordering constraints hold: 5.545e-07 < 5.746e-07 (δ=0.01 < δ=0.02) and 5.746e-07 < 6.093e-07 (δ=0.02 < δ=0.03), confirming the ranking δ=0.01 > δ=0.02 > δ=0.03 under lower_is_better.",
+      "note": "The final_score column in the CSV represents the squared gradient norm at the last round (round 50). Averages across 3 seeds confirm the claimed ordering consistently.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The most pronounced differences between the LocalSGD runs are observed in later communication rounds (≥ 10).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/figure1_hessian_similarity/metrics.json — per-round scores for LocalSGD vs MbSGD on LocalSGD_data (delta=0.01, averaged over 3 seeds). The relative gap (LocalSGD−MbSGD)/MbSGD peaks at rounds 4–6 (~52–54%) and monotonically decreases thereafter: round 9 → +33%, round 10 → +30%, round 15 → +21%, round 20 → +17%, round 30 → +10%, round 40 → +1%, rounds 41+ → gap ~0 or negative. The absolute gap also strictly shrinks: round 1 ≈ 1.88e-2, round 10 ≈ 3.07e-5, round 30 ≈ 3.58e-7, round 49 ≈ -2.3e-8. Both measures show the differences are most pronounced in early rounds (< 10), not later rounds (≥ 10). The run outputs directly contradict the claim.",
+      "note": "The experiment output tracks an objective/loss score per communication round. The LocalSGD dataset runs (the relevant comparison for Figure 1 left) show the convergence gap is largest in the first ~5 rounds and narrows continuously, reaching negligible levels by round ≥ 40. This is the opposite of what the paper claims (\"most pronounced differences at rounds ≥ 10\").",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "MbSGD converges at the same rate despite variations in δ (δ ≈ 0.1, 0.2, 0.3).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure1_hessian_similarity/metrics.csv contains MbSGD runs on SCAFFOLD_data for δ=0.1, 0.2, 0.3 (3 seeds each). Final scores are virtually identical across all δ values: seed=111 gives 1.037e-06 / 1.038e-06 / 1.038e-06; seed=222 gives 8.848e-07 / 8.852e-07 / 8.857e-07; seed=333 gives 1.150e-06 / 1.151e-06 / 1.151e-06. The maximum relative variation in final score across δ values for any seed is less than 0.1%, confirming convergence at the same rate regardless of δ variation.",
+      "note": "The metrics file is labeled as figure1 (figure1_hessian_similarity), which matches the paper's \"Figure 1 (right)\" reference. The experiment covers δ ≈ 0.1, 0.2, 0.3 exactly as stated in the claim.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "SCAFFOLD converges faster as δ decreases: SCAFFOLD with δ≈0.1 outperforms SCAFFOLD with δ≈0.2, which outperforms SCAFFOLD with δ≈0.3.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure3_scaffold_parameters/metrics.json (and confirmed in figure1_hessian_similarity/metrics.json): Averaged final squared_gradient_norm across 3 seeds for SCAFFOLD on synthetic data: δ=0.1 → 3.2574e-07, δ=0.2 → 3.3756e-07, δ=0.3 → 3.5749e-07. Both required constraints hold (lower_is_better): SCAFFOLD(δ≈0.1) < SCAFFOLD(δ≈0.2) < SCAFFOLD(δ≈0.3).",
+      "note": "Per-seed values from figure3_scaffold_parameters: δ=0.1: [2.89e-07, 2.74e-07, 4.14e-07]; δ=0.2: [2.92e-07, 2.87e-07, 4.34e-07]; δ=0.3: [3.02e-07, 3.06e-07, 4.64e-07]. All seeds individually also show the same ordering trend.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The most pronounced difference between the SCAFFOLD runs is observed in early communication rounds (≤ 10).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure3_scaffold_parameters/metrics.json contains per-round scores for SCAFFOLD runs with delta=0.1, 0.2, 0.3 (3 seeds each, sweep_parameter='delta'). Averaging across seeds and computing the max relative spread (max−min)/min across the three delta values per round: rounds 1–10 show a maximum relative spread of 23.61% (peak at round 3/4: 9.06e-4 absolute difference between delta=0.3 score of 4.75e-3 and delta=0.2 score of 3.84e-3). Rounds 11–50 show a maximum relative spread of only 7.24%. By round 11 the spread collapses to ~0.006% relative. Early rounds (≤10) clearly show the most pronounced differences between SCAFFOLD runs with varying δ.",
+      "note": "The metric here is the optimization loss/score tracked per communication round. The spread is measured as relative range across delta values. The claim holds that the pronounced difference is in early rounds (≤10).",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the ζ dependence experiment, the squared gradient norm at the 50th communication round (‖∇f(x̄_{2500})‖_2^2) is positively correlated with ζ^2.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "From results/formal/figure2_localsgd_parameters/metrics.csv, the ζ-dependence rows (delta=0.01, rho=0.01, rounds=50, varying zeta) show mean ‖∇f(x̄_{2500})‖² (final_score averaged over 3 seeds): zeta=0.03→5.5452e-07, zeta=0.04→5.5447e-07, zeta=0.05→5.5611e-07, zeta=0.06→5.5945e-07, zeta=0.07→5.6449e-07. Pearson correlation between ζ² and mean gradient norm squared = 0.965, strongly positive. The series is essentially monotonically increasing (only negligible dip of ~5e-11 from ζ=0.03 to 0.04), supporting the claim of positive correlation.",
+      "note": "The column 'final_score' corresponds to ‖∇f(x̄_{2500})‖² at round 50 (with tau=50 local steps, so 50 rounds × 50 steps = 2500 gradient steps). There is a tiny non-monotone dip of ~5e-11 between ζ=0.03 and ζ=0.04, but overall positive correlation is strong (r=0.965).",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the δ dependence experiment, the squared gradient norm at the 50th communication round (‖∇f(x̄_{2500})‖_2^2) is positively correlated with δ^{2/3}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure2_localsgd_parameters/metrics.csv (delta sweep, sweep rows with zeta=0.03, rho=0.01): mean ‖∇f‖² at round 50 increases monotonically with δ — δ=0.01→5.545e-7, δ=0.015→5.628e-7, δ=0.02→5.746e-7, δ=0.025→5.902e-7, δ=0.03→6.093e-7. Pearson correlation between mean final_score and δ^(2/3) = 0.9783, confirming strong positive correlation.",
+      "note": "The CSV has no explicit sweep_parameter column; delta-sweep rows were identified by filtering zeta=0.03 and rho=0.01 with varying delta. The final_score column represents ‖∇f(x̄_{2500})‖² (squared gradient norm at round 50, τ=50 steps/round = 2500 total gradient steps).",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the λ dependence experiment, the squared gradient norm at the 10th communication round (‖∇f(x̄_{500})‖_2^2) is positively correlated with λ.",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "results/formal/figure2_localsgd_parameters/metrics.json: delta (Hessian dissimilarity) sweep at round 10 shows positive monotone correlation — mean ‖∇f(x̄_{500})‖² increases from 1.3269e-04 (delta=0.010) → 1.3275e-04 (delta=0.015) → 1.3283e-04 (delta=0.020) → 1.3292e-04 (delta=0.025) → 1.3302e-04 (delta=0.030). CLAIM_RESULTS.json corroborates: \"Delta sweeps show the expected positive heterogeneity dependence.\" Rho and zeta sweeps show strictly negative correlation at round 10 (rho: 1.3269e-04 → 1.0100e-04; zeta: 1.3269e-04 → 1.3185e-04).",
+      "note": "Confidence is medium because the mapping of paper symbol λ to one of the experimental parameters (delta/zeta/rho) is not directly labeled in the output files. The verdict assumes λ corresponds to the Hessian dissimilarity parameter delta (δ), which is the only sweep showing positive correlation and which CLAIM_RESULTS.json identifies as having the expected positive dependence. If λ mapped to rho or zeta instead, the verdict would be 0.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "The convergence rates of SCAFFOLD are positively correlated with the Hessian similarity parameter δ and the weak convexity parameter λ.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/figure3_scaffold_parameters/metrics.csv. For varying delta (rho=0.01 fixed): avg_final_score rises monotonically from 3.21e-7 (delta=0.01) to 3.57e-7 (delta=0.3), meaning higher δ → worse convergence (higher error). For varying rho/λ (delta=0.01 fixed): avg_final_score drops from 3.21e-7 (rho=0.01) to a minimum of 2.52e-7 (rho=0.02) then slightly rebounds to 2.61e-7 (rho=0.03), meaning higher λ → BETTER convergence (lower error). The two parameters have opposite directional effects: δ positively correlates with final error while λ negatively correlates with it. The claim that both are 'positively correlated with convergence rates' is not supported under any consistent interpretation — one parameter worsens convergence while the other improves it.",
+      "note": "Ambiguity exists in the term 'convergence rate': if it means the error bound (larger = worse), then δ is positively correlated but λ is negatively correlated; if it means convergence speed (larger = better), then the opposite holds for both. Either way the claim fails for at least one parameter. The parameter 'rho' in the CSV is interpreted as the weak convexity parameter λ based on the run.log mentioning 'delta and rho grids' and the config naming convention.",
+      "error": false
+    }
+  ]
+}

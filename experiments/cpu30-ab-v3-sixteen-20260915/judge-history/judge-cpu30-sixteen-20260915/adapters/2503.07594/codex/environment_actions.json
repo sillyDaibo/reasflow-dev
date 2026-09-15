@@ -1,0 +1,14 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "original algorithms/data module import",
+    "source": "scaffold_reproduction/algorithms.py"
+  },
+  {
+    "kind": "install_package",
+    "package": "scikit-learn",
+    "reason": "Original package __init__ imports datasets during algorithms import; datasets requires sklearn",
+    "source": "scaffold_reproduction/__init__.py:4; scaffold_reproduction/datasets.py:9"
+  }
+]

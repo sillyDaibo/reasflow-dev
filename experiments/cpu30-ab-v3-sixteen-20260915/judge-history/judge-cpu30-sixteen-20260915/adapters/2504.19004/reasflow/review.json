@@ -1,0 +1,36 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "adapter16_c",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "The partial adapter is faithful: source has no usable fixed-eta interface, so it exposes only four actual first-event pre-update observations and explicitly blocks the rest.",
+  "scope_notes": [
+    "problems.py:41-59 supports P=a/2,q=-a*c,r=a*c^2/2; native _precompute regenerates inverse Hessians and L from these public objective coefficients.",
+    "graphs.py:9-26 and 62-99 lexicographically order edges; adapter permutes public initial dual coordinates and observed edge indices consistently, with identical +first/-second orientation.",
+    "Blocked claim independently challenged: solvers.py:35 creates stepsizes but solve:95 ignores it and directly uses grad/L[e]. Constructor/solve have no eta argument. Replacing L would replace a core step mechanism. No such change is made.",
+    "Only trace lines 88/90 with t=0 emits actual initial cache, gradient, dual objective and selected edge. All post-update and later-event observations remain missing. Native solve still executes unchanged.",
+    "Approval covers adaptation fidelity and honest limited coverage; neither a full public experiment pass nor correctness of the unrequested coordinate-Lipschitz trajectory is asserted.",
+    "Independent smoke used only public cases under execution._readonly_tree; checked successful invocation and observation schema coverage. No private expected values, papers, prior verdicts or Judge numeric comparisons were read. Approval is fidelity only."
+  ],
+  "substitutions": [
+    {
+      "symbol": "QuadraticProblem coefficient fields and _precompute",
+      "role": "problem_input",
+      "reason": "Set public objective coefficients and call native cache/Hessian/L construction; no optimizer L override."
+    },
+    {
+      "symbol": "Graph coordinate permutation, initial states and activation RNG",
+      "role": "problem_input",
+      "reason": "Map public edge order/sign and conditioned active nodes while preserving native graph/SGS mechanics."
+    },
+    {
+      "symbol": "First-event trace and original gradient/lagrangian calls",
+      "role": "observation",
+      "reason": "Retain only actual observations before the incompatible fixed-eta update; report remaining schema items missing."
+    }
+  ],
+  "public_digest": "b2cc31b47d87e280332a6a5ea982ed285f1a02cfd1ee4b9da66ba7f25de9c7e9",
+  "adapter_sha256": "c810f81230c31b74998da6de6d103b3ed65a45be704bdca44a99ee1172f8a162",
+  "workspace_digest": "b5cdba6ceb08ddfe078ac9eca3a487b2e41d00874e394709d061874f21a1c9cd",
+  "bindings_digest": "04e3ceecac1f947ab8320390c560c107b44250e4ddf3932350e54edd7b8dafc5"
+}

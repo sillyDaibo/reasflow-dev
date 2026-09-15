@@ -1,0 +1,36 @@
+{
+  "schema_version": "optirepro.paper_review.v1",
+  "contract_digest": "0592dff933d6b75c881e5696d51ef6e73bb3f74a0e52aca5d7bfd032929b0c31",
+  "reviewer_id": "paper16_a",
+  "basis": "original_paper_only",
+  "decision": "approved",
+  "summary": "Independently reconstructed signed PPS Eq.(1) and primal-dual Algorithm 2 with exact rational arithmetic; all 240 numeric leaves match, maximum serialization error 2.16e-16.",
+  "cases": [
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "decision": "approved",
+      "reason": "Verified conjugate/restoration/dual gradient algebra, PPS sign masses and conditioned categorical indices, beta_t timing in both z and mu_hat, all weighted gradient accumulation, and primal restoration averaging from index zero through current index. The declared parameter coefficient inequalities hold exactly; all generated signed masses are positive.",
+      "citations": [
+        "PDF pp.6-7 Section 2 and Eq.(1)",
+        "PDF pp.8-9 Eqs.(3),(5),(6)",
+        "PDF p.11 Algorithm 2 and coefficient conditions"
+      ]
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "decision": "approved",
+      "reason": "Verified conjugate/restoration/dual gradient algebra, PPS sign masses and conditioned categorical indices, beta_t timing in both z and mu_hat, all weighted gradient accumulation, and primal restoration averaging from index zero through current index. The declared parameter coefficient inequalities hold exactly; all generated signed masses are positive.",
+      "citations": [
+        "PDF pp.6-7 Section 2 and Eq.(1)",
+        "PDF pp.8-9 Eqs.(3),(5),(6)",
+        "PDF p.11 Algorithm 2 and coefficient conditions"
+      ]
+    }
+  ],
+  "scope_notes": [
+    "The unbounded global quadratic gradient does not meet the Section 2 global bounded-oracle condition; the contract explicitly limits its claim to finite recurrence correctness, not large-deviation theorems.",
+    "Generic centralized affine-constrained Algorithm 2 only; this does not cover the separate decentralized method or Algorithm 1.",
+    "PPS uses fixed exact uniforms transformed by the stated categorical inverse CDF. Both sign masses are positive at every tested call; zero-mass conventions are not tested.",
+    "The independent reviewer did not read the author derivation script, implementations, adapters, actual outputs, previous evaluations or other reviews."
+  ]
+}

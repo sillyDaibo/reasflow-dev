@@ -1,0 +1,208 @@
+[
+  {
+    "path": "local/agent_reproduction/studies/v1/tools/tests/test_paired_review_gate.py",
+    "matches": 1,
+    "source_sha256": "3ed64a69ea852314f6900158b2e1790675d98f8278fe96ff900e964e19a2de21"
+  },
+  {
+    "path": "local/agent_reproduction/tools/codex_runner/tests/test_cpu30_pipeline_admin.py",
+    "matches": 1,
+    "source_sha256": "d865d658b31b59c1499374a3f9dfda3e8b0c1702e66740e0a5f92986352614fa"
+  },
+  {
+    "path": "local/agent_reproduction/tools/codex_runner/tests/test_finalize_cpu_goal_trace.py",
+    "matches": 3,
+    "source_sha256": "6321c98688b4d094f7f6329d92c68341d2ae012c164f7750b26288c0ba84b11f"
+  },
+  {
+    "path": "local/agent_reproduction/tools/codex_runner/tests/test_sanitize_codex_audit.py",
+    "matches": 5,
+    "source_sha256": "dea78f5d34bdb15d5008983fbe04cb8233cf9d3fed0d27522e8a761aca496221"
+  },
+  {
+    "path": "remote/OptiRepro_cpu/agent_reproduction/runs/1811.03761/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0674a-c6ff-7440-8767-7fd9c0ac09fe.1788439349007132635.sh",
+    "matches": 1,
+    "source_sha256": "50d5aae16ef9d4d685b37fd58b5b998875a2f709b68b3fe306463c2c31af2c7c"
+  },
+  {
+    "path": "remote/OptiRepro_cpu/agent_reproduction/runs/1811.03761/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0674a-c826-7ee3-897a-0bb676a22f83.1788439349289931804.sh",
+    "matches": 1,
+    "source_sha256": "c884e9f55273793bf1a1e77ac1d6f2b695aba8569b27d2f88e3fa178360d3af8"
+  },
+  {
+    "path": "remote/OptiRepro_cpu/agent_reproduction/runs/2310.09804/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0684b-5124-7ae1-b5e1-d898aa9a60ae.1788456161611368250.sh",
+    "matches": 1,
+    "source_sha256": "dcb3f2aaefd17782ef6b6588eea9624231da4f46483edfd9eec6935879d7375f"
+  },
+  {
+    "path": "remote/OptiRepro_cpu/agent_reproduction/runs/2310.09804/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0684b-5352-7d63-beb4-3e6af1f9eede.1788456162211547645.sh",
+    "matches": 1,
+    "source_sha256": "b5dcb453a784dfd5c6fc4b81392560919d38ccf1ae9b5f0a65e232bb05fcb3c3"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/1904.12017/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0674e-40e7-7772-937b-ab9c57353c66.1788439576809587865.sh",
+    "matches": 1,
+    "source_sha256": "65031f4d9d35b8201f0ba55526bb4b7a43f9eaae7e9f3b92752df68e3ffc22a6"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/1904.12017/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0674e-426d-7010-9e90-cfc32668275b.1788439577200119611.sh",
+    "matches": 1,
+    "source_sha256": "00c7b16b1fe4b8b9e059f0a2355ca15d02a8baba0c4da944163226d94ec69261"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a068bd-e2f7-7aa3-8dc1-1de693220c31.1788463670009719076.sh",
+    "matches": 1,
+    "source_sha256": "5446bb2b73b65229ee75697122226bab7799b1b22593eeec1e64aa9304f53550"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/Codex原生-完整复现-Goal/第003次运行/runtime/agent-cache/repro-pylib/pylib/sklearn/utils/_repr_html/estimator.css",
+    "matches": 3,
+    "source_sha256": "732a4839e33f81ae0871811725f91ef741cd2c9d5b1e684cfae521e76c10111e"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/Codex原生-完整复现-Goal/第003次运行/runtime/agent-cache/repro-pylib/pylib/sklearn/utils/_repr_html/estimator.py",
+    "matches": 1,
+    "source_sha256": "37e73e620b8e139e786268d9e489fa93427a06ccf81c99199aac9e68535ff38e"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/Codex原生-完整复现-Goal/第003次运行/runtime/agent-cache/repro-pylib/pylib/sklearn/utils/_repr_html/tests/test_estimator.py",
+    "matches": 6,
+    "source_sha256": "12ec430d985c24347f5a56b0938bc532c5cf5e5a92d9752f648d685997dd0abe"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a068bd-e473-7b13-ac91-a01ba376bd4e.1788463670389772997.sh",
+    "matches": 1,
+    "source_sha256": "f2d7052a2e81240b0cbcd922ded67d0981d09d65c85eac9103871b84e20c8902"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2111.03820/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06d46-df07-7851-bf48-1442468e30ff.1788539756298452650.sh",
+    "matches": 1,
+    "source_sha256": "b033950c27658019aba2a2b0f7596f34585a639d58ff18f3e8b625bc25e160eb"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2111.03820/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06d46-e0a3-75e1-9225-c488008cc1d3.1788539756709862034.sh",
+    "matches": 1,
+    "source_sha256": "6a7036e287347601d6877e945415219fb97939bbed6ee66f02ada246d9c6cba3"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2201.13320/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0679e-4eb2-7da1-8776-1a029f7cc362.1788444823221201901.sh",
+    "matches": 1,
+    "source_sha256": "74ad218ce50ba6dc5339dc182bff52a49e06157d22d5150bfd82771d92b040b4"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2201.13320/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0679e-5020-71f1-a1c3-c3bdbbf14e5b.1788444823587208725.sh",
+    "matches": 1,
+    "source_sha256": "c5b992fdd98f6bbebf353574462627af84e181cdb727f8cce873ac09c1653433"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2207.04555/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0689a-c980-7a43-a810-60eaa657e279.1788461369730938200.sh",
+    "matches": 1,
+    "source_sha256": "389f14970b8569c8d0caa2a4d8b177933b4f0ee1786be8dfb9b10d94a2c23b12"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2207.04555/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0689a-caf4-71a3-be00-ebe89a7118e6.1788461370102566713.sh",
+    "matches": 1,
+    "source_sha256": "8a3f0dca9c66b320c621220f921f22d13666446e1e36edb9628ba3c63bc2bf86"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2212.02387/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/logs_2.sqlite",
+    "matches": 6,
+    "source_sha256": "af2f00fd0a9068bfa7f551977f4676a482b07ed7ad32b747bd6c95430a0e8501",
+    "format": "sqlite"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2212.02387/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T04-07-39-01a068e2-578c-7c12-bd10-3dd31654c800.jsonl",
+    "matches": 1,
+    "source_sha256": "d6a80cf8b8063a73eacd524ab03fd425fc976a4aa3a4a3d6f36a6ff67dd94d1f"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2212.02387/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a068e2-578c-7c12-bd10-3dd31654c800.1788466059151199975.sh",
+    "matches": 1,
+    "source_sha256": "d9942d21aef4fdbbed2e617205eebac0cfc8fd79b3d3eaa09ecd464c2c159a8e"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2212.02387/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a068e2-5924-77a1-8df2-4bbfae976bee.1788466059559350563.sh",
+    "matches": 1,
+    "source_sha256": "b17ed86dd1495500e8e2f0ddc9343851ddf5f6170925fd9dab113ff9f514739e"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2306.04961/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06e67-4b3f-73b0-b143-e981a7bfc51e.1788558658370205796.sh",
+    "matches": 1,
+    "source_sha256": "fedb8f048ece0c282c621471b0112abfbff92cb5e0f076f64a9647c0c13dc6cd"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2306.04961/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06e67-4cd2-7b03-a85e-41eae9794855.1788558658772804947.sh",
+    "matches": 1,
+    "source_sha256": "36fb3ca61ab0df9e748ddc32681fe43c4da8257eb29292531da6a5264ab05ea8"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2306.05100/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a069a0-ddca-7752-a647-98077cf61517.1788478545356895864.sh",
+    "matches": 1,
+    "source_sha256": "00dd5905d9f4467adbae937d83affe56ea4794bea52a0790ac1c6edb8a076fc2"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2306.05100/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a069a0-df5f-7c51-9065-837f38c5b357.1788478545761705083.sh",
+    "matches": 1,
+    "source_sha256": "f044c64242d3385037ad91455e6b3a775d4d297ec2e4c7da6bf5a72eb237f99d"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2309.05204/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0687b-a0fe-7311-8393-307201b7b7c6.1788459327745139058.sh",
+    "matches": 1,
+    "source_sha256": "d1a5a5778625d85de4c053264d1ec12661d4e5f0b0235901965375245388ec19"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2309.05204/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a0687b-a281-75f2-9b19-c231c4c02965.1788459328132036873.sh",
+    "matches": 1,
+    "source_sha256": "ee004481b33337869d203c930ccf6f78652a1122233c3d84bc2eeb63551cc8f2"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.04443/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06d83-1752-7c62-b242-7d2dcfad529d.1788543702868777895.sh",
+    "matches": 1,
+    "source_sha256": "f072b8069c3f4df7f7880728d0ddd8c1c151464a96737de67fcc737946cf5a2c"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.04443/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06d83-18f2-75e1-9540-f00cba5f21e1.1788543703284872713.sh",
+    "matches": 1,
+    "source_sha256": "e4526aa5dd875a8183e96437850692b1c9a594316abc34bff58a542e9e05ee6d"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.09516/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06db7-b6fe-7932-8298-5844f79c6f46.1788547151617039755.sh",
+    "matches": 1,
+    "source_sha256": "92b2cf0a3e5ec5cf420a567a571c742df4750a8d37a2076a99d55da4df5eed70"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.09516/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06db7-b86a-7552-acec-379981472ca8.1788547151981226594.sh",
+    "matches": 1,
+    "source_sha256": "fc07a93ffb4be2a444f184af1840e904dcedff93447179de6487b86bd41aef95"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.18312/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06cfe-138d-7431-a0f3-1e382a979566.1788534985616125256.sh",
+    "matches": 1,
+    "source_sha256": "e72746124441e4905a65e8e3fc6f5b58285e5b15b1471922a86b6421396441c7"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.18312/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06cfe-14fd-7a71-bba3-2f746fbd2804.1788534985984361636.sh",
+    "matches": 1,
+    "source_sha256": "3bc5e0e60ae90405a9916172f819d3d422f99c664b84e7f7d8f64dcfbc6cb9eb"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2503.07594/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06e19-2774-7a00-95c7-1c635de95ec1.1788553537399517333.sh",
+    "matches": 1,
+    "source_sha256": "e539ad21f726a98454ce1ded6d9f5c552a66b17988465b8435c99604ee2bbbfb"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2503.07594/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06e19-28e2-7d30-b1f3-37bed92714bf.1788553537765141010.sh",
+    "matches": 1,
+    "source_sha256": "a164d72937e7559019c2935223a4a66731b3c29c7620e752f121fb7b39cff618"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2504.19004/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06bc6-c52a-7d21-a992-c7654d8efc62.1788514583852727391.sh",
+    "matches": 1,
+    "source_sha256": "846019d0df6e336a09db0abf797e658ae07b7332308475028ebb5d8e20398af5"
+  },
+  {
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2504.19004/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/shell_snapshots/01a06bc6-c69d-7111-ad8f-ecefff3b3d48.1788514584224179145.sh",
+    "matches": 1,
+    "source_sha256": "e9bc7dc02b325825a449fb6d8c2bdce3840d43e48eff2291859a650a67730a08"
+  }
+]

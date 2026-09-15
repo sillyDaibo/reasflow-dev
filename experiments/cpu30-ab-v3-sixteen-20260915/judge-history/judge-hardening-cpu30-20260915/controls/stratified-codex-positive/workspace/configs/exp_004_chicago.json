@@ -1,0 +1,11 @@
+{
+  "experiment": "chicago",
+  "seed": 0,
+  "gamma_location": 100.0,
+  "gamma_week": 100.0,
+  "gamma_day": 100.0,
+  "gamma_hour": 100.0,
+  "epsilon": 0.00001,
+  "maxiter": 80,
+  "solver": "ADMM"
+}

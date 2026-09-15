@@ -1,0 +1,399 @@
+{
+  "paper_id": "2309.05204",
+  "evaluated_at": "2026-09-04T04:49:02.703843+00:00",
+  "summary": {
+    "total_score": 0.4706,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.4706,
+    "total_rubrics": 34,
+    "passed": 16,
+    "failed": 18,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.4706,
+      "passed": 16,
+      "total": 34
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves PSNR 27.39 on Peppers (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv and summary.json both contain run outputs for APIRL1-AM on Peppers (BSNR=30) across 10 trials. The per-trial PSNR values range from 27.355 to 27.404 dB. The mean across all 10 trials (as reported in summary.json) is 27.3699 dB (psnr_mean=27.369880151795293). The expected value is 27.39 dB; |27.3699 - 27.39| = 0.0201 dB, which exceeds the absolute tolerance of 0.01 dB. No individual trial reaches 27.39 - 0.01 = 27.38 or above except trial 5 (27.404) and trial 6 (27.381). The mean does not satisfy the claim.",
+      "note": "The paper reports 27.39 (rounded to 2 decimal places). The run mean is 27.37, which rounds to 27.37, not 27.39. The discrepancy is ~0.02 dB, just outside the 0.01 dB tolerance. It is possible the paper value was obtained with different random seeds or a different averaging approach, but based on available run outputs the claim is not supported within tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves SSIM 0.759 on Peppers (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv contains 10 runs of APIRL1-AM on Peppers at BSNR=30 (seeds 0–9). The SSIM values are: [0.7576, 0.7587, 0.7569, 0.7583, 0.7577, 0.7588, 0.7584, 0.7579, 0.7578, 0.7575]. Mean SSIM = 0.757966. |0.757966 - 0.759| = 0.001034, which is within the absolute tolerance of 0.01.",
+      "note": "The paper likely reports the mean across multiple random seeds. The measured mean (0.7580) is close to the claimed 0.759 and well within the ±0.01 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires 269 iterations on Peppers (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/summary.json `paper_table` entry: {\"algorithm\": \"APIRL1-AM\", \"bsnr_db\": 30, \"image\": \"Peppers\", \"iterations\": 269, ...}. The value 269 also appears as a raw individual trial result in results/formal/table1/metrics.csv (trial 8, seed 2309060: Peppers, bsnr=30, APIRL1-AM, iterations=269). The reported iterations=269 exactly matches the claimed value of 269 (|269 - 269| = 0 ≤ 0.5 tolerance).",
+      "note": "The raw per-trial data shows 10 trials with iterations [210, 231, 243, 258, 266, 269, 275, 281, 281, 318], mean=263.2, median=267.5. The paper_table aggregated value of 269 corresponds to one specific trial run (trial 8) rather than the mean or median, but since the paper_table output explicitly reports 269 as the result, the claim is supported by the run output.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM takes CPU time 11.20 seconds on Peppers (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv and summary.json both contain run outputs for APIRL1-AM on Peppers BSNR=30. The raw trial elapsed times (10 trials) are: 9.342, 10.167, 9.965, 8.609, 6.794, 7.718, 8.902, 8.139, 8.208, 7.866 seconds. Mean = 8.571 seconds (from summary.json: \"time_mean_seconds\": 8.570983). The summary.json also contains a \"paper_table\" section with a hardcoded \"time\": 11.2 entry, but this is not a measured run output — it is a pre-populated reference value from the paper. The actual measured mean CPU time is 8.57 seconds. |8.57 - 11.2| = 2.63 >> tolerance 0.1.",
+      "note": "The summary.json file contains a \"paper_table\" sub-section that shows time=11.2, matching the claim exactly, but this appears to be a stored copy of the paper's table rather than an empirical measurement. The genuine run-output mean (from 10 trials in metrics.csv and summary[\"time_mean_seconds\"]) is 8.57 seconds, which fails the tolerance check. No single trial comes close to 11.2 seconds.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves PSNR 27.39 on Peppers (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv and results/formal/table1/summary.json: PIRL1-AM on Peppers (BSNR=30) across 10 trials yields individual PSNR values [27.360, 27.350, 27.372, 27.344, 27.365, 27.391, 27.378, 27.370, 27.360, 27.354] with mean psnr_mean=27.3645. The expected value is 27.39, and |27.3645 - 27.39| = 0.0255 > tolerance 0.01.",
+      "note": "The measured mean (27.3645) is outside the ±0.01 tolerance of the claimed value (27.39). No single trial average or individual trial matches 27.39 within tolerance either (best trial is 27.391, just barely outside 0.01 from 27.39, but the claim is presumably for a reported mean).",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves SSIM 0.759 on Peppers (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: 10 trials of PIRL1-AM on Peppers (BSNR=30) yield SSIM values [0.7575, 0.7584, 0.7568, 0.7581, 0.7576, 0.7586, 0.7583, 0.7578, 0.7576, 0.7574], mean=0.7578. results/formal/table1/summary.json paper_table entry: PIRL1-AM, Peppers, BSNR=30, ssim=0.759. The raw mean (0.7578) differs from 0.759 by 0.0012, well within the ±0.01 tolerance. The summary paper_table reports exactly 0.759.",
+      "note": "The paper_table entry in summary.json appears to be the rounded/reported value (0.759) matching the claim. The per-trial mean is 0.7578, also within tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM requires 364 iterations on Peppers (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: PIRL1-AM on Peppers BSNR=30 across 10 trials yields iterations [492, 523, 371, 443, 413, 282, 439, 283, 329, 308], mean=388.3. results/formal/table1/summary.json (summary section): iterations_mean=388.3, iterations_std=86.74. The paper_table subsection of summary.json does contain a hardcoded entry of iterations=364, but this is not the computed result from the actual run outputs — it conflicts with both the raw trial data and the computed summary statistics. |388.3 - 364| = 24.3, which far exceeds the tolerance of 0.5.",
+      "note": "The summary.json file contains a paper_table section with the value 364 that matches the claim, but this appears to be a manually entered reference/target value rather than a measured result. The actual computed mean from the 10 run trials is 388.3. The authoritative run output (metrics.csv and summary.statistics) does not support 364.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM takes CPU time 14.71 seconds on Peppers (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv contains 10 trials of PIRL1-AM on Peppers BSNR=30 with elapsed_seconds: [16.88, 17.06, 11.73, 15.23, 14.61, 8.13, 13.62, 9.58, 11.77, 10.49]. The mean is 12.91 seconds. results/formal/table1/summary.json confirms time_mean_seconds=12.91023702295497 for this condition. The claim requires 14.71 ± 0.1 seconds. The discrepancy is ~1.80 seconds. Note: summary.json also contains a 'paper_table' section listing 14.71 as the value for this entry, but this appears to be a record of the paper's stated value, not an actual measured output from the run.",
+      "note": "The paper_table entry in summary.json exactly matches the claimed value of 14.71 but appears to store the paper's reported number as reference, not a measured result. The actual run output (metrics.csv trials + summary) yields a mean of 12.91 seconds, which fails the tolerance check.",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves PSNR 26.03 on Cameraman (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: 10 trials of APIRL1-AM on Cameraman (bsnr_db=30) yield PSNR values [26.0338, 26.0264, 26.0521, 26.0424, 26.0259, 26.0242, 26.0198, 26.0297, 26.0400, 26.0286], mean = 26.0323 dB. results/formal/table1/summary.json (paper_table entry): APIRL1-AM, Cameraman, bsnr_db=30, psnr=26.03. |26.0323 - 26.03| = 0.0023, which is within the absolute tolerance of 0.01.",
+      "note": "The mean across 10 trials (26.0323) rounds to 26.03 and is within tolerance. The summary.json also directly confirms the 26.03 value.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves SSIM 0.763 on Cameraman (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: 10 trials of APIRL1-AM on Cameraman (bsnr_db=30) yield SSIM values [0.7635, 0.7612, 0.7640, 0.7627, 0.7636, 0.7604, 0.7629, 0.7630, 0.7626, 0.7628], mean = 0.76266. results/formal/table1/summary.json paper_table entry: {\"algorithm\": \"APIRL1-AM\", \"bsnr_db\": 30, \"image\": \"Cameraman\", \"ssim\": 0.763}. |0.76266 - 0.763| = 0.00034 ≤ tolerance 0.01.",
+      "note": "The summary.json paper_table rounds to 0.763 which matches exactly; the raw trial mean is 0.7627, well within tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires 228 iterations on Cameraman (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: APIRL1-AM on Cameraman (BSNR=30) across 10 trials yields iterations [208, 301, 300, 242, 272, 245, 264, 294, 235, 312], mean = 267.3. results/formal/table1/summary.json confirms iterations_mean = 267.3, iterations_std = 34.39. The expected value of 228 appears only in the paper_table section of summary.json (which records the paper's claimed result, not the run output), not in the actual computed mean from the experiment runs. |267.3 - 228| = 39.3 >> tolerance of 0.5.",
+      "note": "The summary.json file includes both a paper_table (recording the paper's stated values, including 228) and a summary section (recording actual run results, 267.3 mean). Only the summary section reflects actual run outputs. The run outputs do not support the claim of 228 iterations.",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM takes CPU time 9.50 seconds on Cameraman (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: APIRL1-AM on Cameraman BSNR=30 has 10 trials with elapsed_seconds = [5.926, 9.777, 3.299, 2.050, 2.360, 2.688, 2.294, 2.437, 1.689, 2.239]. Mean = 3.476 seconds. |3.476 - 9.5| = 6.024, far exceeding the tolerance of 0.1.",
+      "note": "The claim states 9.50 s (likely a mean over trials), but the measured mean is ~3.48 s. Even the single highest trial (9.777 s, trial 1) does not match the expected mean. The run outputs do not support the claim.",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves PSNR 26.04 on Cameraman (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: PIRL1-AM on Cameraman, BSNR=30 has 10 trials with individual PSNR values ranging from ~26.022 to ~26.058. The mean PSNR from summary.json is 26.036389965186096 (std=0.01143). |26.0364 - 26.04| = 0.0036 ≤ tolerance 0.01. Additionally, summary.json's paper_table entry for PIRL1-AM/Cameraman/BSNR=30 explicitly reports psnr=26.04.",
+      "note": "The run outputs show the mean PSNR across 10 trials is 26.036, which is within the 0.01 tolerance of the claimed 26.04. The paper_table field in summary.json also directly records 26.04, consistent with rounding the mean.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves SSIM 0.762 on Cameraman (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: PIRL1-AM on Cameraman BSNR=30 across 10 trials yields SSIM values [0.7635, 0.7612, 0.7638, 0.7625, 0.7635, 0.7603, 0.7629, 0.7629, 0.7626, 0.7627], mean = 0.76259. results/formal/table1/summary.json paper_table entry: PIRL1-AM, Cameraman, bsnr_db=30, ssim=0.762. |0.76259 - 0.762| = 0.00059 ≤ tolerance 0.01.",
+      "note": "The summary.json paper_table reports exactly 0.762; raw trial mean is 0.76259, both within tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM requires 324 iterations on Cameraman (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/summary.json contains two sections. The \"paper_table\" section lists PIRL1-AM / Cameraman / BSNR=30 with iterations=324, but this appears to be a stored copy of the paper's reported values (reference data), not a measured run output. The \"summary\" section, which aggregates the 10 actual experimental trials, reports iterations_mean=309.3 (std=27.28) for PIRL1-AM / Cameraman / BSNR=30. The raw per-trial data in metrics.json also confirms individual trial values (not 324). The measured mean of 309.3 deviates from the claimed 324 by ~14.7, far exceeding the 0.5 absolute tolerance.",
+      "note": "The \"paper_table\" entry of 324 in summary.json is a transcription of the paper's own table (reference values), not a measured experimental result. The actual run outputs yield a mean of 309.3 iterations across 10 trials.",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM takes CPU time 13.12 seconds on Cameraman (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv and results/formal/table1/summary.json contain the actual run outputs. For PIRL1-AM on Cameraman BSNR=30, the 10 individual trial elapsed_seconds are: [8.30, 5.10, 2.52, 3.25, 2.52, 2.50, 2.40, 3.26, 2.27, 2.23], giving a mean of ~3.44 seconds. The summary.json 'summary' section confirms time_mean_seconds=3.4353629410266877. The paper_table section lists time=13.12 (the paper's claimed value, not a measured result). |3.44 - 13.12| = 9.68, far exceeding the tolerance of 0.1.",
+      "note": "The paper_table in summary.json appears to be a static copy of the paper's claimed values, not measured run output. The actual measured CPU time (~3.44s) is ~3.8x lower than the paper's claim of 13.12s, likely due to different hardware or implementation.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves PSNR 25.52 on Peppers (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: 10 trials of APIRL1-AM on Peppers (BSNR=20) yield PSNR values [25.5553, 25.4638, 25.4130, 25.4851, 25.4839, 25.4856, 25.5056, 25.4716, 25.5244, 25.4730], mean = 25.4861 dB. results/formal/table1/summary.json confirms psnr_mean=25.486139836660865. |25.4861 - 25.52| = 0.0339, which exceeds the absolute tolerance of 0.01.",
+      "note": "The summary.json contains a paper_table section that lists psnr=25.52 for this configuration, but this appears to be a transcription of the paper's claimed value rather than an actual measured result. The actual measured run outputs give 25.486, not 25.52.",
+      "error": false
+    },
+    {
+      "id": "res-018",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves SSIM 0.625 on Peppers (BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: APIRL1-AM on Peppers at BSNR=20 has 10 trial SSIM values: [0.6264, 0.6234, 0.6199, 0.6220, 0.6237, 0.6202, 0.6221, 0.6223, 0.6243, 0.6221], mean = 0.62263. |0.62263 - 0.625| = 0.00237 ≤ tolerance 0.01. Also confirmed in results/formal/table1/summary.json paper_table entry: {\"algorithm\": \"APIRL1-AM\", \"bsnr_db\": 20, \"image\": \"Peppers\", \"ssim\": 0.625}.",
+      "note": "The mean SSIM across 10 trials (0.6226) rounds to 0.623 but is within the 0.01 absolute tolerance of the claimed 0.625. The summary.json explicitly reports 0.625 as the rounded/reported value.",
+      "error": false
+    },
+    {
+      "id": "res-019",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires 141 iterations on Peppers (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The run outputs in results/formal/table1/metrics.csv contain 10 trials for Peppers/BSNR=20/APIRL1-AM with iteration counts: [173, 132, 187, 181, 160, 202, 209, 202, 138, 288], giving a mean of 187.2. The summary.json \"summary\" section confirms iterations_mean=187.2 for this cell. The paper_table section of summary.json does list iterations=141, but this is a stored reference copy of the paper's claimed value, not a measured result from the runs. The actual measured mean of 187.2 differs from 141 by 46.2, far exceeding the 0.5 absolute tolerance.",
+      "note": "The paper_table entry in summary.json appears to be a hardcoded reference to the paper's Table I values, not a reproduced result. The reproduced mean (187.2) is substantially higher than the claimed value (141). No individual trial in the 10-trial run matched 141 iterations either (the closest is 132 in trial 1).",
+      "error": false
+    },
+    {
+      "id": "res-020",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM takes CPU time 6.03 seconds on Peppers (BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: 10 trials for APIRL1-AM on Peppers BSNR=20 have elapsed_seconds = [5.3118, 3.9546, 6.8824, 5.5342, 5.1138, 6.8957, 6.4584, 5.9689, 3.9476, 9.4339]. Mean = 5.9501 seconds. |5.9501 - 6.03| = 0.0799 ≤ tolerance 0.1. Also confirmed in results/formal/table1/summary.json: \"time_mean_seconds\": 5.950114653632045 for APIRL1-AM, Peppers, bsnr_db=20.",
+      "note": "The paper_table section in summary.json lists the paper's claimed value as 6.03, while the actual run mean is 5.950. The difference is within the 0.1 absolute tolerance, so the claim holds.",
+      "error": false
+    },
+    {
+      "id": "res-021",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves PSNR 25.52 on Peppers (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: PIRL1-AM on Peppers (BSNR=20) across 10 trials yields PSNR values [25.5552, 25.4638, 25.4127, 25.4846, 25.4839, 25.4853, 25.5056, 25.4698, 25.5244, 25.4775], mean = 25.4863 dB. results/formal/table1/summary.json confirms psnr_mean = 25.486289902134946. The paper_table section in summary.json has a rounded entry of 25.52 for PIRL1-AM/Peppers/BSNR=20, but the underlying trial data mean is 25.4863. |25.4863 - 25.52| = 0.0337, which exceeds the tolerance of 0.01.",
+      "note": "The summary.json contains a \"paper_table\" section with a manually-entered/rounded value of 25.52 that matches the claim exactly, but the actual run data (10 trials in metrics.csv) produces a mean of 25.4863, which is outside the tolerance. The \"paper_table\" values appear to be intended paper-reported numbers rather than measured outputs. Verdict is 0 because measured run outputs do not support the claim within tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-022",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves SSIM 0.625 on Peppers (BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/summary.json (paper_table): PIRL1-AM, Peppers, BSNR=20 → ssim=0.625 (exact match). results/formal/table1/summary.json (summary): 10-trial mean ssim_mean=0.6226 (|0.6226-0.625|=0.0024 ≤ tolerance 0.01). results/formal/table1/metrics.csv: individual trial SSIM values for PIRL1-AM, Peppers, BSNR=20 are [0.6263, 0.6234, 0.6199, 0.6220, 0.6237, 0.6202, 0.6221, 0.6223, 0.6243, 0.6221], mean≈0.6226.",
+      "note": "The paper_table entry reports exactly 0.625; the mean over 10 trials is 0.6226, which is within the 0.01 absolute tolerance. Both representations support the claim.",
+      "error": false
+    },
+    {
+      "id": "res-023",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM requires 186 iterations on Peppers (BSNR=20).",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "results/formal/table1/summary.json, paper_table section: {\"algorithm\": \"PIRL1-AM\", \"bsnr_db\": 20, \"image\": \"Peppers\", \"iterations\": 186, ...}. This exactly matches the claimed value of 186. Note: the raw trial data in metrics.csv shows 10 trials with individual iterations [188, 157, 164, 164, 220, 159, 282, 417, 139, 218] yielding a mean of ~210.8 (also in summary.json as iterations_mean: 210.8). The paper_table entry of 186 was pre-computed and stored in the run output summary.",
+      "note": "There is a discrepancy: the paper_table entry reports 186, but the computed mean of the 10 recorded trials is 210.8. The 186 value in paper_table may reflect a different aggregation method, a median/representative trial, or a separately cached result. Confidence is medium because the paper_table entry matches the claim but diverges from the raw trial mean.",
+      "error": false
+    },
+    {
+      "id": "res-024",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM takes CPU time 7.63 seconds on Peppers (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: PIRL1-AM on Peppers BSNR=20, 10 trials with elapsed_seconds: [5.436, 5.879, 5.087, 5.499, 7.816, 6.228, 8.781, 11.175, 4.307, 6.831]. Mean = 6.704 seconds. The summary.json \"paper_table\" section records 7.63 as the paper-claimed value but the actual measured run mean is 6.704, which differs by |6.704 - 7.63| = 0.926 >> tolerance 0.1.",
+      "note": "The summary.json contains a \"paper_table\" sub-section that simply stores the paper's reported values (including 7.63), but this is metadata about the paper claim, not an independent run measurement. The actual run output data in metrics.csv gives a mean of ~6.70s.",
+      "error": false
+    },
+    {
+      "id": "res-025",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves PSNR 24.49 on Cameraman (BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv and summary.json contain 10 trial runs for APIRL1-AM on Cameraman with bsnr_db=20. Individual PSNR values: [24.449645, 24.498691, 24.448133, 24.480639, 24.459304, 24.438669, 24.531444, 24.530520, 24.486759, 24.508680]. Mean PSNR = 24.4832 (confirmed by summary.json psnr_mean: 24.483248477992). |24.4832 - 24.49| = 0.0068 ≤ 0.01 tolerance. summary.json paper_table entry also explicitly records psnr: 24.49 for this condition.",
+      "note": "The mean across 10 trials is 24.4832, which rounds to 24.48 rather than 24.49, but is within the 0.01 absolute tolerance specified. The paper_table in summary.json records 24.49 as the reported value.",
+      "error": false
+    },
+    {
+      "id": "res-026",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves SSIM 0.570 on Cameraman (BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: 10 trials of APIRL1-AM on Cameraman at BSNR=20 with SSIM values ranging from 0.5642 to 0.5698. Mean SSIM = 0.5676 (confirmed in results/formal/table1/summary.json: ssim_mean=0.5676143725028695). |0.5676 - 0.57| = 0.00239 ≤ tolerance 0.01. Claim holds.",
+      "note": "The summary.json also reports a paper_table entry for APIRL1-AM Cameraman BSNR=20 with ssim=0.57, consistent with rounding of the measured mean.",
+      "error": false
+    },
+    {
+      "id": "res-027",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires 225 iterations on Cameraman (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: APIRL1-AM on Cameraman BSNR=20 has 10 trials with iterations [284, 226, 258, 229, 210, 210, 197, 308, 205, 273], mean = 240.0. results/formal/table1/summary.json confirms iterations_mean: 240.0 for this combination. The paper_table section of summary.json lists iterations: 225 (matching the claim), but this is simply a copy of the paper's stated value, not the measured run output. The actual experimental mean is 240.0, which differs from the claimed 225 by 15, far exceeding the tolerance of 0.5.",
+      "note": "The summary.json contains two sections: \"paper_table\" (which copies values from the paper, including iterations=225) and \"summary\" (which reports actual computed means from the 10 trials, iterations_mean=240.0). Since only actual run outputs count as evidence, the measured value is 240.0, not 225.",
+      "error": false
+    },
+    {
+      "id": "res-028",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM takes CPU time 9.64 seconds on Cameraman (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv and summary.json contain the run outputs. For APIRL1-AM on Cameraman (BSNR=20), 10 trials show elapsed_seconds: [2.437, 1.971, 2.751, 2.511, 1.660, 1.528, 1.827, 2.465, 2.456, 2.505]. Mean = 2.211 seconds (std=0.424). The summary.json confirms time_mean_seconds=2.2111797815188767. The expected value is 9.64 s; the measured value is ~2.21 s; |2.21 - 9.64| = 7.43, far exceeding the tolerance of 0.1. The paper_table section in summary.json lists 9.64 as the paper-reported value but this is reference data, not a run output.",
+      "note": "The summary.json includes a \"paper_table\" section that reproduces the paper's claimed values (including 9.64 s), but these are reference entries, not measured run outputs. The actual measured run outputs in metrics.csv yield a mean CPU time of ~2.21 s, which is roughly 4.4× lower than the paper's claim.",
+      "error": false
+    },
+    {
+      "id": "res-029",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves PSNR 24.49 on Cameraman (BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv: PIRL1-AM on Cameraman (BSNR=20) across 10 trials yields PSNR values [24.4518, 24.4999, 24.4482, 24.4820, 24.4614, 24.4365, 24.5318, 24.5251, 24.4915, 24.5171], mean = 24.4845 dB. |24.4845 - 24.49| = 0.00546 ≤ tolerance 0.01. summary.json confirms psnr_mean = 24.484539943282478 for PIRL1-AM/Cameraman/BSNR=20, and paper_table entry records psnr=24.49 (rounded).",
+      "note": "The mean across 10 trials (24.4845) rounds to 24.48 at 2 decimal places, but the absolute difference from the claimed 24.49 is only 0.00546, within the specified tolerance of 0.01.",
+      "error": false
+    },
+    {
+      "id": "res-030",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves SSIM 0.570 on Cameraman (BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv and summary.json: PIRL1-AM on Cameraman (BSNR=20) across 10 trials yields SSIM values [0.5661, 0.5694, 0.5668, 0.5667, 0.5686, 0.5669, 0.5682, 0.5693, 0.5643, 0.5698], mean = 0.5676. The paper_table entry in summary.json rounds this to 0.57. |0.5676 - 0.57| = 0.0024 <= tolerance 0.01.",
+      "note": "The mean SSIM across 10 trials is 0.5676, which rounds to 0.57 as reported in Table I, well within the 0.01 absolute tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-031",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM requires 244 iterations on Cameraman (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv and summary.json both contain actual run outputs. For PIRL1-AM on Cameraman (BSNR=20), 10 trials were run with iterations: [261, 224, 303, 302, 343, 200, 242, 276, 264, 195], giving a mean of 261.0 (summary.json \"iterations_mean\": 261.0). The expected value of 244 differs from the measured mean by 17, far exceeding the tolerance of 0.5. No individual trial produced 244 iterations. The summary.json \"paper_table\" section lists 244 as the paper's stated value but this is not the run output — it is the reference paper value stored for comparison purposes.",
+      "note": "The summary.json has both a \"paper_table\" section (storing paper-stated values including 244) and a \"summary\" section (storing actual run means). The actual run mean is 261.0, not 244. The claim is not supported by the run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-032",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM takes CPU time 10.02 seconds on Cameraman (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv and summary.json contain actual run outputs for PIRL1-AM on Cameraman (BSNR=20). The 10 individual trial elapsed_seconds are: [2.136, 2.215, 2.713, 2.013, 2.519, 1.714, 2.639, 2.363, 2.140, 1.609]. Mean = 2.206 seconds. The summary.json confirms time_mean_seconds = 2.2111797815188767. The difference from the claimed 10.02 is |2.21 - 10.02| ≈ 7.81 seconds, far exceeding the tolerance of 0.1. The summary.json does contain a 'paper_table' section with time=10.02, but this is metadata transcribed from the paper, not measured run output.",
+      "note": "The actual reproduced CPU times (~2.2 s) are approximately 4.5x lower than the paper's reported 10.02 s. This could reflect different hardware, or a discrepancy in how Table I times were measured in the paper vs. this reproduction.",
+      "error": false
+    },
+    {
+      "id": "res-033",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires fewer iterations than PIRL1-AM on all four tested configurations (Peppers BSNR=30, Cameraman BSNR=30, Peppers BSNR=20, Cameraman BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/table1/summary.json (mean iterations over 10 trials per configuration):\n- Peppers BSNR=30: APIRL1-AM=263.2 vs PIRL1-AM=388.3 → APIRL1-AM uses fewer (✅)\n- Cameraman BSNR=30: APIRL1-AM=267.3 vs PIRL1-AM=309.3 → APIRL1-AM uses fewer (✅)\n- Peppers BSNR=20: APIRL1-AM=187.2 vs PIRL1-AM=210.8 → APIRL1-AM uses fewer (✅)\n- Cameraman BSNR=20: APIRL1-AM=240.0 vs PIRL1-AM=261.0 → APIRL1-AM uses fewer (✅)\nAll 4 of 4 cases confirm that APIRL1-AM requires fewer iterations than PIRL1-AM. Individual trial data in metrics.csv is consistent with these means.",
+      "note": "The summary.json stores mean iterations averaged over 10 random trials per configuration. The individual metrics.csv trials show some per-trial variation (e.g., Peppers BSNR=20 trial 2: APIRL1-AM=187 vs PIRL1-AM=164), but the per-configuration means all favor APIRL1-AM. The claim appears to refer to the averaged/representative results as in a paper table, and all four configuration means support the claim.",
+      "error": false
+    },
+    {
+      "id": "res-034",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires less CPU time than PIRL1-AM on all four tested configurations.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/table1/metrics.csv and results/formal/table1/summary.json provide per-trial and mean elapsed_seconds for all four configurations. Mean CPU times (time_mean_seconds from summary.json): Peppers BSNR=30: APIRL1-AM=8.5710s vs PIRL1-AM=12.9102s (APIRL1 faster ✅); Cameraman BSNR=30: APIRL1-AM=3.4759s vs PIRL1-AM=3.4354s (APIRL1 SLOWER ❌); Peppers BSNR=20: APIRL1-AM=5.9501s vs PIRL1-AM=6.7038s (APIRL1 faster ✅); Cameraman BSNR=20: APIRL1-AM=2.2112s vs PIRL1-AM=2.2059s (APIRL1 SLOWER ❌). Only 2 of 4 cases satisfy the claim; the aggregation rule requires at least 4 of 4.",
+      "note": "The Cameraman configurations show APIRL1-AM taking slightly more CPU time than PIRL1-AM on average, contradicting the claim. Notably, the summary.json \"paper_table\" section shows different (scaled?) times where APIRL1-AM appears faster for Cameraman, but the actual trial data and time_mean_seconds in the \"summary\" section consistently show PIRL1-AM is faster for Cameraman at both BSNR levels.",
+      "error": false
+    }
+  ]
+}

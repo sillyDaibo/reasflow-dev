@@ -1,0 +1,5 @@
+{
+  "archive": "/home/hzy/optirepro/datasets/reproduction/v1/assets/king_county_house_sales/kingcounty.zip",
+  "file": "kingcounty/kc_house_data.csv",
+  "filter": "long <= -121.6"
+}

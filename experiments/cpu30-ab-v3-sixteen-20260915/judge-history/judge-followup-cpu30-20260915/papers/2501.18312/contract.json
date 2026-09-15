@@ -1,0 +1,1349 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2501.18312",
+    "title": "Decentralised convex optimisation with probability-proportional-to-size quantization",
+    "sha256": "65ac545e80f254228f3678602b8c08626f469816c43c524769c2043d8c4e2566"
+  },
+  "algorithm": {
+    "name": "Algorithm 3: Decentralised primal-dual fast gradient method, instantiated with the graph Wasserstein barycenter oracle (dual trajectory)",
+    "citations": [
+      "PDF p. 17, Algorithm 3 (initialization and both graph-coupled update loops)",
+      "PDF pp. 17-18, Section 5, Laplacian W and distributed Wx identity",
+      "PDF pp. 19-20, Section 6.1 and Lemma 3 (semi-discrete barycenter and conjugate gradient)",
+      "PDF pp. 6-7, Section 2, minibatching and PPS Eq. (1), including fixed-uniform interpretation",
+      "PDF p. 11, Section 4.2, admissible alpha and beta coefficient conditions"
+    ],
+    "core_mechanisms": [
+      "barycenter_sample_softmax_and_minibatch",
+      "simplex_pps_empirical_frequencies",
+      "laplacian_neighbor_coupling",
+      "weighted_graph_history",
+      "accelerated_dual_predictor_corrector"
+    ],
+    "assumptions": [
+      "Sources are the specified bounded continuous uniform probability laws; supplied source samples are fixed realizations within their supports. No finite discrete measure is substituted for a required continuous source law.",
+      "Squared distance is the chosen continuous transport cost; gamma is strictly positive. Each sampled oracle lies in the simplex, so its l1 bound is B=1 and its negative part has zero mass.",
+      "The fixed uniforms implement the explicit p. 7 interpretation of PPS random arguments; no random-number generator or seed convention is required.",
+      "W is the complete combinatorial graph Laplacian. Section 5 explicitly identifies the update as Wx; local diagonal contributions are included along with received neighbor messages.",
+      "Algorithm 3 is instantiated using the local Lemma 3 oracle specified in parameters. Local state denotes that oracle argument; the inconsistent rescaled notation across Sections 5 and 6 is not used to assert any additional factor m.",
+      "Only the dual trajectory is required. Algorithm 3 omits x_0 and time subscripts in its primal restoring call; these omissions do not affect the dual recurrence, and no mandatory x observations are invented.",
+      "alpha and beta are supplied positive schedules satisfying the p. 11 inequalities for the stated small cases. These are finite trajectory tests, not claims of the theorem-specific optimal noise schedule or convergence after two iterations."
+    ]
+  },
+  "cases": [
+    {
+      "id": "alg3_two_nodes_binary_support_two_updates",
+      "purpose": "Two distinct bounded continuous source laws activate the barycenter softmax, minibatch-before-PPS, graph disagreement, and two accelerated updates on the smallest connected graph.",
+      "covers": [
+        "barycenter_sample_softmax_and_minibatch",
+        "simplex_pps_empirical_frequencies",
+        "laplacian_neighbor_coupling",
+        "weighted_graph_history",
+        "accelerated_dual_predictor_corrector"
+      ],
+      "inputs": {
+        "W": [
+          [
+            1,
+            -1
+          ],
+          [
+            -1,
+            1
+          ]
+        ],
+        "target_support": [
+          0,
+          1
+        ],
+        "source_space": [
+          0,
+          1
+        ],
+        "source_distributions": [
+          {
+            "law": "uniform",
+            "interval": [
+              0,
+              0.5
+            ]
+          },
+          {
+            "law": "uniform",
+            "interval": [
+              0.5,
+              1
+            ]
+          }
+        ],
+        "source_samples": [
+          [
+            [
+              0.1,
+              0.4
+            ],
+            [
+              0.6,
+              0.9
+            ]
+          ],
+          [
+            [
+              0.2,
+              0.35
+            ],
+            [
+              0.55,
+              0.8
+            ]
+          ],
+          [
+            [
+              0.05,
+              0.3
+            ],
+            [
+              0.7,
+              0.95
+            ]
+          ]
+        ],
+        "pps_uniforms": [
+          [
+            [
+              0.08,
+              0.32,
+              0.6,
+              0.91
+            ],
+            [
+              0.11,
+              0.42,
+              0.72,
+              0.96
+            ]
+          ],
+          [
+            [
+              0.12,
+              0.4,
+              0.74,
+              0.94
+            ],
+            [
+              0.07,
+              0.2,
+              0.3,
+              0.88
+            ]
+          ],
+          [
+            [
+              0.09,
+              0.27,
+              0.58,
+              0.89
+            ],
+            [
+              0.14,
+              0.38,
+              0.68,
+              0.93
+            ]
+          ]
+        ]
+      },
+      "parameters": {
+        "T": 2,
+        "cost": "c(y,xi)=(y-xi)^2",
+        "local_oracle": "For local argument mu and each fixed source sample xi: p_h=exp((mu_h-c(y_h,xi))/gamma)/sum_l exp((mu_l-c(y_l,xi))/gamma); oracle_mean is the arithmetic mean over the r samples.",
+        "pps_rule": "For each public uniform u choose the first one-based h with u < cumulative_sum(oracle_mean)[h]. G[h]=count(h)/M. The vector is positive with l1 mass 1; the negative PPS contribution is zero and requires no negative draw.",
+        "graph_rule": "Use W @ G over node rows, including W_ii; local state is the argument passed directly to the Lemma 3 oracle. No extra m factor is inserted into the stated Algorithm 3 recurrence or oracle.",
+        "array_layout": "All state matrices have node rows and target-support columns. source_samples and pps_uniforms have outer axis oracle call s=0,1,2, then node, then sample. Indices are one-based.",
+        "step_semantics": "step 0 is initialization. step s=1,2 is completion of loop t=s-1. At step s, z_previous denotes z_(s-1); mu_hat denotes hat_mu_s. All nodes evaluate an oracle before graph multiplication in that iteration.",
+        "observation_semantics": "oracle_mean is unquantized minibatch; pps_indices are selected one-based categories; quantized_gradient is G_s; graph_gradient is W G_s; weighted_graph_sum is sum_(k=0)^s alpha_k W G_k; mu is oracle argument; lambda is Algorithm 3 dual output; A is cumulative alpha.",
+        "scope": "Only the explicitly specified Algorithm 3 dual trajectory with the Lemma 3 barycenter oracle is mandatory. x_T recovery, its unspecified x_0/time indexing, objective evaluation, convergence rates, transport solvers, and additional stopping procedures are excluded.",
+        "gamma": 0.5,
+        "alpha": [
+          0.5,
+          0.75,
+          1
+        ],
+        "beta": [
+          16,
+          20,
+          24
+        ],
+        "r": 2,
+        "M": 4
+      },
+      "atol": 1e-10,
+      "rtol": 1e-09,
+      "derivation": "Apply Lemma 3 to each of the two listed samples per node, average the two probability vectors, and apply Eq. (1) with mass 1 and four supplied uniform draws. With H_s=W G_s and S_s=sum_(k=0)^s alpha_k H_k, lambda_0=-alpha_0 H_0/beta_0. For s=1,2 use A_s=A_(s-1)+alpha_s, tau=alpha_s/A_s, z_(s-1)=-S_(s-1)/beta_(s-1), mu_s=tau*z_(s-1)+(1-tau)*lambda_(s-1), then compute the oracle and H_s; hat_mu_s=z_(s-1)-alpha_s H_s/beta_(s-1), lambda_s=tau*hat_mu_s+(1-tau)*lambda_(s-1). All expected entries are evaluated by the accompanying independent Decimal derivation at 60-digit precision. PAPER_BASIS.md records the exact rational graph trace.",
+      "expected": [
+        {
+          "step": 0,
+          "name": "A",
+          "value": 0.5
+        },
+        {
+          "step": 0,
+          "name": "mu",
+          "value": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "oracle_mean",
+          "value": [
+            [
+              0.7153530226231882,
+              0.28464697737681177
+            ],
+            [
+              0.28464697737681177,
+              0.7153530226231882
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              2,
+              2
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              0.75,
+              0.25
+            ],
+            [
+              0.25,
+              0.75
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "graph_gradient",
+          "value": [
+            [
+              0.5,
+              -0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              0.25,
+              -0.25
+            ],
+            [
+              -0.25,
+              0.25
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "lambda",
+          "value": [
+            [
+              -0.015625,
+              0.015625
+            ],
+            [
+              0.015625,
+              -0.015625
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "A",
+          "value": 1.25
+        },
+        {
+          "step": 1,
+          "name": "tau",
+          "value": 0.6
+        },
+        {
+          "step": 1,
+          "name": "z_previous",
+          "value": [
+            [
+              -0.015625,
+              0.015625
+            ],
+            [
+              0.015625,
+              -0.015625
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu",
+          "value": [
+            [
+              -0.015625,
+              0.015625
+            ],
+            [
+              0.015625,
+              -0.015625
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "oracle_mean",
+          "value": [
+            [
+              0.6942255014852202,
+              0.3057744985147797
+            ],
+            [
+              0.3542293579883277,
+              0.6457706420116723
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              2,
+              2
+            ],
+            [
+              1,
+              1,
+              1,
+              2
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              0.5,
+              0.5
+            ],
+            [
+              0.75,
+              0.25
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "graph_gradient",
+          "value": [
+            [
+              -0.25,
+              0.25
+            ],
+            [
+              0.25,
+              -0.25
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              0.0625,
+              -0.0625
+            ],
+            [
+              -0.0625,
+              0.0625
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu_hat",
+          "value": [
+            [
+              -0.00390625,
+              0.00390625
+            ],
+            [
+              0.00390625,
+              -0.00390625
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "lambda",
+          "value": [
+            [
+              -0.00859375,
+              0.00859375
+            ],
+            [
+              0.00859375,
+              -0.00859375
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "A",
+          "value": 2.25
+        },
+        {
+          "step": 2,
+          "name": "tau",
+          "value": 0.4444444444444444
+        },
+        {
+          "step": 2,
+          "name": "z_previous",
+          "value": [
+            [
+              -0.003125,
+              0.003125
+            ],
+            [
+              0.003125,
+              -0.003125
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu",
+          "value": [
+            [
+              -0.006163194444444444,
+              0.006163194444444444
+            ],
+            [
+              0.006163194444444444,
+              -0.006163194444444444
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "oracle_mean",
+          "value": [
+            [
+              0.7698989296468605,
+              0.2301010703531396
+            ],
+            [
+              0.2301010703531396,
+              0.7698989296468605
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              2,
+              2
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              0.75,
+              0.25
+            ],
+            [
+              0.25,
+              0.75
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "graph_gradient",
+          "value": [
+            [
+              0.5,
+              -0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              0.5625,
+              -0.5625
+            ],
+            [
+              -0.5625,
+              0.5625
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu_hat",
+          "value": [
+            [
+              -0.028125,
+              0.028125
+            ],
+            [
+              0.028125,
+              -0.028125
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "lambda",
+          "value": [
+            [
+              -0.017274305555555557,
+              0.017274305555555557
+            ],
+            [
+              0.017274305555555557,
+              -0.017274305555555557
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "alg3_three_node_path_three_support_two_updates",
+      "purpose": "A three-node path with unequal degrees and three support points distinguishes diagonal and non-neighbor graph behavior, categorical PPS, changing beta, weighted graph history and synchronous predictor-corrector updates.",
+      "covers": [
+        "barycenter_sample_softmax_and_minibatch",
+        "simplex_pps_empirical_frequencies",
+        "laplacian_neighbor_coupling",
+        "weighted_graph_history",
+        "accelerated_dual_predictor_corrector"
+      ],
+      "inputs": {
+        "W": [
+          [
+            1,
+            -1,
+            0
+          ],
+          [
+            -1,
+            2,
+            -1
+          ],
+          [
+            0,
+            -1,
+            1
+          ]
+        ],
+        "target_support": [
+          -1,
+          0,
+          1
+        ],
+        "source_space": [
+          -1,
+          1
+        ],
+        "source_distributions": [
+          {
+            "law": "uniform",
+            "interval": [
+              -1,
+              -0.2
+            ]
+          },
+          {
+            "law": "uniform",
+            "interval": [
+              -0.4,
+              0.6
+            ]
+          },
+          {
+            "law": "uniform",
+            "interval": [
+              0.2,
+              1
+            ]
+          }
+        ],
+        "source_samples": [
+          [
+            [
+              -0.9,
+              -0.3
+            ],
+            [
+              -0.25,
+              0.45
+            ],
+            [
+              0.35,
+              0.85
+            ]
+          ],
+          [
+            [
+              -0.7,
+              -0.4
+            ],
+            [
+              -0.1,
+              0.5
+            ],
+            [
+              0.25,
+              0.7
+            ]
+          ],
+          [
+            [
+              -0.85,
+              -0.25
+            ],
+            [
+              -0.3,
+              0.25
+            ],
+            [
+              0.5,
+              0.95
+            ]
+          ]
+        ],
+        "pps_uniforms": [
+          [
+            [
+              0.04,
+              0.22,
+              0.47,
+              0.73,
+              0.96
+            ],
+            [
+              0.03,
+              0.31,
+              0.53,
+              0.78,
+              0.97
+            ],
+            [
+              0.02,
+              0.26,
+              0.51,
+              0.77,
+              0.94
+            ]
+          ],
+          [
+            [
+              0.06,
+              0.24,
+              0.44,
+              0.75,
+              0.95
+            ],
+            [
+              0.08,
+              0.29,
+              0.56,
+              0.81,
+              0.98
+            ],
+            [
+              0.05,
+              0.23,
+              0.49,
+              0.74,
+              0.93
+            ]
+          ],
+          [
+            [
+              0.07,
+              0.28,
+              0.48,
+              0.72,
+              0.97
+            ],
+            [
+              0.04,
+              0.26,
+              0.54,
+              0.76,
+              0.96
+            ],
+            [
+              0.03,
+              0.27,
+              0.52,
+              0.79,
+              0.95
+            ]
+          ]
+        ]
+      },
+      "parameters": {
+        "T": 2,
+        "cost": "c(y,xi)=(y-xi)^2",
+        "local_oracle": "For local argument mu and each fixed source sample xi: p_h=exp((mu_h-c(y_h,xi))/gamma)/sum_l exp((mu_l-c(y_l,xi))/gamma); oracle_mean is the arithmetic mean over the r samples.",
+        "pps_rule": "For each public uniform u choose the first one-based h with u < cumulative_sum(oracle_mean)[h]. G[h]=count(h)/M. The vector is positive with l1 mass 1; the negative PPS contribution is zero and requires no negative draw.",
+        "graph_rule": "Use W @ G over node rows, including W_ii; local state is the argument passed directly to the Lemma 3 oracle. No extra m factor is inserted into the stated Algorithm 3 recurrence or oracle.",
+        "array_layout": "All state matrices have node rows and target-support columns. source_samples and pps_uniforms have outer axis oracle call s=0,1,2, then node, then sample. Indices are one-based.",
+        "step_semantics": "step 0 is initialization. step s=1,2 is completion of loop t=s-1. At step s, z_previous denotes z_(s-1); mu_hat denotes hat_mu_s. All nodes evaluate an oracle before graph multiplication in that iteration.",
+        "observation_semantics": "oracle_mean is unquantized minibatch; pps_indices are selected one-based categories; quantized_gradient is G_s; graph_gradient is W G_s; weighted_graph_sum is sum_(k=0)^s alpha_k W G_k; mu is oracle argument; lambda is Algorithm 3 dual output; A is cumulative alpha.",
+        "scope": "Only the explicitly specified Algorithm 3 dual trajectory with the Lemma 3 barycenter oracle is mandatory. x_T recovery, its unspecified x_0/time indexing, objective evaluation, convergence rates, transport solvers, and additional stopping procedures are excluded.",
+        "gamma": 1,
+        "alpha": [
+          1,
+          0.5,
+          1.25
+        ],
+        "beta": [
+          24,
+          30,
+          36
+        ],
+        "r": 2,
+        "M": 5
+      },
+      "atol": 1e-10,
+      "rtol": 1e-09,
+      "derivation": "Apply Lemma 3 to each of the two listed samples per node and three support points, average the two probability vectors, and apply Eq. (1) with mass 1 and five supplied uniform draws. With H_s=W G_s and S_s=sum_(k=0)^s alpha_k H_k, lambda_0=-alpha_0 H_0/beta_0. For s=1,2 use A_s=A_(s-1)+alpha_s, tau=alpha_s/A_s, z_(s-1)=-S_(s-1)/beta_(s-1), mu_s=tau*z_(s-1)+(1-tau)*lambda_(s-1), then compute the oracle and H_s; hat_mu_s=z_(s-1)-alpha_s H_s/beta_(s-1), lambda_s=tau*hat_mu_s+(1-tau)*lambda_(s-1). All expected entries are evaluated by the accompanying independent Decimal derivation at 60-digit precision. PAPER_BASIS.md records the exact rational graph trace.",
+      "expected": [
+        {
+          "step": 0,
+          "name": "A",
+          "value": 1.0
+        },
+        {
+          "step": 0,
+          "name": "mu",
+          "value": [
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "oracle_mean",
+          "value": [
+            [
+              0.5176214211431943,
+              0.41920755216292427,
+              0.06317102669388142
+            ],
+            [
+              0.2021513931031848,
+              0.5166540407202905,
+              0.2811945661765247
+            ],
+            [
+              0.058393818659976414,
+              0.42222974989803774,
+              0.5193764314419859
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              1,
+              2,
+              3
+            ],
+            [
+              1,
+              2,
+              2,
+              3,
+              3
+            ],
+            [
+              1,
+              2,
+              3,
+              3,
+              3
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              0.6,
+              0.2,
+              0.2
+            ],
+            [
+              0.2,
+              0.4,
+              0.4
+            ],
+            [
+              0.2,
+              0.2,
+              0.6
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "graph_gradient",
+          "value": [
+            [
+              0.4,
+              -0.2,
+              -0.2
+            ],
+            [
+              -0.4,
+              0.4,
+              0.0
+            ],
+            [
+              0.0,
+              -0.2,
+              0.2
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              0.4,
+              -0.2,
+              -0.2
+            ],
+            [
+              -0.4,
+              0.4,
+              0.0
+            ],
+            [
+              0.0,
+              -0.2,
+              0.2
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "lambda",
+          "value": [
+            [
+              -0.016666666666666666,
+              0.008333333333333333,
+              0.008333333333333333
+            ],
+            [
+              0.016666666666666666,
+              -0.016666666666666666,
+              -0.0
+            ],
+            [
+              -0.0,
+              0.008333333333333333,
+              -0.008333333333333333
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "A",
+          "value": 1.5
+        },
+        {
+          "step": 1,
+          "name": "tau",
+          "value": 0.3333333333333333
+        },
+        {
+          "step": 1,
+          "name": "z_previous",
+          "value": [
+            [
+              -0.016666666666666666,
+              0.008333333333333333,
+              0.008333333333333333
+            ],
+            [
+              0.016666666666666666,
+              -0.016666666666666666,
+              -0.0
+            ],
+            [
+              -0.0,
+              0.008333333333333333,
+              -0.008333333333333333
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu",
+          "value": [
+            [
+              -0.016666666666666666,
+              0.008333333333333333,
+              0.008333333333333333
+            ],
+            [
+              0.016666666666666666,
+              -0.016666666666666666,
+              -0.0
+            ],
+            [
+              -0.0,
+              0.008333333333333333,
+              -0.008333333333333333
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "oracle_mean",
+          "value": [
+            [
+              0.48908065922370136,
+              0.4510153628077945,
+              0.05990397796850415
+            ],
+            [
+              0.16360953980075446,
+              0.5141884092915581,
+              0.32220205090768744
+            ],
+            [
+              0.07845591155622157,
+              0.4705917219944588,
+              0.45095236644931963
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              1,
+              2,
+              3
+            ],
+            [
+              1,
+              2,
+              2,
+              3,
+              3
+            ],
+            [
+              1,
+              2,
+              2,
+              3,
+              3
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              0.6,
+              0.2,
+              0.2
+            ],
+            [
+              0.2,
+              0.4,
+              0.4
+            ],
+            [
+              0.2,
+              0.4,
+              0.4
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "graph_gradient",
+          "value": [
+            [
+              0.4,
+              -0.2,
+              -0.2
+            ],
+            [
+              -0.4,
+              0.2,
+              0.2
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              0.6,
+              -0.3,
+              -0.3
+            ],
+            [
+              -0.6,
+              0.5,
+              0.1
+            ],
+            [
+              0.0,
+              -0.2,
+              0.2
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu_hat",
+          "value": [
+            [
+              -0.025,
+              0.0125,
+              0.0125
+            ],
+            [
+              0.025,
+              -0.020833333333333332,
+              -0.004166666666666667
+            ],
+            [
+              -0.0,
+              0.008333333333333333,
+              -0.008333333333333333
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "lambda",
+          "value": [
+            [
+              -0.019444444444444445,
+              0.009722222222222222,
+              0.009722222222222222
+            ],
+            [
+              0.019444444444444445,
+              -0.018055555555555554,
+              -0.001388888888888889
+            ],
+            [
+              -0.0,
+              0.008333333333333333,
+              -0.008333333333333333
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "A",
+          "value": 2.75
+        },
+        {
+          "step": 2,
+          "name": "tau",
+          "value": 0.45454545454545453
+        },
+        {
+          "step": 2,
+          "name": "z_previous",
+          "value": [
+            [
+              -0.02,
+              0.01,
+              0.01
+            ],
+            [
+              0.02,
+              -0.016666666666666666,
+              -0.0033333333333333335
+            ],
+            [
+              -0.0,
+              0.006666666666666667,
+              -0.006666666666666667
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu",
+          "value": [
+            [
+              -0.019696969696969695,
+              0.009848484848484848,
+              0.009848484848484848
+            ],
+            [
+              0.019696969696969695,
+              -0.017424242424242425,
+              -0.0022727272727272726
+            ],
+            [
+              -0.0,
+              0.007575757575757576,
+              -0.007575757575757576
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "oracle_mean",
+          "value": [
+            [
+              0.48593882576065595,
+              0.44137297706928125,
+              0.07268819717006277
+            ],
+            [
+              0.2456842777284597,
+              0.5337245793981753,
+              0.22059114287336498
+            ],
+            [
+              0.03954084854342623,
+              0.3797223769303209,
+              0.5807367745262528
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              1,
+              2,
+              3
+            ],
+            [
+              1,
+              2,
+              2,
+              2,
+              3
+            ],
+            [
+              1,
+              2,
+              3,
+              3,
+              3
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              0.6,
+              0.2,
+              0.2
+            ],
+            [
+              0.2,
+              0.6,
+              0.2
+            ],
+            [
+              0.2,
+              0.2,
+              0.6
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "graph_gradient",
+          "value": [
+            [
+              0.4,
+              -0.4,
+              0.0
+            ],
+            [
+              -0.4,
+              0.8,
+              -0.4
+            ],
+            [
+              0.0,
+              -0.4,
+              0.4
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              1.1,
+              -0.8,
+              -0.3
+            ],
+            [
+              -1.1,
+              1.5,
+              -0.4
+            ],
+            [
+              0.0,
+              -0.7,
+              0.7
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu_hat",
+          "value": [
+            [
+              -0.03666666666666667,
+              0.02666666666666667,
+              0.01
+            ],
+            [
+              0.03666666666666667,
+              -0.05,
+              0.013333333333333334
+            ],
+            [
+              -0.0,
+              0.023333333333333334,
+              -0.023333333333333334
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "lambda",
+          "value": [
+            [
+              -0.02727272727272727,
+              0.017424242424242425,
+              0.009848484848484848
+            ],
+            [
+              0.02727272727272727,
+              -0.03257575757575758,
+              0.005303030303030303
+            ],
+            [
+              -0.0,
+              0.015151515151515152,
+              -0.015151515151515152
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

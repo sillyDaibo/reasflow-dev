@@ -1,0 +1,14 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "original algorithms/data module import",
+    "source": "scaffold_speedup/algorithms.py"
+  },
+  {
+    "kind": "install_package",
+    "package": "scikit-learn",
+    "reason": "original algorithms/data module import",
+    "source": "scaffold_speedup/data.py:9"
+  }
+]

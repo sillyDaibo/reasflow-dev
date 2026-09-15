@@ -1,0 +1,9 @@
+# Paper-only basis: 2503.07594
+
+The sole mathematical source is the benchmark original PDF, identified by SHA256 in contract.json. PDF p.3 Algorithm 1 and Eqs. (4)–(5) were rendered and visually verified. The paper studies existing SCAFFOLD and primarily contributes analysis; this contract makes no claim that it introduces a new optimizer.
+
+The local gradient contains **+ xi**, Eq. (4). The server averages local endpoints and updates each xi by **+(endpoint − new_global)/(gamma H)**, Eq. (5). This is a centered control representation, distinct from the anchor-batch variant in other papers. The control is held fixed through the H local steps and persists across rounds. The paper's state uses zero-sum controls; both initializations satisfy this, and the derivation asserts the invariant exactly after every round.
+
+There are two scalar, two-client cases, each with three communication rounds: H=2 with zero initial controls, and H=3 with nonzero centered controls. Distinct positive quadratic curvatures and offsets induce heterogeneity. Additive independent Rademacher noise has a stated law and fixed public realizations for deterministic execution. These smooth, strongly convex quadratics meet A1–A3 (zero third derivative), have finite heterogeneity at their optimum, and bounded additive noise meets A5. The small gamma=0.05 is below 1/(4L) for L=3; the contract nevertheless tests the exact finite recursion, not any finite-time or stationary-distribution theorem.
+
+Public observations identify all local iterates, raw and corrected gradients, global averages, and controls before and after each round. Expected values use exact Fraction arithmetic, serialized as float64-compatible numbers. The declared 1e-12 absolute/relative tolerance is fixed independently of any reproduction output. No implementation, adapter, prior report, or observed output was read. No convergence rate, stationary bias, or linear-speedup claim is established by these tiny cases.

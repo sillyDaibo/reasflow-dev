@@ -1,0 +1,24 @@
+{
+  "previous_turn_api": {
+    "base_url": "https://llmmelon.cloud/v1",
+    "interface": "OpenAI-compatible chat.completions",
+    "key_source": "/Users/zanehuang/.config/optirepro/judge_api_key",
+    "current_key_sha256_prefix": "c6c6786c005d",
+    "key_plaintext_stored": false,
+    "primary_model": "gpt-5.6-sol",
+    "fallback_attempt": "gpt-4.1-mini",
+    "result": "Primary:503/timeout; fallback:connection failure; no API-generated contract accepted"
+  },
+  "actual_experiment_preparation": "Codex application collaboration Agents; no explicit model override; separate from above API credentials",
+  "expansion": {
+    "additional_papers": [
+      "1904.12017",
+      "2102.06704",
+      "2201.13320"
+    ],
+    "selection": "Available historical Codex/ReasFlow third-run mirrors, diverse central algorithms, selected before new execution results",
+    "total_papers_including_previous": 5,
+    "total_workspaces": 10,
+    "repeats_per_workspace": 3
+  }
+}

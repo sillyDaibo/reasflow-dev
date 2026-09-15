@@ -1,0 +1,1649 @@
+{
+  "paper_id": "2504.19004",
+  "method": "Independent original-paper recurrence; Decimal 100 digits for logistic, Fraction exact for polynomial arithmetic",
+  "numeric_leaves": 128,
+  "all_passed": true,
+  "max_absolute_error": 0.0,
+  "checks": [
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "theta_before",
+        0
+      ],
+      "expected": -0.375,
+      "independent": -0.375,
+      "absolute_error": 0.0,
+      "tolerance": 1.375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "theta_before",
+        1
+      ],
+      "expected": 1.625,
+      "independent": 1.625,
+      "absolute_error": 0.0,
+      "tolerance": 2.625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "theta_before",
+        2
+      ],
+      "expected": 0.53125,
+      "independent": 0.53125,
+      "absolute_error": 0.0,
+      "tolerance": 1.53125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "dual_gradient_before",
+        0
+      ],
+      "expected": -2.0,
+      "independent": -2.0,
+      "absolute_error": 0.0,
+      "tolerance": 3e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "dual_gradient_before",
+        1
+      ],
+      "expected": 1.09375,
+      "independent": 1.09375,
+      "absolute_error": 0.0,
+      "tolerance": 2.09375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "dual_gradient_before",
+        2
+      ],
+      "expected": -0.90625,
+      "independent": -0.90625,
+      "absolute_error": 0.0,
+      "tolerance": 1.90625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "selected_edge"
+      ],
+      "expected": 0.0,
+      "independent": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "dual_objective_before"
+      ],
+      "expected": -1.724609375,
+      "independent": -1.724609375,
+      "absolute_error": 0.0,
+      "tolerance": 2.724609375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "lambda_after",
+        0
+      ],
+      "expected": 0.75,
+      "independent": 0.75,
+      "absolute_error": 0.0,
+      "tolerance": 1.75e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "lambda_after",
+        1
+      ],
+      "expected": -0.25,
+      "independent": -0.25,
+      "absolute_error": 0.0,
+      "tolerance": 1.25e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "lambda_after",
+        2
+      ],
+      "expected": 0.125,
+      "independent": 0.125,
+      "absolute_error": 0.0,
+      "tolerance": 1.125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "theta_after",
+        0
+      ],
+      "expected": -0.125,
+      "independent": -0.125,
+      "absolute_error": 0.0,
+      "tolerance": 1.125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "theta_after",
+        1
+      ],
+      "expected": 1.5,
+      "independent": 1.5,
+      "absolute_error": 0.0,
+      "tolerance": 2.5e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "theta_after",
+        2
+      ],
+      "expected": 0.53125,
+      "independent": 0.53125,
+      "absolute_error": 0.0,
+      "tolerance": 1.53125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        1,
+        "dual_objective_after"
+      ],
+      "expected": -2.177734375,
+      "independent": -2.177734375,
+      "absolute_error": 0.0,
+      "tolerance": 3.177734375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "theta_before",
+        0
+      ],
+      "expected": -0.125,
+      "independent": -0.125,
+      "absolute_error": 0.0,
+      "tolerance": 1.125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "theta_before",
+        1
+      ],
+      "expected": 1.5,
+      "independent": 1.5,
+      "absolute_error": 0.0,
+      "tolerance": 2.5e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "theta_before",
+        2
+      ],
+      "expected": 0.53125,
+      "independent": 0.53125,
+      "absolute_error": 0.0,
+      "tolerance": 1.53125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "dual_gradient_before",
+        0
+      ],
+      "expected": -1.625,
+      "independent": -1.625,
+      "absolute_error": 0.0,
+      "tolerance": 2.625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "dual_gradient_before",
+        1
+      ],
+      "expected": 0.96875,
+      "independent": 0.96875,
+      "absolute_error": 0.0,
+      "tolerance": 1.96875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "dual_gradient_before",
+        2
+      ],
+      "expected": -0.65625,
+      "independent": -0.65625,
+      "absolute_error": 0.0,
+      "tolerance": 1.65625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "selected_edge"
+      ],
+      "expected": 0.0,
+      "independent": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "dual_objective_before"
+      ],
+      "expected": -2.177734375,
+      "independent": -2.177734375,
+      "absolute_error": 0.0,
+      "tolerance": 3.177734375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "lambda_after",
+        0
+      ],
+      "expected": 0.953125,
+      "independent": 0.953125,
+      "absolute_error": 0.0,
+      "tolerance": 1.953125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "lambda_after",
+        1
+      ],
+      "expected": -0.25,
+      "independent": -0.25,
+      "absolute_error": 0.0,
+      "tolerance": 1.25e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "lambda_after",
+        2
+      ],
+      "expected": 0.125,
+      "independent": 0.125,
+      "absolute_error": 0.0,
+      "tolerance": 1.125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "theta_after",
+        0
+      ],
+      "expected": 0.078125,
+      "independent": 0.078125,
+      "absolute_error": 0.0,
+      "tolerance": 1.078125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "theta_after",
+        1
+      ],
+      "expected": 1.3984375,
+      "independent": 1.3984375,
+      "absolute_error": 0.0,
+      "tolerance": 2.3984375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "theta_after",
+        2
+      ],
+      "expected": 0.53125,
+      "independent": 0.53125,
+      "absolute_error": 0.0,
+      "tolerance": 1.53125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        2,
+        "dual_objective_after"
+      ],
+      "expected": -2.47686767578125,
+      "independent": -2.47686767578125,
+      "absolute_error": 0.0,
+      "tolerance": 3.47686767578125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "theta_before",
+        0
+      ],
+      "expected": 0.078125,
+      "independent": 0.078125,
+      "absolute_error": 0.0,
+      "tolerance": 1.078125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "theta_before",
+        1
+      ],
+      "expected": 1.3984375,
+      "independent": 1.3984375,
+      "absolute_error": 0.0,
+      "tolerance": 2.3984375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "theta_before",
+        2
+      ],
+      "expected": 0.53125,
+      "independent": 0.53125,
+      "absolute_error": 0.0,
+      "tolerance": 1.53125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "dual_gradient_before",
+        0
+      ],
+      "expected": -1.3203125,
+      "independent": -1.3203125,
+      "absolute_error": 0.0,
+      "tolerance": 2.3203125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "dual_gradient_before",
+        1
+      ],
+      "expected": 0.8671875,
+      "independent": 0.8671875,
+      "absolute_error": 0.0,
+      "tolerance": 1.8671875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "dual_gradient_before",
+        2
+      ],
+      "expected": -0.453125,
+      "independent": -0.453125,
+      "absolute_error": 0.0,
+      "tolerance": 1.453125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "selected_edge"
+      ],
+      "expected": 1.0,
+      "independent": 1.0,
+      "absolute_error": 0.0,
+      "tolerance": 2e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "dual_objective_before"
+      ],
+      "expected": -2.47686767578125,
+      "independent": -2.47686767578125,
+      "absolute_error": 0.0,
+      "tolerance": 3.47686767578125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "lambda_after",
+        0
+      ],
+      "expected": 0.953125,
+      "independent": 0.953125,
+      "absolute_error": 0.0,
+      "tolerance": 1.953125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "lambda_after",
+        1
+      ],
+      "expected": -0.3583984375,
+      "independent": -0.3583984375,
+      "absolute_error": 0.0,
+      "tolerance": 1.3583984375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "lambda_after",
+        2
+      ],
+      "expected": 0.125,
+      "independent": 0.125,
+      "absolute_error": 0.0,
+      "tolerance": 1.125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "theta_after",
+        0
+      ],
+      "expected": 0.078125,
+      "independent": 0.078125,
+      "absolute_error": 0.0,
+      "tolerance": 1.078125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "theta_after",
+        1
+      ],
+      "expected": 1.34423828125,
+      "independent": 1.34423828125,
+      "absolute_error": 0.0,
+      "tolerance": 2.34423828125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "theta_after",
+        2
+      ],
+      "expected": 0.558349609375,
+      "independent": 0.558349609375,
+      "absolute_error": 0.0,
+      "tolerance": 1.558349609375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        3,
+        "dual_objective_after"
+      ],
+      "expected": -2.5664631128311157,
+      "independent": -2.5664631128311157,
+      "absolute_error": 0.0,
+      "tolerance": 3.5664631128311157e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "theta_before",
+        0
+      ],
+      "expected": 0.078125,
+      "independent": 0.078125,
+      "absolute_error": 0.0,
+      "tolerance": 1.078125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "theta_before",
+        1
+      ],
+      "expected": 1.34423828125,
+      "independent": 1.34423828125,
+      "absolute_error": 0.0,
+      "tolerance": 2.34423828125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "theta_before",
+        2
+      ],
+      "expected": 0.558349609375,
+      "independent": 0.558349609375,
+      "absolute_error": 0.0,
+      "tolerance": 1.558349609375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "dual_gradient_before",
+        0
+      ],
+      "expected": -1.26611328125,
+      "independent": -1.26611328125,
+      "absolute_error": 0.0,
+      "tolerance": 2.26611328125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "dual_gradient_before",
+        1
+      ],
+      "expected": 0.785888671875,
+      "independent": 0.785888671875,
+      "absolute_error": 0.0,
+      "tolerance": 1.785888671875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "dual_gradient_before",
+        2
+      ],
+      "expected": -0.480224609375,
+      "independent": -0.480224609375,
+      "absolute_error": 0.0,
+      "tolerance": 1.480224609375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "selected_edge"
+      ],
+      "expected": 0.0,
+      "independent": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "dual_objective_before"
+      ],
+      "expected": -2.5664631128311157,
+      "independent": -2.5664631128311157,
+      "absolute_error": 0.0,
+      "tolerance": 3.5664631128311157e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "lambda_after",
+        0
+      ],
+      "expected": 1.11138916015625,
+      "independent": 1.11138916015625,
+      "absolute_error": 0.0,
+      "tolerance": 2.11138916015625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "lambda_after",
+        1
+      ],
+      "expected": -0.3583984375,
+      "independent": -0.3583984375,
+      "absolute_error": 0.0,
+      "tolerance": 1.3583984375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "lambda_after",
+        2
+      ],
+      "expected": 0.125,
+      "independent": 0.125,
+      "absolute_error": 0.0,
+      "tolerance": 1.125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "theta_after",
+        0
+      ],
+      "expected": 0.23638916015625,
+      "independent": 0.23638916015625,
+      "absolute_error": 0.0,
+      "tolerance": 1.23638916015625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "theta_after",
+        1
+      ],
+      "expected": 1.265106201171875,
+      "independent": 1.265106201171875,
+      "absolute_error": 0.0,
+      "tolerance": 2.265106201171875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "theta_after",
+        2
+      ],
+      "expected": 0.558349609375,
+      "independent": 0.558349609375,
+      "absolute_error": 0.0,
+      "tolerance": 1.558349609375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "triangle_cycle",
+        4,
+        "dual_objective_after"
+      ],
+      "expected": -2.7480578096583486,
+      "independent": -2.7480578096583486,
+      "absolute_error": 0.0,
+      "tolerance": 3.748057809658348e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "theta_before",
+        0
+      ],
+      "expected": -1.0,
+      "independent": -1.0,
+      "absolute_error": 0.0,
+      "tolerance": 2e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "theta_before",
+        1
+      ],
+      "expected": 2.0,
+      "independent": 2.0,
+      "absolute_error": 0.0,
+      "tolerance": 3e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "theta_before",
+        2
+      ],
+      "expected": 0.5,
+      "independent": 0.5,
+      "absolute_error": 0.0,
+      "tolerance": 1.5e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "theta_before",
+        3
+      ],
+      "expected": -2.0,
+      "independent": -2.0,
+      "absolute_error": 0.0,
+      "tolerance": 3e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "dual_gradient_before",
+        0
+      ],
+      "expected": -3.0,
+      "independent": -3.0,
+      "absolute_error": 0.0,
+      "tolerance": 4e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "dual_gradient_before",
+        1
+      ],
+      "expected": 1.5,
+      "independent": 1.5,
+      "absolute_error": 0.0,
+      "tolerance": 2.5e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "dual_gradient_before",
+        2
+      ],
+      "expected": 2.5,
+      "independent": 2.5,
+      "absolute_error": 0.0,
+      "tolerance": 3.5e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "selected_edge"
+      ],
+      "expected": 0.0,
+      "independent": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "dual_objective_before"
+      ],
+      "expected": 0.0,
+      "independent": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "lambda_after",
+        0
+      ],
+      "expected": 0.375,
+      "independent": 0.375,
+      "absolute_error": 0.0,
+      "tolerance": 1.375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "lambda_after",
+        1
+      ],
+      "expected": 0.0,
+      "independent": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "lambda_after",
+        2
+      ],
+      "expected": 0.0,
+      "independent": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "theta_after",
+        0
+      ],
+      "expected": -0.625,
+      "independent": -0.625,
+      "absolute_error": 0.0,
+      "tolerance": 1.625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "theta_after",
+        1
+      ],
+      "expected": 1.8125,
+      "independent": 1.8125,
+      "absolute_error": 0.0,
+      "tolerance": 2.8125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "theta_after",
+        2
+      ],
+      "expected": 0.5,
+      "independent": 0.5,
+      "absolute_error": 0.0,
+      "tolerance": 1.5e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "theta_after",
+        3
+      ],
+      "expected": -2.0,
+      "independent": -2.0,
+      "absolute_error": 0.0,
+      "tolerance": 3e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        1,
+        "dual_objective_after"
+      ],
+      "expected": -1.01953125,
+      "independent": -1.01953125,
+      "absolute_error": 0.0,
+      "tolerance": 2.01953125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "theta_before",
+        0
+      ],
+      "expected": -0.625,
+      "independent": -0.625,
+      "absolute_error": 0.0,
+      "tolerance": 1.625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "theta_before",
+        1
+      ],
+      "expected": 1.8125,
+      "independent": 1.8125,
+      "absolute_error": 0.0,
+      "tolerance": 2.8125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "theta_before",
+        2
+      ],
+      "expected": 0.5,
+      "independent": 0.5,
+      "absolute_error": 0.0,
+      "tolerance": 1.5e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "theta_before",
+        3
+      ],
+      "expected": -2.0,
+      "independent": -2.0,
+      "absolute_error": 0.0,
+      "tolerance": 3e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "dual_gradient_before",
+        0
+      ],
+      "expected": -2.4375,
+      "independent": -2.4375,
+      "absolute_error": 0.0,
+      "tolerance": 3.4375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "dual_gradient_before",
+        1
+      ],
+      "expected": 1.3125,
+      "independent": 1.3125,
+      "absolute_error": 0.0,
+      "tolerance": 2.3125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "dual_gradient_before",
+        2
+      ],
+      "expected": 2.5,
+      "independent": 2.5,
+      "absolute_error": 0.0,
+      "tolerance": 3.5e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "selected_edge"
+      ],
+      "expected": 2.0,
+      "independent": 2.0,
+      "absolute_error": 0.0,
+      "tolerance": 3e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "dual_objective_before"
+      ],
+      "expected": -1.01953125,
+      "independent": -1.01953125,
+      "absolute_error": 0.0,
+      "tolerance": 2.01953125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "lambda_after",
+        0
+      ],
+      "expected": 0.375,
+      "independent": 0.375,
+      "absolute_error": 0.0,
+      "tolerance": 1.375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "lambda_after",
+        1
+      ],
+      "expected": 0.0,
+      "independent": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "lambda_after",
+        2
+      ],
+      "expected": -0.3125,
+      "independent": -0.3125,
+      "absolute_error": 0.0,
+      "tolerance": 1.3125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "theta_after",
+        0
+      ],
+      "expected": -0.625,
+      "independent": -0.625,
+      "absolute_error": 0.0,
+      "tolerance": 1.625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "theta_after",
+        1
+      ],
+      "expected": 1.8125,
+      "independent": 1.8125,
+      "absolute_error": 0.0,
+      "tolerance": 2.8125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "theta_after",
+        2
+      ],
+      "expected": 0.421875,
+      "independent": 0.421875,
+      "absolute_error": 0.0,
+      "tolerance": 1.421875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "theta_after",
+        3
+      ],
+      "expected": -1.8958333333333333,
+      "independent": -1.8958333333333333,
+      "absolute_error": 0.0,
+      "tolerance": 2.8958333333333334e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        2,
+        "dual_objective_after"
+      ],
+      "expected": -1.7722981770833333,
+      "independent": -1.7722981770833333,
+      "absolute_error": 0.0,
+      "tolerance": 2.772298177083333e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "theta_before",
+        0
+      ],
+      "expected": -0.625,
+      "independent": -0.625,
+      "absolute_error": 0.0,
+      "tolerance": 1.625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "theta_before",
+        1
+      ],
+      "expected": 1.8125,
+      "independent": 1.8125,
+      "absolute_error": 0.0,
+      "tolerance": 2.8125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "theta_before",
+        2
+      ],
+      "expected": 0.421875,
+      "independent": 0.421875,
+      "absolute_error": 0.0,
+      "tolerance": 1.421875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "theta_before",
+        3
+      ],
+      "expected": -1.8958333333333333,
+      "independent": -1.8958333333333333,
+      "absolute_error": 0.0,
+      "tolerance": 2.8958333333333334e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "dual_gradient_before",
+        0
+      ],
+      "expected": -2.4375,
+      "independent": -2.4375,
+      "absolute_error": 0.0,
+      "tolerance": 3.4375e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "dual_gradient_before",
+        1
+      ],
+      "expected": 1.390625,
+      "independent": 1.390625,
+      "absolute_error": 0.0,
+      "tolerance": 2.390625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "dual_gradient_before",
+        2
+      ],
+      "expected": 2.3177083333333335,
+      "independent": 2.3177083333333335,
+      "absolute_error": 0.0,
+      "tolerance": 3.3177083333333336e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "selected_edge"
+      ],
+      "expected": 0.0,
+      "independent": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "dual_objective_before"
+      ],
+      "expected": -1.7722981770833333,
+      "independent": -1.7722981770833333,
+      "absolute_error": 0.0,
+      "tolerance": 2.772298177083333e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "lambda_after",
+        0
+      ],
+      "expected": 0.6796875,
+      "independent": 0.6796875,
+      "absolute_error": 0.0,
+      "tolerance": 1.6796875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "lambda_after",
+        1
+      ],
+      "expected": 0.0,
+      "independent": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "lambda_after",
+        2
+      ],
+      "expected": -0.3125,
+      "independent": -0.3125,
+      "absolute_error": 0.0,
+      "tolerance": 1.3125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "theta_after",
+        0
+      ],
+      "expected": -0.3203125,
+      "independent": -0.3203125,
+      "absolute_error": 0.0,
+      "tolerance": 1.3203125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "theta_after",
+        1
+      ],
+      "expected": 1.66015625,
+      "independent": 1.66015625,
+      "absolute_error": 0.0,
+      "tolerance": 2.66015625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "theta_after",
+        2
+      ],
+      "expected": 0.421875,
+      "independent": 0.421875,
+      "absolute_error": 0.0,
+      "tolerance": 1.421875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "theta_after",
+        3
+      ],
+      "expected": -1.8958333333333333,
+      "independent": -1.8958333333333333,
+      "absolute_error": 0.0,
+      "tolerance": 2.8958333333333334e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        3,
+        "dual_objective_after"
+      ],
+      "expected": -2.445348103841146,
+      "independent": -2.445348103841146,
+      "absolute_error": 0.0,
+      "tolerance": 3.445348103841146e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "theta_before",
+        0
+      ],
+      "expected": -0.3203125,
+      "independent": -0.3203125,
+      "absolute_error": 0.0,
+      "tolerance": 1.3203125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "theta_before",
+        1
+      ],
+      "expected": 1.66015625,
+      "independent": 1.66015625,
+      "absolute_error": 0.0,
+      "tolerance": 2.66015625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "theta_before",
+        2
+      ],
+      "expected": 0.421875,
+      "independent": 0.421875,
+      "absolute_error": 0.0,
+      "tolerance": 1.421875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "theta_before",
+        3
+      ],
+      "expected": -1.8958333333333333,
+      "independent": -1.8958333333333333,
+      "absolute_error": 0.0,
+      "tolerance": 2.8958333333333334e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "dual_gradient_before",
+        0
+      ],
+      "expected": -1.98046875,
+      "independent": -1.98046875,
+      "absolute_error": 0.0,
+      "tolerance": 2.98046875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "dual_gradient_before",
+        1
+      ],
+      "expected": 1.23828125,
+      "independent": 1.23828125,
+      "absolute_error": 0.0,
+      "tolerance": 2.23828125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "dual_gradient_before",
+        2
+      ],
+      "expected": 2.3177083333333335,
+      "independent": 2.3177083333333335,
+      "absolute_error": 0.0,
+      "tolerance": 3.3177083333333336e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "selected_edge"
+      ],
+      "expected": 2.0,
+      "independent": 2.0,
+      "absolute_error": 0.0,
+      "tolerance": 3e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "dual_objective_before"
+      ],
+      "expected": -2.445348103841146,
+      "independent": -2.445348103841146,
+      "absolute_error": 0.0,
+      "tolerance": 3.445348103841146e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "lambda_after",
+        0
+      ],
+      "expected": 0.6796875,
+      "independent": 0.6796875,
+      "absolute_error": 0.0,
+      "tolerance": 1.6796875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "lambda_after",
+        1
+      ],
+      "expected": 0.0,
+      "independent": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "lambda_after",
+        2
+      ],
+      "expected": -0.6022135416666666,
+      "independent": -0.6022135416666666,
+      "absolute_error": 0.0,
+      "tolerance": 1.6022135416666666e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "theta_after",
+        0
+      ],
+      "expected": -0.3203125,
+      "independent": -0.3203125,
+      "absolute_error": 0.0,
+      "tolerance": 1.3203125e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "theta_after",
+        1
+      ],
+      "expected": 1.66015625,
+      "independent": 1.66015625,
+      "absolute_error": 0.0,
+      "tolerance": 2.66015625e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "theta_after",
+        2
+      ],
+      "expected": 0.3494466145833333,
+      "independent": 0.3494466145833333,
+      "absolute_error": 0.0,
+      "tolerance": 1.3494466145833333e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "theta_after",
+        3
+      ],
+      "expected": -1.7992621527777777,
+      "independent": -1.7992621527777777,
+      "absolute_error": 0.0,
+      "tolerance": 2.799262152777778e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "path_restricted",
+        4,
+        "dual_objective_after"
+      ],
+      "expected": -3.092338862242522,
+      "independent": -3.092338862242522,
+      "absolute_error": 0.0,
+      "tolerance": 4.092338862242522e-12,
+      "passed": true
+    }
+  ]
+}

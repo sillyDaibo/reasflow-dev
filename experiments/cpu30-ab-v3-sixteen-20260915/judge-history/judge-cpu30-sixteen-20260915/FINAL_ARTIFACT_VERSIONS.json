@@ -1,0 +1,290 @@
+[
+  {
+    "target": "1811.03761-codex",
+    "workspace_digest": "14c406f945d47687338675f6beec35c133ab7523bd01ac60ce620c9b4bcd186b",
+    "contract_digest": "2727bb440954babcab3c3ada9270b7927b3d2bcb074976c9c9167a921fc75355",
+    "paper_review_sha256": "9f6d4dd92fe2e31356c4916dec604b981875d4e5f9c2f60df4c01a873eabd4b7",
+    "adapter_sha256": "9fa52dfc45b622bdf9e938ca12c71d6f216c9120614357a6fa5e730ae347fa6f",
+    "adapter_review_sha256": "bce6fa3ce23518dae3cd6c849f047519bf86689cbfb1eb49d44e279d8409c534",
+    "environment_actions_sha256": null
+  },
+  {
+    "target": "1811.03761-reasflow",
+    "workspace_digest": "2db70b936737c54b45670419752616ceea83bae233e4f928be62bb0e0173de78",
+    "contract_digest": "2727bb440954babcab3c3ada9270b7927b3d2bcb074976c9c9167a921fc75355",
+    "paper_review_sha256": "9f6d4dd92fe2e31356c4916dec604b981875d4e5f9c2f60df4c01a873eabd4b7",
+    "adapter_sha256": "3084c89c5eddedacba1d0229dc3496d99ba332709c6fd994e16f5159d1fa23e0",
+    "adapter_review_sha256": "e775a41f3f46150847e947f2603c280570980a986db8936d066225aba7057b76",
+    "environment_actions_sha256": null
+  },
+  {
+    "target": "1904.12017-codex",
+    "workspace_digest": "23d7b41b7eecd4a120c43104997dde11a6ff57cf910d19eb008f19a8843f1eea",
+    "contract_digest": "33d242b7451add6d831f5ded3f9a5a3e49579e31ed5a015ec5ec0f28339f8ecb",
+    "paper_review_sha256": "6f5387dea9491a5e82d6f4d6a3e5f99374a5b96072848cb67ac6a78ada0eb025",
+    "adapter_sha256": "adcffd417c1f732ac326bbfa7183ebb15d95cffe5ef9ce87b4799d8e3c0d6e91",
+    "adapter_review_sha256": "7659ccd475fa059b8d7d92e8a728536d518e6eecb6e01c7a68f9eb778fd9d8f7",
+    "environment_actions_sha256": "74a0702ac2be5df23f764fdf933112c799910d9f60c0c450b76757e98a62559c"
+  },
+  {
+    "target": "1904.12017-reasflow",
+    "workspace_digest": "ea548272d9a142f94e72e57a44dbd4af0d705dca37eef2f8eb1ccee7535fcac5",
+    "contract_digest": "33d242b7451add6d831f5ded3f9a5a3e49579e31ed5a015ec5ec0f28339f8ecb",
+    "paper_review_sha256": "6f5387dea9491a5e82d6f4d6a3e5f99374a5b96072848cb67ac6a78ada0eb025",
+    "adapter_sha256": "05a47df1d8f32906f489bf83e254dd3dd16909991f6ef8f125dfa22702d2aa7f",
+    "adapter_review_sha256": "1554d3a11af3b20a9cb77e716d8937cce9dbe838a6bafbeb2db61959ec5792ec",
+    "environment_actions_sha256": "ecf98217e95ef09eddc53f200dfadcec9ba10ddb86d646e9b78b11e39e3acf39"
+  },
+  {
+    "target": "2102.06704-codex",
+    "workspace_digest": "fe47f42853c05b8f3a7396f76f21e5383190ad5e9e3b1575375898f25d216e6c",
+    "contract_digest": "334ce726e729eb2e30fff64ec705a5614147c3b316d9ebecdca7212eae2251ac",
+    "paper_review_sha256": "c934bf87f463f997667e1d33413e0e43fcc532c8942e7afd8e33edd94f7316dc",
+    "adapter_sha256": "3cf4553402b22b12c83366a01ce2cce39f93dec97ba2f9da759d1aa56f88190d",
+    "adapter_review_sha256": "fd97efffbb3b321473d1bdcca1f9f31928607786727654a352673623f183c59b",
+    "environment_actions_sha256": "ff385cd3e540945a0906001ab77dcf61f4e3faf1467d26b18acb7d7011851dc8"
+  },
+  {
+    "target": "2102.06704-reasflow",
+    "workspace_digest": "f93e243d63415b3d1a74ce9cf365a33b3f242c17e5536084a742c41668a21777",
+    "contract_digest": "334ce726e729eb2e30fff64ec705a5614147c3b316d9ebecdca7212eae2251ac",
+    "paper_review_sha256": "c934bf87f463f997667e1d33413e0e43fcc532c8942e7afd8e33edd94f7316dc",
+    "adapter_sha256": "64f2dafabd6eeb7aec1b9ff1f102501c323a629af6690b08d1dd00228ece2b72",
+    "adapter_review_sha256": "8ab62347cfe40c5a0b28f1ea21a313b9f36d8fe50d93ed11a85fb1496f79aece",
+    "environment_actions_sha256": "f9869cc763237118e75648412a8a2b5a6a024ea861be9a9fc67348b5f54d87c7"
+  },
+  {
+    "target": "2111.03820-codex",
+    "workspace_digest": "4d1d9077eeae53dfa61d89e6bf28152270f754f4234d320fb306cbf03e6de34d",
+    "contract_digest": "59b1104693f3a20548e73efd4d1c086d1697967c88c40c0b519e25dbf50c016b",
+    "paper_review_sha256": "c018f1ce8614e3ac03f8e578548a69afec59dfc36acfd2aa03d61205574120eb",
+    "adapter_sha256": "06779bd5675e2e46eb1e6e6e3532e430aa2804324dbf12e96b538bca3a82261e",
+    "adapter_review_sha256": "16455f9e646f6d414321f830b7474c7c0d493db5ab50eb062aaef08f32eae4f1",
+    "environment_actions_sha256": "cf6b1cd4e92bb40f09455be1b08737e264fe50215239fc64b7cbaa30f0621162"
+  },
+  {
+    "target": "2111.03820-reasflow",
+    "workspace_digest": "b7dbc14e0cfa11fe8d2abd04a934b16249e6545387027752753c04bf21240e01",
+    "contract_digest": "59b1104693f3a20548e73efd4d1c086d1697967c88c40c0b519e25dbf50c016b",
+    "paper_review_sha256": "c018f1ce8614e3ac03f8e578548a69afec59dfc36acfd2aa03d61205574120eb",
+    "adapter_sha256": "16e301a0fc00d85d55d786ed053fd4cc539f23411a04cba17cb1f3563d66e3b1",
+    "adapter_review_sha256": "5d7333c53486098a7c120a7f5b79c040931d0dfc3484c400886b896a7bc2f137",
+    "environment_actions_sha256": "c81332cb58546bc60034c5dda3bbf7a328696fc7d9123f868fa4a7926b5448c5"
+  },
+  {
+    "target": "2201.13320-codex",
+    "workspace_digest": "95e9c5e61f2cb08899d56de18c5b6ee73e7c7de5c5ecbe7b7097e57759afce11",
+    "contract_digest": "b1e6284f39678607793c8e8673db75807688156d1800b4fdbd82e5e465541419",
+    "paper_review_sha256": "2db9bd9e673cdac57586428494de6ede3dd3ff6b988811faadc2fc038a0c9ad4",
+    "adapter_sha256": "7b2935aeae1cc55d60b78ff9bcad8e1b9ec6f26cca15748deeb58e7d402fa5d3",
+    "adapter_review_sha256": "4e50580150ebc8bbc9463879b89b77b2b748180d351cbb545be197ca8f36a7e1",
+    "environment_actions_sha256": "fef9823b32ef7e2d658a45f2e69cf7081c90d3c04d49b106811586cb8fc1f588"
+  },
+  {
+    "target": "2201.13320-reasflow",
+    "workspace_digest": "313c9872057bbc4776df9bd9f648d20a411c39dd3d9421d6e485a083ebd9fd03",
+    "contract_digest": "b1e6284f39678607793c8e8673db75807688156d1800b4fdbd82e5e465541419",
+    "paper_review_sha256": "2db9bd9e673cdac57586428494de6ede3dd3ff6b988811faadc2fc038a0c9ad4",
+    "adapter_sha256": "87926725bc34e23ee02ace3c853235537f5cd94798f3fc12f123cd98799acd1e",
+    "adapter_review_sha256": "26d2695172bd8248ed22e6e8263d10917fdeb2389511469a96a849f2acbcb9aa",
+    "environment_actions_sha256": "8148803664af6b9bf6427b80aa24d4b21edd62b3e044d087bcf36cda472b90cc"
+  },
+  {
+    "target": "2207.04555-codex",
+    "workspace_digest": "c8f546b44d94678ba6d16553c80b73e8ac7a5e263fb91b20e81dc0e88035c2c9",
+    "contract_digest": "77de8bac952fb337c8fcff7d9a8428078054eb555d519346b7f7bec311e1c3b8",
+    "paper_review_sha256": "646d7fa5b59152e7befb89cd8a91b33741f6c1dcab8a7b69c522afdea5506700",
+    "adapter_sha256": "782b9eddf550ca1c2a7aae1ac64cc641357a517490fb820cdf1f8aec4c858ebf",
+    "adapter_review_sha256": "7c95f19398799ef08779d16920d4508dc53af358d2744bb2cbdce41ffb286f81",
+    "environment_actions_sha256": "1ed94146763c0ff7959e6f92fb7b061de0025b3db7c4aed8cc2e0ca46facaef6"
+  },
+  {
+    "target": "2207.04555-reasflow",
+    "workspace_digest": "2fab8b5886eaef44557c4feda677246a3f7caa4d50ba9c53ceac59128498c16e",
+    "contract_digest": "77de8bac952fb337c8fcff7d9a8428078054eb555d519346b7f7bec311e1c3b8",
+    "paper_review_sha256": "646d7fa5b59152e7befb89cd8a91b33741f6c1dcab8a7b69c522afdea5506700",
+    "adapter_sha256": "e0c5564cf805511473cc5ac6051fa19cdbf90cbf80a31d6f2afe8ba9b0d4b3ec",
+    "adapter_review_sha256": "127a1c639aeb8f119906b06d2a1865adddea45ec696dd9d1093d69058558ce6b",
+    "environment_actions_sha256": "239e34bba98c45e11ce5f760afaf2387534795b817cdc0cd5749a13146aab066"
+  },
+  {
+    "target": "2212.02387-codex",
+    "workspace_digest": "e486f40d87b2c42fc8c2538c2b934293dac23ecfc78c78b1c14ca815c0e4c768",
+    "contract_digest": "b3016687a92c81b6f373d898e369ea9a0eb3f90392fd150b2cec3adc9a924fb3",
+    "paper_review_sha256": "cb5e12217c65140cf5568b92af087b3f08bc054b161a587bcae5443e995a67d1",
+    "adapter_sha256": "89a91bd0ed6e14aa55d106fd8832e6fee1ff9525ca1345803ffa1ff41926170b",
+    "adapter_review_sha256": "3dd27cd80327ce28d341804661b5bfba1d1b82e441ade2d6cf1145887de91e62",
+    "environment_actions_sha256": null
+  },
+  {
+    "target": "2212.02387-reasflow",
+    "workspace_digest": "b02ac5d778a1bd1cc615c60fb34c32771c059f9a24149e6f290c143b1f049a16",
+    "contract_digest": "b3016687a92c81b6f373d898e369ea9a0eb3f90392fd150b2cec3adc9a924fb3",
+    "paper_review_sha256": "cb5e12217c65140cf5568b92af087b3f08bc054b161a587bcae5443e995a67d1",
+    "adapter_sha256": "4b8c556ef2f30b402bae30c25a2fd867b8dcabaf8b4b8361c203a41d0a5b3abb",
+    "adapter_review_sha256": "abf9208936f4f20c12c81bc7257ecec2caff34eb61f8b86bce167a9ff1522c6c",
+    "environment_actions_sha256": null
+  },
+  {
+    "target": "2306.04961-codex",
+    "workspace_digest": "9b9e5ba4bb38cdebb6d7b68e9249efb1a21202c200a821ef2b0ee90cf4d7ebbe",
+    "contract_digest": "4d76e1598814ca778b9ff211bf1fe382f2491e0e92684df339561e0648b1696a",
+    "paper_review_sha256": "16fe921ff7bb462b6c60f4ed7597b72ef89dd247a5fb9ea2253f961f91ff85b2",
+    "adapter_sha256": "76b8473ede264805792fae24389a677b2eacb4ef2bc1b549d5aaaf95ea66be75",
+    "adapter_review_sha256": "896a2f3cdd18d07cb35439bf6f63f1f2fcd6f34dd3a8a0ef7813c4ff41afbf96",
+    "environment_actions_sha256": "167878d733642ba76c06fbe0abcada0281aace8be684e7629238c3fc7aece3b7"
+  },
+  {
+    "target": "2306.04961-reasflow",
+    "workspace_digest": "b9c3d94a88ccd06945779449c796bc8705b83be2af1047e3db7f873cc3c1d1ae",
+    "contract_digest": "4d76e1598814ca778b9ff211bf1fe382f2491e0e92684df339561e0648b1696a",
+    "paper_review_sha256": "16fe921ff7bb462b6c60f4ed7597b72ef89dd247a5fb9ea2253f961f91ff85b2",
+    "adapter_sha256": "ded8d1962c6640ca721fed98787fd1eacea2b85cecce52d25d44a5130db9df4e",
+    "adapter_review_sha256": "62c241be6483fc2d6cf968f5c7e3f5e10a0b0e3e44839451cc55279fa8ad9f03",
+    "environment_actions_sha256": "5d7f2b2ecb7f78b7b21e68b3c3b77d84d137354725e3f1104a2d2f534c60dd6b"
+  },
+  {
+    "target": "2306.05100-codex",
+    "workspace_digest": "7c369f72e7a93d3fd873e3c74514e862a5eedbe73ed687195330a49fb53cb310",
+    "contract_digest": "71dfa9f5142eb315427a13cbd8b11619669182ac1d3787999bec05c7120edd09",
+    "paper_review_sha256": "456d6d1d044ce110b1a43078baf77b0655720333275a479f7b70f34f77b6fdc9",
+    "adapter_sha256": "8089b9120809269a0ac76532ed1500ca16c37cbf4cc2ce7bd3c52bb2f9d03620",
+    "adapter_review_sha256": "30c4faf79d82b7471d282452eb3c09e80cd89b91117c3bfd57fb54ae5ecf8807",
+    "environment_actions_sha256": "d793ffdb2dbc6b595eebf36d6982f1cd8966bf29d55dc6101d662ad45ada5060"
+  },
+  {
+    "target": "2306.05100-reasflow",
+    "workspace_digest": "fec4282d740118d3af73d08ef4ef5cf5387088e4c216afdfecefc682a1a1b222",
+    "contract_digest": "71dfa9f5142eb315427a13cbd8b11619669182ac1d3787999bec05c7120edd09",
+    "paper_review_sha256": "456d6d1d044ce110b1a43078baf77b0655720333275a479f7b70f34f77b6fdc9",
+    "adapter_sha256": "827c0f59af2351f24f76e3cafed172d4004f89bf4ec3b34ffecd5d9d9f635b8c",
+    "adapter_review_sha256": "077bd199c856d4a965c2881eac0ed4dbb26a2dfa9744d49888017bd70990172e",
+    "environment_actions_sha256": "5dbf8b8172402740352c5479cc2847381e89562f116ed23bcb5dfe8afc4a0ff5"
+  },
+  {
+    "target": "2309.05204-codex",
+    "workspace_digest": "b33ebb1f511e8c75687953be4d784e452f8e1bc6a5ab9aec8c3f39c7aeb16aaf",
+    "contract_digest": "79672c9fb80be2db961eefac7f2f2cb5efb52911bbc06f31173f648e788047a2",
+    "paper_review_sha256": "c2e7219d0c337bd189639f20d9ec8a252b304521e435dcff4489f91044e18179",
+    "adapter_sha256": "5b3726f443ac17a0a0383d6564e5b78458a2fcd8f986bfb3372234b8f331e14f",
+    "adapter_review_sha256": "fc3f877b247b8e782a960c9eaba098e53192f3b42e450a06ba5efde14eed06c9",
+    "environment_actions_sha256": "c7b87d30e4729ac8da5d184a7f03245176601fb10c0dc6afd42c0030bc10f873"
+  },
+  {
+    "target": "2309.05204-reasflow",
+    "workspace_digest": "d1fd6f08fb79a5d6a410e84bf6f95fd4fbc9c01c4550a2c11f0c164463795742",
+    "contract_digest": "79672c9fb80be2db961eefac7f2f2cb5efb52911bbc06f31173f648e788047a2",
+    "paper_review_sha256": "c2e7219d0c337bd189639f20d9ec8a252b304521e435dcff4489f91044e18179",
+    "adapter_sha256": "58e1f8a09b03a92f7352c2694941e8095c84f4b91ea3ca7d090ef0fc1ca96f8a",
+    "adapter_review_sha256": "aa4fa47a221d274cfbbf4edced808122e13467391fde67eaaf86da60caf64d58",
+    "environment_actions_sha256": "2d7708d4cd0391a0be96df40304da0ce3857a16c842b850b7913aaed8b7cb9d8"
+  },
+  {
+    "target": "2310.09804-codex",
+    "workspace_digest": "dd0c1dd40e83d52a9410b5e55f2d9e1b0e907f9f97e2841d10c5f41b6ce1a076",
+    "contract_digest": "6e6be10262dccd3869f00a16c45ab5759c95781e3c8cf2e1716718496a3d5bb9",
+    "paper_review_sha256": "5b447bc1ddc0ceb2f7f5222a404e5ee19f0db7db72a895fc7b2d6ea3ae41de5b",
+    "adapter_sha256": "9e3186590085d8fe7b66f6f5fdd7838077fe7a727c0c864ec1738af5a1963493",
+    "adapter_review_sha256": "37d84fbd323eda7393583bfa973e3c14b1e203b7fb4a8ed938d7ede860eb79fc",
+    "environment_actions_sha256": "6be579c5a08784993235b1e67eb8c548703207ffae9578dabba1c5864421f979"
+  },
+  {
+    "target": "2310.09804-reasflow",
+    "workspace_digest": "c397b95a7ab8d180543645de3530833b74e0ed92b7002c8519731e3ca463c5ed",
+    "contract_digest": "6e6be10262dccd3869f00a16c45ab5759c95781e3c8cf2e1716718496a3d5bb9",
+    "paper_review_sha256": "5b447bc1ddc0ceb2f7f5222a404e5ee19f0db7db72a895fc7b2d6ea3ae41de5b",
+    "adapter_sha256": "bbe3fb709de9b6b28a5328ca36ed781c8f503f18e18d33155a31eb9dddd76580",
+    "adapter_review_sha256": "6b91cae41c98b0cb712ae0661d447435142581d10bc7fa5c935d0121a054be77",
+    "environment_actions_sha256": "b7d399ecbbe8a1a326b3968cdc0c748e9c5688c96d51130a4168b3ddd8b65ecb"
+  },
+  {
+    "target": "2501.04443-codex",
+    "workspace_digest": "c5a106ccb54d8ecd6a722ff2effc233cabf6b1109c20f74e2e9f7551a0b77b05",
+    "contract_digest": "3558d3d9b1c1d602abbafac8032062a018e05d2cf8535428dfbcbf665e52d900",
+    "paper_review_sha256": "146e3c17aa76fa3ebc78c50e95d016f59fc5c09aacc793928786361d2ab8d09a",
+    "adapter_sha256": "355202568e4d0bb1bb59f0b8de3464402c662c8ee67a8f3a7080fb578d59efe9",
+    "adapter_review_sha256": "6c982531cb2c0ff592dfa2e4ae26e66e491dae68e988afc9cbfca472e85a7b26",
+    "environment_actions_sha256": "94c66df3a7ab0e9e61a6fb55ea547e9a55bd69cabbd1d0bfd46fe521bceeb7fa"
+  },
+  {
+    "target": "2501.04443-reasflow",
+    "workspace_digest": "43a950fdcca58feea6d135372f2c3501ac73220b351f07cf0cf86f0149344d6a",
+    "contract_digest": "3558d3d9b1c1d602abbafac8032062a018e05d2cf8535428dfbcbf665e52d900",
+    "paper_review_sha256": "146e3c17aa76fa3ebc78c50e95d016f59fc5c09aacc793928786361d2ab8d09a",
+    "adapter_sha256": "6bfb461b2c55539fd5ec54f5576a41f863358c6f955d520b20ae89bde07371c8",
+    "adapter_review_sha256": "6b328967dbabf9bc8e368f4a2973ccec018f729a5dd6e37b46b428dca0ccfd07",
+    "environment_actions_sha256": "fa50a7697c104f347c7b6f3ad377bd6010edb0e135c972fca80b198a7bd9cfac"
+  },
+  {
+    "target": "2501.09516-codex",
+    "workspace_digest": "71949072f1b4bbab67e59e89df1fb172efbf46bea017b01ca268eb4b7d22e024",
+    "contract_digest": "4eea6b9e967d71cc362e51c693ca5f34d5fc6b2225a782d44d456af6f7eca06d",
+    "paper_review_sha256": "5df0eb25755c3c97dba87243c8eead404653267e57b9cfec8e9e3975ece8543c",
+    "adapter_sha256": "a0cf8e022ae6ad5c0222cabd9d9dd8c8abc882e5528e74639bbf55817adf347e",
+    "adapter_review_sha256": "e047f32429163b13432314f9de53072574a0ba60d3a21a1cb9c59f289c608913",
+    "environment_actions_sha256": "b6a97c10d96bd8d51d1419c3ea000b0161d6bab527e001661c817195e227a3af"
+  },
+  {
+    "target": "2501.09516-reasflow",
+    "workspace_digest": "fca11e005f8fae9f9af5ba2cddb0fa0bb36716f94e0f8e4877b8f07669126484",
+    "contract_digest": "4eea6b9e967d71cc362e51c693ca5f34d5fc6b2225a782d44d456af6f7eca06d",
+    "paper_review_sha256": "5df0eb25755c3c97dba87243c8eead404653267e57b9cfec8e9e3975ece8543c",
+    "adapter_sha256": "f0c43208304401d2cb304fb382aaf12a5ec3b5022e3ef3558d08f4619b6e8ca6",
+    "adapter_review_sha256": "c9be1e4a522d876c67eb15bae42cc25d5840b55b365b6971637ab3f69cef1486",
+    "environment_actions_sha256": "b6a97c10d96bd8d51d1419c3ea000b0161d6bab527e001661c817195e227a3af"
+  },
+  {
+    "target": "2501.18312-codex",
+    "workspace_digest": "efa1eca0bf5ea5a88625843c5bd05c7d580601a67685501c3d7675dd17602622",
+    "contract_digest": "0592dff933d6b75c881e5696d51ef6e73bb3f74a0e52aca5d7bfd032929b0c31",
+    "paper_review_sha256": "d238c71064a0cd9dc0334f9bfec97248e3d34169933af12fbdc1dfe7d9ed759e",
+    "adapter_sha256": "5a8daf8c7efc1b84617a101ef3feeebe839db63538c925fd34f899873dc15b6f",
+    "adapter_review_sha256": "16e1dbc3db9eabf2a8f4fcbcb52187805cafd0a9f1859a5ae78a8864430109f0",
+    "environment_actions_sha256": "3f6d8051ad720ce4ef7baec53ce9d71ba0609a676ee141412b9012aa0d19047d"
+  },
+  {
+    "target": "2501.18312-reasflow",
+    "workspace_digest": "61bfde5b462f93b2409b9fea3a50ecb6e69d1e1e8114580914bbab1cc1f7a9f0",
+    "contract_digest": "0592dff933d6b75c881e5696d51ef6e73bb3f74a0e52aca5d7bfd032929b0c31",
+    "paper_review_sha256": "d238c71064a0cd9dc0334f9bfec97248e3d34169933af12fbdc1dfe7d9ed759e",
+    "adapter_sha256": "abe853ad76bf32d4f3483ac313f62e8c05f38856c5ec3b0d60fc016d8440689d",
+    "adapter_review_sha256": "c2d79597b6638a886569f4965e8df16ac4dc64e1e1c49f423ee9408a2881e4c0",
+    "environment_actions_sha256": "38ffc9b2ad630b98a73b8cd532f6967710313f45b6c7b095cc448528c088d293"
+  },
+  {
+    "target": "2503.07594-codex",
+    "workspace_digest": "dcf3b56f45f797067b134645c5642be7cc0d29d8a6e0c0f940f96df7ece1e4d5",
+    "contract_digest": "b54b4c178f2d9fbd15191a7a96ed13f5cfaf03c91d8f3cf8393dfde4dc2fbddd",
+    "paper_review_sha256": "608ec394e826360fd993097d6b092f436e9747d1686b29e3b072364ec418611f",
+    "adapter_sha256": "813f61c7aff08abcfb7d0106acfac00d899dc9f46f4e5bef33c0e7279d79458a",
+    "adapter_review_sha256": "8e2837f37eebdef8b34b2c32701c71242f2b9ce3e27ff3ba912ffcd978cfe3a7",
+    "environment_actions_sha256": "3427c825618562f402bf43ecfbf08c8c63f1eaede25991cd1749629d3be1a2b0"
+  },
+  {
+    "target": "2503.07594-reasflow",
+    "workspace_digest": "58ff1ce4b7cb268b1c805a34ce9902056dcfdd8e93724f9381f31d75e0cebe58",
+    "contract_digest": "b54b4c178f2d9fbd15191a7a96ed13f5cfaf03c91d8f3cf8393dfde4dc2fbddd",
+    "paper_review_sha256": "608ec394e826360fd993097d6b092f436e9747d1686b29e3b072364ec418611f",
+    "adapter_sha256": "f1c3c8d1f58ce7509b9f5643d21243a2c2f8e3f1bde6f197fdc2328287048f90",
+    "adapter_review_sha256": "7cbfc97623d891273d5e588866465acc7eab3b818dce503a1aaa1a943e595df0",
+    "environment_actions_sha256": "df82dc879c0c2088b618a81900480d40d4191ef36bdd515e0c1f828c40a7c66c"
+  },
+  {
+    "target": "2504.19004-codex",
+    "workspace_digest": "0f4fe5d9a6d52cbd08a4def29dfb444762e4892e2eded7c67e64b63b53a0a526",
+    "contract_digest": "6f9da1df9fea8b1ff8e2372a53f15743b82be8b710ae4c8d1f821f2d41ce831c",
+    "paper_review_sha256": "8cc2cb6226dab6e1783dbc8d956430344f40fb9d0ec5192c8542cc266950c715",
+    "adapter_sha256": "c148940e51a7fd0e8712ca5c020f1e0e7e0a6aa88d21adaefe4e25dd690b7878",
+    "adapter_review_sha256": "78ebb96ebc610b86c7b7aa734b6ca887102e9172e392c60d11e12069c2532707",
+    "environment_actions_sha256": "f2581b3160f8c58f701a72e2a4f127bc8a6dd856f0a6ad16d6722317170f5206"
+  },
+  {
+    "target": "2504.19004-reasflow",
+    "workspace_digest": "b5cdba6ceb08ddfe078ac9eca3a487b2e41d00874e394709d061874f21a1c9cd",
+    "contract_digest": "6f9da1df9fea8b1ff8e2372a53f15743b82be8b710ae4c8d1f821f2d41ce831c",
+    "paper_review_sha256": "8cc2cb6226dab6e1783dbc8d956430344f40fb9d0ec5192c8542cc266950c715",
+    "adapter_sha256": "c810f81230c31b74998da6de6d103b3ed65a45be704bdca44a99ee1172f8a162",
+    "adapter_review_sha256": "410492dcbe9e455b834b826573b485a09bf65660a601a9977897cf0437714aeb",
+    "environment_actions_sha256": "75db632a2bfafb481665d6e7c9bd12138d432e219e10e9073e1cadadda6a69f1"
+  }
+]

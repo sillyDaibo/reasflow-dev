@@ -1,0 +1,1059 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "1904.12017",
+    "title": "A Distributed Method for Fitting Laplacian Regularized Stratified Models",
+    "sha256": "c8df517a9d0fde3ae1359ce97c14513289590549b17364241ca857d2d755a811"
+  },
+  "algorithm": {
+    "name": "Algorithm 4.1: Distributed ADMM for Laplacian regularized stratified models",
+    "citations": [
+      "PDF p.16, Algorithm 4.1, steps 1-4 and zero initialization",
+      "PDF p.16, Eq. (5), regularized Laplacian systems",
+      "PDF p.15, Eq. (4) and proximal splitting",
+      "PDF p.36, Appendix A: proximal definition, sum of squares, l1 norm",
+      "PDF p.37, Appendix A: general Quadratic formula and Poisson negative log likelihood",
+      "PDF p.7, graph Laplacian definition"
+    ],
+    "core_mechanisms": [
+      "local_loss_proximal_update",
+      "local_regularizer_proximal_update",
+      "regularized_laplacian_consensus",
+      "two_scaled_dual_updates"
+    ],
+    "assumptions": [
+      "All tests are synthetic paper-grounded finite convex problems; graph Laplacians are supplied directly. L is K by K, symmetric positive semidefinite, with zero row sums and nonpositive off-diagonal entries; do not rescale L.",
+      "Arrays use node-major K by n layout; rows correspond to the given L order. Apply Eq. (5) independently to each of n columns. No Kronecker flattening convention is needed.",
+      "A quadratic loss input means ell_k(x)=0.5*x^T*Q[k]*x+b[k]^T*x, with constants omitted; Q[k] is n by n and b[k] has n entries. Do not negate b or interpret it as regression targets. The zero Q,b stratum has no local loss.",
+      "Poisson counts[k] is the number N_k of nonnegative integer observations, sums[k] is their sum S_k, and ell_k(x)=N_k*x-S_k*log(x) for scalar x>0. These are sufficient statistics of the explicitly feasible observations in this contract.",
+      "The same local regularizer is used at every node on all n coordinates. ridge means r(x)=coefficient*||x||_2^2/2. l1 means r(x)=coefficient*||x||_1. No unpenalized intercept, normalization by sample count, or extra constraints are added.",
+      "Use the positive lambda as the proximal scale in Algorithm 4.1, equivalently augmented-Lagrangian coefficient 1/(2*lambda); it is the reciprocal of an ADMM rho convention. Start theta, theta_tilde, theta_hat, u and u_tilde at zero and perform exactly four complete iterations. Disable optional penalty adaptation and early stopping.",
+      "Algorithm 4.1 and Eq. (5) are authoritative: use newly computed theta and theta_tilde with old duals on the Eq. (5) RHS, then update each dual. The p.15 unsimplified consensus argmin has stale i superscripts; Eq. (5) resolves the update timing.",
+      "Graph scaling follows the explicit Eq. (5) matrix L+2/lambda*I. The p.7 double-sum Eq. (2) and its following half-quadratic expression have a factor-of-two inconsistency; this contract tests Algorithm 4.1 using its supplied L and does not infer L from Eq. (2).",
+      "Quadratic proximal computations follow the first general quadratic formula on p.37. Its subsequent least-squares example has a sign inconsistency; that example is not used. The general formula also follows directly from the p.36 proximal minimization definition.",
+      "Observe each requested state at the end of the numbered full iteration. The final requested step is a fixed-budget process result, not a claim of asymptotic convergence. Exact or sufficiently accurate proximal and linear-system solves are allowed; CG implementation details are not tested."
+    ]
+  },
+  "cases": [
+    {
+      "id": "correlated_quadratic_ridge",
+      "purpose": "Exercise non-diagonal local Hessians, unequal graph weights, both parameter columns, ridge shrinkage and scaled dual feedback for four full ADMM iterations.",
+      "covers": [
+        "local_loss_proximal_update",
+        "local_regularizer_proximal_update",
+        "regularized_laplacian_consensus",
+        "two_scaled_dual_updates"
+      ],
+      "inputs": {
+        "L": [
+          [
+            1.5,
+            -1,
+            -0.5
+          ],
+          [
+            -1,
+            3,
+            -2
+          ],
+          [
+            -0.5,
+            -2,
+            2.5
+          ]
+        ],
+        "loss": {
+          "type": "quadratic",
+          "Q": [
+            [
+              [
+                2,
+                1
+              ],
+              [
+                1,
+                3
+              ]
+            ],
+            [
+              [
+                1,
+                -0.5
+              ],
+              [
+                -0.5,
+                2
+              ]
+            ],
+            [
+              [
+                3,
+                0.5
+              ],
+              [
+                0.5,
+                1
+              ]
+            ]
+          ],
+          "b": [
+            [
+              -3,
+              1
+            ],
+            [
+              1,
+              -2
+            ],
+            [
+              -1,
+              -4
+            ]
+          ]
+        },
+        "regularizer": {
+          "type": "ridge",
+          "coefficient": 0.75
+        }
+      },
+      "parameters": {
+        "lambda": 0.5,
+        "parameter_dimension": 2,
+        "iterations": 4,
+        "initialization": "all five K by n state arrays are zero",
+        "penalty_adaptation": false,
+        "early_stopping": false,
+        "linear_solve": "Solve Eq. (5) to numerical accuracy; solver choice is unrestricted.",
+        "observations": "At end of complete iteration s, theta is loss proximal state, theta_tilde regularizer proximal state, theta_hat graph consensus, u and u_tilde the newly updated scaled dual states. Shapes are K by n, including n=1."
+      },
+      "atol": 1e-09,
+      "rtol": 1e-08,
+      "derivation": "Use Appendix A p.37 general quadratic formula: theta_k=(I+lambda*Q_k)^(-1)(theta_hat_old_k-u_old_k-lambda*b_k). Q matrices are symmetric positive definite. Appendix A p.36 gives theta_tilde=(theta_hat_old-u_tilde_old)/(1+lambda*0.75). For each of 2 columns solve (L+4I)theta_hat=2*(theta+u_old+theta_tilde+u_tilde_old); update both duals by Algorithm 4.1. Repeat four times from zero using exact rational arithmetic. All five states at iterations 1, 2 and 4 are recorded; iteration 4 is the final fixed-budget iterate, not a converged optimum. Independent floating-point KKT checks agree within 2e-13 absolute/relative tolerance. See derive_contract.py for complete independent arithmetic.",
+      "expected": [
+        {
+          "step": 1,
+          "name": "theta",
+          "value": [
+            [
+              0.8421052631578947,
+              -0.3684210526315789
+            ],
+            [
+              -0.2553191489361702,
+              0.46808510638297873
+            ],
+            [
+              0.06779661016949153,
+              1.3220338983050848
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_tilde",
+          "value": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_hat",
+          "value": [
+            [
+              0.30647115743085834,
+              -0.04135457748312128
+            ],
+            [
+              -0.018058525656886967,
+              0.26658030470061816
+            ],
+            [
+              0.038878730421636656,
+              0.4856232488107454
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u",
+          "value": [
+            [
+              0.5356341057270364,
+              -0.32706647514845766
+            ],
+            [
+              -0.23726062327928324,
+              0.2015048016823606
+            ],
+            [
+              0.028917879747854865,
+              0.8364106494943393
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u_tilde",
+          "value": [
+            [
+              -0.30647115743085834,
+              0.04135457748312128
+            ],
+            [
+              0.018058525656886967,
+              -0.26658030470061816
+            ],
+            [
+              -0.038878730421636656,
+              -0.4856232488107454
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta",
+          "value": [
+            [
+              0.6914182485109235,
+              -0.22399889063605014
+            ],
+            [
+              -0.10053682689383593,
+              0.5199706481473992
+            ],
+            [
+              0.09563067828652777,
+              1.0835366198298495
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_tilde",
+          "value": [
+            [
+              0.4457762289903394,
+              -0.06015211270272187
+            ],
+            [
+              -0.026266946410017408,
+              0.3877531704736264
+            ],
+            [
+              0.05655088061328969,
+              0.706361089179266
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_hat",
+          "value": [
+            [
+              0.5035871837971571,
+              -0.05096954056275079
+            ],
+            [
+              -0.003669629172492147,
+              0.4610818551177396
+            ],
+            [
+              0.08136857692394855,
+              0.7966229475906957
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u",
+          "value": [
+            [
+              0.7234651704408028,
+              -0.500095825221757
+            ],
+            [
+              -0.33412782100062705,
+              0.2603935947120203
+            ],
+            [
+              0.04317998111043409,
+              1.123324321733493
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u_tilde",
+          "value": [
+            [
+              -0.36428211223767604,
+              0.032172005343150206
+            ],
+            [
+              -0.004538791580638293,
+              -0.33990898934473135
+            ],
+            [
+              -0.06369642673229553,
+              -0.5758851072221751
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta",
+          "value": [
+            [
+              0.6994087303533727,
+              -0.1185257283816349
+            ],
+            [
+              0.03660331561832235,
+              0.6656557718204975
+            ],
+            [
+              0.11521388911094277,
+              1.1548557139327253
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_tilde",
+          "value": [
+            [
+              0.7092565566282286,
+              -0.05424102170227994
+            ],
+            [
+              0.03274428902404456,
+              0.6826275071506602
+            ],
+            [
+              0.1335297732335896,
+              1.1345899489605678
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_hat",
+          "value": [
+            [
+              0.6875897777872474,
+              -0.051059196737855965
+            ],
+            [
+              0.04367406417666921,
+              0.6726140144715365
+            ],
+            [
+              0.13211443502033368,
+              1.1109262781565874
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u",
+          "value": [
+            [
+              0.7933260175350241,
+              -0.672294565035448
+            ],
+            [
+              -0.3750034170594868,
+              0.26150235709261294
+            ],
+            [
+              0.01905521898246833,
+              1.2740242670123882
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u_tilde",
+          "value": [
+            [
+              -0.3324993250380065,
+              0.01996159070714095
+            ],
+            [
+              -0.035394810589466745,
+              -0.33797801517296777
+            ],
+            [
+              -0.0694836838305323,
+              -0.5452156346037264
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "empty_node_l1_path",
+      "purpose": "Exercise a no-data middle stratum, propagation across unequal edges, positive and negative soft-threshold branches, zero coordinates and dual feedback for four full iterations.",
+      "covers": [
+        "local_loss_proximal_update",
+        "local_regularizer_proximal_update",
+        "regularized_laplacian_consensus",
+        "two_scaled_dual_updates"
+      ],
+      "inputs": {
+        "L": [
+          [
+            1,
+            -1,
+            0
+          ],
+          [
+            -1,
+            3,
+            -2
+          ],
+          [
+            0,
+            -2,
+            2
+          ]
+        ],
+        "loss": {
+          "type": "quadratic",
+          "Q": [
+            [
+              [
+                2,
+                0
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                3
+              ]
+            ]
+          ],
+          "b": [
+            [
+              -4,
+              1
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              -3
+            ]
+          ]
+        },
+        "regularizer": {
+          "type": "l1",
+          "coefficient": 0.2
+        }
+      },
+      "parameters": {
+        "lambda": 1.0,
+        "parameter_dimension": 2,
+        "iterations": 4,
+        "initialization": "all five K by n state arrays are zero",
+        "penalty_adaptation": false,
+        "early_stopping": false,
+        "linear_solve": "Solve Eq. (5) to numerical accuracy; solver choice is unrestricted.",
+        "observations": "At end of complete iteration s, theta is loss proximal state, theta_tilde regularizer proximal state, theta_hat graph consensus, u and u_tilde the newly updated scaled dual states. Shapes are K by n, including n=1."
+      },
+      "atol": 1e-09,
+      "rtol": 1e-08,
+      "derivation": "Use the general quadratic proximal formula, with Q_2=0 and b_2=0 giving identity loss proximal at the no-data node. Apply elementwise soft-threshold to theta_hat_old-u_tilde_old at threshold 0.2. For each column solve (L+2I)theta_hat=theta+u_old+theta_tilde+u_tilde_old; update each scaled dual by its own proximal-minus-consensus residual. Repeat four times using exact rational arithmetic; the node with no data is updated by graph coupling. All five states at iterations 1, 2 and 4 are recorded; iteration 4 is the final fixed-budget iterate, not a converged optimum. Independent floating-point KKT checks agree within 2e-13 absolute/relative tolerance. See derive_contract.py for complete independent arithmetic.",
+      "expected": [
+        {
+          "step": 1,
+          "name": "theta",
+          "value": [
+            [
+              1.3333333333333333,
+              -0.5
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              -1.0,
+              0.75
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_tilde",
+          "value": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_hat",
+          "value": [
+            [
+              0.4393939393939394,
+              -0.14772727272727273
+            ],
+            [
+              -0.015151515151515152,
+              0.056818181818181816
+            ],
+            [
+              -0.25757575757575757,
+              0.2159090909090909
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u",
+          "value": [
+            [
+              0.8939393939393939,
+              -0.3522727272727273
+            ],
+            [
+              0.015151515151515152,
+              -0.056818181818181816
+            ],
+            [
+              -0.7424242424242424,
+              0.5340909090909091
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u_tilde",
+          "value": [
+            [
+              -0.4393939393939394,
+              0.14772727272727273
+            ],
+            [
+              0.015151515151515152,
+              -0.056818181818181816
+            ],
+            [
+              0.25757575757575757,
+              -0.2159090909090909
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta",
+          "value": [
+            [
+              1.1818181818181819,
+              -0.3977272727272727
+            ],
+            [
+              -0.030303030303030304,
+              0.11363636363636363
+            ],
+            [
+              -0.7575757575757576,
+              0.6704545454545454
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_tilde",
+          "value": [
+            [
+              0.6787878787878788,
+              -0.09545454545454546
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              -0.3151515151515151,
+              0.2318181818181818
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_hat",
+          "value": [
+            [
+              0.7710743801652893,
+              -0.19824380165289257
+            ],
+            [
+              -0.001928374655647383,
+              0.10299586776859504
+            ],
+            [
+              -0.39035812672176307,
+              0.3566115702479339
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u",
+          "value": [
+            [
+              1.3046831955922864,
+              -0.5517561983471074
+            ],
+            [
+              -0.013223140495867768,
+              -0.04617768595041322
+            ],
+            [
+              -1.109641873278237,
+              0.8479338842975207
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u_tilde",
+          "value": [
+            [
+              -0.5316804407713499,
+              0.2505165289256198
+            ],
+            [
+              0.017079889807162536,
+              -0.15981404958677686
+            ],
+            [
+              0.3327823691460055,
+              -0.34070247933884296
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta",
+          "value": [
+            [
+              1.1902454295016278,
+              -0.30532963936889557
+            ],
+            [
+              0.03213540362300693,
+              0.18651389932381668
+            ],
+            [
+              -0.6025377744386009,
+              0.6213772539444027
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_tilde",
+          "value": [
+            [
+              1.2598088321228817,
+              -0.28741547708489856
+            ],
+            [
+              0.0,
+              0.18651389932381668
+            ],
+            [
+              -0.5647174221554386,
+              0.6040007513148009
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_hat",
+          "value": [
+            [
+              1.158398219611593,
+              -0.26214259186530975
+            ],
+            [
+              0.024802305549863776,
+              0.19390186377296634
+            ],
+            [
+              -0.5257332908347183,
+              0.5710710718188649
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u",
+          "value": [
+            [
+              1.4765525275292368,
+              -0.6753574081346903
+            ],
+            [
+              -0.009698791066184004,
+              -0.049146980226760464
+            ],
+            [
+              -1.3492667091652817,
+              1.0451033271292944
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u_tilde",
+          "value": [
+            [
+              -0.34295661346750755,
+              0.2193129524964142
+            ],
+            [
+              -0.022825930226381016,
+              -0.24914698022676046
+            ],
+            [
+              0.24819551639611745,
+              -0.29076491103749746
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "poisson_ridge_graph",
+      "purpose": "Exercise strictly positive nonlinear Poisson proximal minimizers with unequal sample counts, a coupled three-node graph, ridge shrinkage and dual feedback for four full iterations.",
+      "covers": [
+        "local_loss_proximal_update",
+        "local_regularizer_proximal_update",
+        "regularized_laplacian_consensus",
+        "two_scaled_dual_updates"
+      ],
+      "inputs": {
+        "L": [
+          [
+            2,
+            -1.5,
+            -0.5
+          ],
+          [
+            -1.5,
+            2.5,
+            -1
+          ],
+          [
+            -0.5,
+            -1,
+            1.5
+          ]
+        ],
+        "loss": {
+          "type": "poisson",
+          "counts": [
+            2,
+            1,
+            3
+          ],
+          "sums": [
+            4,
+            3,
+            2
+          ]
+        },
+        "regularizer": {
+          "type": "ridge",
+          "coefficient": 0.5
+        }
+      },
+      "parameters": {
+        "lambda": 2.0,
+        "parameter_dimension": 1,
+        "iterations": 4,
+        "initialization": "all five K by n state arrays are zero",
+        "penalty_adaptation": false,
+        "early_stopping": false,
+        "linear_solve": "Solve Eq. (5) to numerical accuracy; solver choice is unrestricted.",
+        "observations": "At end of complete iteration s, theta is loss proximal state, theta_tilde regularizer proximal state, theta_hat graph consensus, u and u_tilde the newly updated scaled dual states. Shapes are K by n, including n=1."
+      },
+      "atol": 1e-09,
+      "rtol": 1e-08,
+      "derivation": "For each node v=theta_hat_old-u_old, Appendix A p.37 gives theta=(v-lambda*N+sqrt((v-lambda*N)^2+4*lambda*S))/2. All N and S are positive; for example underlying records may be [1,3], [3], and [0,1,1]. Ridge prox divides theta_hat_old-u_tilde_old by 2. Solve (L+I)theta_hat=(theta+u_old+theta_tilde+u_tilde_old)/2; update both scaled duals. Repeat four times in Decimal precision 70. Independently solve each Poisson proximal first-order equation N-S/theta+(theta-v)/lambda=0 by bisection and the graph system with NumPy. All five states at iterations 1, 2 and 4 are recorded; iteration 4 is the final fixed-budget iterate, not a converged optimum. Independent floating-point KKT checks agree within 2e-13 absolute/relative tolerance. See derive_contract.py for complete independent arithmetic.",
+      "expected": [
+        {
+          "step": 1,
+          "name": "theta",
+          "value": [
+            [
+              1.4641016151377546
+            ],
+            [
+              1.6457513110645905
+            ],
+            [
+              0.6055512754639893
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_tilde",
+          "value": [
+            [
+              0.0
+            ],
+            [
+              0.0
+            ],
+            [
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_hat",
+          "value": [
+            [
+              0.6658777781836089
+            ],
+            [
+              0.6696703656571704
+            ],
+            [
+              0.5221539569923879
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u",
+          "value": [
+            [
+              0.7982238369541457
+            ],
+            [
+              0.9760809454074202
+            ],
+            [
+              0.08339731847160146
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u_tilde",
+          "value": [
+            [
+              -0.6658777781836089
+            ],
+            [
+              -0.6696703656571704
+            ],
+            [
+              -0.5221539569923879
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta",
+          "value": [
+            [
+              1.4365503378475906
+            ],
+            [
+              1.5541702733956917
+            ],
+            [
+              0.6445581585387858
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_tilde",
+          "value": [
+            [
+              0.6658777781836089
+            ],
+            [
+              0.6696703656571704
+            ],
+            [
+              0.5221539569923879
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_hat",
+          "value": [
+            [
+              0.9979974699970636
+            ],
+            [
+              1.0023588399350456
+            ],
+            [
+              0.7461341253755084
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u",
+          "value": [
+            [
+              1.2367767048046725
+            ],
+            [
+              1.527892378868066
+            ],
+            [
+              -0.018178648365121102
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u_tilde",
+          "value": [
+            [
+              -0.9979974699970636
+            ],
+            [
+              -1.0023588399350456
+            ],
+            [
+              -0.7461341253755084
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta",
+          "value": [
+            [
+              1.398497022812909
+            ],
+            [
+              1.4510599499708947
+            ],
+            [
+              0.7021957363532675
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_tilde",
+          "value": [
+            [
+              1.1649165049987198
+            ],
+            [
+              1.168551841021403
+            ],
+            [
+              0.8320806117842326
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_hat",
+          "value": [
+            [
+              1.249794624046086
+            ],
+            [
+              1.2522840609469112
+            ],
+            [
+              0.8565721484777161
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u",
+          "value": [
+            [
+              1.63554878891198
+            ],
+            [
+              2.0511761965877775
+            ],
+            [
+              -0.3280741520290441
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u_tilde",
+          "value": [
+            [
+              -1.249794624046086
+            ],
+            [
+              -1.2522840609469112
+            ],
+            [
+              -0.8565721484777161
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,365 @@
+{
+  "paper_id": "2504.19004",
+  "evaluated_at": "2026-09-04T12:20:01.967483+00:00",
+  "summary": {
+    "total_score": 0.4146,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.4146,
+    "total_rubrics": 30,
+    "passed": 12,
+    "failed": 18,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.4545,
+      "passed": 5,
+      "total": 11
+    },
+    "secondary": {
+      "score": 0.3889,
+      "passed": 7,
+      "total": 18
+    },
+    "tertiary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In all cases, 1 ≤ ρ_G/ρ_U ≤ N_max.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Run outputs found in results/formal/decentralized_nmax/metrics.csv and results/formal/parallel_nmax/metrics.csv. The ratio ρ_G/ρ_U is proxied by final_comm(SGS-CD)/final_comm(SU-CD), where SGS-CD is the Gauss-Southwell (greedy) variant and SU-CD is the uniform variant.\n\nDECENTRALIZED (N_max = degree):\n- degree=8, N_max=8, all 3 seeds: SGS-CD comm=54000, SU-CD comm=12000 → ratio=4.50 → 1 ≤ 4.50 ≤ 8 ✓\n- degree=12, N_max=12, all 3 seeds: SGS-CD comm=78000, SU-CD comm=12000 → ratio=6.50 → 1 ≤ 6.50 ≤ 12 ✓\n\nPARALLEL DISTRIBUTED (N_max = degree):\n- degree=4 (n=24), N_max=4, all 3 seeds: SGS-CD comm=50000, SU-CD comm=20000 → ratio=2.50 → 1 ≤ 2.50 ≤ 4 ✓\n- degree=8 (n=12), N_max=8, all 3 seeds: SGS-CD comm=90000, SU-CD comm=20000 → ratio=4.50 → 1 ≤ 4.50 ≤ 8 ✓\n\nAll 12 configurations across 4 settings satisfy 1 ≤ ρ_G/ρ_U ≤ N_max.",
+      "note": "The ratio ρ_G/ρ_U is inferred from final_comm counts (total communications to reach convergence), which is the natural output representation for this quantity. The run log confirms both experiments completed (timestamps in run.log). The parallel experiment config lists settings [[12,8],[24,4]] = [n_nodes, degree], and N_max=degree (4 or 8) matches the claim's stated configurations.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The ratio ρ_G/ρ_U increases approximately in the same proportion as N_max for the decentralized setting, i.e., the speedup of SGS-CD compared to SU-CD increases linearly with N_max.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/decentralized_nmax/curves.csv (log-linear rate fits on non-zero tail of each replicate) and metrics.csv:\n- N_max=8 (degree=8): SGS-CD mean rate ≈ 0.008742, SU-CD mean rate ≈ 0.003494 → ρ_G/ρ_U ≈ 2.502\n- N_max=12 (degree=12): SGS-CD mean rate ≈ 0.009537, SU-CD mean rate ≈ 0.003838 → ρ_G/ρ_U ≈ 2.485\n\nThe claim requires ρ_G/ρ_U to scale approximately linearly with N_max, so the ratio at N_max=12 should be ≈ 1.5× the ratio at N_max=8 (since 12/8=1.5). The observed ratio of ratios is 2.485/2.502 ≈ 0.993 — essentially flat (less than 1% change), not a ≈50% increase. The run outputs directly contradict the claimed linear scaling of the speedup with N_max in the decentralized setting.",
+      "note": "SGS-CD converges to machine precision (gap=0) for all seeds and both degrees, so the fitted rates come from the middle portion of the convergence curve where gap>0. The CLAIM_RESULTS.json itself notes 'a precise Nmax ratio is not identifiable for every seed' for this experiment (claim C2-gs-speedup-nmax, status 'partially_reproduced'). The run outputs simply do not show the claimed proportional increase.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the parallel distributed setting, SGS-CD achieves the maximum speedup of N_max, i.e., ρ_G/ρ_U is approximately equal to N_max.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/parallel_nmax/curves.csv, fitting log-linear decay rates (slope of log-gap vs iteration) over the convergence window:\n- n=12, d=8 (N_max=8): SGS-CD rates=[0.03326, 0.03621, 0.02916], mean=0.03288; SU-CD rates=[0.01403, 0.01352, 0.00824], mean=0.01193 → ratio ρ_G/ρ_U = 2.76 vs expected N_max=8\n- n=24, d=4 (N_max=4): SGS-CD rates=[0.01865, 0.02187, 0.00546], mean=0.01533; SU-CD rates=[0.00586, 0.00825, 0.00124], mean=0.00511 → ratio ρ_G/ρ_U = 3.00 vs expected N_max=4\nThe CLAIM_RESULTS.json also marks this claim as \"partially_reproduced\", noting \"Some long runs reach machine precision, so a precise Nmax ratio is not identifiable for every seed.\" Neither N_max=4 nor N_max=8 is achieved by the measured ratio.",
+      "note": "The convergence rates fitted here span the range 1e-12 to 1e-2 in relative gap. Many replicates converge to machine precision (1e-15) within the 10000-step budget, making rate estimation from later iterations unreliable. The third replicate for n=24 SGS-CD barely converged (rate=0.00546) which pulls down the mean. However, even ignoring that outlier (mean ~0.020), the ratio is ~3.9 for N_max=4, which is borderline — but for N_max=8 the ratio ~2.8 clearly falls well short of 8.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The speedup of SGS-CD versus SU-CD remains constant as the number of nodes n increases (for N_max=8).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run output exists for an experiment that varies n (number of nodes) while keeping N_max=8 constant. The repository contains five experiment directories: decentralized_nmax (n=32 fixed, degrees 8 and 12), parallel_nmax (settings (n=12,N_max=8) and (n=24,N_max=4)), lipschitz_estimation, lls_communication, and logistic_estimated. The configs/formal.json confirms no experiment sweeps n. The decentralized_nmax experiment sweeps degrees at fixed nodes=32 and parallel_nmax uses two different N_max values rather than a fixed N_max=8 across varying n. There is no output data from which a speedup ratio of SGS-CD vs SU-CD across multiple values of n at constant N_max=8 can be computed or verified.",
+      "note": "The claim refers to Section 7.2 / Figure 3, but the reproduction repository does not contain any run outputs for that specific experiment (varying n with N_max=8 fixed). The closest experiments (decentralized_nmax, parallel_nmax) use different varying dimensions and cannot be used to verify this claim.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On the quadratic function, SL-CD converges faster than SeL-CD.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/lipschitz_estimation/metrics.csv: For polynomial_degree_2 (quadratic function), SL-CD final_gap values are [1e-15, 400.0, 100.0] across seeds [7097, 710, 4203], while SeL-CD final_gap values are [186100.0, 175700.0, 198600.0] for the same seeds. In all 3 seeds, SL-CD achieves strictly lower suboptimality than SeL-CD (lower is better), confirming SL-CD > SeL-CD in convergence on the quadratic function.",
+      "note": "The dataset maps to polynomial_degree_2 in the output files. The experiment is under results/formal/lipschitz_estimation/ corresponding to exp3_est_vs_exact_lipschitz.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On the order-four polynomial function, SeL-CD converges faster than SL-CD.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/lipschitz_estimation/curves.csv and summary.csv: For degree=4 (order-four polynomial), at every iteration checked, SL-CD has lower suboptimality than SeL-CD. Final values (iteration 999): SeL-CD replicates = [960101.54, 30000.00, 830306.90] (mean ≈ 606,803); SL-CD replicates = [105992.21, 144401.31, 127953.73] (mean ≈ 126,116). SeL-CD is better than SL-CD in only 1 of 3 replicates (replicate 1: 30000 vs 144401). At earlier iterations (100, 200, 500), SL-CD also consistently shows lower mean suboptimality. The required ordering 'SeL-CD > SL-CD' (i.e., SeL-CD lower, lower_is_better) is not satisfied.",
+      "note": "The curves.csv data shows SeL-CD diverges or converges much more slowly on degree=4 polynomial for 2 of 3 replicates, with only 1 replicate showing faster convergence. The mean trajectory across all replicates clearly favors SL-CD.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "SGSL-CD converges faster than SU-CD on both random graph topologies.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/lls_communication/curves.csv and aggregate.csv (experiment config: paper_section=VII-D, matches exp4_iter_vs_comm). At key iterations, SGSL-CD has consistently lower relative_gap (dual_suboptimality) than SU-CD on both topologies. p=0.1: SGSL-CD vs SU-CD at iter 100=2.95e-1 vs 3.58e-1, iter 1000=1.09e-2 vs 4.12e-2, iter 5999=9.1e-7 vs 7.1e-5 — SGSL-CD is lower at every checkpoint from iter 100 onward. p=0.5: SGSL-CD vs SU-CD at iter 100=1.13e-1 vs 3.95e-1, iter 1000=6.6e-8 vs 2.6e-4, iter 2000=1.1e-12 vs 1.6e-7 — SGSL-CD reaches the convergence floor (1e-15) well before SU-CD on this denser graph. Final aggregate rates: SGSL-CD rate_mean=0.00184 vs SU-CD rate_mean=0.00115 on p=0.1, consistent with faster convergence per iteration.",
+      "note": "The experiment directory is named lls_communication (not exp4_iter_vs_comm) but config.json confirms paper_section=VII-D. The curves.csv tracks relative_gap (dual_suboptimality) vs iteration. On p=0.5 both methods reach the numerical floor by iteration ~5000, but SGSL-CD reaches it earlier, supporting the ranking claim.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "SL-CD converges faster than SU-CD on both random graph topologies.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Run outputs in results/formal/lls_communication/ (paper_section VII-D, edge_probabilities [0.1, 0.5]) contain SL-CD and SU-CD results on both random graph topologies. The aggregate.csv rate_mean (linear convergence rate; higher = faster) shows: p=0.1: SL-CD=0.001032 vs SU-CD=0.001172 (SU-CD faster); p=0.5: SL-CD=0.002079 vs SU-CD=0.002526 (SU-CD faster). First-to-threshold analysis from curves.csv confirms: at threshold 1e-3, p=0.1: SL-CD avg=3413 iters vs SU-CD avg=3624 (SL-CD slightly faster); but p=0.5: SL-CD avg=781 vs SU-CD avg=591 (SU-CD faster). The claim that SL-CD converges faster than SU-CD on BOTH topologies is not supported — SU-CD has a higher convergence rate on both graphs by the rate_mean metric, and SL-CD is clearly slower on p=0.5 across all threshold levels.",
+      "note": "The experiment mapped to this rubric is lls_communication (not a directory named exp4_iter_vs_comm), identified by its paper_section VII-D and matching graph topologies/methods. The curves.csv metric is \"relative_gap\" (dual suboptimality proxy). By the rate_mean in aggregate.csv, SU-CD consistently beats SL-CD on both graphs. By iteration-to-threshold, SL-CD has a marginal advantage on p=0.1 but clear disadvantage on p=0.5.",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "SGSL-CD converges faster than both SL-CD and SGS-CD on both random graph topologies.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Run outputs found in results/formal/lls_communication/curves.csv (18000 rows per method×graph combination). Metric is relative_gap (dual suboptimality) vs iteration.\n\n**Random graph p=0.1:**\n- At final iteration (5999): SGSL-CD avg_gap=9.13e-07, SGS-CD avg_gap=9.60e-07, SL-CD avg_gap=7.37e-05\n- Area under convergence curve: SGSL-CD=1.05e+02, SGS-CD=1.06e+02, SL-CD=1.89e+02\n- SGSL-CD < SGS-CD ✓; SGSL-CD < SL-CD ✓\n\n**Random graph p=0.5:**\n- At iter=500: SGSL-CD=1.20e-04, SGS-CD=1.53e-04, SL-CD=1.69e-02 — SGSL-CD wins both ✓\n- At iter=800: SGSL-CD=1.18e-06, SGS-CD=1.39e-06, SL-CD=1.20e-03 — SGSL-CD wins both ✓\n- First iteration where avg gap ≤ 1e-6: SGSL-CD=813, SGS-CD=835, SL-CD=1722\n- SGSL-CD consistently lower than SGS-CD at every sampled iteration (50 to 1000) ✓; SGSL-CD consistently lower than SL-CD ✓\n\nBoth constraints (SGSL-CD > SL-CD and SGSL-CD > SGS-CD, where lower is better) hold on both graph topologies.",
+      "note": "The experiment_id in the outputs is \"lls_communication\" rather than \"exp4_iter_vs_comm\", but it contains the correct methods (SGSL-CD, SL-CD, SGS-CD), graph topologies (random_p0.1 and random_p0.5), and dual suboptimality (relative_gap) vs iterations data that matches the §7.4 / Figure 5 description. The area-under-curve comparison for p=0.5 slightly favors SGS-CD (1.8745e+02 vs SGSL-CD 1.8913e+02), but at every individual iteration point SGSL-CD has strictly lower gap, confirming it converges faster iteration-by-iteration.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The speedup of SGS-CD over SU-CD is larger on the denser graph (p=0.5) than on the sparser graph (p=0.1).",
+      "verdict": 0,
+      "confidence": "low",
+      "evidence": "Run outputs in results/formal/lls_communication/curves.csv and metrics.csv provide the relevant data. Iteration-based speedup (SU-CD iters / SGS-CD iters to reach common gap): at p=0.1 (target 1e-4), speedups per replicate are [1.716, 1.611, 1.783], avg=1.703x; at p=0.5 (target 1e-10), speedups are [1.695, 1.717, 1.971], avg=1.794x. The p=0.5 average is marginally larger, but ranges overlap and the gap is only ~5%. At other thresholds (e.g., gap=0.1), p=0.1 shows larger speedup (5.5x vs 2.9x). No single precomputed 'sgs_cd_over_su_cd_speedup' metric exists in the outputs. The convergence-rate based comparison (metrics.csv 'rate' column) shows SGS-CD at p=0.5 converging to machine precision (rate≈0) while SU-CD also converges to 1e-15, making a rate-ratio comparison degenerate (0/0.002). There is no output file that unambiguously records a larger speedup at p=0.5 than p=0.1 in a stable, threshold-independent way.",
+      "note": "The claim is plausible at some threshold choices but not robustly supported. No dedicated exp4_iter_vs_comm output directory exists; the closest experiment is lls_communication. The speedup comparison is threshold-dependent and the run outputs show overlapping speedup ranges for the two graph densities.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "On the graph with link probability 0.5, SU-CD and SL-CD are more efficient (lower suboptimality per vector transmitted) than SGS-CD and SGSL-CD.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/lls_communication/communication.csv. Contains columns: curve, replicate, iteration, vector_messages, relative_gap. For the p=0.5 graph, across 1039 common vector_messages values, the suboptimality (relative_gap) ordering SU-CD < SGS-CD holds for 1033/1039 points, SU-CD < SGSL-CD for 1036/1039, SL-CD < SGS-CD for 1026/1039, and SL-CD < SGSL-CD for 1032/1039. Representative comparison at vector_messages=1564: SU-CD=0.0012, SL-CD=0.0015 vs SGS-CD=0.1942, SGSL-CD=0.1574. SU-CD and SL-CD max_vectors=12000 vs SGS-CD/SGSL-CD max_vectors=100295, further confirming SU-CD/SL-CD need far fewer vectors for equivalent convergence. All four pairwise constraints hold overwhelmingly.",
+      "note": "The 6-13 failure points out of 1039 are at very early iterations (low vector counts) or near-zero gaps where numerical noise dominates; the dominant trend across the entire curve clearly supports the claim.",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "When a node i is activated, SU-CD transmits exactly 2 vectors in ℝ^d per iteration.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/lls_communication/communication.csv: For SU-CD rows (both p=0.1 and p=0.5), the cumulative vector_messages column increases by exactly 2.0 per iteration throughout the run. E.g., iteration 0→2.0, iteration 1→4.0, iteration 2→6.0, ..., with delta=2.0 confirmed for every consecutive step checked (iter 0–10 verified, increment=2.0 each time).",
+      "note": "The communication.csv file directly records the cumulative vector message count per iteration for each method. The constant increment of 2 per iteration for SU-CD matches the paper's Table 2 claim of exactly 2 vectors per iteration.",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "When a node i is activated, SGS-CD transmits N_i + 1 vectors in ℝ^d per iteration, where N_i is the degree of node i.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/lls_communication/communication.csv: Per-iteration vector_message increments for SGS-CD confirm N_i+1 transmission per activation. For p=0.1 graph (max degree=8): increments range [2, 9] = [min_degree+1, max_degree+1], all 18000 measured iterations valid. For p=0.5 graph (max degree=21): increments range [9, 22] = [?+1, 21+1], with maximum exactly 22=21+1, all 18000 iterations valid. The maximum observed increment matches max_degree+1 in both graph settings. By comparison, SU-CD shows a constant increment of 2.0 per iteration regardless of degree, confirming that the tracking correctly distinguishes per-node communication costs. results/formal/lls_communication/metrics.csv confirms degree values (7-8 for p=0.1, 20-21 for p=0.5).",
+      "note": "The increments per iteration vary because different nodes (with different degrees N_i) are activated each iteration, which is consistent with the claim that when node i is activated, exactly N_i+1 vectors are transmitted. The claim is a per-activation statement, not a fixed-per-iteration constant.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "When a node i is activated, SL-CD transmits exactly 2 vectors in ℝ^d per iteration.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/lls_communication/communication.csv: For SL-CD (replicate=0), vector_messages increments by exactly 2.0 per iteration: iter=0→2.0, iter=1→4.0, iter=2→6.0, ..., iter=9→20.0. The per-iteration rate is consistently 2.0 throughout, confirming exactly 2 vectors transmitted per iteration.",
+      "note": "The CSV uses cumulative vector_messages; the per-iteration rate is computed as the difference between consecutive rows, which equals exactly 2.0 throughout all rows inspected.",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "When a node i is activated, SGSL-CD transmits N_i + 1 vectors in ℝ^d per iteration.",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "results/formal/lls_communication/communication.csv: Per-iteration increments in vector_messages for SGSL-CD are consistent with the N_i+1 formula. For p=0.1 (32-node graph, max degree 7): observed per-step diffs range {2,3,4,5,6,7,8}, mean≈4.29; expected N_i+1 with E[N_i]=3.1 gives mean≈4.1. For p=0.5 (max degree 20-21): observed diffs range {12..22}, mean≈16.1; expected N_i+1 with E[N_i]=15.5 gives mean≈16.5. These match N_i+1 exactly given the degree range of the random graphs. Additionally, results/formal/lls_communication/metrics.csv shows SGSL-CD and SGS-CD (which also uses N_i neighbors per activation) have identical final_comm values (e.g., 25763 for seed 7097, degree-7 graph), confirming SGSL-CD's per-step communication scales with N_i+1.",
+      "note": "The run outputs do not explicitly log the per-node N_i count alongside vector counts; the claim is verified indirectly by matching the observed per-iteration vector increments to the N_i+1 formula across two graph densities. Confidence is medium because the outputs track cumulative communication totals (not raw per-activation counts), so verification is by statistical consistency rather than direct inspection.",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "When a node i is activated, SeL-CD transmits 2 + 2I vectors in ℝ^d per iteration, where I is the number of iterations inside the do-while loop of Algorithm 3.",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "results/formal/lls_communication/communication.csv: For SeL-CD, all per-outer-iteration vector-message increments are even integers consistent with 2+2I. p=0.1 SeL-CD: unique increments = {4, 24, 26, 28, 30} over 17,997 iterations, implying I ∈ {1, 11, 12, 13, 14}; p=0.5 SeL-CD: unique increments = {22, 24, 26, 28, 30, 32, 34, 38} over 17,997 iterations, implying I ∈ {10, 11, 12, 13, 14, 15, 16, 18}. In all 35,994 cases, (increment − 2) / 2 is a positive integer, exactly matching the formula 2+2I where I ≥ 1 is the number of inner do-while iterations. The outputs do not record I directly but the arithmetic structure is fully consistent with the claimed formula.",
+      "note": "The run outputs do not separately log the inner-iteration count I, so the formula 2+2I cannot be verified symbolically — only that the per-iteration vector counts are always even integers ≥ 4, which is necessary and strongly consistent with the 2+2I claim. Confidence is medium rather than high because the direct I tracking is absent from outputs.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "When a node i is activated, SGSeL-CD transmits N_i + 1 + 2I vectors in ℝ^d per iteration.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run output files contain per-activation communication data that would verify the formula N_i + 1 + 2I. The closest experiment output is results/formal/lls_communication/ (paper section VII-D), which contains: communication.csv (cumulative vector_messages per iteration), metrics.csv (final_comm totals and degree), convergence plots, and summary files. All communication data is aggregate/cumulative (e.g., SGSeL-CD p=0.1 reaches 167585 total vectors over 6000 iterations; p=0.5 reaches ~241720). No output records per-node-activation N_i values, per-loop I values, or any breakdown matching the formula. The formula N_i + 1 + 2I appears in .paper.txt (the paper text itself, not a run output). Searched: results/formal/lls_communication/, results/formal/decentralized_nmax/, all *.csv, *.json, *.log files, and found no exp4 directory or any file named exp4_iter_vs_comm. The run outputs cannot verify this theoretical per-activation formula.",
+      "note": "The formula appears correctly in the paper (Table 2 states SGSeL-CD: N_i + 1 + 2I), and the experiment lls_communication does measure communication cost as a function of iterations for SGSeL-CD — but the run outputs do not provide the granular per-activation data needed to verify the specific formula. The claim is a boolean about communication_complexity which is a theoretical property not directly measurable from the available cumulative aggregate run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-018",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the scenario with equal activation rates, κ=10, τ=0, SGS-CD converges faster than SU-CD.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs exist for experiment exp5 (async_comm_overhead / Figure 6, κ=10, τ=0, equal activation rates). The repository contains only five formal experiment directories: decentralized_nmax, parallel_nmax, lipschitz_estimation, lls_communication, and logistic_estimated. None covers the continuous-time blocking simulation scenario. The README explicitly states: \"The paper's Figure 6 wall-clock model (exponential activations plus blocking communication) is not claimed as a separate reproduction.\" CLAIM_RESULTS.json (C4 notes) reiterates: \"The separate continuous-time blocking simulation of Figure 6 is listed as a limitation in README.\" Searches for files containing 'kappa', 'tau=', 'async', 'exp5', 'equal_activation', 'Figure 6', or 'blocking' in the results/ directory returned no matching output files.",
+      "note": "The repository intentionally excludes the Figure 6 async simulation (exp5_async_comm_overhead). The claim cannot be verified from any run output — this is verdict=0 case (a): no relevant run output exists.",
+      "error": false
+    },
+    {
+      "id": "res-019",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the scenario with equal activation rates, κ=10, τ=1, SGS-CD converges faster than SU-CD.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run output for experiment exp5_async_comm_overhead exists anywhere in the repository. The only result directories under results/formal/ are: decentralized_nmax, parallel_nmax, lipschitz_estimation, lls_communication, and logistic_estimated — none of which covers the async/communication-overhead scenario with κ=10, τ=1 described in §7.5 / Figure 6 middle. The formal config (configs/formal.json) likewise does not list any such experiment. The CLAIMS.json lists 5 claims (C1–C5) and none maps to exp5_async_comm_overhead. Searched all file paths under results/, all config and log files, and all JSON/CSV outputs; no file contains kappa, tau, activation_rate, async, or overhead parameters as run outputs.",
+      "note": "The paper discusses Figure 6 middle (equal activation rates, κ=10, τ=1) in §7.5, and the paper text confirms SGS-CD has smaller gains vs SU-CD in that scenario — but no corresponding experiment was run and no output file was produced for this reproduction.",
+      "error": false
+    },
+    {
+      "id": "res-020",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the scenario with equal activation rates, κ=5, τ=0, SGS-CD converges faster than SU-CD.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run output exists for experiment exp5_async_comm_overhead. The repository contains exactly five formal experiment output directories: results/formal/decentralized_nmax/, results/formal/parallel_nmax/, results/formal/lipschitz_estimation/, results/formal/lls_communication/, and results/formal/logistic_estimated/. None of these correspond to the §7.5 \"equal activation rates, κ=5, τ=0\" scenario. Searched all CSV/JSON/log files for keywords \"kappa\", \"tau\", \"async\", \"overhead\", \"exp5\", \"activation\", \"equal\" — no relevant output files found. The configs/formal.json confirms only the five named experiments were configured and run. The decentralized_nmax experiment does show SGS-CD reaching final_gap=0.0 vs SU-CD final_gap~2-4e-9 (lower is better), but this experiment has no κ or τ parameters and is not the §7.5 async-overhead scenario.",
+      "note": "The decentralized_nmax outputs do show SGS-CD outperforming SU-CD on quadratic problems, but the specific experimental setup required (equal activation rates, κ=5, τ=0, §7.5) is absent from the run outputs entirely.",
+      "error": false
+    },
+    {
+      "id": "res-021",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the scenario with equal activation rates, κ=5, τ=1, SGS-CD converges faster than SU-CD.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all output directories: results/formal/{decentralized_nmax, parallel_nmax, lls_communication, lipschitz_estimation, logistic_estimated}. configs/formal.json confirms only these 5 experiments were run. No experiment with ID \"exp5_async_comm_overhead\" or any output containing parameters κ=5, τ=1, or \"equal activation rates\" exists anywhere in the repository. The decentralized_nmax experiment does compare SGS-CD vs SU-CD on quadratic problems, but its config shows paper_section \"VII-A/VII-B\" and degree/node parameters — not the async communication overhead scenario (§7.5) with equal activation rates. grep for \"kappa\", \"tau\", \"exp5\", \"async_comm\", \"comm_overhead\", \"equal\" across all result files returned no matches. No run output supports the specific claim.",
+      "note": "The repository's CLAIMS.json references §7.5 only under C4-communication-tradeoff, which covers communication message counts (Table 2) but not the κ=5, τ=1 equal-activation-rates async scenario. The exp5_async_comm_overhead experiment was never run and has no output files.",
+      "error": false
+    },
+    {
+      "id": "res-022",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the equal activation rate scenario with τ=1, the convergence gap (suboptimality difference) between SU-CD and SGS-CD is smaller when κ=5 compared to κ=10.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all run output directories in results/formal/ (decentralized_nmax, lipschitz_estimation, lls_communication, logistic_estimated, parallel_nmax) and all top-level files (CLAIM_RESULTS.json, CLAIMS.json). No output files exist for the experiment exp5_async_comm_overhead. No files contain parameters τ (tau), κ (kappa), \"equal activation rate\", or \"async_comm_overhead\". The CLAIMS.json lists only five experiments (C1–C5), none of which cover §7.5's equal activation rate scenario with κ=5 vs κ=10. The README explicitly notes that \"the separate continuous-time blocking simulation of Figure 6 is listed as a limitation\" — consistent with the async/communication overhead scenario not having been run.",
+      "note": "This is case (a): no relevant run output exists. The repository does not contain any outputs for the equal-activation-rate τ=1 comparison with κ=5 and κ=10.",
+      "error": false
+    },
+    {
+      "id": "res-023",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Walkman achieves the largest per-iteration progress among all algorithms in the iterations plot.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs for exp6_token_comparison exist anywhere in the repository. Searched: all files under results/ (only 5 formal experiment subdirectories exist: decentralized_nmax, lls_communication, parallel_nmax, logistic_estimated, lipschitz_estimation), all CSV/JSON/log files for keywords \"Walkman\", \"multi-token\", \"multi_token\", \"K=1\", \"K=5\", \"K=10\", \"K=15\", \"token_comparison\", \"exp6\". The only file mentioning Walkman is .paper.txt (the paper PDF binary), which is not a run output. configs/formal.json confirms no token_comparison experiment is configured. The experiment comparing Walkman, SU-CD, SL-CD, and multi-token algorithms was never run.",
+      "note": "The paper text (§7.6) does state \"Walkman is the algorithm that makes the largest progress per iteration (left)\" — but this is paper prose, not a run output. No numerical data from an actual run of this experiment is present in the repository.",
+      "error": false
+    },
+    {
+      "id": "res-024",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The multi-token algorithms with K ∈ {1,5,10,15} perform identically in terms of iterations.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs for exp6_token_comparison exist anywhere in the repository. The only results directories are: results/formal/decentralized_nmax/, results/formal/parallel_nmax/, results/formal/lipschitz_estimation/, results/formal/logistic_estimated/, results/formal/lls_communication/. These cover claims C1–C5 only (SGS-CD vs SU-CD, communication tradeoffs, Lipschitz estimation, logistic regression). Searched for \"token\", \"K=1\", \"K=5\", \"K=10\", \"K=15\", \"multi_token\", \"figure7\", \"fig7\", \"7.6\", and \"exp6\" across all CSV, JSON, and log files — no matches. CLAIMS.json and CLAIM_RESULTS.json make no reference to multi-token algorithms or §7.6. Case (a): no relevant run output exists.",
+      "note": "The paper §7.6 / Figure 7 left experiment on multi-token algorithms with K∈{1,5,10,15} was not run or not saved in this repository's results directory.",
+      "error": false
+    },
+    {
+      "id": "res-025",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the realistic setting (κ=10, τ=1), SL-CD is the fastest algorithm.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all output directories (results/formal/decentralized_nmax, results/formal/parallel_nmax, results/formal/lipschitz_estimation, results/formal/lls_communication, results/formal/logistic_estimated) and all CSV/JSON/TXT/log files in the repository. No experiment named exp6_token_comparison exists anywhere. The metric 'primal_suboptimality' does not appear in any output file. 'Walkman' only appears in .paper.txt (the paper text), not in any run output. The formal config (configs/formal.json) lists only 5 experiments: decentralized_nmax, parallel_nmax, lipschitz_estimation, lls_communication, logistic_estimated. None involve the κ=10, τ=1 realistic setting or multi-token algorithms.",
+      "note": "No run output for exp6_token_comparison was produced; the claim cannot be verified from available experiment outputs.",
+      "error": false
+    },
+    {
+      "id": "res-026",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "SU-CD performs similarly to multi-token with K=10 in the realistic setting (κ=10, τ=1).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs exist for experiment exp6_token_comparison. The repository's results/ directory contains only 5 experiment subdirectories: decentralized_nmax, parallel_nmax, lipschitz_estimation, lls_communication, and logistic_estimated. None of these contain data about token algorithm comparisons (SU-CD vs multi-token with K=10) or the realistic setting parameters κ=10, τ=1. Searched via: find for all result files, grep for \"kappa\", \"token\", \"multi.token\", \"K=10\", \"realistic\", \"tau\" across all CSV/JSON/log/txt files in results/. The configs/formal.json also confirms only 5 experiments are registered. The paper text confirms §7.6 / Figure 7 right is the relevant section, but no corresponding run outputs were produced.",
+      "note": "The paper describes this result in §7.6 and Figure 7 right, but the reproduction does not include the token comparison experiment in its formal run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-027",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "Walkman's sequential updates become a bottleneck in the realistic setting.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs for exp6_token_comparison exist in the repository. The five experiment directories present are: decentralized_nmax, lipschitz_estimation, lls_communication, logistic_estimated, parallel_nmax. Searched all result files (*.csv, *.json, *.log) for \"Walkman\", \"exp6\", \"token_comparison\", \"realistic\", \"kappa\", \"bottleneck\" — none found. The paper text in .paper.txt does describe the claim (\"in a realistic setting...SL-CD is the fastest of all thanks to allowing many updates in parallel, in contrast to Walkman whose updates are sequential\"), but this is not a run output.",
+      "note": "The claim about Walkman being a bottleneck in the realistic setting (Figure 7 right, κ=10, τ=1) is referenced in the paper but no corresponding experiment output files were produced or saved in this repository.",
+      "error": false
+    },
+    {
+      "id": "res-028",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "SGSeL-CD converges faster than SeL-CD (i.e., achieves lower suboptimality for the same number of iterations).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/logistic_estimated/curves.csv and summary.csv: At iteration 299 (same for both methods), SGSeL-CD final suboptimality (relative_gap) values are [0.00099, 0.00449, 0.00511, 2.552, 2.602, 7.992] with mean ~2.19, while SeL-CD values are [381.99, 458.79, 814.03, 23699.0, 27957.96, 29102.03] with mean ~13735.6. SGSeL-CD achieves 3–7 orders of magnitude lower suboptimality at the same number of iterations across all 6 replicates (2 graph densities × 3 seeds), conclusively satisfying SGSeL-CD > SeL-CD (lower_is_better).",
+      "note": "The experiment covers two graph densities (p=0.1 and p=0.5) but both use a logistic regression problem, matching the rubric dataset. The ranking holds universally across all replicates.",
+      "error": false
+    },
+    {
+      "id": "res-029",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Both SeL-CD and SGSeL-CD converge linearly on the logistic regression problem.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/logistic_estimated/metrics.csv and curves.csv confirm linear convergence for both methods. All 12 fitted rates are strictly positive: SeL-CD rates range from 8.8e-05 to 2.07e-03; SGSeL-CD rates range from 3.78e-03 to 3.83e-02 across two graph topologies (random_p0.1, random_p0.5) and three seeds each. Per-iteration gap ratios from curves.csv are consistently ~0.93–0.98, confirming steady geometric (linear) decay. aggregate.csv also shows positive rate_mean for every method/graph/problem combination.",
+      "note": "SeL-CD final gaps remain large (hundreds to tens of thousands) while SGSeL-CD converges much closer to zero, but both exhibit positive linear convergence rates throughout the 300-step runs.",
+      "error": false
+    },
+    {
+      "id": "res-030",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The performance gap between SGSeL-CD and SeL-CD does not increase with graph connectivity (link probabilities 0.1 vs 0.5).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/logistic_estimated/metrics.csv: For p=0.1 (3 seeds), SeL-CD final_gap mean≈551.6, SGSeL-CD mean≈4.38 → ratio gap≈126×, absolute gap≈547.2. For p=0.5 (3 seeds), SeL-CD final_gap mean≈26,920, SGSeL-CD mean≈0.0035 → ratio gap≈7,620,605×, absolute gap≈26,919.7. The predicate gap(p=0.5) <= gap(p=0.1) is false under both absolute difference and ratio metrics: the gap grows enormously with connectivity (p=0.5 vs p=0.1).",
+      "note": "The claim states the gap does not increase with graph connectivity, but run outputs show the opposite: at higher connectivity (p=0.5) SGSeL-CD converges to near-zero gap while SeL-CD stagnates at ~27k, yielding a ratio gap ~60,000x larger than at p=0.1.",
+      "error": false
+    }
+  ]
+}

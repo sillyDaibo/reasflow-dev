@@ -1,0 +1,553 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2306.05100",
+    "title": "Communication-Efficient Gradient Descent-Accent Methods for Distributed Variational Inequalities: Unified Analysis and Local Updates",
+    "sha256": "e3403d50335aef71f975dd1ea908d645873f04aaf0b34d5c9d388cf7b50e14a2"
+  },
+  "algorithm": {
+    "name": "ProxSkip-VIP-FL / deterministic ProxSkip-GDA-FL (Algorithm 2)",
+    "citations": [
+      "PDF p.7, Section 4 and Algorithm 2 lines 1-13",
+      "PDF p.8, Assumption 4.1"
+    ],
+    "core_mechanisms": [
+      "controlled_local_step",
+      "corrected_communication_average",
+      "control_variate_update"
+    ],
+    "assumptions": [
+      "Each local saddle operator has positive definite symmetric part and is smooth.",
+      "Full deterministic operator is an unbiased zero-variance oracle.",
+      "Coin outcomes are fixed supported realizations of the stated Bernoulli law.",
+      "Initial worker points agree and initial control vectors sum to zero.",
+      "Finite trajectories only; no claim of proving communication complexity, nonmonotone theory, or loopless-SVRG variants."
+    ]
+  },
+  "cases": [
+    {
+      "id": "skip_then_communicate",
+      "purpose": "Exercise skip and communication branches with heterogeneous saddle operators and persistent nonzero control variates.",
+      "covers": [
+        "controlled_local_step",
+        "corrected_communication_average",
+        "control_variate_update"
+      ],
+      "inputs": {
+        "workers": 2,
+        "network": "All workers communicate synchronously through one server; uniform averaging over every worker.",
+        "coordinates": "Each row is worker state [u,v] for min_u max_v.",
+        "operator_matrices": [
+          [
+            [
+              2,
+              1
+            ],
+            [
+              -1,
+              3
+            ]
+          ],
+          [
+            [
+              4,
+              -2
+            ],
+            [
+              2,
+              2
+            ]
+          ]
+        ],
+        "operator_offsets": [
+          [
+            1,
+            -2
+          ],
+          [
+            -3,
+            1
+          ]
+        ],
+        "objective": "Local saddle loss L_i(u,v)=A_i[0,0]*u^2/2+A_i[0,1]*u*v-A_i[1,1]*v^2/2+b_i[0]*u-b_i[1]*v. Operator g_i=[dL_i/du,-dL_i/dv]=A_i*[u,v]+b_i. Global saddle loss is the mean of local losses.",
+        "x0": [
+          [
+            1,
+            -1
+          ],
+          [
+            1,
+            -1
+          ]
+        ],
+        "h0": [
+          [
+            0.5,
+            -0.25
+          ],
+          [
+            -0.5,
+            0.25
+          ]
+        ],
+        "oracle": "Use full deterministic local saddle operator at current x_i; no sampling noise.",
+        "communication_coins": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "randomness": "Condition on exactly the listed server Bernoulli outcomes in chronological order; p=1/2. No extra draws.",
+        "observations": "step s=t+1 denotes completion of lines 4-11 for the t-th listed coin. operator_used is evaluated at pre-update x; x_hat precedes communication; x and h follow line 11. mean_x is post-update uniform mean; communication_count includes this step."
+      },
+      "parameters": {
+        "gamma": 0.1,
+        "p": 0.5,
+        "number_of_updates": 4,
+        "loop_index_convention": "Execute exactly four t values 0,1,2,3 (Algorithm 2 prints inclusive 0,...,T; set its T=3)."
+      },
+      "atol": 1e-10,
+      "rtol": 1e-10,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "operator_used",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x_hat",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "h",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mean_x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "communication_count",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "operator_used",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_hat",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "h",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mean_x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "communication_count",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "operator_used",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_hat",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "h",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "mean_x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "communication_count",
+          "shape": []
+        },
+        {
+          "step": 4,
+          "name": "operator_used",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x_hat",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "h",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "mean_x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "communication_count",
+          "shape": []
+        }
+      ]
+    },
+    {
+      "id": "communicate_then_skip",
+      "purpose": "Exercise skip and communication branches with heterogeneous saddle operators and persistent nonzero control variates.",
+      "covers": [
+        "controlled_local_step",
+        "corrected_communication_average",
+        "control_variate_update"
+      ],
+      "inputs": {
+        "workers": 2,
+        "network": "All workers communicate synchronously through one server; uniform averaging over every worker.",
+        "coordinates": "Each row is worker state [u,v] for min_u max_v.",
+        "operator_matrices": [
+          [
+            [
+              3,
+              -1
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          [
+            [
+              2,
+              2
+            ],
+            [
+              -2,
+              4
+            ]
+          ]
+        ],
+        "operator_offsets": [
+          [
+            -2,
+            1
+          ],
+          [
+            1,
+            -3
+          ]
+        ],
+        "objective": "Local saddle loss L_i(u,v)=A_i[0,0]*u^2/2+A_i[0,1]*u*v-A_i[1,1]*v^2/2+b_i[0]*u-b_i[1]*v. Operator g_i=[dL_i/du,-dL_i/dv]=A_i*[u,v]+b_i. Global saddle loss is the mean of local losses.",
+        "x0": [
+          [
+            -1,
+            2
+          ],
+          [
+            -1,
+            2
+          ]
+        ],
+        "h0": [
+          [
+            1,
+            0.5
+          ],
+          [
+            -1,
+            -0.5
+          ]
+        ],
+        "oracle": "Use full deterministic local saddle operator at current x_i; no sampling noise.",
+        "communication_coins": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "randomness": "Condition on exactly the listed server Bernoulli outcomes in chronological order; p=1/2. No extra draws.",
+        "observations": "step s=t+1 denotes completion of lines 4-11 for the t-th listed coin. operator_used is evaluated at pre-update x; x_hat precedes communication; x and h follow line 11. mean_x is post-update uniform mean; communication_count includes this step."
+      },
+      "parameters": {
+        "gamma": 0.1,
+        "p": 0.5,
+        "number_of_updates": 4,
+        "loop_index_convention": "Execute exactly four t values 0,1,2,3 (Algorithm 2 prints inclusive 0,...,T; set its T=3)."
+      },
+      "atol": 1e-10,
+      "rtol": 1e-10,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "operator_used",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x_hat",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "h",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mean_x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "communication_count",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "operator_used",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_hat",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "h",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mean_x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "communication_count",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "operator_used",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_hat",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "h",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "mean_x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "communication_count",
+          "shape": []
+        },
+        {
+          "step": 4,
+          "name": "operator_used",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x_hat",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "h",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "mean_x",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "communication_count",
+          "shape": []
+        }
+      ]
+    }
+  ]
+}

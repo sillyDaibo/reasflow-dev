@@ -1,0 +1,9 @@
+{
+  "experiment": "mesothelioma",
+  "seed": 0,
+  "gamma_local": 0.1,
+  "gamma_sex": 10.0,
+  "gamma_age": 500.0,
+  "maxiter": 120,
+  "solver": "ADMM"
+}

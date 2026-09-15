@@ -1,0 +1,34 @@
+{
+  "schema_version": "optirepro.paper_review.v1",
+  "contract_digest": "79672c9fb80be2db961eefac7f2f2cb5efb52911bbc06f31173f648e788047a2",
+  "reviewer_id": "/root/paper16_b",
+  "basis": "original_paper_only",
+  "decision": "approved",
+  "summary": "Approved only for nonaccelerated Algorithm 1 PIRL1-AM: all 78 scalar coordinates independently recomputed with 70-digit Decimal arithmetic match the contract. This approval does not establish the paper-title accelerated variant.",
+  "cases": [
+    {
+      "case_id": "mixed_threshold",
+      "decision": "approved",
+      "reason": "The reweighting threshold p*mu/(L*beta*(abs(z_old)+epsilon)^(1-p)) follows equation (12) and Algorithm 1; bar-z is the pre-update G*u. Independent signed shrinkage and direct linear solve reproduce every gradient, threshold, z, u, and penalized objective for three updates.",
+      "citations": [
+        "PDF p.2 equations (3),(7),(12),(14)",
+        "PDF p.3 Algorithm 1 and Algorithm 2"
+      ]
+    },
+    {
+      "case_id": "signed_reweight",
+      "decision": "approved",
+      "reason": "The reweighting threshold p*mu/(L*beta*(abs(z_old)+epsilon)^(1-p)) follows equation (12) and Algorithm 1; bar-z is the pre-update G*u. Independent signed shrinkage and direct linear solve reproduce every gradient, threshold, z, u, and penalized objective for three updates.",
+      "citations": [
+        "PDF p.2 equations (3),(7),(12),(14)",
+        "PDF p.3 Algorithm 1 and Algorithm 2"
+      ]
+    }
+  ],
+  "scope_notes": [
+    "Algorithm 2 prints an extrapolated y but does not unambiguously specify its feedback into the listed z/u recursions. No accelerated mechanism is reconstructed or approved here.",
+    "Equation (11) has a conflicting denominator based on bar-z; the contract explicitly chooses the final equation (12) and Algorithm 1, which use previous z. This is a named source branch, not proof all printed formulas are mutually consistent.",
+    "The finite periodic three-pixel operator example and epsilon=0.01 are explicit test inputs; full image quality, FFT behavior, clipping and continuation are outside scope.",
+    "All results meet frozen atol=1e-10 and rtol=1e-9; no expected values or tolerances changed."
+  ]
+}

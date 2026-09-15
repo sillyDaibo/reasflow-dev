@@ -1,0 +1,18 @@
+[
+  {
+    "path": "rr_prox_fed/algorithms.py",
+    "symbol": "ProxRR.run"
+  },
+  {
+    "path": "rr_prox_fed/objectives.py",
+    "symbol": "ElasticNetLogistic.gradient"
+  },
+  {
+    "path": "rr_prox_fed/objectives.py",
+    "symbol": "ProximalOperator.__call__"
+  },
+  {
+    "path": "rr_prox_fed/federated.py",
+    "symbol": "FedRR.run"
+  }
+]

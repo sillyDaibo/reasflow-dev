@@ -1,0 +1,40 @@
+{
+  "schema_version": "optirepro.paper_review.v1",
+  "contract_digest": "b1e6284f39678607793c8e8673db75807688156d1800b4fdbd82e5e465541419",
+  "reviewer_id": "paper_review_three",
+  "basis": "original_paper_only",
+  "decision": "approved",
+  "summary": "Approved both deterministic full-gradient BEER cases: all 160 leaves agree exactly with independently computed Decimal values, and both compression maps satisfy the original paper's contraction definition.",
+  "cases": [
+    {
+      "case_id": "beer_top1_two_clients_three_rounds",
+      "decision": "approved",
+      "reason": "Both residual channels are nonzero, support changes and accumulation are exercised, and later gradient tracking differs from fresh local gradients. The final X is [[0.6405,1.801],[-0.337,-1.338]]; final V is [[0.678625,-1.436125],[-1.5441875,0.5311875]]. Independently verified 16 observations / 64 numeric leaves; maximum absolute discrepancy from serialized expected numbers 0.",
+      "citations": [
+        "PDF p.5 Definition 2.2/Eq.(3)",
+        "PDF p.6 columnwise compression",
+        "PDF p.7 Algorithm 1 lines 1-8 and Section 4.1"
+      ]
+    },
+    {
+      "case_id": "beer_half_compressor_three_client_path",
+      "decision": "approved",
+      "reason": "The noncomplete graph and 2-by-3 state layout distinguish client versus coordinate axes. Hnew=(H+Xnew)/2 and Gnew=(G+Vnew)/2 retain old control information; anisotropic curvatures activate separate local tracking differences. All 96 leaves agree exactly. Independently verified 16 observations / 96 numeric leaves; maximum absolute discrepancy from serialized expected numbers 0.",
+      "citations": [
+        "PDF p.4 Assumption 2.1/Eq.(2)",
+        "PDF p.5 Definition 2.2/Eq.(3)",
+        "PDF p.6 notation",
+        "PDF p.7 Algorithm 1 lines 1-8 and Section 4.1"
+      ]
+    }
+  ],
+  "scope_notes": [
+    "Original source is the designated local paper.pdf; contract digest binds the exact frozen private contract. Allowed contract/derivation and schema were read, and neither frozen standards nor production code were modified. No adapter, implementation workspace, actual output, or standalone prior review file was read.",
+    "Approval certifies these finite tests as valid paper-grounded checks; passing them is not a guarantee of all implementation correctness.",
+    "Paper p.7 Algorithm 1 explicitly initializes common X0, H0=G0=0 and V0=local full gradients. Lines 3-8 require old H/G in consensus, consecutive gradient difference, residual compression and accumulation; these are faithfully represented.",
+    "Top1 in d=2 has discarded squared norm no greater than half the input squared norm, so alpha=1/2 is valid even though it is biased. C(v)=v/2 has exact error ||v||^2/4, giving alpha=3/4. The scaling map is valid mathematically but does not itself demonstrate fewer communicated bits.",
+    "Both mixing matrices are symmetric nonnegative doubly stochastic and connected. Their eigenvalues are (1,1/2) and (1,3/4,1/4), so the required spectral gaps are positive. Smooth quadratic losses with a minimizer provide a valid zero-variance specialization of p.7 Section 4.1.",
+    "The zero first-round consensus terms follow mandated H0=G0=0; later rounds exercise nonzero model and gradient consensus, so this is not an identity-only check. Columns are independently compressed as required by p.6.",
+    "Only three-round deterministic full-precision recurrence correctness is supported, at 1e-9 absolute and 1e-7 relative tolerances. The paper theorem leaves absolute stepsize constants unspecified; these cases do not establish theorem-certified learning rates, nonconvex/stochastic convergence, minibatch noise behavior, or bit savings. No implementation was read or evaluated."
+  ]
+}

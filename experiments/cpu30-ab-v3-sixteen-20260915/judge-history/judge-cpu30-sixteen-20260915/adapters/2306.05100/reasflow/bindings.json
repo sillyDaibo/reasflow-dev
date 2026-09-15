@@ -1,0 +1,10 @@
+[
+  {
+    "path": "src/vip_repro/algorithms.py",
+    "symbol": "proxskip"
+  },
+  {
+    "path": "src/vip_repro/problems.py",
+    "symbol": "AffineVIP.client"
+  }
+]

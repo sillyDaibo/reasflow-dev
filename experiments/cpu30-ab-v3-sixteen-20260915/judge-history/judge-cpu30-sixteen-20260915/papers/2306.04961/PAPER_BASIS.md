@@ -1,0 +1,15 @@
+# Original-paper derivation basis
+
+Source: supplied arXiv:2306.04961v2 PDF, 35 pages. Read only the original PDF and contract schema; no implementation, adapters, histories or outputs. Visually inspected original PDF pages 5–6, including the exact order of smoothing and reweighting.
+
+The tested algorithm is Algorithm 2.1 on PDF page 6. Definition 2.1 on page 5, Eqs. (2.4)–(2.6), adds the two-sided low-rank weight operator to the diagonal row-sparsity operator. Eq. (2.7) performs an equality-constrained weighted quadratic minimization; Eq. (2.8) decreases the smoothing using the second singular value and second largest row norm in these rank/sparsity-one instances. Eq. (3.1) on page 8 supplies the direct constrained inverse formula used for the derivation.
+
+Both cases use a 2-by-2 matrix and a rectangular, nonidentity measurement operator. Each has an explicitly provided feasible rank-one, one-row-sparse matrix. Their minimum-norm initial iterates are dense/full rank, and subsequent iterates change. Left and right spectral filters and row weights are separately observed, so neither structural mechanism is silently removed. The initial identity weight is required by Algorithm 2.1; it is replaced by nonidentity weights after the first solve. Every case includes three complete minimization, smoothing and weight updates, with the operator represented in explicitly stated row-major coordinates.
+
+The prose above Eq. (2.8) refers to singular value rank-estimate+1, but the printed epsilon formula appears to use the sparsity estimate subscript. Both estimates are set to 1, making either reading identical without inventing a correction. Only the row-sparsity variant is tested, not the optional column term from Remark 2.2. All tested smoothing parameters stay positive; no undefined zero-smoothing continuation is required.
+
+`derive_contract.py` uses only Python standard-library Decimal with 70 digits and embedded constants. It reads no files. A symmetric 2-by-2 eigendecomposition is evaluated analytically, and spectral functions are computed by interpolation of the two eigenvalues. This avoids arbitrary SVD signs. Each constrained solve evaluates W^-1 A^T (A W^-1 A^T)^-1 y by Gaussian elimination. A 1e-60 internal feasibility check precedes every output. This is independent mathematical derivation, not the reproduction algorithm. Values are rounded to JSON binary64 only on output. Tolerances atol = 1e-10 and rtol = 1e-8 permit double-precision SVD/solve differences on these small instances.
+
+The contract checks finite arithmetic behavior of the core IRLS iteration. It cannot establish RIP conditions, sample complexity, asymptotic quadratic convergence, large-scale performance or success on every sensing operator. This basis document is not an independent paper review.
+
+Verification: repeated execution reproduced contract bytes exactly; an independent 100-digit recomputation of the same paper-derived arithmetic agreed with the stored binary64 expected values within 4e-70 (only roundoff representations of exact zeros differed). Public cases were checked to contain neither private expected arrays nor derivations.

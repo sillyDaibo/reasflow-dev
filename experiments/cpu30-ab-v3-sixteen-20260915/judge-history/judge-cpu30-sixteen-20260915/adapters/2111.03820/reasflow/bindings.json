@@ -1,0 +1,26 @@
+[
+  {
+    "path": "src/disprox_rr/algorithms.py",
+    "symbol": "run_method"
+  },
+  {
+    "path": "src/disprox_rr/algorithms.py",
+    "symbol": "_local_stochastic_epoch"
+  },
+  {
+    "path": "src/disprox_rr/algorithms.py",
+    "symbol": "logistic_gradient"
+  },
+  {
+    "path": "src/disprox_rr/algorithms.py",
+    "symbol": "_consensus_matrix"
+  },
+  {
+    "path": "src/disprox_rr/algorithms.py",
+    "symbol": "_prox_consensus"
+  },
+  {
+    "path": "src/disprox_rr/algorithms.py",
+    "symbol": "_prox_l1"
+  }
+]

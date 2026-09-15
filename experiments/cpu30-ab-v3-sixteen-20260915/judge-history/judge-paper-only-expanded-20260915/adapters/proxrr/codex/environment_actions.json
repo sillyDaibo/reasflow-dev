@@ -1,0 +1,14 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "Original array operations and optimization drivers require NumPy. Present in temporary venv; no install was needed.",
+    "source": "rr_prox_fed/algorithms.py:7 import numpy as np"
+  },
+  {
+    "kind": "install_package",
+    "package": "scipy",
+    "reason": "Original objectives import SciPy and federation stacks client data with scipy.sparse. Present in temporary venv; no install was needed.",
+    "source": "rr_prox_fed/objectives.py:6-8 scipy imports; rr_prox_fed/federated.py:_vstack"
+  }
+]

@@ -1,0 +1,647 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2212.02387",
+    "title": "An Efficient Stochastic Algorithm for Decentralized Nonconvex-Strongly-Concave Minimax Optimization",
+    "sha256": "a439c27a31fbadb3eec10c869bfdf653b88c4b01bf0b15cab6595c835b7b841a"
+  },
+  "algorithm": {
+    "name": "DREAM (Decentralized Recursive-gradient dEscent Ascent Method)",
+    "citations": [
+      "PDF p.3, Algorithm 1: accelerated FastMix recurrence and output a^(K).",
+      "PDF pp.3-4, Assumptions 2.1-2.5: lower bounded primal, average smoothness, local strong concavity, oracle conditions, symmetric PSD doubly stochastic W.",
+      "PDF p.5, Definitions 2.4-2.5: rowwise projection onto the closed convex Y.",
+      "PDF p.6, Algorithm 2 lines 3-8: consensus initialization and mixed initial full-gradient tracker.",
+      "PDF p.6, Algorithm 2 lines 10-23: state update, Bernoulli refresh, omega/(bq) paired stochastic gradient differences and branch-specific tracker FastMix.",
+      "PDF p.6, Algorithm 2 line 25: uniform output over all local x at times 0 through T-1.",
+      "PDF p.7, Equations (5), (7), (8): sufficient theorem parameters, distinguished here from freely supplied Algorithm 2 inputs.",
+      "PDF p.13, Lemma A.4: mean(s_t)=mean(g_t)."
+    ],
+    "core_mechanisms": [
+      "two_timescale_gda",
+      "projection_before_consensus",
+      "fastmix_acceleration",
+      "recursive_sample_difference",
+      "bernoulli_agent_gating",
+      "full_gradient_refresh",
+      "recursive_gradient_tracking",
+      "branch_specific_tracker_mixing",
+      "uniform_historical_output"
+    ],
+    "assumptions": [
+      "All tests are offline finite-sum problems; b_prime=n, uniform components. All local mean objectives are smooth and strongly concave in y; primal is lower bounded.",
+      "Two agents, one x coordinate and one y coordinate, row-major state [x,y]. W has eigenvalues 1 and 0.8 and meets symmetry, irreducibility, double stochasticity and PSD assumptions.",
+      "Randomness is conditioned on explicitly supplied realizations; output_draw_index is an explicit uniform-index realization, not an assertion about a particular RNG seed.",
+      "FastMix indexing ambiguity: PDF Algorithm 1 loops k=0,...,K but explicitly returns a^(K). Contract follows the returned-state expression, hence K effective recurrences; any discarded extra a^(K+1) does not affect output. A differing loop-count convention should be reported as ambiguous rather than silently counted as a mathematical failure.",
+      "Algorithm 2 omits q from its input list but uses it at lines 18 and 20; the experiments on p.8 tune q independently, and this contract explicitly supplies q in (0,1].",
+      "The short traces test equations, not Theorem 3.1 convergence, optimal complexity, online stochastic variance, or linear speed-up. eta/gamma/K are algorithm-valid but are not calibrated to the theorem.",
+      "The paper gives random historical output; final x_T and network mean(x_T) are not interchangeable with it."
+    ]
+  },
+  "cases": [
+    {
+      "id": "dream_projected_refresh_and_skips",
+      "purpose": "Three complete DREAM iterations with active projection, heterogeneous nodes, recursive updates, skipped node and full refresh; distinguish K from K_prime and historical output from last iterate.",
+      "covers": [
+        "two_timescale_gda",
+        "projection_before_consensus",
+        "fastmix_acceleration",
+        "recursive_sample_difference",
+        "bernoulli_agent_gating",
+        "full_gradient_refresh",
+        "recursive_gradient_tracking",
+        "branch_specific_tracker_mixing",
+        "uniform_historical_output"
+      ],
+      "inputs": {
+        "objective": "F_ij(x,y)=a*x^2/2+c*x*y-d*y^2/2+e*x+h*y; each coefficient tuple is [a,c,d,e,h]. Offline uniform finite sum per agent.",
+        "component_coefficients": [
+          [
+            [
+              1,
+              1,
+              2,
+              1,
+              2
+            ],
+            [
+              3,
+              1,
+              2,
+              1,
+              2
+            ]
+          ],
+          [
+            [
+              2,
+              1,
+              2,
+              -1,
+              -2
+            ],
+            [
+              4,
+              1,
+              2,
+              -1,
+              -2
+            ]
+          ]
+        ],
+        "initial_z": [
+          1,
+          0.25
+        ],
+        "y_interval": [
+          -0.5,
+          0.5
+        ],
+        "W": [
+          [
+            0.9,
+            0.1
+          ],
+          [
+            0.1,
+            0.9
+          ]
+        ],
+        "refresh_draws": [
+          0,
+          1,
+          0
+        ],
+        "active_draws": [
+          [
+            1,
+            0
+          ],
+          null,
+          [
+            0,
+            1
+          ]
+        ],
+        "sample_indices": [
+          [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          null,
+          [
+            [
+              1
+            ],
+            [
+              1
+            ]
+          ]
+        ],
+        "output_draw_index": 4
+      },
+      "parameters": {
+        "eta": 0.25,
+        "gamma": 0.5,
+        "p": 0.25,
+        "q": 0.5,
+        "b": 1,
+        "b_prime": 2,
+        "K0": 1,
+        "K": 1,
+        "K_prime": 2,
+        "T": 3,
+        "fastmix_return": "a^(K), exactly K effective recurrences",
+        "index_convention": "agent and sample indices zero based; output list is time-major x_0,...,x_(T-1)"
+      },
+      "atol": 1e-09,
+      "rtol": 1e-07,
+      "observation_schema": [
+        {
+          "step": 0,
+          "name": "z",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 0,
+          "name": "g",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 0,
+          "name": "s",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "pre_projection",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "projected",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "z",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "g",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "tracker_input",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "s",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mean_z",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "pre_projection",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "projected",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "z",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "g",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "tracker_input",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "s",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mean_z",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "pre_projection",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "projected",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "z",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "g",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "tracker_input",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "s",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "mean_z",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "output_candidates",
+          "shape": [
+            6
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_out",
+          "shape": []
+        }
+      ]
+    },
+    {
+      "id": "dream_two_sample_recursive_differences",
+      "purpose": "Two full unprojected iterations with nonidentical sampled Hessians and mini-batch size 2, testing paired sample differences, the 1/(bq) normalization, skipped estimator, and two-round accelerated mixing.",
+      "covers": [
+        "two_timescale_gda",
+        "fastmix_acceleration",
+        "recursive_sample_difference",
+        "bernoulli_agent_gating",
+        "recursive_gradient_tracking",
+        "uniform_historical_output"
+      ],
+      "inputs": {
+        "objective": "F_ij(x,y)=a*x^2/2+c*x*y-d*y^2/2+e*x+h*y; tuple [a,c,d,e,h]. Offline uniform finite sum per agent.",
+        "component_coefficients": [
+          [
+            [
+              1,
+              1,
+              2,
+              1,
+              2
+            ],
+            [
+              3,
+              2,
+              2,
+              1,
+              2
+            ],
+            [
+              2,
+              -1,
+              2,
+              1,
+              2
+            ]
+          ],
+          [
+            [
+              2,
+              -1,
+              3,
+              -1,
+              -2
+            ],
+            [
+              4,
+              1,
+              3,
+              -1,
+              -2
+            ],
+            [
+              3,
+              2,
+              3,
+              -1,
+              -2
+            ]
+          ]
+        ],
+        "initial_z": [
+          -0.5,
+          0.75
+        ],
+        "y_interval": null,
+        "W": [
+          [
+            0.9,
+            0.1
+          ],
+          [
+            0.1,
+            0.9
+          ]
+        ],
+        "refresh_draws": [
+          0,
+          0
+        ],
+        "active_draws": [
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "sample_indices": [
+          [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        ],
+        "output_draw_index": 3
+      },
+      "parameters": {
+        "eta": 0.125,
+        "gamma": 0.25,
+        "p": 0.25,
+        "q": 0.5,
+        "b": 2,
+        "b_prime": 3,
+        "K0": 2,
+        "K": 2,
+        "K_prime": 3,
+        "T": 2,
+        "fastmix_return": "a^(K), exactly K effective recurrences",
+        "index_convention": "agent and sample indices zero based; output list is time-major x_0,...,x_(T-1)"
+      },
+      "atol": 1e-09,
+      "rtol": 1e-07,
+      "observation_schema": [
+        {
+          "step": 0,
+          "name": "z",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 0,
+          "name": "g",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 0,
+          "name": "s",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "pre_projection",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "projected",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "z",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "g",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "tracker_input",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "s",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mean_z",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "pre_projection",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "projected",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "z",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "g",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "tracker_input",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "s",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mean_z",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "output_candidates",
+          "shape": [
+            4
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_out",
+          "shape": []
+        }
+      ]
+    }
+  ]
+}

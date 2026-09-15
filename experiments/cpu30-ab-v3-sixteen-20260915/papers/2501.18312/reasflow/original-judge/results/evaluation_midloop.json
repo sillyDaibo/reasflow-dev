@@ -1,0 +1,299 @@
+{
+  "paper_id": "2501.18312",
+  "evaluated_at": "2026-09-04T17:18:38.474042+00:00",
+  "summary": {
+    "total_score": 0.725,
+    "algorithm_impl_score": 0.7273,
+    "exp_setup_score": 0.7222,
+    "exp_results_score": 0.0,
+    "total_rubrics": 24,
+    "passed": 17,
+    "failed": 7,
+    "errors": 0,
+    "pass_threshold": 0.8,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.75,
+      "passed": 12,
+      "total": 16
+    },
+    "secondary": {
+      "score": 1.0,
+      "passed": 5,
+      "total": 5
+    },
+    "tertiary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 3
+    }
+  },
+  "results": [
+    {
+      "id": "alg-001",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The PPS quantized gradient oracle is defined as PPS(x, ξ, k, l) = (‖[G]_+‖_1 / M) Σ_{i=1}^M e_{k_i} - (‖[-G]_+‖_1 / M) Σ_{i=1}^M e_{l_i}, where G = G(x, ξ) is the mini-batch gradient, [G]_+ is the component-wise positive part, P_G(k) = [G_k]_+ / ‖[G]_+‖_1, and k, l ∈ {1,…,n}^M are samples from P_G and P_{-G} respectively.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_barycenter/pps.py, function pps_quantize (lines 41-54): positive = np.maximum(x, 0.0) is [G]_+, negative = np.maximum(-x, 0.0) is [-G]_+. simplex_quantize (lines 29-38) draws M indices proportional to the component probabilities (p/total, matching P_G(k)=[G_k]_+/‖[G]_+‖_1) and returns total * counts / M, which equals (‖[G]_+‖_1 / M) Σ e_{k_i}. pps_quantize returns simplex_quantize(positive,...) - simplex_quantize(negative,...), exactly matching (‖[G]_+‖_1/M)Σe_{k_i} - (‖[-G]_+‖_1/M)Σe_{l_i}. The docstring explicitly references \"Eq. (1)\".",
+      "note": "The function takes the gradient vector directly as input (no explicit ξ argument since the caller computes G(x,ξ) before calling); this is a standard interface refactoring that does not affect correctness of the formula.",
+      "error": false
+    },
+    {
+      "id": "alg-002",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 1 initialization: y_0 = 0; sample ξ_0, k_0, l_0; G_0 = PPS(y_0, ξ_0, k_0, l_0); x_0 = -(α_0/β_0) G_0; A_0 = α_0.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/pps_barycenter/algorithms.py, the initialization block (lines ~85-105) implements all Algorithm 1 steps: (1) y_0=0 via `dual = np.zeros(...)`, (2) sampling ξ_0/k_0/l_0 via `initial_batch, initial_m = sampling_counts(0)`, (3) G_0=PPS(y_0,...) via the per-node loop calling `_gradient_estimate(node, dual[:, node], ...)` storing results in `gradients`, (4) x_0 = -(α_0/β_0)G_0 via `mixed = gradients @ L.T` then `dual = -alpha / beta * mixed` (graph-Laplacian-weighted form for decentralized setting), and (5) A_0=α_0 via `alpha = 1.0 / np.sqrt(2.0)` and `A = alpha`.",
+      "note": "The `x_0 = -(α_0/β_0) G_0` step includes multiplication by the graph Laplacian L (as `mixed = gradients @ L.T`) which is expected for the decentralized variant (Algorithm 3 per the docstring). The initialization structure matches Algorithm 1 lines 1-4 faithfully.",
+      "error": false
+    },
+    {
+      "id": "alg-003",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 1 loop updates: z_t = -(1/β_t) Σ_{i=0}^t α_i G_i; A_{t+1} = A_t + α_{t+1}; τ_t = α_{t+1}/A_{t+1}; y_{t+1} = τ_t z_t + (1-τ_t) x_t; sample ξ_{t+1}, k_{t+1}, l_{t+1}; G_{t+1} = PPS(y_{t+1}, ξ_{t+1}, k_{t+1}, l_{t+1}); ŷ_{t+1} = z_t - (α_{t+1}/β_t) G_{t+1}; x_{t+1} = τ_t ŷ_{t+1} + (1-τ_t) x_t.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_barycenter/algorithms.py lines 128-150 implement all steps: z (line 133) = -(weighted_gradients @ L.T)/beta where weighted_gradients = Σ α_i G_i accumulated at lines 116+146; A_next = A + alpha_next (line 130); tau = alpha_next / A_next (line 131); mu (y_{t+1}) = tau * z + (1-tau) * dual (line 134); gradient computed via _gradient_estimate on mu (lines 138-144, PPS oracle); hat_mu (ŷ) = z - alpha_next/beta * (next_gradients @ L.T) (line 147); dual_next (x_{t+1}) = tau * hat_mu + (1-tau) * dual (line 148).",
+      "note": "The implementation adds Laplacian mixing (@ L.T) to the gradient terms for the decentralized setting (Algorithm 3), but the core iterates of Algorithm 1 (lines 6-13) are faithfully reproduced within this extension.",
+      "error": false
+    },
+    {
+      "id": "alg-004",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 2 initialization: μ_0 = 0; sample ξ_0, k_0, l_0; G_0 = PPS(μ_0, ξ_0, k_0, l_0); λ_0 = -(α_0/β_0) G_0; A_0 = α_0.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/pps_barycenter/algorithms.py (run_algorithm function): μ_0=0 via `dual = np.zeros(...)` (~line 76); α_0=1/√2 and A_0=α_0 via `alpha = 1.0 / np.sqrt(2.0); A = alpha` (~lines 80-81); β_0 set as `beta = smoothness + ...`; G_0 computed via `_gradient_estimate(node, dual[:,node], ...)` for each node using the zero dual (~lines 88-93); λ_0=-(α_0/β_0)·G_0 via `dual = -alpha / beta * mixed` where `mixed = gradients @ L.T` (~line 94); A_0=α_0 confirmed. All five initialization steps from Algorithm 2 lines 1-4 are present.",
+      "note": "The implementation is Algorithm 3 (decentralized), so the gradient uses a Laplacian mixing term (G_0 @ L.T) rather than a plain G_0, which is the correct decentralized generalization of Algorithm 2's λ_0 = -(α_0/β_0)·G_0. The core initialization structure matches the rubric.",
+      "error": false
+    },
+    {
+      "id": "alg-005",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 2 loop updates: z_t = -(1/β_t) Σ_{i=0}^t α_i G_i; A_{t+1} = A_t + α_{t+1}; τ_t = α_{t+1}/A_{t+1}; μ_{t+1} = τ_t z_t + (1-τ_t) λ_t; sample ξ_{t+1}, k_{t+1}, l_{t+1}; G_{t+1} = PPS(μ_{t+1}, ξ_{t+1}, k_{t+1}, l_{t+1}); μ̂_{t+1} = z_t - (α_{t+1}/β_t) G_{t+1}; λ_{t+1} = τ_t μ̂_{t+1} + (1-τ_t) λ_t; x_{t+1} = (1/A_{t+1}) Σ_{i=0}^{t+1} α_i x(-A^⊤ μ_i, ξ_i).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_barycenter/algorithms.py lines 128-151 implement all Algorithm 2 loop updates: (1) z = -(weighted_gradients @ L.T) / beta [line 133] matches z_t = -(1/β_t) Σ α_i G_i with `weighted_gradients` accumulating Σ α_i G_i [line 146]; (2) A_next = A + alpha_next [line 130]; (3) tau = alpha_next / A_next [line 131]; (4) mu = tau * z + (1-tau) * dual [line 134] matches μ_{t+1} = τ_t z_t + (1-τ_t) λ_t; (5) gradient sampling via _gradient_estimate on mu [lines 138-144] corresponds to sampling ξ, k, l and computing G_{t+1}=PPS(μ_{t+1},...); (6) hat_mu = z - alpha_next/beta * (next_gradients @ L.T) [line 147] matches μ̂_{t+1}; (7) dual_next = tau * hat_mu + (1-tau) * dual [line 148] matches λ_{t+1}; (8) primal = (alpha_next/A_next)*restored + (A/A_next)*primal [line 149] matches x_{t+1} = (1/A_{t+1}) Σ α_i x(...).",
+      "note": "The file is labeled \"Algorithm 3\" (decentralized multi-node variant), but it directly implements the Algorithm 2 loop update equations extended to the graph/Laplacian setting. The Laplacian L plays the role of the A^⊤ linear operator from Algorithm 2. All 9 specified update steps are present and match the rubric claim.",
+      "error": false
+    },
+    {
+      "id": "alg-006",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "In Algorithm 2, the primal variable restoring function is x(μ, ξ) = ∇F^*(-A^⊤ μ, ξ), where F^* is the stochastic oracle for the conjugate function f^*.",
+      "verdict": 0,
+      "confidence": "medium",
+      "evidence": "In `src/pps_barycenter/objectives.py`, `local_distribution(dual, samples, support, gamma, cost_scale)` computes `∇W*_gamma(dual)` — the gradient of the conjugate w.r.t. `dual`. In `algorithms.py` the primal is restored via `restored[:, node] = exact` where `exact = local_distribution(mu[:, node], ...)` (line ~110). The dual argument passed is `mu[:, node]` directly, not `-A^⊤ μ`. There is no explicit negation or matrix-transpose operation applied to `μ` before the oracle call. The paper's Algorithm 2 line 13 prescribes `x(μ,ξ) = ∇F*(-A^⊤ μ, ξ)` but the code omits the `-A^⊤` transformation entirely.",
+      "note": "The code implements Algorithm 3 (decentralized version), not Algorithm 2 directly. It is possible the `-A^⊤ μ` transformation is absorbed into how the node-local dual variables are maintained (the Laplacian L is used for gradient mixing), but no explicit `-A^⊤ μ` computation precedes the conjugate-gradient oracle call for primal restoration.",
+      "error": false
+    },
+    {
+      "id": "alg-007",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The coefficients α and β in Algorithms 1-3 must satisfy: α_0 ∈ (0,1], L < β_t ≤ β_{t+1}, and α_t^2 β_t ≤ β_{t-1} Σ_{i=0}^t α_i for all t, where L is the Lipschitz constant of ∇φ.",
+      "verdict": 0,
+      "confidence": "medium",
+      "evidence": "In src/pps_barycenter/algorithms.py: α_0 = 1/√2 ≈ 0.707 (satisfies ∈ (0,1]); β starts at smoothness + noise > smoothness = L and grows as smoothness + noise*(t+2)^1.5 (satisfies L < β_t ≤ β_{t+1}). However, the critical third condition — α_t² β_t ≤ β_{t-1} Σ_{i=0}^t α_i — is never explicitly enforced, checked, or asserted anywhere in the codebase. The α schedule is α_t = (t+1)/√2 (linear growth) and β_t ~ c*(t+2)^1.5, but no code validates the formal inequality. Neither the algorithm code (algorithms.py), tests (test_algorithm.py), nor any other file contains such a verification.",
+      "note": "The schedules used may happen to satisfy the condition mathematically, but the rubric asks whether the conditions are implemented/enforced. There is no explicit implementation or verification of the third algebraic condition, only implicit reliance on a specific schedule choice.",
+      "error": false
+    },
+    {
+      "id": "alg-008",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The dual oracle g(λ, ξ) used to construct the PPS oracle in the primal-dual method is defined as g(λ, ξ) = b - A ∇F^*(-A^⊤ λ, ξ), and satisfies E_ξ[g(λ, ξ)] = ∇φ(λ).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all Python source files in src/pps_barycenter/. The dual oracle in the code is implemented via `local_distribution()` in objectives.py (lines 13-29), which computes a Monte-Carlo softmax estimate—i.e., a gradient of the entropy-regularized Wasserstein conjugate for one node. In algorithms.py, `_gradient_estimate()` (lines 48-63) calls this function to produce gradient estimates used in the primal-dual update loop. However, the specific formula `g(λ, ξ) = b - A ∇F^*(-A^⊤ λ, ξ)` is never expressed: there is no explicit matrix `A`, vector `b`, or the composite expression `b - A * (gradient)` anywhere in the codebase. The property `E_ξ[g(λ, ξ)] = ∇φ(λ)` is also not stated or verified. The code implements the gradient oracle at a problem-specific level without the general primal-dual oracle structure from Section 3 Eq. (5).",
+      "note": "The Wasserstein barycenter problem likely reduces to this structure implicitly, but the paper's explicit oracle definition g(λ, ξ) = b - A ∇F^*(-A^⊤ λ, ξ) and its unbiasedness property are not directly implemented or documented in the code.",
+      "error": false
+    },
+    {
+      "id": "alg-009",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 3 (decentralised) initializes per node: μ_0^i = 0; sample ξ_0^i, k_0^i, l_0^i; G_0^i = PPS^i(μ_0^i, ξ_0^i, k_0^i, l_0^i); send G_0^i to neighbors; λ_0^i = -(α_0/β_0) Σ_{j∼i} W_{ij} G_0^j; A_0 = α_0.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/pps_barycenter/algorithms.py, the run_algorithm function implements all initialization steps: (1) μ_0^i = 0 via `dual = np.zeros((support.shape[0], nodes), dtype=float)` (line ~77); (2) sampling ξ_0^i, k_0^i, l_0^i via `_gradient_estimate(node, dual[:, node], ...)` per node in the pre-loop initialization block; (3) G_0^i computed as `gradients[:, node]` from `_gradient_estimate` using the PPS local distribution; (4) λ_0^i = -(α_0/β_0) Σ W_ij G_0^j via `mixed = gradients @ L.T` then `dual = -alpha / beta * mixed`; (5) A_0 = α_0 via `alpha = 1.0 / np.sqrt(2.0)` and `A = alpha` (A initialized to alpha before the iteration loop).",
+      "note": "The Laplacian L here encodes the graph structure such that `gradients @ L.T` computes the weighted neighbor sum equivalent to Σ_{j∼i} W_{ij} G_0^j. The primal variable is also initialized from the initial gradient estimates.",
+      "error": false
+    },
+    {
+      "id": "alg-010",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Algorithm 3 loop for each node i: z_t^i = -(1/β_t) Σ_{k=0}^t α_k Σ_{j∼i} W_{ij} G_k^j; μ_{t+1}^i = τ_t z_t^i + (1-τ_t) λ_t^i; sample ξ_{t+1}^i, k_{t+1}^i, l_{t+1}^i; G_{t+1}^i = PPS^i(μ_{t+1}^i, ξ_{t+1}^i, k_{t+1}^i, l_{t+1}^i); send G_{t+1}^i to neighbors; μ̂_{t+1}^i = z_t^i - (α_{t+1}/β_t) Σ_{j∼i} W_{ij} G_{t+1}^j; λ_{t+1}^i = τ_t μ̂_{t+1}^i + (1-τ_t) λ_t^i; x_{t+1}^i = (α_{t+1}/A_{t+1}) x^i(μ^i, ξ^i) + (A_t/A_{t+1}) x_t^i.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_barycenter/algorithms.py lines 128-151 implement all steps of Algorithm 3's inner loop: (1) z = -(weighted_gradients @ L.T) / beta [line 133] computes z_t^i = -(1/β_t) Σ_{k=0}^t α_k Σ_{j~i} W_{ij} G_k^j; (2) mu = tau * z + (1.0 - tau) * dual [line 134] computes μ_{t+1}^i; (3) _gradient_estimate(node, mu[:,node], ...) [lines 140-144] calls simplex_quantize/local_distribution (PPS) with samples ξ,k,l to get G_{t+1}^i; (4) weighted_gradients += alpha_next * next_gradients [line 146] accumulates Σ α_k G_k; (5) hat_mu = z - alpha_next / beta * (next_gradients @ L.T) [line 147] computes μ̂_{t+1}^i; (6) dual_next = tau * hat_mu + (1.0 - tau) * dual [line 148] computes λ_{t+1}^i; (7) primal = (alpha_next / A_next) * restored + (A / A_next) * primal [line 149] computes x_{t+1}^i.",
+      "note": "The neighbor communication is implicit via the Laplacian matrix multiplication (L.T), which encodes the weighted adjacency W_{ij} graph structure.",
+      "error": false
+    },
+    {
+      "id": "alg-011",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "In the simplified PPS oracle for the log-sum-exp problem when the gradient lies in the simplex (‖∇f(x)‖_1 = 1), the PPS oracle is defined as PPS(x, ξ, k) = (1/M) Σ_{i=1}^M e_{k_i}, with communicated bits M log_2 n.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_barycenter/pps.py: `simplex_quantize(probabilities, samples, rng)` samples M indices k_1,...,k_M proportionally to p and returns `total * counts / M`. When probabilities live on the unit simplex (total=1), this equals (1/M) Σ_{i=1}^M e_{k_i}, exactly matching eq.(10). The `communication_bits(dimension, samples, simplex=True)` function (same file) returns `samples * ceil(log2(dimension))` = M·log_2(n) bits. In algorithms.py, `simplex_quantize` is called with the output of `local_distribution` (a simplex vector) and `communication_bits(..., simplex=True)` tracks the cost, confirming both parts of the claim.",
+      "note": "The implementation correctly handles the unit-simplex special case (‖∇f(x)‖_1=1) by the `total` variable equaling 1, making the output exactly (1/M)Σe_{k_i}.",
+      "error": false
+    },
+    {
+      "id": "alg-012",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "In the Wasserstein barycenter problem, the dual function is W_{γ,μ}^*(λ) = γ log( (1/n) Σ_{i=1}^n exp( (λ_i - c(y_i, x))/γ ) ) + C, and its gradient with respect to λ_i is given by the softmax over the terms (λ_i - c(y_i, x))/γ, as stated in Lemma 3.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_barycenter/objectives.py implements both components of Lemma 3. (1) `local_dual_value`: computes `γ * logsumexp((λ_i - c(y_i,x))/γ)` summed/averaged over samples (the 1/n factor comes from `np.mean`), matching W_{γ,μ}^*(λ) = γ log((1/n) Σ exp((λ_i - c(y_i,x))/γ)) + C, where the `- γ * sample_log_density` term is the constant C. (2) `local_distribution`: computes `logits = (dual[:, None] - cost_scale * distances) / gamma`, then applies softmax normalization (`exp(logits) / sum(exp(logits))`), and returns `probabilities.mean(axis=1)` — this is exactly the gradient ∂W*/∂λ_i = softmax over (λ_i - c(y_i,x))/γ as stated in Lemma 3.",
+      "note": "The cost `c(y_i, x)` is squared Euclidean distance computed as `distances = ((support[:, None, :] - samples[None, :, :]) ** 2).sum(axis=2)`, with an optional `cost_scale` factor.",
+      "error": false
+    },
+    {
+      "id": "setup-001",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The distributions µ^i are Gaussian with randomly generated mean and variance parameters.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_barycenter/data.py defines `gaussian_parameters(nodes, seed)` which generates random means via `rng.uniform(-4.0, 4.0, size=nodes)` and random sigmas via `rng.uniform(0.1, 0.6, size=nodes)`. In scripts/run_formal.py line 104, this is called as `means, sigmas = gaussian_parameters(nodes, seed=seed)` for the Gaussian experiments. In src/pps_barycenter/algorithms.py line 38, these parameters are used to sample from Gaussian distributions via `rng.normal(mean, sigma, size=(batch, 1))`. The experiment metadata (run_formal.py line 108) explicitly records `\"mean_range\": [-4, 4], \"sigma_range\": [0.1, 0.6]`.",
+      "note": "The distributions are parameterized by randomly drawn means (uniform in [-4,4]) and standard deviations (uniform in [0.1, 0.6]), consistent with Gaussian µ^i distributions with randomly generated mean and variance parameters.",
+      "error": false
+    },
+    {
+      "id": "setup-002",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "The network topologies considered are Path, Cycle, Star, Erdős–Rényi, and Complete.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_barycenter/graphs.py implements all five topologies: Path (lines 35-37, \"bi-path\"), Cycle (lines 38-40), Star (lines 41-43), Complete (lines 44-46), and Erdős–Rényi (lines 47-48). scripts/run_formal.py line 47 explicitly configures the gaussian_topologies experiment with \"topologies\": [\"bi_path\", \"cycle\", \"star\", \"erdos_renyi\", \"complete\"].",
+      "note": "The \"Path\" topology is referred to as \"bi_path\" in the code, which is treated as equivalent to a path graph (bidirectional path). The config in formal.json also lists these same topologies for the gaussian_topologies experiment.",
+      "error": false
+    },
+    {
+      "id": "setup-003",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "The number of nodes in the network is 30 for the experiments with different graph topologies.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scripts/run_formal.py, the \"gaussian_topologies\" experiment (lines 43-54) explicitly sets \"nodes\": 30, along with topologies [\"bi_path\", \"cycle\", \"star\", \"erdos_renyi\", \"complete\"] and dataset \"gaussian\". This is corroborated by results/formal/gaussian_topologies/config.json which also has \"nodes\": 30.",
+      "note": "The experiment key is \"gaussian_topologies\", which corresponds to the claim's experiment_id \"exp1_gaussian_wb\" for graph topology experiments with the Gaussian dataset.",
+      "error": false
+    },
+    {
+      "id": "setup-004",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "Algorithm 3 was run with M_t = 1 and r_t = 10.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_barycenter/algorithms.py line 1 declares \"Primal-dual decentralized PPS algorithm (Algorithm 3) and AGM baseline\"; line 67 docstring: \"Run Algorithm 3; quantization_samples=None is the AGM baseline.\" The gaussian_constant experiment in scripts/run_formal.py sets \"r\": 10 and includes method \"PPS-M1\": {\"M\": 1}, corresponding to M_t=1 and r_t=10. results/formal/gaussian_constant/config.json confirms the actual run used r=10 with PPS-M1 (M=1). Output files final_PPS-M1_bi_path_seed{0,1,2}.npz and plot_PPS-M1_*.csv exist, confirming execution completed.",
+      "note": "r_t=10 is a constant schedule (sampling_schedule=constant), so M_t=1 and r_t=10 are constant across iterations, matching the §6.2 description for the gaussian_constant experiment.",
+      "error": false
+    },
+    {
+      "id": "setup-005",
+      "dimension": "exp_setup",
+      "priority": "tertiary",
+      "description": "Algorithm 3 was run for k = 10, 100, 200, and 500 iterations to produce the visualizations in Figure 2(b).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all scripts, configs, source files, and results directories. The gaussian_constant experiment runs Algorithm 3 for exactly 5000 iterations (scripts/run_formal.py:35), storing only final iterates (final_PPS-M*.npz, final_AGM*.npz) and barycenter images at the end of the full run. There are no snapshots/checkpoints at k=10, 100, 200, 500 iterations. No config, script, or result file references iteration counts of 10/100/200/500 or Figure 2(b) visualizations. The experiment report (docs/experiment_report.md) and CLAIMS.json describe Figure 2 in terms of MNIST barycenters only, not iteration-snapshot progression for Gaussian.",
+      "note": "The paper's Figure 2(b) may show barycenter evolution at iteration checkpoints k=10,100,200,500, but this reproduction codebase does not implement that setup. M-values (M in {1,10,100}) are used as the main variation axis, not iteration snapshots.",
+      "error": false
+    },
+    {
+      "id": "setup-006",
+      "dimension": "exp_setup",
+      "priority": "tertiary",
+      "description": "The simulation was performed on a single personal computer with an Apple M2 chip, 8-core CPU, and 8GB of unified memory.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all files (docs/experiment_report.md, README.md, CLAIMS.json, CLAIM_RESULTS.json, configs/, scripts/) for \"M2\", \"Apple\", \"MacBook\", \"unified memory\", \"8GB\", \"8-core\", \"silicon\", \"ARM\". No matches found. The experiment_report.md references \"8 available CPU cores\" and \"reference CPU\" generically, but never identifies the hardware as an Apple M2 chip with 8-core CPU and 8GB unified memory. README.md similarly uses \"reference CPU\" without specifying the machine.",
+      "note": "The repository documents CPU core count (8) but does not specify the processor architecture, vendor, or memory type/amount. The claim about Apple M2 specifics appears to come from the paper's §6.2 but is not reproduced in the repository's documentation or configuration files.",
+      "error": false
+    },
+    {
+      "id": "setup-007",
+      "dimension": "exp_setup",
+      "priority": "tertiary",
+      "description": "The experiments were run on a single personal computer with an Apple M2 chip, 8-core CPU, and 8GB of unified memory.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all repository files (docs/experiment_report.md, CLAIMS.json, README.md, all .py/.toml/.json/.txt files) for \"Apple\", \"M2\", \"unified memory\", \"8GB\", \"personal computer\", \"macOS\", \"arm\". No matches found. The experiment_report.md only mentions \"8 available CPU cores\" generically, with no reference to Apple hardware, M2 chip, or 8GB unified memory.",
+      "note": "The report documents the experimental environment as Python 3.10 with 8 CPU cores, but does not specify the hardware platform as Apple M2 or any other specific CPU/memory configuration.",
+      "error": false
+    },
+    {
+      "id": "setup-008",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "In the MNIST experiment, the dataset consists of 40 images of the digit '2' from MNIST, each of size 100×100 pixels, vectorized to dimension n = 10^4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pps_barycenter/data.py: load_mnist_twos() selects the first `nodes=40` training images labelled '2' (line: `selected = images[labels == 2][:nodes]`), resizes them to `image_size=100` (100×100) via `_resize_nearest`, then flattens with `flat = resized.reshape(nodes, -1)` yielding vectors of length 10^4. scripts/run_formal.py confirms `\"nodes\": 40` in the mnist config and uses `reshape(100, 100)` for display.",
+      "note": "The original MNIST images are 28×28 and are resized to 100×100 via nearest-neighbor interpolation before vectorization.",
+      "error": false
+    },
+    {
+      "id": "setup-009",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "The network for the MNIST experiment is a random Erdős–Rényi graph.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scripts/run_formal.py line 73: MNIST experiment config sets \"topology\": \"erdos_renyi\" with \"edge_probability\": 0.2. src/pps_barycenter/graphs.py line 8 implements `_connected_erdos_renyi` and line 47-48 maps the \"erdos-renyi\"/\"erdosrenyi\"/\"random\" topology keys to that function. configs/formal.json line 9 documents \"Erdos-Renyi\" as the network for the MNIST experiment. Run logs in results/logs/mnist_formal-20260904-233528.log confirm execution with topology=erdos_renyi.",
+      "note": "The implementation seeds the ER graph with a path backbone to ensure connectivity, which the code comments as \"a reproducible interpretation of the random Erdos-Renyi graph used in the paper's experiment.\"",
+      "error": false
+    },
+    {
+      "id": "setup-010",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "Algorithm 3 (decentralised primal-dual fast gradient method) with PPS quantization is used for the MNIST experiment.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scripts/run_formal.py defines an \"mnist\" experiment (dataset=\"mnist_twos\", nodes=40, iterations=5000, topology=\"erdos_renyi\") with methods {\"PPS-M1-r1\": {\"M\": 1}, \"PPS-M10-r1\": {\"M\": 10}, \"AGM-r1\": {\"M\": None}}. src/pps_barycenter/algorithms.py implements run_algorithm(), documented as \"Run Algorithm 3; quantization_samples=None is the AGM baseline\", which calls simplex_quantize() (PPS quantization) from pps.py when M is not None. CLAIMS.json claim C3 confirms \"Algorithm 3 PPS M=1\", \"Algorithm 3 PPS M=10\", and \"AGM unquantized\" are run on \"MNIST training digit 2, first 40 images, 100x100 support\". configs/formal.json also describes the MNIST experiment as \"5000 iterations, 40 digit-2 images resized 100x100, Erdos-Renyi, r=1, M in {1,10}, AGM baseline\".",
+      "note": "The implementation uses PPS quantization (simplex_quantize) within Algorithm 3 for the MNIST experiment with M in {1, 10} and AGM baseline with M=None. All components match the rubric claim.",
+      "error": false
+    },
+    {
+      "id": "setup-011",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "Algorithm 3 is run for 5000 iterations on the MNIST experiment.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scripts/run_formal.py (lines ~71-85), the \"mnist\" experiment config sets \"iterations\": 5000 for dataset \"mnist_twos\", topology \"erdos_renyi\", nodes=40, with methods PPS-M1-r1, PPS-M10-r1, and AGM-r1 (Algorithm 3 variants). The results confirm this: results/formal/mnist/config.json has \"iterations\": 5000; results/formal/mnist/summary.csv and metrics.csv show all runs ending at iteration 5000; results/formal/mnist/plot_PPS-M1-r1.csv and plot_PPS-M10-r1.csv have final entries at iteration 5000. The configs/formal.json also documents \"mnist\": \"5000 iterations, 40 digit-2 images...\".",
+      "note": "The MNIST experiment runs PPS (Algorithm 3) and AGM, both for 5000 iterations, matching the paper's §6.2/Figure 2(a) description.",
+      "error": false
+    },
+    {
+      "id": "setup-012",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "In one configuration, Algorithm 3 uses constant batch size r_t = 100 and quantization sample size M_t = 100.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In scripts/run_formal.py, the \"mnist\" experiment config sets r=1 and methods with M in {1, 10} only (no M=100 variant). The gaussian_constant experiment has M=100 but that is on Gaussian data, not MNIST. configs/formal.json describes mnist as \"r=1, M in {1,10}\". CLAIM_RESULTS.json explicitly notes \"The paper's r=100 image setting and exact hidden preprocessing are not reproduced.\" No config, script, or results directory contains an MNIST run with r_t=100 and M_t=100.",
+      "note": "The rubric asks for Algorithm 3 on MNIST with constant r_t=100 and M_t=100 (Figure 2(a) variant). The repo only implements MNIST with r=1 and M∈{1,10}.",
+      "error": false
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "scope": "Read-only deterministic diagnostic; does not rerun or modify benchmark",
+  "source": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2212.02387/ReasFlow\u5b9e\u9a8cAgent-\u5b8c\u6574\u590d\u73b0-Goal/\u7b2c003\u6b21\u8fd0\u884c/workspace/src/dream_reproduction/objective.py",
+  "features": [
+    [
+      1.0,
+      2.0
+    ],
+    [
+      -0.5,
+      1.0
+    ],
+    [
+      2.0,
+      -0.4
+    ],
+    [
+      0.3,
+      0.7
+    ]
+  ],
+  "labels": [
+    1.0,
+    -1.0,
+    1.0,
+    -1.0
+  ],
+  "samples": 4,
+  "x": [
+    0.2,
+    -0.3
+  ],
+  "epsilon": 1e-06,
+  "regularizer_lambda2": 0.0,
+  "primal_value": 0.688671574928567,
+  "simplex_maximizer": [
+    0.5346250907114387,
+    0.1346250907114387,
+    0.08818293247610409,
+    0.24256688610101818
+  ],
+  "finite_difference_gradient": [
+    -0.37918394574232295,
+    -0.49442555638545826
+  ],
+  "finite_difference_norm": 0.6230867479860143,
+  "function_returned_gradient_norm": 0.155771686978568,
+  "ratio": 4.0000000004605605,
+  "finding": "Returned gradient norm is 1/N of derivative of returned primal value when lambda2=0."
+}

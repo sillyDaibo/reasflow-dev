@@ -1,0 +1,22 @@
+[
+  {
+    "path": "rr_prox_fed/methods.py",
+    "symbol": "prox_rr"
+  },
+  {
+    "path": "rr_prox_fed/losses.py",
+    "symbol": "LogisticElasticNet.gradient_batch"
+  },
+  {
+    "path": "rr_prox_fed/losses.py",
+    "symbol": "elastic_net_prox"
+  },
+  {
+    "path": "rr_prox_fed/federated.py",
+    "symbol": "fed_rr"
+  },
+  {
+    "path": "rr_prox_fed/federated.py",
+    "symbol": "_run"
+  }
+]

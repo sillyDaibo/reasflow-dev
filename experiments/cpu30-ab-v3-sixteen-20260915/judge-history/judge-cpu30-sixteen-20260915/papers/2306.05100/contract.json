@@ -1,0 +1,755 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2306.05100",
+    "title": "Communication-Efficient Gradient Descent-Accent Methods for Distributed Variational Inequalities: Unified Analysis and Local Updates",
+    "sha256": "e3403d50335aef71f975dd1ea908d645873f04aaf0b34d5c9d388cf7b50e14a2"
+  },
+  "algorithm": {
+    "name": "ProxSkip-VIP-FL / deterministic ProxSkip-GDA-FL (Algorithm 2)",
+    "citations": [
+      "PDF p.7, Section 4 and Algorithm 2 lines 1-13",
+      "PDF p.8, Assumption 4.1"
+    ],
+    "core_mechanisms": [
+      "controlled_local_step",
+      "corrected_communication_average",
+      "control_variate_update"
+    ],
+    "assumptions": [
+      "Each local saddle operator has positive definite symmetric part and is smooth.",
+      "Full deterministic operator is an unbiased zero-variance oracle.",
+      "Coin outcomes are fixed supported realizations of the stated Bernoulli law.",
+      "Initial worker points agree and initial control vectors sum to zero.",
+      "Finite trajectories only; no claim of proving communication complexity, nonmonotone theory, or loopless-SVRG variants."
+    ]
+  },
+  "cases": [
+    {
+      "id": "skip_then_communicate",
+      "purpose": "Exercise skip and communication branches with heterogeneous saddle operators and persistent nonzero control variates.",
+      "covers": [
+        "controlled_local_step",
+        "corrected_communication_average",
+        "control_variate_update"
+      ],
+      "inputs": {
+        "workers": 2,
+        "network": "All workers communicate synchronously through one server; uniform averaging over every worker.",
+        "coordinates": "Each row is worker state [u,v] for min_u max_v.",
+        "operator_matrices": [
+          [
+            [
+              2,
+              1
+            ],
+            [
+              -1,
+              3
+            ]
+          ],
+          [
+            [
+              4,
+              -2
+            ],
+            [
+              2,
+              2
+            ]
+          ]
+        ],
+        "operator_offsets": [
+          [
+            1,
+            -2
+          ],
+          [
+            -3,
+            1
+          ]
+        ],
+        "objective": "Local saddle loss L_i(u,v)=A_i[0,0]*u^2/2+A_i[0,1]*u*v-A_i[1,1]*v^2/2+b_i[0]*u-b_i[1]*v. Operator g_i=[dL_i/du,-dL_i/dv]=A_i*[u,v]+b_i. Global saddle loss is the mean of local losses.",
+        "x0": [
+          [
+            1,
+            -1
+          ],
+          [
+            1,
+            -1
+          ]
+        ],
+        "h0": [
+          [
+            0.5,
+            -0.25
+          ],
+          [
+            -0.5,
+            0.25
+          ]
+        ],
+        "oracle": "Use full deterministic local saddle operator at current x_i; no sampling noise.",
+        "communication_coins": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "randomness": "Condition on exactly the listed server Bernoulli outcomes in chronological order; p=1/2. No extra draws.",
+        "observations": "step s=t+1 denotes completion of lines 4-11 for the t-th listed coin. operator_used is evaluated at pre-update x; x_hat precedes communication; x and h follow line 11. mean_x is post-update uniform mean; communication_count includes this step."
+      },
+      "parameters": {
+        "gamma": 0.1,
+        "p": 0.5,
+        "number_of_updates": 4,
+        "loop_index_convention": "Execute exactly four t values 0,1,2,3 (Algorithm 2 prints inclusive 0,...,T; set its T=3)."
+      },
+      "atol": 1e-10,
+      "rtol": 1e-10,
+      "expected": [
+        {
+          "step": 1,
+          "name": "operator_used",
+          "value": [
+            [
+              2.0,
+              -6.0
+            ],
+            [
+              3.0,
+              1.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x_hat",
+          "value": [
+            [
+              0.85,
+              -0.425
+            ],
+            [
+              0.65,
+              -1.075
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x",
+          "value": [
+            [
+              0.85,
+              -0.425
+            ],
+            [
+              0.65,
+              -1.075
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "h",
+          "value": [
+            [
+              0.5,
+              -0.25
+            ],
+            [
+              -0.5,
+              0.25
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mean_x",
+          "value": [
+            0.75,
+            -0.75
+          ]
+        },
+        {
+          "step": 1,
+          "name": "communication_count",
+          "value": 0.0
+        },
+        {
+          "step": 2,
+          "name": "operator_used",
+          "value": [
+            [
+              2.275,
+              -4.125
+            ],
+            [
+              1.75,
+              0.15
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_hat",
+          "value": [
+            [
+              0.6725,
+              -0.0375
+            ],
+            [
+              0.425,
+              -1.065
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x",
+          "value": [
+            [
+              0.54875,
+              -0.55125
+            ],
+            [
+              0.54875,
+              -0.55125
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "h",
+          "value": [
+            [
+              -0.11875,
+              -2.81875
+            ],
+            [
+              0.11875,
+              2.81875
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mean_x",
+          "value": [
+            0.54875,
+            -0.55125
+          ]
+        },
+        {
+          "step": 2,
+          "name": "communication_count",
+          "value": 1.0
+        },
+        {
+          "step": 3,
+          "name": "operator_used",
+          "value": [
+            [
+              1.54625,
+              -4.2025
+            ],
+            [
+              0.2975,
+              0.995
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_hat",
+          "value": [
+            [
+              0.38225,
+              -0.412875
+            ],
+            [
+              0.530875,
+              -0.368875
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x",
+          "value": [
+            [
+              0.38225,
+              -0.412875
+            ],
+            [
+              0.530875,
+              -0.368875
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "h",
+          "value": [
+            [
+              -0.11875,
+              -2.81875
+            ],
+            [
+              0.11875,
+              2.81875
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "mean_x",
+          "value": [
+            0.4565625,
+            -0.390875
+          ]
+        },
+        {
+          "step": 3,
+          "name": "communication_count",
+          "value": 1.0
+        },
+        {
+          "step": 4,
+          "name": "operator_used",
+          "value": [
+            [
+              1.351625,
+              -3.620875
+            ],
+            [
+              -0.13875,
+              1.324
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x_hat",
+          "value": [
+            [
+              0.2352125,
+              -0.3326625
+            ],
+            [
+              0.556625,
+              -0.2194
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x",
+          "value": [
+            [
+              0.39591875,
+              -0.27603125
+            ],
+            [
+              0.39591875,
+              -0.27603125
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "h",
+          "value": [
+            [
+              0.68478125,
+              -2.53559375
+            ],
+            [
+              -0.68478125,
+              2.53559375
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "mean_x",
+          "value": [
+            0.39591875,
+            -0.27603125
+          ]
+        },
+        {
+          "step": 4,
+          "name": "communication_count",
+          "value": 2.0
+        }
+      ],
+      "derivation": "PDF p.7 Algorithm 2: hat=x-gamma*(g-h); when coin=1, x=mean(hat-gamma/p*h), otherwise x=hat; h_next=h+p/gamma*(x_next-hat). All operations are exact rational arithmetic and conversion to JSON float happens once. 1:operator_used=[[Fraction(2, 1), Fraction(-6, 1)], [Fraction(3, 1), Fraction(1, 1)]]\n1:x_hat=[[Fraction(17, 20), Fraction(-17, 40)], [Fraction(13, 20), Fraction(-43, 40)]]\n1:x=[[Fraction(17, 20), Fraction(-17, 40)], [Fraction(13, 20), Fraction(-43, 40)]]\n1:h=[[Fraction(1, 2), Fraction(-1, 4)], [Fraction(-1, 2), Fraction(1, 4)]]\n1:mean_x=[Fraction(3, 4), Fraction(-3, 4)]\n1:communication_count=0\n2:operator_used=[[Fraction(91, 40), Fraction(-33, 8)], [Fraction(7, 4), Fraction(3, 20)]]\n2:x_hat=[[Fraction(269, 400), Fraction(-3, 80)], [Fraction(17, 40), Fraction(-213, 200)]]\n2:x=[[Fraction(439, 800), Fraction(-441, 800)], [Fraction(439, 800), Fraction(-441, 800)]]\n2:h=[[Fraction(-19, 160), Fraction(-451, 160)], [Fraction(19, 160), Fraction(451, 160)]]\n2:mean_x=[Fraction(439, 800), Fraction(-441, 800)]\n2:communication_count=1\n3:operator_used=[[Fraction(1237, 800), Fraction(-1681, 400)], [Fraction(119, 400), Fraction(199, 200)]]\n3:x_hat=[[Fraction(1529, 4000), Fraction(-3303, 8000)], [Fraction(4247, 8000), Fraction(-2951, 8000)]]\n3:x=[[Fraction(1529, 4000), Fraction(-3303, 8000)], [Fraction(4247, 8000), Fraction(-2951, 8000)]]\n3:h=[[Fraction(-19, 160), Fraction(-451, 160)], [Fraction(19, 160), Fraction(451, 160)]]\n3:mean_x=[Fraction(1461, 3200), Fraction(-3127, 8000)]\n3:communication_count=1\n4:operator_used=[[Fraction(10813, 8000), Fraction(-28967, 8000)], [Fraction(-111, 800), Fraction(331, 250)]]\n4:x_hat=[[Fraction(18817, 80000), Fraction(-26613, 80000)], [Fraction(4453, 8000), Fraction(-1097, 5000)]]\n4:x=[[Fraction(63347, 160000), Fraction(-8833, 32000)], [Fraction(63347, 160000), Fraction(-8833, 32000)]]\n4:h=[[Fraction(21913, 32000), Fraction(-81139, 32000)], [Fraction(-21913, 32000), Fraction(81139, 32000)]]\n4:mean_x=[Fraction(63347, 160000), Fraction(-8833, 32000)]\n4:communication_count=2"
+    },
+    {
+      "id": "communicate_then_skip",
+      "purpose": "Exercise skip and communication branches with heterogeneous saddle operators and persistent nonzero control variates.",
+      "covers": [
+        "controlled_local_step",
+        "corrected_communication_average",
+        "control_variate_update"
+      ],
+      "inputs": {
+        "workers": 2,
+        "network": "All workers communicate synchronously through one server; uniform averaging over every worker.",
+        "coordinates": "Each row is worker state [u,v] for min_u max_v.",
+        "operator_matrices": [
+          [
+            [
+              3,
+              -1
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          [
+            [
+              2,
+              2
+            ],
+            [
+              -2,
+              4
+            ]
+          ]
+        ],
+        "operator_offsets": [
+          [
+            -2,
+            1
+          ],
+          [
+            1,
+            -3
+          ]
+        ],
+        "objective": "Local saddle loss L_i(u,v)=A_i[0,0]*u^2/2+A_i[0,1]*u*v-A_i[1,1]*v^2/2+b_i[0]*u-b_i[1]*v. Operator g_i=[dL_i/du,-dL_i/dv]=A_i*[u,v]+b_i. Global saddle loss is the mean of local losses.",
+        "x0": [
+          [
+            -1,
+            2
+          ],
+          [
+            -1,
+            2
+          ]
+        ],
+        "h0": [
+          [
+            1,
+            0.5
+          ],
+          [
+            -1,
+            -0.5
+          ]
+        ],
+        "oracle": "Use full deterministic local saddle operator at current x_i; no sampling noise.",
+        "communication_coins": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "randomness": "Condition on exactly the listed server Bernoulli outcomes in chronological order; p=1/2. No extra draws.",
+        "observations": "step s=t+1 denotes completion of lines 4-11 for the t-th listed coin. operator_used is evaluated at pre-update x; x_hat precedes communication; x and h follow line 11. mean_x is post-update uniform mean; communication_count includes this step."
+      },
+      "parameters": {
+        "gamma": 0.1,
+        "p": 0.5,
+        "number_of_updates": 4,
+        "loop_index_convention": "Execute exactly four t values 0,1,2,3 (Algorithm 2 prints inclusive 0,...,T; set its T=3)."
+      },
+      "atol": 1e-10,
+      "rtol": 1e-10,
+      "expected": [
+        {
+          "step": 1,
+          "name": "operator_used",
+          "value": [
+            [
+              -7.0,
+              4.0
+            ],
+            [
+              3.0,
+              7.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x_hat",
+          "value": [
+            [
+              -0.2,
+              1.65
+            ],
+            [
+              -1.4,
+              1.25
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x",
+          "value": [
+            [
+              -0.8,
+              1.45
+            ],
+            [
+              -0.8,
+              1.45
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "h",
+          "value": [
+            [
+              -2.0,
+              -0.5
+            ],
+            [
+              2.0,
+              0.5
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mean_x",
+          "value": [
+            -0.8,
+            1.45
+          ]
+        },
+        {
+          "step": 1,
+          "name": "communication_count",
+          "value": 1.0
+        },
+        {
+          "step": 2,
+          "name": "operator_used",
+          "value": [
+            [
+              -5.85,
+              3.1
+            ],
+            [
+              2.3,
+              4.4
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_hat",
+          "value": [
+            [
+              -0.415,
+              1.09
+            ],
+            [
+              -0.83,
+              1.06
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x",
+          "value": [
+            [
+              -0.415,
+              1.09
+            ],
+            [
+              -0.83,
+              1.06
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "h",
+          "value": [
+            [
+              -2.0,
+              -0.5
+            ],
+            [
+              2.0,
+              0.5
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mean_x",
+          "value": [
+            -0.6225,
+            1.075
+          ]
+        },
+        {
+          "step": 2,
+          "name": "communication_count",
+          "value": 1.0
+        },
+        {
+          "step": 3,
+          "name": "operator_used",
+          "value": [
+            [
+              -4.335,
+              2.765
+            ],
+            [
+              1.46,
+              2.9
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_hat",
+          "value": [
+            [
+              -0.1815,
+              0.7635
+            ],
+            [
+              -0.776,
+              0.82
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x",
+          "value": [
+            [
+              -0.47875,
+              0.79175
+            ],
+            [
+              -0.47875,
+              0.79175
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "h",
+          "value": [
+            [
+              -3.48625,
+              -0.35875
+            ],
+            [
+              3.48625,
+              0.35875
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "mean_x",
+          "value": [
+            -0.47875,
+            0.79175
+          ]
+        },
+        {
+          "step": 3,
+          "name": "communication_count",
+          "value": 2.0
+        },
+        {
+          "step": 4,
+          "name": "operator_used",
+          "value": [
+            [
+              -4.228,
+              2.10475
+            ],
+            [
+              1.626,
+              1.1245
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x_hat",
+          "value": [
+            [
+              -0.404575,
+              0.5454
+            ],
+            [
+              -0.292725,
+              0.715175
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x",
+          "value": [
+            [
+              -0.404575,
+              0.5454
+            ],
+            [
+              -0.292725,
+              0.715175
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "h",
+          "value": [
+            [
+              -3.48625,
+              -0.35875
+            ],
+            [
+              3.48625,
+              0.35875
+            ]
+          ]
+        },
+        {
+          "step": 4,
+          "name": "mean_x",
+          "value": [
+            -0.34865,
+            0.6302875
+          ]
+        },
+        {
+          "step": 4,
+          "name": "communication_count",
+          "value": 2.0
+        }
+      ],
+      "derivation": "PDF p.7 Algorithm 2: hat=x-gamma*(g-h); when coin=1, x=mean(hat-gamma/p*h), otherwise x=hat; h_next=h+p/gamma*(x_next-hat). All operations are exact rational arithmetic and conversion to JSON float happens once. 1:operator_used=[[Fraction(-7, 1), Fraction(4, 1)], [Fraction(3, 1), Fraction(7, 1)]]\n1:x_hat=[[Fraction(-1, 5), Fraction(33, 20)], [Fraction(-7, 5), Fraction(5, 4)]]\n1:x=[[Fraction(-4, 5), Fraction(29, 20)], [Fraction(-4, 5), Fraction(29, 20)]]\n1:h=[[Fraction(-2, 1), Fraction(-1, 2)], [Fraction(2, 1), Fraction(1, 2)]]\n1:mean_x=[Fraction(-4, 5), Fraction(29, 20)]\n1:communication_count=1\n2:operator_used=[[Fraction(-117, 20), Fraction(31, 10)], [Fraction(23, 10), Fraction(22, 5)]]\n2:x_hat=[[Fraction(-83, 200), Fraction(109, 100)], [Fraction(-83, 100), Fraction(53, 50)]]\n2:x=[[Fraction(-83, 200), Fraction(109, 100)], [Fraction(-83, 100), Fraction(53, 50)]]\n2:h=[[Fraction(-2, 1), Fraction(-1, 2)], [Fraction(2, 1), Fraction(1, 2)]]\n2:mean_x=[Fraction(-249, 400), Fraction(43, 40)]\n2:communication_count=1\n3:operator_used=[[Fraction(-867, 200), Fraction(553, 200)], [Fraction(73, 50), Fraction(29, 10)]]\n3:x_hat=[[Fraction(-363, 2000), Fraction(1527, 2000)], [Fraction(-97, 125), Fraction(41, 50)]]\n3:x=[[Fraction(-383, 800), Fraction(3167, 4000)], [Fraction(-383, 800), Fraction(3167, 4000)]]\n3:h=[[Fraction(-2789, 800), Fraction(-287, 800)], [Fraction(2789, 800), Fraction(287, 800)]]\n3:mean_x=[Fraction(-383, 800), Fraction(3167, 4000)]\n3:communication_count=2\n4:operator_used=[[Fraction(-1057, 250), Fraction(8419, 4000)], [Fraction(813, 500), Fraction(2249, 2000)]]\n4:x_hat=[[Fraction(-16183, 40000), Fraction(2727, 5000)], [Fraction(-11709, 40000), Fraction(28607, 40000)]]\n4:x=[[Fraction(-16183, 40000), Fraction(2727, 5000)], [Fraction(-11709, 40000), Fraction(28607, 40000)]]\n4:h=[[Fraction(-2789, 800), Fraction(-287, 800)], [Fraction(2789, 800), Fraction(287, 800)]]\n4:mean_x=[Fraction(-6973, 20000), Fraction(50423, 80000)]\n4:communication_count=2"
+    }
+  ]
+}

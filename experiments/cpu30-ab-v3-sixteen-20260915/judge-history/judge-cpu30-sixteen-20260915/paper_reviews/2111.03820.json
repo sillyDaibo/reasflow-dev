@@ -1,0 +1,34 @@
+{
+  "schema_version": "optirepro.paper_review.v1",
+  "contract_digest": "59b1104693f3a20548e73efd4d1c086d1697967c88c40c0b519e25dbf50c016b",
+  "reviewer_id": "paper16_c-independent-cross-review",
+  "basis": "original_paper_only",
+  "decision": "approved",
+  "summary": "Approved for the explicitly supplied consensus mappings: independent 100-digit logistic recomputation matches all 84 numeric leaves exactly after binary64 rounding. Ordered local gradients, epoch consensus and exactly one proximal shrinkage follow Eqs. (7),(8),(10).",
+  "cases": [
+    {
+      "case_id": "logistic_mixed_sign",
+      "decision": "approved",
+      "reason": "Recomputed all three epochs from the stated signed-feature logistic gradients; applied the listed without-replacement ordering, then Lambda and one gamma-scaled l1 prox. Complete inner states, gradients, pre-prox consensus and post-prox values agree. Positive/negative/zero proximal branches are exercised across the two cases.",
+      "citations": [
+        "PDF p.4 Eqs. (7)-(10), Algorithm 1",
+        "PDF p.4 Example 1, Assumption III.2"
+      ]
+    },
+    {
+      "case_id": "logistic_threshold",
+      "decision": "approved",
+      "reason": "Recomputed all three epochs from the stated signed-feature logistic gradients; applied the listed without-replacement ordering, then Lambda and one gamma-scaled l1 prox. Complete inner states, gradients, pre-prox consensus and post-prox values agree. Positive/negative/zero proximal branches are exercised across the two cases.",
+      "citations": [
+        "PDF p.4 Eqs. (7)-(10), Algorithm 1",
+        "PDF p.4 Example 1, Assumption III.2"
+      ]
+    }
+  ],
+  "scope_notes": [
+    "The matrices Lambda are fixed experimental inputs. Eq. (9) prints t+1 factors while nearby prose says t communications; the explicit Lambda convention makes this arithmetic unique, but the test does not approve any particular communication scheduler or resolve the source inconsistency.",
+    "Only the stated constant connected two-node doubly stochastic network is tested, although its supplied epoch mappings change as A,A^2,A^3.",
+    "Sampling is conditioned on specified shared permutations; this verifies deterministic paths, not uniform random-generator behavior, distributional independence, expected convergence or random reshuffling speedup.",
+    "Finite scalar logistic/l1 arithmetic only. atol=rtol=1e-11 is justified for bounded small inputs and binary64 exp/linear arithmetic; no image/model-data or convergence-rate claim."
+  ]
+}

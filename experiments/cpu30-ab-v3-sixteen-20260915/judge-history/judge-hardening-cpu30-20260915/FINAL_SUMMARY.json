@@ -1,0 +1,2848 @@
+{
+  "created_at": "20260915T115657345079Z",
+  "rows": [
+    {
+      "target": "rsa-codex",
+      "paper_id": "1811.03761",
+      "repeat": 1,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "rsa_l1_sign_crossing_byzantine",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "l1_signed_penalty_and_bounded_attack"
+            ],
+            "required_observations": 23,
+            "complete_observations": 23,
+            "coverage": "complete",
+            "numeric_mismatches": 35,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_l1_sign_crossing_byzantine",
+              "step": 1,
+              "name": "master_penalty_subgradient_sum_before_update",
+              "path": [
+                0
+              ],
+              "expected": -1,
+              "actual": 1.0,
+              "passed": false,
+              "difference": 2.0,
+              "tolerance": 1.01e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "rsa_l2_vector_normalization",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "l2_unit_norm_subgradient"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 28,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_l2_vector_normalization",
+              "step": 1,
+              "name": "master_penalty_subgradient_sum_before_update",
+              "path": [
+                0
+              ],
+              "expected": -0.3999999999999999,
+              "actual": -0.36523627719587093,
+              "passed": false,
+              "difference": 0.03476372280412897,
+              "tolerance": 4.099999999999999e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "rsa_linf_unique_maximum",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "linf_max_coordinate_subgradient"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 12,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_linf_unique_maximum",
+              "step": 1,
+              "name": "regular_workers",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 2.9,
+              "actual": 3.5666666666666664,
+              "passed": false,
+              "difference": 0.6666666666666664,
+              "tolerance": 2.91e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 75,
+        "protocol_errors": {},
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/rsa-codex/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "a58341d1cd72c8d02b079d2313ae256c7219074c468000f26e60ea616771a300",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "rsa-codex",
+      "paper_id": "1811.03761",
+      "repeat": 2,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "rsa_l1_sign_crossing_byzantine",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "l1_signed_penalty_and_bounded_attack"
+            ],
+            "required_observations": 23,
+            "complete_observations": 23,
+            "coverage": "complete",
+            "numeric_mismatches": 35,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_l1_sign_crossing_byzantine",
+              "step": 1,
+              "name": "master_penalty_subgradient_sum_before_update",
+              "path": [
+                0
+              ],
+              "expected": -1,
+              "actual": 1.0,
+              "passed": false,
+              "difference": 2.0,
+              "tolerance": 1.01e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "rsa_l2_vector_normalization",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "l2_unit_norm_subgradient"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 28,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_l2_vector_normalization",
+              "step": 1,
+              "name": "master_penalty_subgradient_sum_before_update",
+              "path": [
+                0
+              ],
+              "expected": -0.3999999999999999,
+              "actual": -0.36523627719587093,
+              "passed": false,
+              "difference": 0.03476372280412897,
+              "tolerance": 4.099999999999999e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "rsa_linf_unique_maximum",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "linf_max_coordinate_subgradient"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 12,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_linf_unique_maximum",
+              "step": 1,
+              "name": "regular_workers",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 2.9,
+              "actual": 3.5666666666666664,
+              "passed": false,
+              "difference": 0.6666666666666664,
+              "tolerance": 2.91e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 75,
+        "protocol_errors": {},
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/rsa-codex/judge/evaluations/hardening-2/algorithm/result.json",
+      "comparison_digest": "a58341d1cd72c8d02b079d2313ae256c7219074c468000f26e60ea616771a300",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "rsa-reasflow",
+      "paper_id": "1811.03761",
+      "repeat": 1,
+      "status": "INCONCLUSIVE",
+      "reason_code": "CASE_INTERFACE_UNSUPPORTED",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "rsa_l1_sign_crossing_byzantine",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "l1_signed_penalty_and_bounded_attack"
+            ],
+            "required_observations": 23,
+            "complete_observations": 9,
+            "coverage": "partial",
+            "numeric_mismatches": 8,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_l1_sign_crossing_byzantine",
+              "step": 1,
+              "name": "master_penalty_subgradient_sum_before_update",
+              "path": [
+                0
+              ],
+              "expected": -1,
+              "actual": 1.0,
+              "passed": false,
+              "difference": 2.0,
+              "tolerance": 1.01e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "rsa_l2_vector_normalization",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "l2_unit_norm_subgradient"
+            ],
+            "required_observations": 16,
+            "complete_observations": 9,
+            "coverage": "partial",
+            "numeric_mismatches": 8,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_l2_vector_normalization",
+              "step": 1,
+              "name": "master_penalty_subgradient_sum_before_update",
+              "path": [
+                0
+              ],
+              "expected": -0.3999999999999999,
+              "actual": -0.36523622274398804,
+              "passed": false,
+              "difference": 0.03476377725601186,
+              "tolerance": 4.099999999999999e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "rsa_linf_unique_maximum",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "linf_max_coordinate_subgradient"
+            ],
+            "required_observations": 16,
+            "complete_observations": 9,
+            "coverage": "partial",
+            "numeric_mismatches": 4,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_linf_unique_maximum",
+              "step": 1,
+              "name": "regular_workers",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 2.9,
+              "actual": 3.566666603088379,
+              "passed": false,
+              "difference": 0.666666603088379,
+              "tolerance": 2.91e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "partial",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 20,
+        "protocol_errors": {
+          "MISSING_OBSERVATION": 28
+        },
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "INCOMPLETE_OBSERVATIONS",
+          "OBSERVATION_PROTOCOL_ERRORS",
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/rsa-reasflow/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "0e35cfbf31c464926118699059259b794ce4d9bca8b2e3d0510c15dd226762af",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "rsa-reasflow",
+      "paper_id": "1811.03761",
+      "repeat": 2,
+      "status": "INCONCLUSIVE",
+      "reason_code": "CASE_INTERFACE_UNSUPPORTED",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "rsa_l1_sign_crossing_byzantine",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "l1_signed_penalty_and_bounded_attack"
+            ],
+            "required_observations": 23,
+            "complete_observations": 9,
+            "coverage": "partial",
+            "numeric_mismatches": 8,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_l1_sign_crossing_byzantine",
+              "step": 1,
+              "name": "master_penalty_subgradient_sum_before_update",
+              "path": [
+                0
+              ],
+              "expected": -1,
+              "actual": 1.0,
+              "passed": false,
+              "difference": 2.0,
+              "tolerance": 1.01e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "rsa_l2_vector_normalization",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "l2_unit_norm_subgradient"
+            ],
+            "required_observations": 16,
+            "complete_observations": 9,
+            "coverage": "partial",
+            "numeric_mismatches": 8,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_l2_vector_normalization",
+              "step": 1,
+              "name": "master_penalty_subgradient_sum_before_update",
+              "path": [
+                0
+              ],
+              "expected": -0.3999999999999999,
+              "actual": -0.36523622274398804,
+              "passed": false,
+              "difference": 0.03476377725601186,
+              "tolerance": 4.099999999999999e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "rsa_linf_unique_maximum",
+            "declared_mechanisms": [
+              "independent_local_states_and_heterogeneous_gradients",
+              "synchronous_old_state_updates",
+              "sum_model_penalties_with_master_regularizer",
+              "linf_max_coordinate_subgradient"
+            ],
+            "required_observations": 16,
+            "complete_observations": 9,
+            "coverage": "partial",
+            "numeric_mismatches": 4,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "rsa_linf_unique_maximum",
+              "step": 1,
+              "name": "regular_workers",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 2.9,
+              "actual": 3.566666603088379,
+              "passed": false,
+              "difference": 0.666666603088379,
+              "tolerance": 2.91e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "partial",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 20,
+        "protocol_errors": {
+          "MISSING_OBSERVATION": 28
+        },
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "INCOMPLETE_OBSERVATIONS",
+          "OBSERVATION_PROTOCOL_ERRORS",
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/rsa-reasflow/judge/evaluations/hardening-2/algorithm/result.json",
+      "comparison_digest": "0e35cfbf31c464926118699059259b794ce4d9bca8b2e3d0510c15dd226762af",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "dream-codex",
+      "paper_id": "2212.02387",
+      "repeat": 1,
+      "status": "INCONCLUSIVE",
+      "reason_code": "CASE_INTERFACE_UNSUPPORTED",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "dream_projected_refresh_and_skips",
+            "declared_mechanisms": [
+              "two_timescale_gda",
+              "projection_before_consensus",
+              "fastmix_acceleration",
+              "recursive_sample_difference",
+              "bernoulli_agent_gating",
+              "full_gradient_refresh",
+              "recursive_gradient_tracking",
+              "branch_specific_tracker_mixing",
+              "uniform_historical_output"
+            ],
+            "required_observations": 26,
+            "complete_observations": 21,
+            "coverage": "partial",
+            "numeric_mismatches": 69,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "dream_projected_refresh_and_skips",
+              "step": 0,
+              "name": "s",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 3.0875,
+              "actual": 3.125,
+              "passed": false,
+              "difference": 0.0375,
+              "tolerance": 3.0975e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "dream_two_sample_recursive_differences",
+            "declared_mechanisms": [
+              "two_timescale_gda",
+              "fastmix_acceleration",
+              "recursive_sample_difference",
+              "bernoulli_agent_gating",
+              "recursive_gradient_tracking",
+              "uniform_historical_output"
+            ],
+            "required_observations": 19,
+            "complete_observations": 15,
+            "coverage": "partial",
+            "numeric_mismatches": 46,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "dream_two_sample_recursive_differences",
+              "step": 0,
+              "name": "s",
+              "path": [
+                0,
+                0
+              ],
+              "expected": -0.434375,
+              "actual": -0.12499999999999997,
+              "passed": false,
+              "difference": 0.309375,
+              "tolerance": 4.44375e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "partial",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 115,
+        "protocol_errors": {
+          "MISSING_OBSERVATION": 9
+        },
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "INCOMPLETE_OBSERVATIONS",
+          "OBSERVATION_PROTOCOL_ERRORS",
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/dream-codex/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "9e3f2045ed44ec45e32010409ae0800856b225166b9ab7ffcc1977e619eabf51",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "dream-codex",
+      "paper_id": "2212.02387",
+      "repeat": 2,
+      "status": "INCONCLUSIVE",
+      "reason_code": "CASE_INTERFACE_UNSUPPORTED",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "dream_projected_refresh_and_skips",
+            "declared_mechanisms": [
+              "two_timescale_gda",
+              "projection_before_consensus",
+              "fastmix_acceleration",
+              "recursive_sample_difference",
+              "bernoulli_agent_gating",
+              "full_gradient_refresh",
+              "recursive_gradient_tracking",
+              "branch_specific_tracker_mixing",
+              "uniform_historical_output"
+            ],
+            "required_observations": 26,
+            "complete_observations": 21,
+            "coverage": "partial",
+            "numeric_mismatches": 69,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "dream_projected_refresh_and_skips",
+              "step": 0,
+              "name": "s",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 3.0875,
+              "actual": 3.125,
+              "passed": false,
+              "difference": 0.0375,
+              "tolerance": 3.0975e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "dream_two_sample_recursive_differences",
+            "declared_mechanisms": [
+              "two_timescale_gda",
+              "fastmix_acceleration",
+              "recursive_sample_difference",
+              "bernoulli_agent_gating",
+              "recursive_gradient_tracking",
+              "uniform_historical_output"
+            ],
+            "required_observations": 19,
+            "complete_observations": 15,
+            "coverage": "partial",
+            "numeric_mismatches": 46,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "dream_two_sample_recursive_differences",
+              "step": 0,
+              "name": "s",
+              "path": [
+                0,
+                0
+              ],
+              "expected": -0.434375,
+              "actual": -0.12499999999999997,
+              "passed": false,
+              "difference": 0.309375,
+              "tolerance": 4.44375e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "partial",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 115,
+        "protocol_errors": {
+          "MISSING_OBSERVATION": 9
+        },
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "INCOMPLETE_OBSERVATIONS",
+          "OBSERVATION_PROTOCOL_ERRORS",
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/dream-codex/judge/evaluations/hardening-2/algorithm/result.json",
+      "comparison_digest": "9e3f2045ed44ec45e32010409ae0800856b225166b9ab7ffcc1977e619eabf51",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "dream-reasflow",
+      "paper_id": "2212.02387",
+      "repeat": 1,
+      "status": "INCONCLUSIVE",
+      "reason_code": "CASE_INTERFACE_UNSUPPORTED",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "dream_projected_refresh_and_skips",
+            "declared_mechanisms": [
+              "two_timescale_gda",
+              "projection_before_consensus",
+              "fastmix_acceleration",
+              "recursive_sample_difference",
+              "bernoulli_agent_gating",
+              "full_gradient_refresh",
+              "recursive_gradient_tracking",
+              "branch_specific_tracker_mixing",
+              "uniform_historical_output"
+            ],
+            "required_observations": 26,
+            "complete_observations": 24,
+            "coverage": "partial",
+            "numeric_mismatches": 78,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "dream_projected_refresh_and_skips",
+              "step": 0,
+              "name": "s",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 3.0875,
+              "actual": 3.125,
+              "passed": false,
+              "difference": 0.0375,
+              "tolerance": 3.0975e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "dream_two_sample_recursive_differences",
+            "declared_mechanisms": [
+              "two_timescale_gda",
+              "fastmix_acceleration",
+              "recursive_sample_difference",
+              "bernoulli_agent_gating",
+              "recursive_gradient_tracking",
+              "uniform_historical_output"
+            ],
+            "required_observations": 19,
+            "complete_observations": 17,
+            "coverage": "partial",
+            "numeric_mismatches": 54,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "dream_two_sample_recursive_differences",
+              "step": 0,
+              "name": "s",
+              "path": [
+                0,
+                0
+              ],
+              "expected": -0.434375,
+              "actual": -0.04687499999999992,
+              "passed": false,
+              "difference": 0.38750000000000007,
+              "tolerance": 4.44375e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "partial",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 132,
+        "protocol_errors": {
+          "MISSING_OBSERVATION": 4
+        },
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "INCOMPLETE_OBSERVATIONS",
+          "OBSERVATION_PROTOCOL_ERRORS",
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/dream-reasflow/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "ddf5323cbff69f1df1c2b55202e978c2855011aab3031b673d13856c23a7b088",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "dream-reasflow",
+      "paper_id": "2212.02387",
+      "repeat": 2,
+      "status": "INCONCLUSIVE",
+      "reason_code": "CASE_INTERFACE_UNSUPPORTED",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "dream_projected_refresh_and_skips",
+            "declared_mechanisms": [
+              "two_timescale_gda",
+              "projection_before_consensus",
+              "fastmix_acceleration",
+              "recursive_sample_difference",
+              "bernoulli_agent_gating",
+              "full_gradient_refresh",
+              "recursive_gradient_tracking",
+              "branch_specific_tracker_mixing",
+              "uniform_historical_output"
+            ],
+            "required_observations": 26,
+            "complete_observations": 24,
+            "coverage": "partial",
+            "numeric_mismatches": 78,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "dream_projected_refresh_and_skips",
+              "step": 0,
+              "name": "s",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 3.0875,
+              "actual": 3.125,
+              "passed": false,
+              "difference": 0.0375,
+              "tolerance": 3.0975e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "dream_two_sample_recursive_differences",
+            "declared_mechanisms": [
+              "two_timescale_gda",
+              "fastmix_acceleration",
+              "recursive_sample_difference",
+              "bernoulli_agent_gating",
+              "recursive_gradient_tracking",
+              "uniform_historical_output"
+            ],
+            "required_observations": 19,
+            "complete_observations": 17,
+            "coverage": "partial",
+            "numeric_mismatches": 54,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "dream_two_sample_recursive_differences",
+              "step": 0,
+              "name": "s",
+              "path": [
+                0,
+                0
+              ],
+              "expected": -0.434375,
+              "actual": -0.04687499999999992,
+              "passed": false,
+              "difference": 0.38750000000000007,
+              "tolerance": 4.44375e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "partial",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 132,
+        "protocol_errors": {
+          "MISSING_OBSERVATION": 4
+        },
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "INCOMPLETE_OBSERVATIONS",
+          "OBSERVATION_PROTOCOL_ERRORS",
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/dream-reasflow/judge/evaluations/hardening-2/algorithm/result.json",
+      "comparison_digest": "ddf5323cbff69f1df1c2b55202e978c2855011aab3031b673d13856c23a7b088",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "stratified-codex",
+      "paper_id": "1904.12017",
+      "repeat": 1,
+      "status": "PROBE_PASS",
+      "reason_code": "ALL_VALUES_MATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "correlated_quadratic_ridge",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "empty_node_l1_path",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "poisson_ridge_graph",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "observed_values_match",
+        "numeric_mismatches": 0,
+        "protocol_errors": {},
+        "follow_up": null,
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "eligible_on_tested_scope",
+        "hold_reasons": [],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/stratified-codex/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "d7b5f6099b0bab8c36f35607ac1910bbf02ec1fe6c3ba3755747bb6ec28cc2c8",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "stratified-codex",
+      "paper_id": "1904.12017",
+      "repeat": 2,
+      "status": "PROBE_PASS",
+      "reason_code": "ALL_VALUES_MATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "correlated_quadratic_ridge",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "empty_node_l1_path",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "poisson_ridge_graph",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "observed_values_match",
+        "numeric_mismatches": 0,
+        "protocol_errors": {},
+        "follow_up": null,
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "eligible_on_tested_scope",
+        "hold_reasons": [],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/stratified-codex/judge/evaluations/hardening-2/algorithm/result.json",
+      "comparison_digest": "d7b5f6099b0bab8c36f35607ac1910bbf02ec1fe6c3ba3755747bb6ec28cc2c8",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "stratified-reasflow",
+      "paper_id": "1904.12017",
+      "repeat": 1,
+      "status": "PROBE_PASS",
+      "reason_code": "ALL_VALUES_MATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "correlated_quadratic_ridge",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "empty_node_l1_path",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "poisson_ridge_graph",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "observed_values_match",
+        "numeric_mismatches": 0,
+        "protocol_errors": {},
+        "follow_up": null,
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "eligible_on_tested_scope",
+        "hold_reasons": [],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/stratified-reasflow/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "485d26d1ce7eae6ac7857df355cd1fb536877cb8eadc1cdca9a3b37c50b24378",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "stratified-reasflow",
+      "paper_id": "1904.12017",
+      "repeat": 2,
+      "status": "PROBE_PASS",
+      "reason_code": "ALL_VALUES_MATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "correlated_quadratic_ridge",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "empty_node_l1_path",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "poisson_ridge_graph",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "observed_values_match",
+        "numeric_mismatches": 0,
+        "protocol_errors": {},
+        "follow_up": null,
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "eligible_on_tested_scope",
+        "hold_reasons": [],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/stratified-reasflow/judge/evaluations/hardening-2/algorithm/result.json",
+      "comparison_digest": "485d26d1ce7eae6ac7857df355cd1fb536877cb8eadc1cdca9a3b37c50b24378",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "proxrr-codex",
+      "paper_id": "2102.06704",
+      "repeat": 1,
+      "status": "PROBE_PASS",
+      "reason_code": "ALL_VALUES_MATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "proxrr_quadratic_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "proxrr_logistic_elastic_net_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "fedrr_unequal_clients_three_rounds",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "separate_complete_client_epochs",
+              "equal_device_average_then_N_over_M_prox"
+            ],
+            "required_observations": 12,
+            "complete_observations": 12,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "observed_values_match",
+        "numeric_mismatches": 0,
+        "protocol_errors": {},
+        "follow_up": null,
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "eligible_on_tested_scope",
+        "hold_reasons": [],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/proxrr-codex/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "0507f8ca62f49db9666aec6fa4f1293d73e2fa1c585b69aae2df8d03ae4acf71",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "proxrr-codex",
+      "paper_id": "2102.06704",
+      "repeat": 2,
+      "status": "PROBE_PASS",
+      "reason_code": "ALL_VALUES_MATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "proxrr_quadratic_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "proxrr_logistic_elastic_net_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "fedrr_unequal_clients_three_rounds",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "separate_complete_client_epochs",
+              "equal_device_average_then_N_over_M_prox"
+            ],
+            "required_observations": 12,
+            "complete_observations": 12,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "observed_values_match",
+        "numeric_mismatches": 0,
+        "protocol_errors": {},
+        "follow_up": null,
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "eligible_on_tested_scope",
+        "hold_reasons": [],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/proxrr-codex/judge/evaluations/hardening-2/algorithm/result.json",
+      "comparison_digest": "0507f8ca62f49db9666aec6fa4f1293d73e2fa1c585b69aae2df8d03ae4acf71",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "proxrr-reasflow",
+      "paper_id": "2102.06704",
+      "repeat": 1,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "proxrr_quadratic_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "proxrr_logistic_elastic_net_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 21,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "proxrr_logistic_elastic_net_three_epochs",
+              "step": 1,
+              "name": "inner_iterates",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.6775063797180969,
+              "actual": 0.6175063797180969,
+              "passed": false,
+              "difference": 0.06,
+              "tolerance": 7.775063797180969e-10,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "fedrr_unequal_clients_three_rounds",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "separate_complete_client_epochs",
+              "equal_device_average_then_N_over_M_prox"
+            ],
+            "required_observations": 12,
+            "complete_observations": 12,
+            "coverage": "complete",
+            "numeric_mismatches": 26,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "fedrr_unequal_clients_three_rounds",
+              "step": 1,
+              "name": "iterate",
+              "path": [
+                0
+              ],
+              "expected": 0.9746621621621622,
+              "actual": 1.0072916666666667,
+              "passed": false,
+              "difference": 0.0326295045045045,
+              "tolerance": 1.0746621621621622e-09,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 47,
+        "protocol_errors": {},
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/proxrr-reasflow/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "7dbd6d33aa6e5018006ec4090310450dc72c381f41a0914eac40628cc2549e1d",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "proxrr-reasflow",
+      "paper_id": "2102.06704",
+      "repeat": 2,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "proxrr_quadratic_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "proxrr_logistic_elastic_net_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 21,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "proxrr_logistic_elastic_net_three_epochs",
+              "step": 1,
+              "name": "inner_iterates",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.6775063797180969,
+              "actual": 0.6175063797180969,
+              "passed": false,
+              "difference": 0.06,
+              "tolerance": 7.775063797180969e-10,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "fedrr_unequal_clients_three_rounds",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "separate_complete_client_epochs",
+              "equal_device_average_then_N_over_M_prox"
+            ],
+            "required_observations": 12,
+            "complete_observations": 12,
+            "coverage": "complete",
+            "numeric_mismatches": 26,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "fedrr_unequal_clients_three_rounds",
+              "step": 1,
+              "name": "iterate",
+              "path": [
+                0
+              ],
+              "expected": 0.9746621621621622,
+              "actual": 1.0072916666666667,
+              "passed": false,
+              "difference": 0.0326295045045045,
+              "tolerance": 1.0746621621621622e-09,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 47,
+        "protocol_errors": {},
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/proxrr-reasflow/judge/evaluations/hardening-2/algorithm/result.json",
+      "comparison_digest": "7dbd6d33aa6e5018006ec4090310450dc72c381f41a0914eac40628cc2549e1d",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "beer-codex",
+      "paper_id": "2201.13320",
+      "repeat": 1,
+      "status": "PROBE_PASS",
+      "reason_code": "ALL_VALUES_MATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "beer_top1_two_clients_three_rounds",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "beer_half_compressor_three_client_path",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "observed_values_match",
+        "numeric_mismatches": 0,
+        "protocol_errors": {},
+        "follow_up": null,
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "eligible_on_tested_scope",
+        "hold_reasons": [],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/beer-codex/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "3c3863d4b653de67b082cebfc02f83e21fb073bdbc826881c9a27cc5d60dfc7e",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "beer-codex",
+      "paper_id": "2201.13320",
+      "repeat": 2,
+      "status": "PROBE_PASS",
+      "reason_code": "ALL_VALUES_MATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "beer_top1_two_clients_three_rounds",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "beer_half_compressor_three_client_path",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "observed_values_match",
+        "numeric_mismatches": 0,
+        "protocol_errors": {},
+        "follow_up": null,
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "eligible_on_tested_scope",
+        "hold_reasons": [],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/beer-codex/judge/evaluations/hardening-2/algorithm/result.json",
+      "comparison_digest": "3c3863d4b653de67b082cebfc02f83e21fb073bdbc826881c9a27cc5d60dfc7e",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "beer-reasflow",
+      "paper_id": "2201.13320",
+      "repeat": 1,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "beer_top1_two_clients_three_rounds",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 4,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "beer_top1_two_clients_three_rounds",
+              "step": 3,
+              "name": "V",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.678625,
+              "actual": 0.6786251068115234,
+              "passed": false,
+              "difference": 1.068115234e-07,
+              "tolerance": 6.88625e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "beer_half_compressor_three_client_path",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 4,
+        "protocol_errors": {},
+        "follow_up": "precision_and_semantics_review",
+        "small_difference_hint": {
+          "applies": true,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/beer-reasflow/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "a9b76adabb704b9d31ee66e72e39fb40ac7e318ede331a14ad99c5bac0fd3e72",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "beer-reasflow",
+      "paper_id": "2201.13320",
+      "repeat": 2,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "beer_top1_two_clients_three_rounds",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 4,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "beer_top1_two_clients_three_rounds",
+              "step": 3,
+              "name": "V",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.678625,
+              "actual": 0.6786251068115234,
+              "passed": false,
+              "difference": 1.068115234e-07,
+              "tolerance": 6.88625e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "beer_half_compressor_three_client_path",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 4,
+        "protocol_errors": {},
+        "follow_up": "precision_and_semantics_review",
+        "small_difference_hint": {
+          "applies": true,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/beer-reasflow/judge/evaluations/hardening-2/algorithm/result.json",
+      "comparison_digest": "a9b76adabb704b9d31ee66e72e39fb40ac7e318ede331a14ad99c5bac0fd3e72",
+      "source_unchanged": true,
+      "direct_model_api_used": false
+    },
+    {
+      "target": "stratified-codex-positive",
+      "paper_id": "1904.12017",
+      "repeat": 1,
+      "status": "PROBE_PASS",
+      "reason_code": "ALL_VALUES_MATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "correlated_quadratic_ridge",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "empty_node_l1_path",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "poisson_ridge_graph",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "observed_values_match",
+        "numeric_mismatches": 0,
+        "protocol_errors": {},
+        "follow_up": null,
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "eligible_on_tested_scope",
+        "hold_reasons": [],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/stratified-codex-positive/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "d7b5f6099b0bab8c36f35607ac1910bbf02ec1fe6c3ba3755747bb6ec28cc2c8",
+      "source_unchanged": true,
+      "direct_model_api_used": false,
+      "expected_numeric_outcome": "match",
+      "control_detected_as_expected": true
+    },
+    {
+      "target": "stratified-codex-missing_loss_dual",
+      "paper_id": "1904.12017",
+      "repeat": 1,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "correlated_quadratic_ridge",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 60,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "correlated_quadratic_ridge",
+              "step": 1,
+              "name": "u",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.5356341057270364,
+              "actual": 0.0,
+              "passed": false,
+              "difference": 0.5356341057270364,
+              "tolerance": 6.356341057270364e-09,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "empty_node_l1_path",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 59,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "empty_node_l1_path",
+              "step": 1,
+              "name": "u",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.8939393939393939,
+              "actual": 0.0,
+              "passed": false,
+              "difference": 0.8939393939393939,
+              "tolerance": 9.93939393939394e-09,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "poisson_ridge_graph",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 30,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "poisson_ridge_graph",
+              "step": 1,
+              "name": "u",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.7982238369541457,
+              "actual": 0.0,
+              "passed": false,
+              "difference": 0.7982238369541457,
+              "tolerance": 8.982238369541457e-09,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 149,
+        "protocol_errors": {},
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/stratified-codex-missing_loss_dual/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "be29128a8e4ee7f548f442728bd2fb7d3d2d4cdf3324bc4f1f0b56d6894c9c44",
+      "source_unchanged": true,
+      "direct_model_api_used": false,
+      "expected_numeric_outcome": "mismatch",
+      "control_detected_as_expected": true
+    },
+    {
+      "target": "stratified-codex-wrong_consensus_rhs",
+      "paper_id": "1904.12017",
+      "repeat": 1,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "correlated_quadratic_ridge",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 78,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "correlated_quadratic_ridge",
+              "step": 1,
+              "name": "theta_hat",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.30647115743085834,
+              "actual": 0.15323557871542917,
+              "passed": false,
+              "difference": 0.15323557871542917,
+              "tolerance": 4.0647115743085835e-09,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "empty_node_l1_path",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 75,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "empty_node_l1_path",
+              "step": 1,
+              "name": "theta_hat",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.4393939393939394,
+              "actual": 0.21969696969696964,
+              "passed": false,
+              "difference": 0.21969696969696975,
+              "tolerance": 5.393939393939394e-09,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "poisson_ridge_graph",
+            "declared_mechanisms": [
+              "local_loss_proximal_update",
+              "local_regularizer_proximal_update",
+              "regularized_laplacian_consensus",
+              "two_scaled_dual_updates"
+            ],
+            "required_observations": 15,
+            "complete_observations": 15,
+            "coverage": "complete",
+            "numeric_mismatches": 39,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "poisson_ridge_graph",
+              "step": 1,
+              "name": "theta_hat",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.6658777781836089,
+              "actual": 0.3329388890918044,
+              "passed": false,
+              "difference": 0.3329388890918045,
+              "tolerance": 7.65877778183609e-09,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 192,
+        "protocol_errors": {},
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/stratified-codex-wrong_consensus_rhs/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "21be4ab7ea76806e6a44495597b105b1df74094057166202c99af038ade37f57",
+      "source_unchanged": true,
+      "direct_model_api_used": false,
+      "expected_numeric_outcome": "mismatch",
+      "control_detected_as_expected": true
+    },
+    {
+      "target": "proxrr-codex-positive",
+      "paper_id": "2102.06704",
+      "repeat": 1,
+      "status": "PROBE_PASS",
+      "reason_code": "ALL_VALUES_MATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "proxrr_quadratic_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "proxrr_logistic_elastic_net_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "fedrr_unequal_clients_three_rounds",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "separate_complete_client_epochs",
+              "equal_device_average_then_N_over_M_prox"
+            ],
+            "required_observations": 12,
+            "complete_observations": 12,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "observed_values_match",
+        "numeric_mismatches": 0,
+        "protocol_errors": {},
+        "follow_up": null,
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "eligible_on_tested_scope",
+        "hold_reasons": [],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/proxrr-codex-positive/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "0507f8ca62f49db9666aec6fa4f1293d73e2fa1c585b69aae2df8d03ae4acf71",
+      "source_unchanged": true,
+      "direct_model_api_used": false,
+      "expected_numeric_outcome": "match",
+      "control_detected_as_expected": true
+    },
+    {
+      "target": "proxrr-codex-wrong_prox_scale",
+      "paper_id": "2102.06704",
+      "repeat": 1,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "proxrr_quadratic_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 18,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "proxrr_quadratic_three_epochs",
+              "step": 1,
+              "name": "iterate",
+              "path": [
+                0
+              ],
+              "expected": 0.5657894736842105,
+              "actual": 0.6911764705882353,
+              "passed": false,
+              "difference": 0.1253869969040248,
+              "tolerance": 6.657894736842105e-10,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "proxrr_logistic_elastic_net_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 16,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "proxrr_logistic_elastic_net_three_epochs",
+              "step": 1,
+              "name": "iterate",
+              "path": [
+                0
+              ],
+              "expected": 0.5012329732403584,
+              "actual": 0.7287298774658781,
+              "passed": false,
+              "difference": 0.2274969042255197,
+              "tolerance": 6.012329732403585e-10,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "fedrr_unequal_clients_three_rounds",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "separate_complete_client_epochs",
+              "equal_device_average_then_N_over_M_prox"
+            ],
+            "required_observations": 12,
+            "complete_observations": 12,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 34,
+        "protocol_errors": {},
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/proxrr-codex-wrong_prox_scale/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "38d6e74f8d46959728263e106b477c2a458fcd3cb4bbd499815c143998c4b920",
+      "source_unchanged": true,
+      "direct_model_api_used": false,
+      "expected_numeric_outcome": "mismatch",
+      "control_detected_as_expected": true
+    },
+    {
+      "target": "proxrr-codex-wrong_inner_step",
+      "paper_id": "2102.06704",
+      "repeat": 1,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "proxrr_quadratic_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 24,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "proxrr_quadratic_three_epochs",
+              "step": 1,
+              "name": "inner_iterates",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 1.5,
+              "actual": 1.75,
+              "passed": false,
+              "difference": 0.25,
+              "tolerance": 1.6e-09,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "proxrr_logistic_elastic_net_three_epochs",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "single_epoch_end_prox_with_n_scaling",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "epoch_specific_stepsize"
+            ],
+            "required_observations": 6,
+            "complete_observations": 6,
+            "coverage": "complete",
+            "numeric_mismatches": 21,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "proxrr_logistic_elastic_net_three_epochs",
+              "step": 1,
+              "name": "inner_iterates",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.6775063797180969,
+              "actual": 0.6387531898590484,
+              "passed": false,
+              "difference": 0.0387531898590485,
+              "tolerance": 7.775063797180969e-10,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "fedrr_unequal_clients_three_rounds",
+            "declared_mechanisms": [
+              "sequential_permuted_epoch",
+              "elastic_net_threshold_and_quadratic_shrinkage",
+              "separate_complete_client_epochs",
+              "equal_device_average_then_N_over_M_prox"
+            ],
+            "required_observations": 12,
+            "complete_observations": 12,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 45,
+        "protocol_errors": {},
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/proxrr-codex-wrong_inner_step/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "c387616c1023e6077069d4c9cf9c610c11a1a0af852e17110c813694eccd0458",
+      "source_unchanged": true,
+      "direct_model_api_used": false,
+      "expected_numeric_outcome": "mismatch",
+      "control_detected_as_expected": true
+    },
+    {
+      "target": "beer-codex-positive",
+      "paper_id": "2201.13320",
+      "repeat": 1,
+      "status": "PROBE_PASS",
+      "reason_code": "ALL_VALUES_MATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "beer_top1_two_clients_three_rounds",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          },
+          {
+            "case_id": "beer_half_compressor_three_client_path",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 0,
+            "numeric_evidence": "observed_values_match",
+            "first_mismatch": null
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "observed_values_match",
+        "numeric_mismatches": 0,
+        "protocol_errors": {},
+        "follow_up": null,
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "eligible_on_tested_scope",
+        "hold_reasons": [],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/beer-codex-positive/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "3c3863d4b653de67b082cebfc02f83e21fb073bdbc826881c9a27cc5d60dfc7e",
+      "source_unchanged": true,
+      "direct_model_api_used": false,
+      "expected_numeric_outcome": "match",
+      "control_detected_as_expected": true
+    },
+    {
+      "target": "beer-codex-stale_gradient_tracker",
+      "paper_id": "2201.13320",
+      "repeat": 1,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "beer_top1_two_clients_three_rounds",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 36,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "beer_top1_two_clients_three_rounds",
+              "step": 1,
+              "name": "V",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 1.8,
+              "actual": 2.0,
+              "passed": false,
+              "difference": 0.2,
+              "tolerance": 1.81e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "beer_half_compressor_three_client_path",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 60,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "beer_half_compressor_three_client_path",
+              "step": 1,
+              "name": "V",
+              "path": [
+                0,
+                0
+              ],
+              "expected": -2.625,
+              "actual": -3.0,
+              "passed": false,
+              "difference": 0.375,
+              "tolerance": 2.635e-07,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 96,
+        "protocol_errors": {},
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/beer-codex-stale_gradient_tracker/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "a0fcee9313e9b8fc2f2a349fa6f136807c8fdbc5c28d1f2162c1d2c832c0966a",
+      "source_unchanged": true,
+      "direct_model_api_used": false,
+      "expected_numeric_outcome": "mismatch",
+      "control_detected_as_expected": true
+    },
+    {
+      "target": "beer-codex-wrong_h_residual",
+      "paper_id": "2201.13320",
+      "repeat": 1,
+      "status": "INCONSISTENT",
+      "reason_code": "NUMERIC_MISMATCH",
+      "assessment": {
+        "schema_version": "optirepro.algorithm_assessment.v1",
+        "cases": [
+          {
+            "case_id": "beer_top1_two_clients_three_rounds",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 18,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "beer_top1_two_clients_three_rounds",
+              "step": 2,
+              "name": "H",
+              "path": [
+                0,
+                0
+              ],
+              "expected": 0.8,
+              "actual": 1.495,
+              "passed": false,
+              "difference": 0.695,
+              "tolerance": 8.1e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          },
+          {
+            "case_id": "beer_half_compressor_three_client_path",
+            "declared_mechanisms": [
+              "paper_initialization",
+              "model_descent_with_compressed_consensus",
+              "residual_model_compression_accumulation",
+              "gradient_tracking_with_old_compressed_gradient_consensus",
+              "residual_gradient_compression_accumulation",
+              "columnwise_biased_contractive_compression"
+            ],
+            "required_observations": 16,
+            "complete_observations": 16,
+            "coverage": "complete",
+            "numeric_mismatches": 30,
+            "numeric_evidence": "mismatch_observed",
+            "first_mismatch": {
+              "case_id": "beer_half_compressor_three_client_path",
+              "step": 2,
+              "name": "H",
+              "path": [
+                0,
+                0
+              ],
+              "expected": -0.314453125,
+              "actual": -0.470703125,
+              "passed": false,
+              "difference": 0.15625,
+              "tolerance": 3.24453125e-08,
+              "reason_code": "VALUE_MISMATCH",
+              "reason": "absolute difference exceeds atol + rtol * abs(expected)"
+            }
+          }
+        ],
+        "coverage": "complete",
+        "numeric_evidence": "mismatch_observed",
+        "numeric_mismatches": 48,
+        "protocol_errors": {},
+        "follow_up": "semantics_review",
+        "small_difference_hint": {
+          "applies": false,
+          "rule": "abs(diff) <= 1e-6 * max(1,abs(expected)) for every mismatch",
+          "effect": "diagnostic only; never changes frozen tolerances or grants a pass"
+        },
+        "review_status": {
+          "paper": "approved",
+          "adapter": "approved"
+        },
+        "acceptance": "hold",
+        "hold_reasons": [
+          "NUMERIC_DIFFERENCES_REQUIRE_REVIEW",
+          "EXECUTION_NOT_FULLY_PASSED"
+        ],
+        "scope": "Only declared finite experiments; not a proof of whole-codebase or full-paper correctness."
+      },
+      "result": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/beer-codex-wrong_h_residual/judge/evaluations/hardening-1/algorithm/result.json",
+      "comparison_digest": "86e19f5abb5a1eeb29c2a55df2240b74598931cac191d4639e10879a3f8cd223",
+      "source_unchanged": true,
+      "direct_model_api_used": false,
+      "expected_numeric_outcome": "mismatch",
+      "control_detected_as_expected": true
+    }
+  ],
+  "code_unchanged": true,
+  "scope": "Five papers, ten historical CPU30 workspaces, independently reviewed paper tests and adapters; three unchanged and six mutated controls. No direct model API used in execution.",
+  "repeat_comparisons_identical": true,
+  "all_controls_as_expected": true,
+  "final_summary_path": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/validation/20260915T115657345079Z/summary.json",
+  "unit_tests_passed": 105
+}

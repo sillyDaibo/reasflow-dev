@@ -1,0 +1,4255 @@
+{
+  "paper_id": "2310.09804",
+  "contract_digest": "6e6be10262dccd3869f00a16c45ab5759c95781e3c8cf2e1716718496a3d5bb9",
+  "numeric_leaves": 306,
+  "case_leaves": {
+    "difference_difference_refresh": 153,
+    "refresh_difference_difference": 153
+  },
+  "max_abs_error": 6.666666666666666e-16,
+  "passed": true,
+  "checks": [
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "23/25",
+      "contract_value": 0.92,
+      "abs_error": 0.0,
+      "tolerance": 1.92e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "-93/100",
+      "contract_value": -0.93,
+      "abs_error": 0.0,
+      "tolerance": 1.93e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "71/50",
+      "contract_value": 1.42,
+      "abs_error": 0.0,
+      "tolerance": 2.42e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-43/50",
+      "contract_value": -0.86,
+      "abs_error": 0.0,
+      "tolerance": 1.86e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "109/50",
+      "contract_value": 2.18,
+      "abs_error": 0.0,
+      "tolerance": 3.18e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-93/50",
+      "contract_value": -1.86,
+      "abs_error": 0.0,
+      "tolerance": 2.86e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "163/50",
+      "contract_value": 3.26,
+      "abs_error": 0.0,
+      "tolerance": 4.26e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-68/25",
+      "contract_value": -2.72,
+      "abs_error": 0.0,
+      "tolerance": 3.72e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "201/50",
+      "contract_value": 4.02,
+      "abs_error": 0.0,
+      "tolerance": 5.02e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "-93/25",
+      "contract_value": -3.72,
+      "abs_error": 0.0,
+      "tolerance": 4.72e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "51/10",
+      "contract_value": 5.1,
+      "abs_error": 0.0,
+      "tolerance": 6.1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "-229/50",
+      "contract_value": -4.58,
+      "abs_error": 0.0,
+      "tolerance": 5.58e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-2/25",
+      "contract_value": -0.08,
+      "abs_error": 0.0,
+      "tolerance": 1.08e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "7/50",
+      "contract_value": 0.14,
+      "abs_error": 0.0,
+      "tolerance": 1.14e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-8/25",
+      "contract_value": -0.32,
+      "abs_error": 0.0,
+      "tolerance": 1.32e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "7/50",
+      "contract_value": 0.14,
+      "abs_error": 0.0,
+      "tolerance": 1.14e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-6/25",
+      "contract_value": -0.24,
+      "abs_error": 0.0,
+      "tolerance": 1.24e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "7/25",
+      "contract_value": 0.28,
+      "abs_error": 0.0,
+      "tolerance": 1.28e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "-12/25",
+      "contract_value": -0.48,
+      "abs_error": 0.0,
+      "tolerance": 1.48e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "7/25",
+      "contract_value": 0.28,
+      "abs_error": 0.0,
+      "tolerance": 1.28e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "-2/5",
+      "contract_value": -0.4,
+      "abs_error": 0.0,
+      "tolerance": 1.4e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "21/50",
+      "contract_value": 0.42,
+      "abs_error": 0.0,
+      "tolerance": 1.42e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-4/25",
+      "contract_value": -0.16,
+      "abs_error": 0.0,
+      "tolerance": 1.16e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "7/25",
+      "contract_value": 0.28,
+      "abs_error": 0.0,
+      "tolerance": 1.28e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-12/25",
+      "contract_value": -0.48,
+      "abs_error": 0.0,
+      "tolerance": 1.48e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "14/25",
+      "contract_value": 0.56,
+      "abs_error": 0.0,
+      "tolerance": 1.56e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "-4/5",
+      "contract_value": -0.8,
+      "abs_error": 0.0,
+      "tolerance": 1.8e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "67/50",
+      "contract_value": 1.34,
+      "abs_error": 0.0,
+      "tolerance": 2.34e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-1",
+      "contract_value": -1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "5/2",
+      "contract_value": 2.5,
+      "abs_error": 0.0,
+      "tolerance": 3.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-43/25",
+      "contract_value": -1.72,
+      "abs_error": 0.0,
+      "tolerance": 2.72e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "151/50",
+      "contract_value": 3.02,
+      "abs_error": 0.0,
+      "tolerance": 4.02e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-3",
+      "contract_value": -3.0,
+      "abs_error": 0.0,
+      "tolerance": 4e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "9/2",
+      "contract_value": 4.5,
+      "abs_error": 0.0,
+      "tolerance": 5.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "-86/25",
+      "contract_value": -3.44,
+      "abs_error": 0.0,
+      "tolerance": 4.44e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "47/10",
+      "contract_value": 4.7,
+      "abs_error": 0.0,
+      "tolerance": 5.7e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "-5",
+      "contract_value": -5.0,
+      "abs_error": 0.0,
+      "tolerance": 6e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "109/50",
+      "contract_value": 2.18,
+      "abs_error": 0.0,
+      "tolerance": 3.18e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-2",
+      "contract_value": -2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-103/20",
+      "contract_value": -5.15,
+      "abs_error": 0.0,
+      "tolerance": 6.15e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "25/2",
+      "contract_value": 12.5,
+      "abs_error": 0.0,
+      "tolerance": 1.35e-09,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "7/2",
+      "contract_value": 3.5,
+      "abs_error": 0.0,
+      "tolerance": 4.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-129/50",
+      "contract_value": -2.58,
+      "abs_error": 0.0,
+      "tolerance": 3.58e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_aggregate",
+      "path": [
+        0
+      ],
+      "independent_exact": "109/50",
+      "contract_value": 2.18,
+      "abs_error": 0.0,
+      "tolerance": 3.18e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "g_aggregate",
+      "path": [
+        1
+      ],
+      "independent_exact": "-2",
+      "contract_value": -2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 1,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "18251/8000",
+      "contract_value": 2.281375,
+      "abs_error": 0.0,
+      "tolerance": 3.281375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "2191/2500",
+      "contract_value": 0.8764,
+      "abs_error": 0.0,
+      "tolerance": 1.8764e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "-89/100",
+      "contract_value": -0.89,
+      "abs_error": 0.0,
+      "tolerance": 1.89e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "3223/2500",
+      "contract_value": 1.2892,
+      "abs_error": 0.0,
+      "tolerance": 2.2892e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-41/50",
+      "contract_value": -0.82,
+      "abs_error": 0.0,
+      "tolerance": 1.82e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "1308/625",
+      "contract_value": 2.0928,
+      "abs_error": 0.0,
+      "tolerance": 3.0928e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-87/50",
+      "contract_value": -1.74,
+      "abs_error": 0.0,
+      "tolerance": 2.74e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "1521/500",
+      "contract_value": 3.042,
+      "abs_error": 0.0,
+      "tolerance": 4.042e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-13/5",
+      "contract_value": -2.6,
+      "abs_error": 0.0,
+      "tolerance": 3.6e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "4807/1250",
+      "contract_value": 3.8456,
+      "abs_error": 0.0,
+      "tolerance": 4.8456e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "-88/25",
+      "contract_value": -3.52,
+      "abs_error": 0.0,
+      "tolerance": 4.52e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "11987/2500",
+      "contract_value": 4.7948,
+      "abs_error": 0.0,
+      "tolerance": 5.7948e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "-219/50",
+      "contract_value": -4.38,
+      "abs_error": 0.0,
+      "tolerance": 5.38e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-781/7500",
+      "contract_value": -0.10413333333333333,
+      "abs_error": 3.3333333333333333e-18,
+      "tolerance": 1.1041333333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "13/150",
+      "contract_value": 0.08666666666666667,
+      "abs_error": 3.3333333333333333e-18,
+      "tolerance": 1.0866666666666667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-727/3750",
+      "contract_value": -0.19386666666666666,
+      "abs_error": 6.666666666666667e-18,
+      "tolerance": 1.1938666666666667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "11/150",
+      "contract_value": 0.07333333333333333,
+      "abs_error": 3.3333333333333333e-18,
+      "tolerance": 1.0733333333333334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-69/500",
+      "contract_value": -0.138,
+      "abs_error": 0.0,
+      "tolerance": 1.138e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "16/75",
+      "contract_value": 0.21333333333333335,
+      "abs_error": 1.6666666666666667e-17,
+      "tolerance": 1.2133333333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "-209/625",
+      "contract_value": -0.3344,
+      "abs_error": 0.0,
+      "tolerance": 1.3344e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "8/75",
+      "contract_value": 0.10666666666666667,
+      "abs_error": 3.3333333333333333e-18,
+      "tolerance": 1.1066666666666667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "-1289/7500",
+      "contract_value": -0.17186666666666667,
+      "abs_error": 3.3333333333333333e-18,
+      "tolerance": 1.1718666666666667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "17/50",
+      "contract_value": 0.34,
+      "abs_error": 0.0,
+      "tolerance": 1.34e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "13/75",
+      "contract_value": 0.17333333333333334,
+      "abs_error": 6.666666666666667e-18,
+      "tolerance": 1.1733333333333334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-727/1875",
+      "contract_value": -0.3877333333333333,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 1.3877333333333332e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "32/75",
+      "contract_value": 0.4266666666666667,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 1.4266666666666667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "-418/625",
+      "contract_value": -0.6688,
+      "abs_error": 0.0,
+      "tolerance": 1.6688e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "17/25",
+      "contract_value": 0.68,
+      "abs_error": 0.0,
+      "tolerance": 1.68e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "67/50",
+      "contract_value": 1.34,
+      "abs_error": 0.0,
+      "tolerance": 2.34e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-62/75",
+      "contract_value": -0.8266666666666667,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 1.8266666666666668e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "7921/3750",
+      "contract_value": 2.1122666666666667,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 3.112266666666667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-43/25",
+      "contract_value": -1.72,
+      "abs_error": 0.0,
+      "tolerance": 2.72e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "151/50",
+      "contract_value": 3.02,
+      "abs_error": 0.0,
+      "tolerance": 4.02e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-193/75",
+      "contract_value": -2.5733333333333333,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 3.5733333333333334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "4789/1250",
+      "contract_value": 3.8312,
+      "abs_error": 0.0,
+      "tolerance": 4.8312e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "-86/25",
+      "contract_value": -3.44,
+      "abs_error": 0.0,
+      "tolerance": 4.44e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "47/10",
+      "contract_value": 4.7,
+      "abs_error": 0.0,
+      "tolerance": 5.7e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "-108/25",
+      "contract_value": -4.32,
+      "abs_error": 0.0,
+      "tolerance": 5.32e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "2151/100",
+      "contract_value": 21.51,
+      "abs_error": 0.0,
+      "tolerance": 2.251e-09,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "841/75",
+      "contract_value": 11.213333333333333,
+      "abs_error": 3.333333333333333e-16,
+      "tolerance": 1.2213333333333333e-09,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "12773/3750",
+      "contract_value": 3.4061333333333335,
+      "abs_error": 1.6666666666666665e-16,
+      "tolerance": 4.4061333333333334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-151/50",
+      "contract_value": -3.02,
+      "abs_error": 0.0,
+      "tolerance": 4.02e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "1616/625",
+      "contract_value": 2.5856,
+      "abs_error": 0.0,
+      "tolerance": 3.5856e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-32/15",
+      "contract_value": -2.1333333333333333,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 3.1333333333333334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_aggregate",
+      "path": [
+        0
+      ],
+      "independent_exact": "12773/3750",
+      "contract_value": 3.4061333333333335,
+      "abs_error": 1.6666666666666665e-16,
+      "tolerance": 4.4061333333333334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "g_aggregate",
+      "path": [
+        1
+      ],
+      "independent_exact": "-32/15",
+      "contract_value": -2.1333333333333333,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 3.1333333333333334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 2,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "50978223/25000000",
+      "contract_value": 2.03912892,
+      "abs_error": 0.0,
+      "tolerance": 3.03912892e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "37888/46875",
+      "contract_value": 0.8082773333333333,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 1.8082773333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "-1271/1500",
+      "contract_value": -0.8473333333333334,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 1.8473333333333334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "104677/93750",
+      "contract_value": 1.1165546666666666,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 2.1165546666666666e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-771/1000",
+      "contract_value": -0.771,
+      "abs_error": 0.0,
+      "tolerance": 1.771e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "60151/31250",
+      "contract_value": 1.924832,
+      "abs_error": 0.0,
+      "tolerance": 2.924832e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-971/600",
+      "contract_value": -1.6183333333333334,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 2.6183333333333336e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "256229/93750",
+      "contract_value": 2.733109333333333,
+      "abs_error": 3.333333333333333e-16,
+      "tolerance": 3.733109333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-7397/3000",
+      "contract_value": -2.4656666666666665,
+      "abs_error": 1.6666666666666665e-16,
+      "tolerance": 3.4656666666666663e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "66401/18750",
+      "contract_value": 3.5413866666666665,
+      "abs_error": 1.6666666666666665e-16,
+      "tolerance": 4.5413866666666667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "-3313/1000",
+      "contract_value": -3.313,
+      "abs_error": 0.0,
+      "tolerance": 4.313e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "135927/31250",
+      "contract_value": 4.349664,
+      "abs_error": 0.0,
+      "tolerance": 5.349664e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "-12481/3000",
+      "contract_value": -4.160333333333333,
+      "abs_error": 3.333333333333333e-16,
+      "tolerance": 5.160333333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-17773/93750",
+      "contract_value": -0.18957866666666667,
+      "abs_error": 3.3333333333333333e-18,
+      "tolerance": 1.1895786666666667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "461/9000",
+      "contract_value": 0.051222222222222225,
+      "abs_error": 2.7777777777777778e-18,
+      "tolerance": 1.0512222222222222e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-24533/140625",
+      "contract_value": -0.17445688888888888,
+      "abs_error": 8.888888888888889e-18,
+      "tolerance": 1.174456888888889e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "23/200",
+      "contract_value": 0.115,
+      "abs_error": 0.0,
+      "tolerance": 1.115e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-28271/93750",
+      "contract_value": -0.30155733333333334,
+      "abs_error": 6.666666666666667e-18,
+      "tolerance": 1.3015573333333334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "1129/9000",
+      "contract_value": 0.12544444444444444,
+      "abs_error": 4.4444444444444444e-18,
+      "tolerance": 1.1254444444444444e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "-2807/9375",
+      "contract_value": -0.2994133333333333,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 1.2994133333333332e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "541/3000",
+      "contract_value": 0.18033333333333335,
+      "abs_error": 1.6666666666666667e-17,
+      "tolerance": 1.1803333333333332e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "-12923/31250",
+      "contract_value": -0.413536,
+      "abs_error": 0.0,
+      "tolerance": 1.413536e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "599/3000",
+      "contract_value": 0.19966666666666666,
+      "abs_error": 6.666666666666667e-18,
+      "tolerance": 1.1996666666666666e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-17773/46875",
+      "contract_value": -0.37915733333333335,
+      "abs_error": 1.6666666666666667e-17,
+      "tolerance": 1.3791573333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-49066/140625",
+      "contract_value": -0.34891377777777777,
+      "abs_error": 7.777777777777779e-18,
+      "tolerance": 1.3489137777777777e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "1129/4500",
+      "contract_value": 0.2508888888888889,
+      "abs_error": 1.1111111111111111e-17,
+      "tolerance": 1.250888888888889e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "541/1500",
+      "contract_value": 0.3606666666666667,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 1.3606666666666668e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "-12923/15625",
+      "contract_value": -0.827072,
+      "abs_error": 0.0,
+      "tolerance": 1.827072e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "90079/93750",
+      "contract_value": 0.9608426666666666,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 1.9608426666666666e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-62/75",
+      "contract_value": -0.8266666666666667,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 1.8266666666666668e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "495943/281250",
+      "contract_value": 1.763352888888889,
+      "abs_error": 1.1111111111111112e-16,
+      "tolerance": 2.763352888888889e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-43/25",
+      "contract_value": -1.72,
+      "abs_error": 0.0,
+      "tolerance": 2.72e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "151/50",
+      "contract_value": 3.02,
+      "abs_error": 0.0,
+      "tolerance": 4.02e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-10451/4500",
+      "contract_value": -2.3224444444444443,
+      "abs_error": 1.4444444444444444e-16,
+      "tolerance": 3.3224444444444444e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "4789/1250",
+      "contract_value": 3.8312,
+      "abs_error": 0.0,
+      "tolerance": 4.8312e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "-4619/1500",
+      "contract_value": -3.0793333333333335,
+      "abs_error": 1.6666666666666665e-16,
+      "tolerance": 4.0793333333333335e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "121029/31250",
+      "contract_value": 3.872928,
+      "abs_error": 0.0,
+      "tolerance": 4.872928e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "-108/25",
+      "contract_value": -4.32,
+      "abs_error": 0.0,
+      "tolerance": 5.32e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "396301/140625",
+      "contract_value": 2.8181404444444444,
+      "abs_error": 4.4444444444444444e-17,
+      "tolerance": 3.8181404444444443e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-151/50",
+      "contract_value": -3.02,
+      "abs_error": 0.0,
+      "tolerance": 4.02e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-38961/2500",
+      "contract_value": -15.5844,
+      "abs_error": 0.0,
+      "tolerance": 1.65844e-09,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-34619/3000",
+      "contract_value": -11.539666666666667,
+      "abs_error": 3.333333333333333e-16,
+      "tolerance": 1.2539666666666667e-09,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "93301/46875",
+      "contract_value": 1.9904213333333334,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 2.9904213333333336e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-14171/9000",
+      "contract_value": -1.5745555555555555,
+      "abs_error": 5.555555555555556e-17,
+      "tolerance": 2.5745555555555555e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_aggregate",
+      "path": [
+        0
+      ],
+      "independent_exact": "93301/46875",
+      "contract_value": 1.9904213333333334,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 2.9904213333333336e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "g_aggregate",
+      "path": [
+        1
+      ],
+      "independent_exact": "-151/50",
+      "contract_value": -3.02,
+      "abs_error": 0.0,
+      "tolerance": 4.02e-10,
+      "passed": true
+    },
+    {
+      "case_id": "difference_difference_refresh",
+      "step": 3,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "81340934669/46875000000",
+      "contract_value": 1.7352732729386666,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 2.7352732729386667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "-181/100",
+      "contract_value": -1.81,
+      "abs_error": 0.0,
+      "tolerance": 2.81e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "91/100",
+      "contract_value": 0.91,
+      "abs_error": 0.0,
+      "tolerance": 1.91e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-103/25",
+      "contract_value": -4.12,
+      "abs_error": 0.0,
+      "tolerance": 5.12e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "373/200",
+      "contract_value": 1.865,
+      "abs_error": 0.0,
+      "tolerance": 2.865e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-593/100",
+      "contract_value": -5.93,
+      "abs_error": 0.0,
+      "tolerance": 6.93e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "111/40",
+      "contract_value": 2.775,
+      "abs_error": 0.0,
+      "tolerance": 3.775e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-387/50",
+      "contract_value": -7.74,
+      "abs_error": 0.0,
+      "tolerance": 8.74e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "737/200",
+      "contract_value": 3.685,
+      "abs_error": 0.0,
+      "tolerance": 4.685e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "-191/20",
+      "contract_value": -9.55,
+      "abs_error": 0.0,
+      "tolerance": 1.055e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "919/200",
+      "contract_value": 4.595,
+      "abs_error": 0.0,
+      "tolerance": 5.595e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "-284/25",
+      "contract_value": -11.36,
+      "abs_error": 0.0,
+      "tolerance": 1.236e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "h_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "1101/200",
+      "contract_value": 5.505,
+      "abs_error": 0.0,
+      "tolerance": 6.505e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "19/50",
+      "contract_value": 0.38,
+      "abs_error": 0.0,
+      "tolerance": 1.38e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-27/200",
+      "contract_value": -0.135,
+      "abs_error": 0.0,
+      "tolerance": 1.135e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "57/100",
+      "contract_value": 0.57,
+      "abs_error": 0.0,
+      "tolerance": 1.57e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-9/40",
+      "contract_value": -0.225,
+      "abs_error": 0.0,
+      "tolerance": 1.225e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "19/25",
+      "contract_value": 0.76,
+      "abs_error": 0.0,
+      "tolerance": 1.76e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-63/200",
+      "contract_value": -0.315,
+      "abs_error": 0.0,
+      "tolerance": 1.315e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "19/20",
+      "contract_value": 0.95,
+      "abs_error": 0.0,
+      "tolerance": 1.95e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "-81/200",
+      "contract_value": -0.405,
+      "abs_error": 0.0,
+      "tolerance": 1.405e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "57/50",
+      "contract_value": 1.14,
+      "abs_error": 0.0,
+      "tolerance": 2.14e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "-99/200",
+      "contract_value": -0.495,
+      "abs_error": 0.0,
+      "tolerance": 1.495e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-27/100",
+      "contract_value": -0.27,
+      "abs_error": 0.0,
+      "tolerance": 1.27e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "57/50",
+      "contract_value": 1.14,
+      "abs_error": 0.0,
+      "tolerance": 2.14e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-63/100",
+      "contract_value": -0.63,
+      "abs_error": 0.0,
+      "tolerance": 1.63e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "19/10",
+      "contract_value": 1.9,
+      "abs_error": 0.0,
+      "tolerance": 2.9e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "message_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "-99/100",
+      "contract_value": -0.99,
+      "abs_error": 0.0,
+      "tolerance": 1.99e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-9/2",
+      "contract_value": -4.5,
+      "abs_error": 0.0,
+      "tolerance": 5.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "173/100",
+      "contract_value": 1.73,
+      "abs_error": 0.0,
+      "tolerance": 2.73e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-134/25",
+      "contract_value": -5.36,
+      "abs_error": 0.0,
+      "tolerance": 6.36e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "3",
+      "contract_value": 3.0,
+      "abs_error": 0.0,
+      "tolerance": 4e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-17/2",
+      "contract_value": -8.5,
+      "abs_error": 0.0,
+      "tolerance": 9.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "337/100",
+      "contract_value": 3.37,
+      "abs_error": 0.0,
+      "tolerance": 4.37e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "-43/5",
+      "contract_value": -8.6,
+      "abs_error": 0.0,
+      "tolerance": 9.6e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "5",
+      "contract_value": 5.0,
+      "abs_error": 0.0,
+      "tolerance": 6e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "-25/2",
+      "contract_value": -12.5,
+      "abs_error": 0.0,
+      "tolerance": 1.35e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "501/100",
+      "contract_value": 5.01,
+      "abs_error": 0.0,
+      "tolerance": 6.01e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "23/4",
+      "contract_value": 5.75,
+      "abs_error": 0.0,
+      "tolerance": 6.75e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-2663/200",
+      "contract_value": -13.315,
+      "abs_error": 0.0,
+      "tolerance": 1.4315e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-893/100",
+      "contract_value": -8.93,
+      "abs_error": 0.0,
+      "tolerance": 9.93e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "801/200",
+      "contract_value": 4.005,
+      "abs_error": 0.0,
+      "tolerance": 5.005e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-131/20",
+      "contract_value": -6.55,
+      "abs_error": 0.0,
+      "tolerance": 7.55e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "bucket_means",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "673/200",
+      "contract_value": 3.365,
+      "abs_error": 0.0,
+      "tolerance": 4.365e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_aggregate",
+      "path": [
+        0
+      ],
+      "independent_exact": "-131/20",
+      "contract_value": -6.55,
+      "abs_error": 0.0,
+      "tolerance": 7.55e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "g_aggregate",
+      "path": [
+        1
+      ],
+      "independent_exact": "673/200",
+      "contract_value": 3.365,
+      "abs_error": 0.0,
+      "tolerance": 4.365e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 1,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "74891/8000",
+      "contract_value": 9.361375,
+      "abs_error": 0.0,
+      "tolerance": 1.0361375e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "-1679/1000",
+      "contract_value": -1.679,
+      "abs_error": 0.0,
+      "tolerance": 2.679e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "8427/10000",
+      "contract_value": 0.8427,
+      "abs_error": 0.0,
+      "tolerance": 1.8427e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-3989/1000",
+      "contract_value": -3.989,
+      "abs_error": 0.0,
+      "tolerance": 4.989e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "2163/1250",
+      "contract_value": 1.7304,
+      "abs_error": 0.0,
+      "tolerance": 2.7304e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-2703/500",
+      "contract_value": -5.406,
+      "abs_error": 0.0,
+      "tolerance": 6.406e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "6601/2500",
+      "contract_value": 2.6404,
+      "abs_error": 0.0,
+      "tolerance": 3.6404e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-1417/200",
+      "contract_value": -7.085,
+      "abs_error": 0.0,
+      "tolerance": 8.085e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "34831/10000",
+      "contract_value": 3.4831,
+      "abs_error": 0.0,
+      "tolerance": 4.4831e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "-4513/500",
+      "contract_value": -9.026,
+      "abs_error": 0.0,
+      "tolerance": 1.0026e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "8517/2000",
+      "contract_value": 4.2585,
+      "abs_error": 0.0,
+      "tolerance": 5.2585e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "-10443/1000",
+      "contract_value": -10.443,
+      "abs_error": 0.0,
+      "tolerance": 1.1443e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "h_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "10337/2000",
+      "contract_value": 5.1685,
+      "abs_error": 0.0,
+      "tolerance": 6.1685e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "773/3000",
+      "contract_value": 0.25766666666666665,
+      "abs_error": 1.6666666666666667e-17,
+      "tolerance": 1.2576666666666668e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-56/625",
+      "contract_value": -0.0896,
+      "abs_error": 0.0,
+      "tolerance": 1.0896e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "167/500",
+      "contract_value": 0.334,
+      "abs_error": 0.0,
+      "tolerance": 1.334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-131/625",
+      "contract_value": -0.2096,
+      "abs_error": 0.0,
+      "tolerance": 1.2096e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "109/120",
+      "contract_value": 0.9083333333333333,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 1.9083333333333332e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-969/10000",
+      "contract_value": -0.0969,
+      "abs_error": 0.0,
+      "tolerance": 1.0969e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "311/1500",
+      "contract_value": 0.20733333333333334,
+      "abs_error": 6.666666666666667e-18,
+      "tolerance": 1.2073333333333332e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "-943/2000",
+      "contract_value": -0.4715,
+      "abs_error": 0.0,
+      "tolerance": 1.4715e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "1297/1000",
+      "contract_value": 1.297,
+      "abs_error": 0.0,
+      "tolerance": 2.297e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "-343/2000",
+      "contract_value": -0.1715,
+      "abs_error": 0.0,
+      "tolerance": 1.1715e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "773/1500",
+      "contract_value": 0.5153333333333333,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 1.5153333333333334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-262/625",
+      "contract_value": -0.4192,
+      "abs_error": 0.0,
+      "tolerance": 1.4192e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "109/60",
+      "contract_value": 1.8166666666666667,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 2.816666666666667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "-943/1000",
+      "contract_value": -0.943,
+      "abs_error": 0.0,
+      "tolerance": 1.943e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "1297/500",
+      "contract_value": 2.594,
+      "abs_error": 0.0,
+      "tolerance": 3.594e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "message_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-5977/1500",
+      "contract_value": -3.9846666666666666,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 4.984666666666666e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "173/100",
+      "contract_value": 1.73,
+      "abs_error": 0.0,
+      "tolerance": 2.73e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-134/25",
+      "contract_value": -5.36,
+      "abs_error": 0.0,
+      "tolerance": 6.36e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "1613/625",
+      "contract_value": 2.5808,
+      "abs_error": 0.0,
+      "tolerance": 3.5808e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-401/60",
+      "contract_value": -6.683333333333334,
+      "abs_error": 6.666666666666666e-16,
+      "tolerance": 7.683333333333334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "337/100",
+      "contract_value": 3.37,
+      "abs_error": 0.0,
+      "tolerance": 4.37e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "-43/5",
+      "contract_value": -8.6,
+      "abs_error": 0.0,
+      "tolerance": 9.6e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "4057/1000",
+      "contract_value": 4.057,
+      "abs_error": 0.0,
+      "tolerance": 5.057e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "-4953/500",
+      "contract_value": -9.906,
+      "abs_error": 0.0,
+      "tolerance": 1.0906e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "501/100",
+      "contract_value": 5.01,
+      "abs_error": 0.0,
+      "tolerance": 6.01e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-2667/500",
+      "contract_value": -5.334,
+      "abs_error": 0.0,
+      "tolerance": 6.334e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "51/20",
+      "contract_value": 2.55,
+      "abs_error": 0.0,
+      "tolerance": 3.55e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-17453/1000",
+      "contract_value": -17.453,
+      "abs_error": 0.0,
+      "tolerance": 1.8453e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "4001/200",
+      "contract_value": 20.005,
+      "abs_error": 0.0,
+      "tolerance": 2.1005e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-349/50",
+      "contract_value": -6.98,
+      "abs_error": 0.0,
+      "tolerance": 7.98e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "bucket_means",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "33189/10000",
+      "contract_value": 3.3189,
+      "abs_error": 0.0,
+      "tolerance": 4.3189e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_aggregate",
+      "path": [
+        0
+      ],
+      "independent_exact": "-349/50",
+      "contract_value": -6.98,
+      "abs_error": 0.0,
+      "tolerance": 7.98e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "g_aggregate",
+      "path": [
+        1
+      ],
+      "independent_exact": "33189/10000",
+      "contract_value": 3.3189,
+      "abs_error": 0.0,
+      "tolerance": 4.3189e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 2,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "3256673103/400000000",
+      "contract_value": 8.1416827575,
+      "abs_error": 0.0,
+      "tolerance": 9.1416827575e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "-7697/5000",
+      "contract_value": -1.5394,
+      "abs_error": 0.0,
+      "tolerance": 2.5394e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "388161/500000",
+      "contract_value": 0.776322,
+      "abs_error": 0.0,
+      "tolerance": 1.776322e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-17851/5000",
+      "contract_value": -3.5702,
+      "abs_error": 0.0,
+      "tolerance": 4.5702e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "832011/500000",
+      "contract_value": 1.664022,
+      "abs_error": 0.0,
+      "tolerance": 2.664022e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-12817/2500",
+      "contract_value": -5.1268,
+      "abs_error": 0.0,
+      "tolerance": 6.1268e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "1220633/500000",
+      "contract_value": 2.441266,
+      "abs_error": 0.0,
+      "tolerance": 3.441266e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-33331/5000",
+      "contract_value": -6.6662,
+      "abs_error": 0.0,
+      "tolerance": 7.6662e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "804397/250000",
+      "contract_value": 3.217588,
+      "abs_error": 0.0,
+      "tolerance": 4.217588e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "-20471/2500",
+      "contract_value": -8.1884,
+      "abs_error": 0.0,
+      "tolerance": 9.1884e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "998247/250000",
+      "contract_value": 3.992988,
+      "abs_error": 0.0,
+      "tolerance": 4.992988e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "-1949/200",
+      "contract_value": -9.745,
+      "abs_error": 0.0,
+      "tolerance": 1.0745e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "h_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "596279/125000",
+      "contract_value": 4.770232,
+      "abs_error": 0.0,
+      "tolerance": 5.770232e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "18781/45000",
+      "contract_value": 0.41735555555555554,
+      "abs_error": 1.5555555555555557e-17,
+      "tolerance": 1.4173555555555556e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-99367/1500000",
+      "contract_value": -0.06624466666666666,
+      "abs_error": 6.666666666666667e-18,
+      "tolerance": 1.0662446666666666e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "1979/7500",
+      "contract_value": 0.2638666666666667,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 1.2638666666666667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-268901/1500000",
+      "contract_value": -0.17926733333333333,
+      "abs_error": 3.3333333333333333e-18,
+      "tolerance": 1.1792673333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "12821/45000",
+      "contract_value": 0.2849111111111111,
+      "abs_error": 1.1111111111111111e-17,
+      "tolerance": 1.284911111111111e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-56953/250000",
+      "contract_value": -0.227812,
+      "abs_error": 0.0,
+      "tolerance": 1.227812e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "1739/2500",
+      "contract_value": 0.6956,
+      "abs_error": 0.0,
+      "tolerance": 1.6956e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "-148759/750000",
+      "contract_value": -0.19834533333333335,
+      "abs_error": 1.6666666666666667e-17,
+      "tolerance": 1.1983453333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "519/1000",
+      "contract_value": 0.519,
+      "abs_error": 0.0,
+      "tolerance": 1.519e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "compression_input_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "-64769/187500",
+      "contract_value": -0.34543466666666667,
+      "abs_error": 3.3333333333333333e-18,
+      "tolerance": 1.3454346666666666e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "-99367/750000",
+      "contract_value": -0.13248933333333332,
+      "abs_error": 1.3333333333333333e-17,
+      "tolerance": 1.1324893333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "-268901/750000",
+      "contract_value": -0.35853466666666667,
+      "abs_error": 3.3333333333333333e-18,
+      "tolerance": 1.3585346666666668e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "12821/22500",
+      "contract_value": 0.5698222222222222,
+      "abs_error": 2.2222222222222222e-17,
+      "tolerance": 1.5698222222222221e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "1739/1250",
+      "contract_value": 1.3912,
+      "abs_error": 0.0,
+      "tolerance": 2.3912e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "message_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "-64769/93750",
+      "contract_value": -0.6908693333333333,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 1.6908693333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-5977/1500",
+      "contract_value": -3.9846666666666666,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 4.984666666666666e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "1198133/750000",
+      "contract_value": 1.5975106666666667,
+      "abs_error": 3.3333333333333335e-17,
+      "tolerance": 2.5975106666666667e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-134/25",
+      "contract_value": -5.36,
+      "abs_error": 0.0,
+      "tolerance": 6.36e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "1666699/750000",
+      "contract_value": 2.2222653333333335,
+      "abs_error": 1.6666666666666665e-16,
+      "tolerance": 3.2222653333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "-68777/11250",
+      "contract_value": -6.113511111111111,
+      "abs_error": 1.1111111111111112e-16,
+      "tolerance": 7.113511111111111e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "337/100",
+      "contract_value": 3.37,
+      "abs_error": 0.0,
+      "tolerance": 4.37e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        3,
+        0
+      ],
+      "independent_exact": "-9011/1250",
+      "contract_value": -7.2088,
+      "abs_error": 0.0,
+      "tolerance": 8.2088e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        3,
+        1
+      ],
+      "independent_exact": "4057/1000",
+      "contract_value": 4.057,
+      "abs_error": 0.0,
+      "tolerance": 5.057e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        4,
+        0
+      ],
+      "independent_exact": "-4953/500",
+      "contract_value": -9.906,
+      "abs_error": 0.0,
+      "tolerance": 1.0906e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_regular",
+      "path": [
+        4,
+        1
+      ],
+      "independent_exact": "809837/187500",
+      "contract_value": 4.319130666666666,
+      "abs_error": 6.666666666666666e-16,
+      "tolerance": 5.319130666666666e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        0,
+        0
+      ],
+      "independent_exact": "-14017/3000",
+      "contract_value": -4.6723333333333334,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 5.672333333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        0,
+        1
+      ],
+      "independent_exact": "29842/15625",
+      "contract_value": 1.909888,
+      "abs_error": 0.0,
+      "tolerance": 2.909888e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        1,
+        0
+      ],
+      "independent_exact": "-37469/5625",
+      "contract_value": -6.661155555555555,
+      "abs_error": 5.555555555555556e-16,
+      "tolerance": 7.661155555555555e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        1,
+        1
+      ],
+      "independent_exact": "7427/2000",
+      "contract_value": 3.7135,
+      "abs_error": 0.0,
+      "tolerance": 4.7135e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        2,
+        0
+      ],
+      "independent_exact": "17547/1000",
+      "contract_value": 17.547,
+      "abs_error": 0.0,
+      "tolerance": 1.8547e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "bucket_means",
+      "path": [
+        2,
+        1
+      ],
+      "independent_exact": "-6690163/375000",
+      "contract_value": -17.840434666666667,
+      "abs_error": 3.333333333333333e-16,
+      "tolerance": 1.884043466666667e-09,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_aggregate",
+      "path": [
+        0
+      ],
+      "independent_exact": "-14017/3000",
+      "contract_value": -4.6723333333333334,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 5.672333333333333e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "g_aggregate",
+      "path": [
+        1
+      ],
+      "independent_exact": "29842/15625",
+      "contract_value": 1.909888,
+      "abs_error": 0.0,
+      "tolerance": 2.909888e-10,
+      "passed": true
+    },
+    {
+      "case_id": "refresh_difference_difference",
+      "step": 3,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "6952048453447/1000000000000",
+      "contract_value": 6.952048453447,
+      "abs_error": 0.0,
+      "tolerance": 7.952048453447e-10,
+      "passed": true
+    }
+  ]
+}

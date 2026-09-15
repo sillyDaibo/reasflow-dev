@@ -1,0 +1,20 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "Imported by assigned original numerical source",
+    "source": "src/pirl1_am/algorithms.py"
+  },
+  {
+    "kind": "install_package",
+    "package": "scipy",
+    "reason": "Imported by assigned original numerical source",
+    "source": "src/pirl1_am/algorithms.py"
+  },
+  {
+    "kind": "install_package",
+    "package": "Pillow",
+    "reason": "Imported by assigned original numerical source",
+    "source": "src/pirl1_am/algorithms.py"
+  }
+]

@@ -1,0 +1,3 @@
+# Environment preparation correction
+
+2503.07594 Codex initially failed in two fresh environments because importing scaffold_reproduction.algorithms executes package __init__, which imports datasets.py:9 and requires sklearn. The public smoke interpreter already had scikit-learn, so the omission in the explicit install actions was not exposed there. Added the source-required scikit-learn package to environment_actions.json and replayed this target in new evaluation directories. No adapter, paper contract, tolerance, original source or review binding changed. The initial failures remain in validation/20260915T122936729842Z.

@@ -1,0 +1,29 @@
+{
+  "common": {
+    "anll_test": 0.7299508366659534,
+    "error_test": 0.30303030303030304,
+    "iterations": 20
+  },
+  "dataset": "UCI Mesothelioma",
+  "feature_dimension": 47,
+  "paper_reference": {
+    "stratified_anll": 0.76,
+    "stratified_error": 0.27
+  },
+  "separate": {
+    "anll_test": 0.7493322364930329,
+    "error_test": 0.3939393939393939,
+    "iterations": 120
+  },
+  "stratified": {
+    "anll_test": 0.6295386189599523,
+    "anll_train": 0.4340508699445052,
+    "error_test": 0.30303030303030304,
+    "iterations": 88,
+    "parameter_count": 6298
+  },
+  "test_records": 33,
+  "train_records": 291,
+  "wall_time_seconds": 6.0457109631970525,
+  "resource": {"cpu_count_visible": 16, "python": "3.10", "platform": "Linux CPU"}
+}

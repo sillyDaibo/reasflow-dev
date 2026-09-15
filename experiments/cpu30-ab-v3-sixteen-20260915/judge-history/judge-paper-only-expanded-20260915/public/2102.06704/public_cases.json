@@ -1,0 +1,526 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2102.06704",
+    "title": "Proximal and Federated Random Reshuffling",
+    "sha256": "765342ddc320fe1b8f0507848a2ee818e9fd5080fa57d980bfa44acce44a7ae0"
+  },
+  "algorithm": {
+    "name": "Proximal Random Reshuffling (ProxRR) and Federated Random Reshuffling (FedRR)",
+    "citations": [
+      "PDF p.1 Eq.(1) and Assumption 1: composite finite-sum objective.",
+      "PDF p.2: proximal operator definition; p.3 Algorithm 1 lines 3-7: ProxRR.",
+      "PDF p.7 Eq.(13) and Algorithm 3 lines 4-9: product-space reformulation and FedRR.",
+      "PDF p.8 Eq.(14): logistic regression with elastic net.",
+      "PDF p.21, Proximal operator calculation: elastic-net shrinkage and soft threshold."
+    ],
+    "core_mechanisms": [
+      "sequential_permuted_epoch",
+      "single_epoch_end_prox_with_n_scaling",
+      "elastic_net_threshold_and_quadratic_shrinkage",
+      "epoch_specific_stepsize",
+      "separate_complete_client_epochs",
+      "equal_device_average_then_N_over_M_prox"
+    ],
+    "assumptions": [
+      "These are synthetic deterministic algorithm experiments derived only from the original PDF, not benchmark recreation or claims about statistical convergence.",
+      "All page numbers are one-based physical PDF pages. Original is arXiv:2102.06704v1 dated 12 Feb 2021.",
+      "All component objectives are smooth and convex, and all regularizers are proper closed convex elastic nets. Quadratic maximum smoothness is 4; all chosen quadratic stepsizes are at most 1/4.",
+      "Supplied order lists fix realizations of reshuffling randomness. Each list is a full permutation; no RNG seed convention is needed.",
+      "ProxRR gamma_t is supplied explicitly and is constant within each epoch, as allowed by Algorithm 1. The test does not invoke the specific theoretical schedule in Eq.(11).",
+      "The federated test follows the general unequal-sample Algorithm 3; the equal-sample restrictions of later convergence theorems are not imposed on the algorithm.",
+      "Coverage focuses on Algorithms 1 and 3. Shuffle-Once, importance resampling, convergence bounds and empirical performance claims are outside this finite numeric contract."
+    ]
+  },
+  "cases": [
+    {
+      "id": "proxrr_quadratic_three_epochs",
+      "purpose": "Order-sensitive convex component steps, changing epoch learning rates, and exactly one n-scaled elastic-net prox per epoch.",
+      "covers": [
+        "sequential_permuted_epoch",
+        "single_epoch_end_prox_with_n_scaling",
+        "elastic_net_threshold_and_quadratic_shrinkage",
+        "epoch_specific_stepsize"
+      ],
+      "inputs": {
+        "x0": [
+          2,
+          -1
+        ],
+        "loss": "f_i(x)=0.5*sum_j diagonal_i[j]*(x_j-center_i[j])^2; gradient_j=diagonal_i[j]*(x_j-center_i[j]).",
+        "diagonals": [
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            4,
+            2
+          ]
+        ],
+        "centers": [
+          [
+            3,
+            -1
+          ],
+          [
+            -2,
+            2
+          ],
+          [
+            1,
+            -3
+          ]
+        ],
+        "epoch_sample_orders": [
+          [
+            2,
+            0,
+            1
+          ],
+          [
+            1,
+            2,
+            0
+          ],
+          [
+            0,
+            1,
+            2
+          ]
+        ]
+      },
+      "parameters": {
+        "objective_normalization": "P(x)=(1/n)*sum_i f_i(x)+psi(x). Component gradients are NOT divided by n.",
+        "regularizer": "psi(x)=lambda1*sum_j abs(x_j)+(lambda2/2)*sum_j x_j^2.",
+        "prox_convention": "prox_(alpha psi)(v)=argmin_z alpha*psi(z)+0.5*||z-v||_2^2; coordinate result is sign(v_j)*max(abs(v_j)-alpha*lambda1,0)/(1+alpha*lambda2).",
+        "sample_index_base": 0,
+        "permutation_policy": "Condition on the explicitly supplied permutation for each epoch; do not generate or sort a different order.",
+        "gradient_evaluation": "At the latest inner iterate; no prox or added regularizer gradient inside an epoch.",
+        "observations": {
+          "step": "One-based completed epoch; step 1 is t=0.",
+          "inner_iterates": "Rows are x_t^1 through x_t^n in supplied sample order, before any regularizer operation.",
+          "iterate": "x_(t+1), after the single epoch-end proximal operation."
+        },
+        "algorithm": "ProxRR",
+        "n": 3,
+        "dimension": 2,
+        "epochs": 3,
+        "epoch_stepsizes": [
+          0.125,
+          0.0625,
+          0.125
+        ],
+        "lambda1": 0.25,
+        "lambda2": 0.5
+      },
+      "atol": 1e-10,
+      "rtol": 1e-09,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "inner_iterates",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "iterate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_iterates",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "iterate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_iterates",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "iterate",
+          "shape": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proxrr_logistic_elastic_net_three_epochs",
+      "purpose": "Use the paper experimental logistic objective with nonzero positive and negative margins and a genuinely active soft threshold that zeros a coordinate after every epoch.",
+      "covers": [
+        "sequential_permuted_epoch",
+        "single_epoch_end_prox_with_n_scaling",
+        "elastic_net_threshold_and_quadratic_shrinkage",
+        "epoch_specific_stepsize"
+      ],
+      "inputs": {
+        "x0": [
+          0.6,
+          -0.2
+        ],
+        "features": [
+          [
+            1,
+            2
+          ],
+          [
+            -2,
+            1
+          ],
+          [
+            1,
+            -1
+          ]
+        ],
+        "labels": [
+          1,
+          0,
+          1
+        ],
+        "epoch_sample_orders": [
+          [
+            2,
+            0,
+            1
+          ],
+          [
+            1,
+            2,
+            0
+          ],
+          [
+            0,
+            1,
+            2
+          ]
+        ],
+        "loss": "f_i(x)=-b_i*log(h(a_i^T*x))-(1-b_i)*log(1-h(a_i^T*x)); h(s)=1/(1+exp(-s)); gradient=(h(a_i^T*x)-b_i)*a_i. No intercept is added."
+      },
+      "parameters": {
+        "objective_normalization": "P(x)=(1/n)*sum_i f_i(x)+psi(x). Component gradients are NOT divided by n.",
+        "regularizer": "psi(x)=lambda1*sum_j abs(x_j)+(lambda2/2)*sum_j x_j^2.",
+        "prox_convention": "prox_(alpha psi)(v)=argmin_z alpha*psi(z)+0.5*||z-v||_2^2; coordinate result is sign(v_j)*max(abs(v_j)-alpha*lambda1,0)/(1+alpha*lambda2).",
+        "sample_index_base": 0,
+        "permutation_policy": "Condition on the explicitly supplied permutation for each epoch; do not generate or sort a different order.",
+        "gradient_evaluation": "At the latest inner iterate; no prox or added regularizer gradient inside an epoch.",
+        "observations": {
+          "step": "One-based completed epoch; step 1 is t=0.",
+          "inner_iterates": "Rows are x_t^1 through x_t^n in supplied sample order, before any regularizer operation.",
+          "iterate": "x_(t+1), after the single epoch-end proximal operation."
+        },
+        "algorithm": "ProxRR",
+        "n": 3,
+        "dimension": 2,
+        "epochs": 3,
+        "epoch_stepsizes": [
+          0.25,
+          0.125,
+          0.0625
+        ],
+        "lambda1": 0.3,
+        "lambda2": 0.4
+      },
+      "atol": 1e-10,
+      "rtol": 1e-09,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "inner_iterates",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "iterate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_iterates",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "iterate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_iterates",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "iterate",
+          "shape": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fedrr_unequal_clients_three_rounds",
+      "purpose": "Exercise independent local full passes on heterogeneous clients with unequal sample counts, reset from the preceding global iterate, equal device weighting and gamma*N/M regularization.",
+      "covers": [
+        "sequential_permuted_epoch",
+        "elastic_net_threshold_and_quadratic_shrinkage",
+        "separate_complete_client_epochs",
+        "equal_device_average_then_N_over_M_prox"
+      ],
+      "inputs": {
+        "x0": [
+          1,
+          -2
+        ],
+        "client_sample_counts": [
+          2,
+          3
+        ],
+        "client_diagonals": [
+          [
+            [
+              2,
+              1
+            ],
+            [
+              1,
+              3
+            ]
+          ],
+          [
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              2,
+              4
+            ]
+          ]
+        ],
+        "client_centers": [
+          [
+            [
+              3,
+              -1
+            ],
+            [
+              -1,
+              2
+            ]
+          ],
+          [
+            [
+              -2,
+              1
+            ],
+            [
+              2,
+              -3
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        ],
+        "epoch_client_sample_orders": [
+          [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0,
+              1
+            ]
+          ],
+          [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2,
+              0
+            ]
+          ],
+          [
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              2,
+              1
+            ]
+          ]
+        ],
+        "loss": "f_mi(x)=0.5*sum_j client_diagonals[m][i][j]*(x_j-client_centers[m][i][j])^2; gradient_j=client_diagonals[m][i][j]*(x_j-client_centers[m][i][j])."
+      },
+      "parameters": {
+        "algorithm": "FedRR",
+        "dimension": 2,
+        "epochs": 3,
+        "M": 2,
+        "N": 5,
+        "n": 3,
+        "stepsize": 0.125,
+        "lambda1": 0.1,
+        "lambda2": 0.5,
+        "objective_normalization": "P(x)=(1/N)*sum_m sum_i f_mi(x)+R(x). Each local sample gradient is unnormalized.",
+        "regularizer": "R(x)=lambda1*sum_j abs(x_j)+(lambda2/2)*sum_j x_j^2.",
+        "prox_convention": "prox_(alpha R)(v)=argmin_z alpha*R(z)+0.5*||z-v||_2^2; coordinate result is sign(v_j)*max(abs(v_j)-alpha*lambda1,0)/(1+alpha*lambda2).",
+        "sample_index_base": 0,
+        "client_index_base": 0,
+        "permutation_policy": "Use the given order separately for each client and epoch. The order lists contain only real samples.",
+        "local_update": "Each round begins with every client at x_t. Client m performs N_m sequential sample gradient steps with constant gamma and no regularizer. For padding to n=max_m N_m, dummy losses have zero gradient and leave the completed local state unchanged.",
+        "server_update": "z_(t+1)=(1/M)*sum_m local_endpoint_m; x_(t+1)=prox_(gamma*N/M*R)(z_(t+1)). All clients participate in every round.",
+        "observations": {
+          "step": "One-based completed communication round; step 1 is t=0.",
+          "local_after_first_sample": "Rows are the two clients, each after its first real sample gradient update in this round.",
+          "local_endpoints": "Rows are the two clients after all their real sample updates, before aggregation.",
+          "aggregate": "Equal-weight mean z_(t+1) of completed client vectors before regularization.",
+          "iterate": "Global x_(t+1) after server proximal operation."
+        }
+      },
+      "atol": 1e-10,
+      "rtol": 1e-09,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "local_after_first_sample",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "local_endpoints",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "aggregate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "iterate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "local_after_first_sample",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "local_endpoints",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "aggregate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "iterate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "local_after_first_sample",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "local_endpoints",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "aggregate",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "iterate",
+          "shape": [
+            2
+          ]
+        }
+      ]
+    }
+  ]
+}

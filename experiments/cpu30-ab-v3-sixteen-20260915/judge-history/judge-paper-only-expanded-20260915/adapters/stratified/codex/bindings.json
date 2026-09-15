@@ -1,0 +1,22 @@
+[
+  {
+    "path": "strat_models/solvers.py",
+    "symbol": "fit_admm"
+  },
+  {
+    "path": "strat_models/solvers.py",
+    "symbol": "_solve_system"
+  },
+  {
+    "path": "strat_models/solvers.py",
+    "symbol": "ridge_prox"
+  },
+  {
+    "path": "strat_models/solvers.py",
+    "symbol": "ridge_regularizer_prox"
+  },
+  {
+    "path": "strat_models/solvers.py",
+    "symbol": "poisson_prox"
+  }
+]

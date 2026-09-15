@@ -1,0 +1,108 @@
+(a)
+(b)
+Figure 9: RSA with different norms, without Byzantine at-
+tacks: (a) top-1 accuracy; (b) variance of regular workers’
+local iterates.
+(a)
+(b)
+Figure 10: RSA with different norms, under same-value at-
+tacks with q = 8 and c = 100: (a) top-1 accuracy; (b) vari-
+ance of regular workers’ local iterates.
+(a)
+(b)
+Figure 11: Top-1 accuracy under attacks on heterogeneous
+data: (a) q = 4; (b) q = 8.
+Acknowledgments.
+The work by T. Chen and G. Gian-
+nakis is supported in part by NSF 1500713 and 1711471.
+The work by Q. Ling is supported in part by NSF China
+61573331 and Guangdong IIET 2017ZT07X355.
+References
+Alistarh, D.; Allen-Zhu, Z.; and Li, J.
+2018.
+Byzan-
+tine
+stochastic
+gradient
+descent.
+arXiv
+preprint
+arXiv:1803.08917.
+Ben-Ameur, W.; Bianchi, P.; and Jakubowicz, J. 2016. Ro-
+bust distributed consensus using total variation.
+In IEEE
+Trans. Automat. Contr. 61(6):1550–1564.
+Blanchard, P.; Guerraoui, R.; Stainer, J.; and Mhamdi, E.
+M. E. 2017. Machine learning with adversaries: Byzantine
+tolerant gradient descent. In Advances in Neural Information
+Processing Systems, 119–129.
+Bottou, L. 2010. Large-scale machine learning with stochas-
+tic gradient descent. In International Conference on Com-
+putational Statistics. Physica-Verlag HD. 177–186.
+Chen, L.; Wang, H.; Charles, Z.; and Papailiopoulos, D.
+2018a. Draco: Byzantine-resilient distributed training via
+redundant gradients. In International Conference on Ma-
+chine Learning, 902–911.
+Chen,
+T.;
+Giannakis,
+G.
+B.;
+Sun,
+T.;
+and
+Yin,
+W.
+2018b.
+LAG: Lazily aggregated gradient for
+communication-efﬁcient
+distributed
+learning.
+arXiv
+preprint arXiv:1805.09965.
+Chen, Y.; Su, L.; and Xu, J. 2017. Distributed statistical
+machine learning in adversarial settings: Byzantine gradient
+descent. In ACM Conference on Measurement and Analysis
+of Computing Systems 1(2):44.
+Li, M.; Andersen, D. G.; Smola, A. J.; and Yu, K. 2014.
+Communication efﬁcient distributed machine learning with
+the parameter server. In Advances in Neural Information
+Processing Systems, 19–27.
+Li, L.
+2019.
+https://github.com/liepill/rsa-byzantine.
+Github.
+Liu, Y.; Nowzari, C.; Tian, Z.; and Ling, Q. 2017. Asyn-
+chronous periodic event-triggered coordination of multi-
+agent systems. In IEEE Conference Decision Control, 6696–
+6701.
+Lynch, N. A. 1996. Distributed algorithms. Elsevier.
+McMahan, B., and Ramage, D. 2017. Federated learning:
+Collaborative machine learning without centralized training
+data. Google Research Blog.
+Nemirovski, A.; Juditsky, A.; Lan, G.; and Shapiro, A. 2009.
+Robust stochastic approximation approach to stochastic pro-
+gramming. SIAM J. Optimization 19(4):1574–1609.
+Nesterov, Y. 2013. Introductory lectures on convex opti-
+mization: A basic course, volume 87. Springer Science &
+Business Media.
+Shi, W.; Ling, Q.; Yuan, K.; Wu, G.; and Yin, W. 2014.
+On the linear convergence of the ADMM in decentralized
+consensus optimization.
+In IEEE Trans. Signal Process.
+62(7):1750–1761.
+Sicari, S.; Rizzardi, A.; Grieco, L. A.; and Coen-Porisini, A.
+2015. Security, privacy and trust in Internet of Things: The
+road ahead. Computer Networks 76:146–164.
+Smith, V.; Chiang, C.-K.; Sanjabi, M.; and Talwalkar, A. S.
+2017. Federated multi-task learning. In Advances in Neural
+Information Processing Systems, 4427–4437.
+Su, L., and Xu, J. 2018. Securing distributed machine learn-
+ing in high dimensions. arXiv preprint arXiv:1804.10140.
+Weiszfeld, E., and Plastria, F. 2009. On the point for which
+the sum of the distances to n given points is minimum. An-
+nals of Operations Research 167(1):7–41.
+Xie, C.; Koyejo, O.; and Gupta, I.
+2018a.
+Generalized
+Byzantine-tolerant SGD. arXiv preprint arXiv:1802.10116.

@@ -1,0 +1,9 @@
+{
+  "experiment": "smoke",
+  "features": 8,
+  "methods": [
+    "ProxRR"
+  ],
+  "rows": 40,
+  "seed": 42
+}

@@ -1,0 +1,321 @@
+{
+  "paper_id": "2309.05204",
+  "evaluated_at": "2026-09-04T04:43:25.153927+00:00",
+  "summary": {
+    "total_score": 0.7174,
+    "algorithm_impl_score": 0.5238,
+    "exp_setup_score": 0.88,
+    "exp_results_score": 0.0,
+    "total_rubrics": 26,
+    "passed": 18,
+    "failed": 8,
+    "errors": 0,
+    "pass_threshold": 0.8,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.75,
+      "passed": 15,
+      "total": 20
+    },
+    "secondary": {
+      "score": 0.5,
+      "passed": 2,
+      "total": 4
+    },
+    "tertiary": {
+      "score": 0.5,
+      "passed": 1,
+      "total": 2
+    }
+  },
+  "results": [
+    {
+      "id": "alg-001",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The nonconvex nonsmooth optimization problem is to minimize (1/2)||Ku - f||_2^2 + λ||∇u||_p^p with p = 0.1.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pirl1_am/algorithms.py: both pirl1_am (line 139) and apirl1_am (line 164) default to p=0.1. The data-fidelity term (1/2)||Ku-f||_2^2 is implemented via FFT-based system: lhs = |blur_otf|^2 + beta*eig_DtD (line 57), rhs = beta*div(v) + K^T f (line 111), solved via IFFT. The lp regularization ||∇u||_p^p is realized through forward_difference (lines 24-33) and a proximity step with adaptive weights threshold_scale/(|d|+eps)^(1-p) (lines 102-107), which is the proximal operator for the lp norm with p=0.1. The parameter validation (line 68) enforces 0 < p < 1, consistent with the nonconvex nonsmooth case.",
+      "note": "The implementation uses an alternating minimization / iterative reweighted l1 approach to handle the nonconvex lp penalty, which is equivalent to minimizing the stated objective.",
+      "error": false
+    },
+    {
+      "id": "alg-002",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The quadratic penalty alternating minimization (AM) reformulation is min_{u,z} (1/2)||Ku - f||_2^2 + λ||z||_p^p + (β/2)||z - ∇u||_2^2.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pirl1_am/algorithms.py implements the quadratic penalty AM formulation. The _solve() function alternates between: (1) z-subproblem (lines 105-107): weighted soft-thresholding `vx = _shrink(dx, weights_x)` where weights encode the λ||z||_p^p proximal update for fixed u; (2) u-subproblem (lines 111-112): `rhs = beta * divergence(vx, vy) + adjoint_observed`, `lhs = |K|^2 + beta * eig_dt_d` (line 57) solves the linear system from differentiating (1/2)||Ku-f||^2 + (β/2)||z-∇u||^2 over u. `beta` (line 57, 102, 111) is the quadratic penalty coefficient, `mu` is λ (threshold_scale = mu/beta*p at line 102). The overall structure exactly encodes min_{u,z} (1/2)||Ku-f||_2^2 + λ||z||_p^p + (β/2)||z-∇u||_2^2.",
+      "note": "The paper uses λ for the regularization weight; the code calls it `mu`. The variable z (auxiliary for ∇u) is represented as the pair (vx, vy) after soft-thresholding. The formulation is equivalent to Eq. (3).",
+      "error": false
+    },
+    {
+      "id": "alg-003",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The AM alternates between z_{k+1} = argmin_z (β/2)||z - ∇u_k||_2^2 + λ||z||_p^p and u_{k+1} = argmin_u (1/2)||Ku - f||_2^2 + (β/2)||z_{k+1} - ∇u||_2^2.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/pirl1_am/algorithms.py, the `_solve` function implements the two-step AM in each iteration: (1) z-step: `weights = (mu/beta*p) / (|dx|+eps)^(1-p)` then `vx = _shrink(dx, weights_x)`, `vy = _shrink(dy, weights_y)` — this is the proximal/shrink operator solving argmin_z (β/2)||z - ∇u_k||^2 + λ||z||_p^p where dx/dy = forward_difference(x) = ∇u_k; (2) u-step: `rhs = beta * divergence(vx, vy) + adjoint_observed` followed by `x = real(ifft2(fft2(rhs) / lhs))` where `lhs = |K|^2 + beta * (|D_h|^2 + |D_v|^2)` — this solves the normal equations for argmin_u (1/2)||Ku - f||^2 + (β/2)||z_{k+1} - ∇u||^2. The two steps alternate in every iteration loop iteration, exactly matching Eq. (4).",
+      "note": "The paper's λ corresponds to mu in the code. The z-update uses a re-weighted ℓ1 / iterative shrinkage approach that is the exact proximal operator for the ||z||_p^p term under the half-quadratic splitting framework.",
+      "error": false
+    },
+    {
+      "id": "alg-004",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "In the z subproblem, the iterative re-weighted ℓ1 (IRL1) approximates the ℓp term by a weighted ℓ1 norm with weights w_k^i = p(|z_k^i| + ε)^{p-1}. The weight matrix W_k is diagonal with entries w_k^i.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/pirl1_am/algorithms.py, inside _solve(), lines compute: `threshold_scale = mu / beta * p` and then `weights_x = threshold_scale / (np.abs(dx) + eps) ** (1.0 - p)`, which equals `(mu/beta) * p * (|z| + eps)^(p-1)`. This directly implements the IRL1 weight formula w_k^i = p(|z_k^i| + ε)^(p-1) (with the mu/beta scaling from the problem). The weights are applied element-wise in `_shrink(dx, weights_x)` (soft-thresholding), which is the z-subproblem solution under a diagonal weight matrix W_k.",
+      "note": "The diagonal matrix W_k is not explicitly constructed as a matrix object — instead it is implemented as element-wise arrays (equivalent representation). The mu/beta factor in the weight is from the ADMM penalty scaling and does not alter the structural claim about the IRL1 weight formula.",
+      "error": false
+    },
+    {
+      "id": "alg-005",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The z subproblem is solved via soft-thresholding: z_{k+1} = sign(∇u_k) max(0, |∇u_k| - (λ/β) W_k) (element-wise), where λ = Lβ/μ and L = 1.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In src/pirl1_am/algorithms.py, the soft-thresholding is computed as: `threshold_scale = mu / beta * p` followed by `weights_x = threshold_scale / (np.abs(dx) + eps) ** (1.0 - p)`, and `vx = _shrink(dx, weights_x)` where `_shrink` = `sign(v) * max(|v| - threshold, 0)`. The threshold used is `(μ/β * p) / |∇u|^(1-p)`, which scales by μ/β. The rubric claims the threshold should be `(λ/β) W_k` with `λ = Lβ/μ` and `L=1`, giving threshold = `(1/μ) W_k`. This would require scaling by `1/μ` (or equivalently `β/(μβ) = 1/μ`), not `μ/β`. The code uses the inverted ratio (μ/β instead of 1/μ=β/(βμ)), and there is no variable named `L` or logic setting `L=1`. The functional form of soft-thresholding is present, but the threshold coefficient μ/β contradicts the claim's derivation requiring β/μ (i.e., λ/β = β/(μβ) = 1/μ), making the specific formula z_{k+1} = sign(∇u_k) max(0, |∇u_k| − (λ/β)W_k) with λ=Lβ/μ, L=1 not implemented as stated.",
+      "note": "The algorithm does use soft-thresholding with iteratively reweighted L1 weights, which is the general structure. However, the specific parameterization in the claim (λ=Lβ/μ, L=1) implies a threshold coefficient of 1/μ, whereas the code uses μ/β. These are reciprocals of each other, indicating either a different derivation/normalization or an incorrect implementation relative to the paper's formula.",
+      "error": false
+    },
+    {
+      "id": "alg-006",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The u subproblem is solved by the linear system (K^T K + (β/μ) ∇^T ∇) u = K^T f + (β/μ) ∇^T z.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In src/pirl1_am/algorithms.py, _prepare_system() builds lhs = |blur_otf|^2 + beta * eig_dt_d (line ~42), and _solve() uses rhs = beta * divergence(vx, vy) + adjoint_observed (line ~82), then solves x = ifft2(fft2(rhs)/lhs). The coefficient applied to the gradient term is β (bare beta), not β/μ. The rubric requires the linear system (K^T K + (β/μ) ∇^T ∇) u = K^T f + (β/μ) ∇^T z. The code never forms the ratio beta/mu for the u-subproblem LHS or RHS; mu only appears in threshold_scale = mu/beta*p used for the z-shrinkage step, not the u-update.",
+      "note": "It is possible the paper uses a different parametrization that absorbs μ into β, but as stated the rubric explicitly requires the β/μ coefficient, which is absent from the u-update code.",
+      "error": false
+    },
+    {
+      "id": "alg-007",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The linear system is solved using two-dimensional fast Fourier transforms (FFT) with complexity O(n log n).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pirl1_am/algorithms.py: Line 9 imports `from scipy.fft import fft2, ifft2`. Lines 54–55 compute Fourier symbols via `fft2` for horizontal/vertical difference operators. Line 112 solves the linear system as `x = np.real(ifft2(fft2(rhs, workers=FFT_WORKERS) / lhs, workers=FFT_WORKERS))`, performing element-wise division in the Fourier domain — the standard O(n log n) approach for diagonalizing a circulant system using 2D FFT.",
+      "note": "The `lhs` (precomputed in `_prepare_system`) encodes the eigenvalues of the circulant system (|H|^2 + beta*|D|^2) in the frequency domain; solving by pointwise division followed by inverse FFT is textbook O(n log n) complexity for 2D images.",
+      "error": false
+    },
+    {
+      "id": "alg-008",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "In APIRL1-AM, the Nesterov acceleration updates: t_{k+1} = (1+√(1+4 t_k^2))/2, y_k = z_k + (t_k - 1)/t_{k+1} (z_k - z_{k-1}), then z_{k+1} = sign(y_k) max(0, |y_k| - τ) with τ = (pλ)/(β(|∇u_k| + ε)^{1-p}).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In src/pirl1_am/algorithms.py, the accelerated=True branch computes momentum as `(iteration - 1.0) / (iteration + 2.0)` (a fixed rational formula) and applies it as `y = x + momentum * (x - x_old)`. This does NOT match the paper's Nesterov scheme which requires: (1) tracking a scalar sequence `t_k` via `t_{k+1} = (1+√(1+4 t_k^2))/2`, then using `(t_k - 1)/t_{k+1}` as momentum coefficient; and (2) applying the acceleration to the gradient-domain variable `z` (not the image `x`). The shrink/proximal threshold uses `threshold_scale / (|dx| + eps)^(1-p)` where `threshold_scale = mu/beta * p`, which approximates `τ = (pλ)/(β(|∇u_k| + ε)^{1-p})` correctly (with `mu` as `λ`), but the Nesterov `t_k` sequence and the correct variable for acceleration are both absent.",
+      "note": "The shrink threshold formula is correctly implemented, but the Nesterov momentum update uses the wrong formula (FISTA-like approximation instead of the exact t_k recurrence), and the acceleration is applied to the wrong variable (image x rather than gradient z as per Alg.2).",
+      "error": false
+    },
+    {
+      "id": "alg-009",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The acceleration threshold τ is computed from ∇u_k, not from y_k.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In src/pirl1_am/algorithms.py, the accelerated loop (lines 104-123) computes the threshold weights (τ) at lines 105-106 from `dx, dy`, which are updated at line 119 as `forward_difference(y)` — the Nesterov extrapolated point — not from `forward_difference(x)` (u_k). Specifically: after updating x (u_{k+1}) at line 112, the code sets y = x + momentum*(x - x_old) (line 118) then dx,dy = forward_difference(y) (line 119), so the threshold on the next iteration uses ∇y_k, not ∇u_k.",
+      "note": "The initial dx,dy before the loop (line 99) uses `y if accelerated else x`, so even the first iteration uses ∇y_0 = ∇x_0 (since y=x initially). Thereafter, dx,dy always reflects ∇y rather than ∇u (=∇x).",
+      "error": false
+    },
+    {
+      "id": "alg-010",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The Lipschitz constant L is fixed to 1.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all Python files in the repository (src/pirl1_am/algorithms.py, run_experiment.py, tests/test_core.py, etc.) for any occurrence of \"Lipschitz\", \"lipschitz\", \"L = 1\", \"L=1\", or \"lip_const\". No matches found anywhere. The _solve() function in algorithms.py initializes variables x, y, threshold_scale, lhs, etc., but contains no Lipschitz constant L. A full-repository search also returned no hits.",
+      "note": "The paper's Section III-B and Alg.1/Alg.2 apparently use a Lipschitz constant L (fixed to 1), but this is entirely absent from the implementation.",
+      "error": false
+    },
+    {
+      "id": "alg-011",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The parameter ε is a small number to avoid division by zero.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/pirl1_am/algorithms.py, lines 105–106, the parameter `eps` is added to the absolute values of finite differences in the denominator: `weights_x = threshold_scale / (np.abs(dx) + eps) ** (1.0 - p)` and `weights_y = threshold_scale / (np.abs(dy) + eps) ** (1.0 - p)`. This prevents division by zero when dx or dy is zero. The parameter defaults to `1.0e-5` (lines 140, 165) and is validated to be positive (line 70–71).",
+      "note": "The parameter is named `eps` throughout the codebase and is explicitly used to prevent division by zero in the weight computation for the iteratively reweighted scheme.",
+      "error": false
+    },
+    {
+      "id": "alg-012",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The algorithm is initialized with u_0, z_0, μ > 0, β > 0, p = 0.1, L = 1, and k = 0.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In algorithms.py, the _solve function (used by both pirl1_am and apirl1_am): (1) u_0 is present as `x = observed.copy()` (line 97); (2) z_0 is present as `dx, dy = forward_difference(...)` (line 99); (3) mu > 0 and beta > 0 are enforced by _validate_parameters (line 65-68); (4) p = 0.1 is the default parameter (line 139, 162) and set in config (formal_table1.json line 19). However: (5) L = 1 is completely absent — no variable named L, Lipschitz, or L_0 appears anywhere in the code; (6) k = 0 is not explicitly initialized — the loop starts at `range(1, max_iterations + 1)` (line 104) with no separate `k = 0` initialization. Grepping for 'L\\\\s*=' and 'k\\\\s*=\\\\s*0' in algorithms.py yields no matches.",
+      "note": "The paper's Alg.1/Alg.2 initialization specifies L=1 (likely a Lipschitz constant or step-size parameter) and k=0 (iteration counter). Both are missing from the implementation. The claim requires all listed initializations to be present, so the rubric is not fully satisfied.",
+      "error": false
+    },
+    {
+      "id": "alg-013",
+      "dimension": "algorithm_impl",
+      "priority": "tertiary",
+      "description": "The convergence criterion is when the relative error ||u_k - u_{k+1}||_2 / ||u_k||_2 ≤ 1×10^{-8}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pirl1_am/algorithms.py lines 110-122: x_old = x (previous iterate), then after update: denominator = np.linalg.norm(x), error = float(np.linalg.norm(x - x_old) / denominator). The tolerance tol defaults to 1.0e-8 (lines 141, 166) and convergence is checked as `if error < tol: break` (line 122). The relative error formula is ||u_{k+1} - u_k||_2 / ||u_{k+1}||_2, which is the standard relative change criterion with threshold 1e-8 matching the rubric's claim.",
+      "note": "The rubric specifies the denominator as ||u_k||_2 (old iterate), while the code uses ||u_{k+1}||_2 (new iterate) as denominator. Both are standard equivalent formulations of relative change; at convergence the values are nearly identical.",
+      "error": false
+    },
+    {
+      "id": "setup-001",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The blur kernel is a Gaussian blur of size 17×17 pixels with σ=7.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pirl1_am/data.py line 21: `def gaussian_kernel(size: int = 17, sigma: float = 7.0) -> np.ndarray:` — defaults to a 17×17 Gaussian kernel with σ=7.0. Lines 28–31 compute the 2D Gaussian via `np.exp(-(xx*xx + yy*yy) / (2*sigma*sigma))` and normalize by dividing by the sum. run_experiment.py line 164 passes `config[\"kernel_size\"]` and `config[\"kernel_sigma\"]` to this function; tests/test_core.py lines 27 and 38 call `gaussian_kernel()` with no arguments (using the 17/7 defaults).",
+      "note": "The experiment config file could override these defaults; however, the defaults match the claim exactly and the function signature documents them as the canonical values per the paper.",
+      "error": false
+    },
+    {
+      "id": "setup-002",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "Two blur levels are used: blur signal-to-noise ratio (BSNR) 30 and 20.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/formal_table1.json line 5: `\"bsnr_levels\": [30, 20]`. Both BSNR 30 and BSNR 20 are explicitly configured. run_experiment.py line 103 also confirms: `selected = [(\"Peppers\", 30), (\"Cameraman\", 20)]`, showing both blur levels used in the deblurring experiment.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-003",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For BSNR 20, β = 0.01.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In configs/formal_table1.json, the field \"beta_by_bsnr\": {\"30\": 0.009, \"20\": 0.01} explicitly sets β = 0.01 for BSNR = 20. In run_experiment.py (line 176), this value is read as: beta = float(config[\"beta_by_bsnr\"][str(bsnr_db)]) and passed directly to the solver.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-004",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For BSNR 30, β = 0.009.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/formal_table1.json line 18: \"beta_by_bsnr\": {\"30\": 0.009, \"20\": 0.01}. Also confirmed in results/formal/table1/metrics.csv where all BSNR=30 rows show beta=0.009.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-005",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For BSNR 30, the value of µ = 30 for Peppers.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In configs/formal_table1.json (and confirmed in results/formal/table1/resolved_config.json), the Peppers image has \"mu_by_bsnr\": {\"30\": 30, \"20\": 100}, meaning for BSNR=30, µ=30 for Peppers.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-006",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For BSNR 30, the value of µ = 60 for Cameraman.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In configs/formal_table1.json, the Cameraman image entry has \"mu_by_bsnr\": {\"30\": 60, \"20\": 100}, explicitly setting µ = 60 for BSNR = 30. This is corroborated by results/formal/table1/resolved_config.json which shows the same value after resolution.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-007",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For BSNR 20, the value of µ = 100 for both Peppers and Cameraman.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/formal_table1.json and results/formal/table1/resolved_config.json both explicitly set mu_by_bsnr[\"20\"] = 100 for Peppers and mu_by_bsnr[\"20\"] = 100 for Cameraman. Peppers entry: {\"30\": 30, \"20\": 100}; Cameraman entry: {\"30\": 60, \"20\": 100}.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-008",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "All images are of size 512×512 pixels.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Both images in the repository are 512×512 pixels: `data/pepper512.png` (512×512) and `data/camera512.png` (512×512), confirmed by reading the PNG IHDR chunks directly via Python struct. The config file `configs/formal_table1.json` references these images at lines 9 and 14. The image filenames also encode their size (\"512\").",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-009",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The deblurring on each image was done 10 times and the average was taken.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/formal_table1.json line 23: `\"trials\": 10`. run_experiment.py line 138: `trials = int(... config[\"trials\"])`, line 178: `for trial in range(trials):`, lines 71/73/75/77: averages computed via `np.mean(...)` over the trial results (psnr_mean, ssim_mean, iterations_mean, time_mean_seconds). results/formal/table1/resolved_config.json lines 38/42 confirm `\"resolved_trials\": 10` and `\"trials\": 10` were used in the actual run.",
+      "note": "The experiment loop runs 10 trials per (image, BSNR, algorithm) combination and reports the mean, matching the paper's §IV-A claim.",
+      "error": false
+    },
+    {
+      "id": "setup-010",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The stopping criterion is relative error ∥u_k - u_{k+1}∥_2 / ∥u_k∥_2 ≤ 1×10^{-8}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/pirl1_am/algorithms.py lines ~113-122: `denominator = np.linalg.norm(x)` and `error = float(np.linalg.norm(x - x_old) / denominator)` then `if error < tol: break`. Default `tol=1.0e-8` set at lines 141 and 166 for both `pirl1_am` and the accelerated variant. This implements ‖u_k - u_{k+1}‖₂ / ‖u_k‖₂ ≤ 1×10⁻⁸ exactly.",
+      "note": "The denominator uses the updated x (i.e., u_{k+1}) rather than x_old (u_k), which is a minor discrepancy vs. the paper formula. However the default tolerance of 1e-8 and relative-norm stopping structure match the claim.",
+      "error": false
+    },
+    {
+      "id": "setup-011",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The exponent p is fixed to 0.1.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/formal_table1.json line 19: `\"p\": 0.1`; src/pirl1_am/algorithms.py lines 139 and 164: both PIRL1 and PIRL1_AM solver functions have default `p: float = 0.1`; run_experiment.py line 185 passes `p=float(config[\"p\"])` which resolves to 0.1 from the config.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-012",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The Lipschitz constant L is fixed to 1.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all Python files (src/pirl1_am/algorithms.py, run_experiment.py, tests/test_core.py, src/pirl1_am/data.py, src/pirl1_am/metrics.py) and the config file (configs/formal_table1.json) for any occurrence of 'Lipschitz', 'lipschitz', 'lip_const', 'L_lip', or 'L = 1'. No matches found. The algorithms in algorithms.py use parameters mu, beta, p, eps, tol, max_iterations — there is no Lipschitz constant parameter L. The config file contains beta_by_bsnr, mu_by_bsnr, p, eps, tol, max_iterations — again no L. A Grep across all files for '\\bL\\b' only matched a PIL image conversion call (image.convert('L') in data.py), not any Lipschitz constant.",
+      "note": "The Lipschitz constant L appears in the paper's Algorithm 1 & 2 as part of the step-size computation. This repository's implementation does not expose or use L at all; the corresponding step-size logic may be implicitly baked into the mu/beta parameterization, but L=1 is not explicitly fixed anywhere in the code.",
+      "error": false
+    },
+    {
+      "id": "setup-013",
+      "dimension": "exp_setup",
+      "priority": "tertiary",
+      "description": "Experiments were conducted using MATLAB on an Intel Core i3-10105 CPU operating at 3.70 GHz with a memory of 4 Gb.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all files for \"MATLAB\", \"i3-10105\", \"3.70 GHz\", \"Intel Core\", \"4 Gb\". The repository is a Python implementation (pyproject.toml, requirements.txt, src/pirl1_am/*.py). MATLAB appears only as a reference specification in comments and SOURCES.md (\"The MATLAB reference snapshot is the authors' repository\"). No Intel Core i3-10105 CPU, 3.70 GHz clock speed, or 4 GB memory specification is mentioned anywhere in the repository.",
+      "note": "The paper states experiments ran on MATLAB with specific hardware; this reproduction uses Python and does not document or reproduce those hardware/platform conditions.",
+      "error": false
+    }
+  ]
+}

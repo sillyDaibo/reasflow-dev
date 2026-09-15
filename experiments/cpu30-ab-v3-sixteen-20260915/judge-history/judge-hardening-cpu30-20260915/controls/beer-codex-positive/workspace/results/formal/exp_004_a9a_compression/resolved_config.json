@@ -1,0 +1,18 @@
+{
+  "alpha": 0.05,
+  "batch_size": 100,
+  "clients": 10,
+  "compression_param": 10,
+  "compressor": "top",
+  "data_root": "${BEER_A9A_ROOT}",
+  "experiment_id": "exp_004_a9a_compression",
+  "gamma": 0.7,
+  "lr": 0.5,
+  "methods": [
+    "BEER"
+  ],
+  "rounds": 35,
+  "seed": 14,
+  "task": "a9a",
+  "topology": "ring"
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "/root/adapter16_b",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Approved as a faithful blocked invocation: native one-row image support fails before iteration; no state is fabricated.",
+  "scope_notes": [
+    "Inspected src/pirl1_am.py _prepare_system: dy_kernel has shape (1,3), and dy_kernel[:2,0]=(1.0,-1.0) writes two elements into a length-one view. Both public cases therefore raise ValueError before x initialization, as confirmed by readonly smoke; zero observations are retained.",
+    "Public shape (1,3), f, centered impulse response kernel, mu/beta/p/epsilon and iteration cap enter native _solve. Native FFT normalization, thresholding and stopping are unmodified. The public independent z0 has no source state or argument: dx/dy=Gx directly form the weights. No z0-based reweighting is synthesized.",
+    "The initial x hook would set u0 before native y/difference creation but is never reached due to the shape failure. Direct _solve access exposes epsilon without editing the wrapper or algorithm."
+  ],
+  "substitutions": [
+    {
+      "symbol": "kernel from public K",
+      "role": "problem_input",
+      "reason": "Centered impulse-response representation follows original psf2otf roll convention; no source adjoint/denominator replacement."
+    },
+    {
+      "symbol": "initial x buffer",
+      "role": "problem_input",
+      "reason": "Declared u0 injection before y/difference initialization; unreachable for these public one-row cases."
+    },
+    {
+      "symbol": "sys.settrace/exception record",
+      "role": "observation",
+      "reason": "Preserves the original invocation failure and all missing observations; no synthetic algorithm outputs."
+    }
+  ],
+  "public_digest": "f666debd9dacf51483a127811f09dce89f95ced099a161420b5c775069e59436",
+  "adapter_sha256": "58e1f8a09b03a92f7352c2694941e8095c84f4b91ea3ca7d090ef0fc1ca96f8a",
+  "workspace_digest": "d1fd6f08fb79a5d6a410e84bf6f95fd4fbc9c01c4550a2c11f0c164463795742",
+  "bindings_digest": "0d9e78d0e077ef685810567ae831890410cc325c0b68322c3f7a8b2dd01eb9c2"
+}

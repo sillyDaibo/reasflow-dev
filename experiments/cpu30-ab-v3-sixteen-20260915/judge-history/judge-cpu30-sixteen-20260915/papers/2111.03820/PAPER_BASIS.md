@@ -1,0 +1,9 @@
+# Paper-only basis: 2111.03820
+
+Source: the benchmark input `paper.pdf`, SHA256 recorded in contract. Only this PDF and the contract schema were read. PDF p.4 was rendered and visually checked, including Algorithm 1 and Eqs. (7)–(10).
+
+The core algorithm is DPG-RR: process every local sample once in a sampled permutation (Eq. 7), mix the completed local epochs (Eq. 8), and apply exactly one proximal map (Eq. 10). The logistic sample losses are the scalar specialization of Example 1 on p.4. We absorb label times feature into the supplied signed feature. The nonsmooth regularizer is L1; its proximal operator follows directly from its one-dimensional minimization definition on p.3. These objectives satisfy bounded-gradient and convexity assumptions, unlike unrestricted quadratic sample losses.
+
+Two independent initializations exercise ordered gradients, disagreement across agents, and positive/negative/zero shrinkage over three epochs. All numeric functions and inputs, fixed permutations, mixing matrices, and observation timing are public. Expected trajectories are derived with 70-digit Decimal arithmetic in the standalone script. The predeclared 1e-11 absolute/relative tolerance permits ordinary float64 exponential evaluation and is far below the nonzero updates.
+
+Scope limit: p.4 has a real communication-count inconsistency. The displayed matrix product contains A(T(t)+t) through A(T(t)), while prose says t communications and Algorithm 1 starts at t=0. This test explicitly supplies the matrices used by Eq. (8), A, A², A³, and does not evaluate a communication scheduler. It does not claim to establish asymptotic rates, graph-sequence handling, or a statistical property of shuffling. The fixed permutations are conditioned realizations of the uniform shuffles, not a new sampling rule. No reproduction code or observed outputs informed this contract.

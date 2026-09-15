@@ -1,0 +1,8 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "Imported by assigned original numerical source",
+    "source": "simirls/algorithms.py"
+  }
+]

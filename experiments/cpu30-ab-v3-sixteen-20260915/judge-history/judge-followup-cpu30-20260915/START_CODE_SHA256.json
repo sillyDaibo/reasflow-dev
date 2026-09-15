@@ -1,0 +1,6 @@
+{
+  "repo_judge/src/judge/algorithm_assessment.py": "51d1e1ddff5f9aa4185761077b7e25f48935e02ce0ba5c8786209fda042cc692",
+  "repo_judge/src/judge/algorithm_pipeline.py": "e4d5161e577b2646e274d08bedeb3307c7cf77464ebb25f4aa5df664770bec0f",
+  "repo_judge/src/judge/paper_contract.py": "fb878cb030b7861bbdd826cf964b1e138997fc85d9c4598d5c02e64432ec9d5e",
+  "repo_judge/src/judge/review_records.py": "c9592168089c7392e08af71c248836188b8be9245ad56880a1d0e923eef3e0ad"
+}

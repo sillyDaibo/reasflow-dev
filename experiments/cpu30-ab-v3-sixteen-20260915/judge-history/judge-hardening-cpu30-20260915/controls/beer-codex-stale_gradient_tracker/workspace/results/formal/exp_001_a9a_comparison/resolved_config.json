@@ -1,0 +1,21 @@
+{
+  "alpha": 0.05,
+  "batch_size": 100,
+  "clients": 10,
+  "compression_param": 5,
+  "compressor": "gsgd",
+  "data_root": "${BEER_A9A_ROOT}",
+  "experiment_id": "exp_001_a9a_comparison",
+  "gamma": 0.1,
+  "lr": 0.1,
+  "methods": [
+    "BEER",
+    "CHOCO-SGD",
+    "DSGD",
+    "D2"
+  ],
+  "rounds": 80,
+  "seed": 11,
+  "task": "a9a",
+  "topology": "ring"
+}

@@ -1,0 +1,9 @@
+{
+  "experiment": "houses",
+  "seed": 0,
+  "gamma_local": 1.0,
+  "gamma_geo": 15.0,
+  "bins": 50,
+  "maxiter": 180,
+  "solver": "ADMM"
+}

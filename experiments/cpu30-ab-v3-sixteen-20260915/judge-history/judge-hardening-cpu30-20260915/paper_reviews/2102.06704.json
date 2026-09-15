@@ -1,0 +1,49 @@
+{
+  "schema_version": "optirepro.paper_review.v1",
+  "contract_digest": "334ce726e729eb2e30fff64ec705a5614147c3b316d9ebecdca7212eae2251ac",
+  "reviewer_id": "paper_review_three",
+  "basis": "original_paper_only",
+  "decision": "approved",
+  "summary": "Approved all three ProxRR/FedRR cases: original Algorithm 1 and Algorithm 3 support the stated orders, observation timing and normalization, and all 84 numeric leaves agree with independently recomputed three-epoch trajectories.",
+  "cases": [
+    {
+      "case_id": "proxrr_quadratic_three_epochs",
+      "decision": "approved",
+      "reason": "All nine inner vectors and three epoch-end vectors agree. Permutations and differing curvatures are nontrivial, lambda1/lambda2 are active, and changing gamma_t changes both sample steps and the single epoch-end prox scale. Final iterate is (179411/462080,-2534889/2957312). Independently verified 6 observations / 24 numeric leaves; maximum absolute discrepancy from serialized expected numbers 1.18e-16.",
+      "citations": [
+        "PDF p.1 Eq.(1)",
+        "PDF p.2 prox definition",
+        "PDF p.3 Algorithm 1 lines 3-7",
+        "PDF p.21 elastic-net proximal calculation"
+      ]
+    },
+    {
+      "case_id": "proxrr_logistic_elastic_net_three_epochs",
+      "decision": "approved",
+      "reason": "Every nonlinear inner update and epoch-end prox agrees. A separately evaluated signed-label logistic gradient recovers the original {0,1} loss derivative. Thresholding produces exact zero in coordinate 2; the final vector is approximately (0.467873065086433843,0). Independently verified 6 observations / 24 numeric leaves; maximum absolute discrepancy from serialized expected numbers 6e-17.",
+      "citations": [
+        "PDF p.8 Eq.(14)",
+        "PDF p.3 Algorithm 1 lines 3-7",
+        "PDF p.21 elastic-net proximal calculation"
+      ]
+    },
+    {
+      "case_id": "fedrr_unequal_clients_three_rounds",
+      "decision": "approved",
+      "reason": "Independent local passes and resets, first-sample states, endpoints, equal-device mean and final prox all agree. With N=5,M=2,gamma=1/8, alpha=5/16, threshold=1/32 and shrink denominator=37/32. Final vector is approximately (0.879447236474456103,0.665908238406412256). Independently verified 12 observations / 36 numeric leaves; maximum absolute discrepancy from serialized expected numbers 1.31e-16.",
+      "citations": [
+        "PDF p.7 Eq.(13), zero padding and Algorithm 3 lines 4-9",
+        "PDF p.21 elastic-net proximal calculation"
+      ]
+    }
+  ],
+  "scope_notes": [
+    "Original source is the designated local paper.pdf; contract digest binds the exact frozen private contract. Allowed contract/derivation and schema were read, and neither frozen standards nor production code were modified. No adapter, implementation workspace, actual output, or standalone prior review file was read.",
+    "Approval certifies these finite tests as valid paper-grounded checks; passing them is not a guarantee of all implementation correctness.",
+    "Algorithm 1 on p.3 applies n unnormalized component-gradient steps followed by one prox with coefficient gamma_t*n. Its positive supplied gamma_t sequence may vary by epoch; the nonmonotone first test is an algorithm test and does not claim the theorem schedule in Eq.(11).",
+    "Algorithm 3 on p.7 permits unequal local sample counts, pads shorter local passes by zero functions, averages device endpoints with 1/M, and applies prox_(gamma*N/M R). The later equal-sample convergence assumptions do not invalidate this finite recurrence.",
+    "Logistic labels {0,1}, lack of intercept, objective normalization and elastic-net coefficients are explicit. The second coordinate is thresholded to zero at each logistic epoch end; the first coordinate remains nonzero. Given permutations specify conditional realizations, without testing uniform sampling or RNG conventions.",
+    "This validates only three-epoch full-precision ProxRR/FedRR traces at 1e-10 absolute and 1e-9 relative tolerances. It does not validate stochastic sampling distributions, Shuffle-Once, resampling, convergence, full empirical reproduction, or arbitrary lower-precision arithmetic.",
+    "Source-boundary disclosure: the permitted derive_contract.py unexpectedly contains an embedded prior-review prose string near its end, and part of that string was displayed during a code read. No standalone prior PAPER_REVIEW report was opened. The findings here are based on visually inspected original formula pages and new arithmetic; this incidental exposure means this review should not be represented as completely blind to all prior-review prose."
+  ]
+}

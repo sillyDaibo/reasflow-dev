@@ -1,0 +1,2579 @@
+{
+  "contract_file_sha256": "6fe63cba82b488c5cd889e9e7c0570914902a8d661145edfb074a693a7f4b236",
+  "precision_digits": 90,
+  "method": "Independent scalar Fraction graph recurrence and 90-digit Decimal softmax; no author derivation or implementation imported.",
+  "all_pass": true,
+  "max_absolute_error": "8.6282520761813007897503328645109884033883118948768438383998763058318465815E-17",
+  "cases": [
+    {
+      "case_id": "alg3_two_nodes_binary_support_two_updates",
+      "observation_count": 30,
+      "scalar_entry_count": 117,
+      "max_absolute_error": "8.6282520761813007897503328645109884033883118948768438383998763058318465815E-17",
+      "checks": {
+        "graph_connected": true,
+        "full_laplacian": true,
+        "laplacian_norm_upper": "2",
+        "conservative_m_scaled_L_upper": "8",
+        "coefficient_checks": [
+          {
+            "t": 1,
+            "left": "45/4",
+            "cumulative_alpha_right": "20",
+            "literal_repeated_alpha_right": "24"
+          },
+          {
+            "t": 2,
+            "left": "24",
+            "cumulative_alpha_right": "45",
+            "literal_repeated_alpha_right": "60"
+          }
+        ],
+        "min_categorical_boundary_distance": "0.045774498514779748839350842536649752886889233338793396807422720644577567666003546919387805",
+        "min_nonzero_quantization_difference": "0.019898929646860413717479238186992102496671354890115966116881051231561616001236941681534185",
+        "source_samples_strictly_inside_support": true,
+        "exact_graph_and_dual_invariants": true,
+        "expected_oracle_calls": 3,
+        "observed_oracle_calls": 3
+      },
+      "comparisons": [
+        {
+          "step": 0,
+          "name": "A",
+          "shape": [],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "graph_gradient",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "lambda",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.000000",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "mu",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "oracle_mean",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "4.110575049380281462961600699413781704210088233133872045212154181778317035E-17",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "pps_indices",
+          "shape": [
+            2,
+            4
+          ],
+          "max_absolute_error": "0",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "quantized_gradient",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.00",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "weighted_graph_sum",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.00",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "A",
+          "shape": [],
+          "max_absolute_error": "0.00",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "graph_gradient",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.00",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "lambda",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0E-8",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "mu",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.000000",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "mu_hat",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0E-8",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "oracle_mean",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "5.1160649157463350247113110766661206603192577279355422432333996453080612195E-17",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "pps_indices",
+          "shape": [
+            2,
+            4
+          ],
+          "max_absolute_error": "0",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "quantized_gradient",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "tau",
+          "shape": [],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "weighted_graph_sum",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.0000",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "z_previous",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.000000",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "A",
+          "shape": [],
+          "max_absolute_error": "0.00",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "graph_gradient",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "lambda",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "1.4444444444444444444444444444444444444444444444444444444444444444444444444E-18",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "mu",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "4.4444444444444444444444444444444444444444444444444444444444444444444444444E-19",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "mu_hat",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.000000",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "oracle_mean",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "8.6282520761813007897503328645109884033883118948768438383998763058318465815E-17",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "pps_indices",
+          "shape": [
+            2,
+            4
+          ],
+          "max_absolute_error": "0",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "quantized_gradient",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.00",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "tau",
+          "shape": [],
+          "max_absolute_error": "4.4444444444444444444444444444444444444444444444444444444444444444444444444E-17",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "weighted_graph_sum",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.0000",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "z_previous",
+          "shape": [
+            2,
+            2
+          ],
+          "max_absolute_error": "0.000000",
+          "within_tolerance": true
+        }
+      ],
+      "independent_observations": [
+        {
+          "step": 0,
+          "name": "A",
+          "value": {
+            "fraction": "1/2",
+            "decimal": "0.5"
+          }
+        },
+        {
+          "step": 0,
+          "name": "mu",
+          "value": [
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "oracle_mean",
+          "value": [
+            [
+              "0.71535302262318824110575049380281462961600699413781704210088233133872045212154181778317035",
+              "0.284646977376811758894249506197185370383993005862182957899117668661279547878458182216829652"
+            ],
+            [
+              "0.284646977376811758894249506197185370383993005862182957899117668661279547878458182216829652",
+              "0.71535302262318824110575049380281462961600699413781704210088233133872045212154181778317035"
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              2,
+              2
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              {
+                "fraction": "3/4",
+                "decimal": "0.75"
+              },
+              {
+                "fraction": "1/4",
+                "decimal": "0.25"
+              }
+            ],
+            [
+              {
+                "fraction": "1/4",
+                "decimal": "0.25"
+              },
+              {
+                "fraction": "3/4",
+                "decimal": "0.75"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "graph_gradient",
+          "value": [
+            [
+              {
+                "fraction": "1/2",
+                "decimal": "0.5"
+              },
+              {
+                "fraction": "-1/2",
+                "decimal": "-0.5"
+              }
+            ],
+            [
+              {
+                "fraction": "-1/2",
+                "decimal": "-0.5"
+              },
+              {
+                "fraction": "1/2",
+                "decimal": "0.5"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              {
+                "fraction": "1/4",
+                "decimal": "0.25"
+              },
+              {
+                "fraction": "-1/4",
+                "decimal": "-0.25"
+              }
+            ],
+            [
+              {
+                "fraction": "-1/4",
+                "decimal": "-0.25"
+              },
+              {
+                "fraction": "1/4",
+                "decimal": "0.25"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "lambda",
+          "value": [
+            [
+              {
+                "fraction": "-1/64",
+                "decimal": "-0.015625"
+              },
+              {
+                "fraction": "1/64",
+                "decimal": "0.015625"
+              }
+            ],
+            [
+              {
+                "fraction": "1/64",
+                "decimal": "0.015625"
+              },
+              {
+                "fraction": "-1/64",
+                "decimal": "-0.015625"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "A",
+          "value": {
+            "fraction": "5/4",
+            "decimal": "1.25"
+          }
+        },
+        {
+          "step": 1,
+          "name": "tau",
+          "value": {
+            "fraction": "3/5",
+            "decimal": "0.6"
+          }
+        },
+        {
+          "step": 1,
+          "name": "z_previous",
+          "value": [
+            [
+              {
+                "fraction": "-1/64",
+                "decimal": "-0.015625"
+              },
+              {
+                "fraction": "1/64",
+                "decimal": "0.015625"
+              }
+            ],
+            [
+              {
+                "fraction": "1/64",
+                "decimal": "0.015625"
+              },
+              {
+                "fraction": "-1/64",
+                "decimal": "-0.015625"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu",
+          "value": [
+            [
+              {
+                "fraction": "-1/64",
+                "decimal": "-0.015625"
+              },
+              {
+                "fraction": "1/64",
+                "decimal": "0.015625"
+              }
+            ],
+            [
+              {
+                "fraction": "1/64",
+                "decimal": "0.015625"
+              },
+              {
+                "fraction": "-1/64",
+                "decimal": "-0.015625"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "oracle_mean",
+          "value": [
+            [
+              "0.694225501485220251160649157463350247113110766661206603192577279355422432333996453080612195",
+              "0.305774498514779748839350842536649752886889233338793396807422720644577567666003546919387804"
+            ],
+            [
+              "0.354229357988327708344178777679218517660022709245717506124215177346847675375815957789184994",
+              "0.645770642011672291655821222320781482339977290754282493875784822653152324624184042210815005"
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              2,
+              2
+            ],
+            [
+              1,
+              1,
+              1,
+              2
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              {
+                "fraction": "1/2",
+                "decimal": "0.5"
+              },
+              {
+                "fraction": "1/2",
+                "decimal": "0.5"
+              }
+            ],
+            [
+              {
+                "fraction": "3/4",
+                "decimal": "0.75"
+              },
+              {
+                "fraction": "1/4",
+                "decimal": "0.25"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "graph_gradient",
+          "value": [
+            [
+              {
+                "fraction": "-1/4",
+                "decimal": "-0.25"
+              },
+              {
+                "fraction": "1/4",
+                "decimal": "0.25"
+              }
+            ],
+            [
+              {
+                "fraction": "1/4",
+                "decimal": "0.25"
+              },
+              {
+                "fraction": "-1/4",
+                "decimal": "-0.25"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              {
+                "fraction": "1/16",
+                "decimal": "0.0625"
+              },
+              {
+                "fraction": "-1/16",
+                "decimal": "-0.0625"
+              }
+            ],
+            [
+              {
+                "fraction": "-1/16",
+                "decimal": "-0.0625"
+              },
+              {
+                "fraction": "1/16",
+                "decimal": "0.0625"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu_hat",
+          "value": [
+            [
+              {
+                "fraction": "-1/256",
+                "decimal": "-0.00390625"
+              },
+              {
+                "fraction": "1/256",
+                "decimal": "0.00390625"
+              }
+            ],
+            [
+              {
+                "fraction": "1/256",
+                "decimal": "0.00390625"
+              },
+              {
+                "fraction": "-1/256",
+                "decimal": "-0.00390625"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "lambda",
+          "value": [
+            [
+              {
+                "fraction": "-11/1280",
+                "decimal": "-0.00859375"
+              },
+              {
+                "fraction": "11/1280",
+                "decimal": "0.00859375"
+              }
+            ],
+            [
+              {
+                "fraction": "11/1280",
+                "decimal": "0.00859375"
+              },
+              {
+                "fraction": "-11/1280",
+                "decimal": "-0.00859375"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "A",
+          "value": {
+            "fraction": "9/4",
+            "decimal": "2.25"
+          }
+        },
+        {
+          "step": 2,
+          "name": "tau",
+          "value": {
+            "fraction": "4/9",
+            "decimal": "0.444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+          }
+        },
+        {
+          "step": 2,
+          "name": "z_previous",
+          "value": [
+            [
+              {
+                "fraction": "-1/320",
+                "decimal": "-0.003125"
+              },
+              {
+                "fraction": "1/320",
+                "decimal": "0.003125"
+              }
+            ],
+            [
+              {
+                "fraction": "1/320",
+                "decimal": "0.003125"
+              },
+              {
+                "fraction": "-1/320",
+                "decimal": "-0.003125"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu",
+          "value": [
+            [
+              {
+                "fraction": "-71/11520",
+                "decimal": "-0.00616319444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+              },
+              {
+                "fraction": "71/11520",
+                "decimal": "0.00616319444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+              }
+            ],
+            [
+              {
+                "fraction": "71/11520",
+                "decimal": "0.00616319444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+              },
+              {
+                "fraction": "-71/11520",
+                "decimal": "-0.00616319444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "oracle_mean",
+          "value": [
+            [
+              "0.769898929646860413717479238186992102496671354890115966116881051231561616001236941681534185",
+              "0.230101070353139586282520761813007897503328645109884033883118948768438383998763058318465817"
+            ],
+            [
+              "0.230101070353139586282520761813007897503328645109884033883118948768438383998763058318465817",
+              "0.769898929646860413717479238186992102496671354890115966116881051231561616001236941681534185"
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              2,
+              2
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              {
+                "fraction": "3/4",
+                "decimal": "0.75"
+              },
+              {
+                "fraction": "1/4",
+                "decimal": "0.25"
+              }
+            ],
+            [
+              {
+                "fraction": "1/4",
+                "decimal": "0.25"
+              },
+              {
+                "fraction": "3/4",
+                "decimal": "0.75"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "graph_gradient",
+          "value": [
+            [
+              {
+                "fraction": "1/2",
+                "decimal": "0.5"
+              },
+              {
+                "fraction": "-1/2",
+                "decimal": "-0.5"
+              }
+            ],
+            [
+              {
+                "fraction": "-1/2",
+                "decimal": "-0.5"
+              },
+              {
+                "fraction": "1/2",
+                "decimal": "0.5"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              {
+                "fraction": "9/16",
+                "decimal": "0.5625"
+              },
+              {
+                "fraction": "-9/16",
+                "decimal": "-0.5625"
+              }
+            ],
+            [
+              {
+                "fraction": "-9/16",
+                "decimal": "-0.5625"
+              },
+              {
+                "fraction": "9/16",
+                "decimal": "0.5625"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu_hat",
+          "value": [
+            [
+              {
+                "fraction": "-9/320",
+                "decimal": "-0.028125"
+              },
+              {
+                "fraction": "9/320",
+                "decimal": "0.028125"
+              }
+            ],
+            [
+              {
+                "fraction": "9/320",
+                "decimal": "0.028125"
+              },
+              {
+                "fraction": "-9/320",
+                "decimal": "-0.028125"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "lambda",
+          "value": [
+            [
+              {
+                "fraction": "-199/11520",
+                "decimal": "-0.0172743055555555555555555555555555555555555555555555555555555555555555555555555555555555556"
+              },
+              {
+                "fraction": "199/11520",
+                "decimal": "0.0172743055555555555555555555555555555555555555555555555555555555555555555555555555555555556"
+              }
+            ],
+            [
+              {
+                "fraction": "199/11520",
+                "decimal": "0.0172743055555555555555555555555555555555555555555555555555555555555555555555555555555555556"
+              },
+              {
+                "fraction": "-199/11520",
+                "decimal": "-0.0172743055555555555555555555555555555555555555555555555555555555555555555555555555555555556"
+              }
+            ]
+          ]
+        }
+      ],
+      "sample_probability_evidence": [
+        {
+          "step": 0,
+          "sample_probabilities": [
+            [
+              [
+                "0.832018385133924481842422328200121425037327646354457520159037538177443598484698885842835677",
+                "0.167981614866075518157577671799878574962672353645542479840962461822556401515301114157164324"
+              ],
+              [
+                "0.598687660112452000369078659405507834194686341921176564042727124499997305758384749723505022",
+                "0.401312339887547999630921340594492165805313658078823435957272875500002694241615250276494980"
+              ]
+            ],
+            [
+              [
+                "0.401312339887547999630921340594492165805313658078823435957272875500002694241615250276494980",
+                "0.598687660112452000369078659405507834194686341921176564042727124499997305758384749723505022"
+              ],
+              [
+                "0.167981614866075518157577671799878574962672353645542479840962461822556401515301114157164324",
+                "0.832018385133924481842422328200121425037327646354457520159037538177443598484698885842835677"
+              ]
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "sample_probabilities": [
+            [
+              [
+                "0.757220340354039978605860026807663747712883523336672948635159984979201513818684525384669242",
+                "0.242779659645960021394139973192336252287116476663327051364840015020798486181315474615330755"
+              ],
+              [
+                "0.631230662616400523715438288119036746513338009985740257749994573731643350849308380776555147",
+                "0.368769337383599476284561711880963253486661990014259742250005426268356649150691619223444854"
+              ]
+            ],
+            [
+              [
+                "0.465679056330695395294217582166100783032928941828107960883590339672896864570316440963039233",
+                "0.534320943669304604705782417833899216967071058171892039116409660327103135429683559036960770"
+              ],
+              [
+                "0.242779659645960021394139973192336252287116476663327051364840015020798486181315474615330755",
+                "0.757220340354039978605860026807663747712883523336672948635159984979201513818684525384669242"
+              ]
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "sample_probabilities": [
+            [
+              [
+                "0.855121390760336934226615658045898756609259902168175170551921843637174148989065235931128266",
+                "0.144878609239663065773384341954101243390740097831824829448078156362825851010934764068871733"
+              ],
+              [
+                "0.684676468533383893208342818328085448384082807612056761681840258825949083013408647431940102",
+                "0.315323531466616106791657181671914551615917192387943238318159741174050916986591352568059901"
+              ]
+            ],
+            [
+              [
+                "0.315323531466616106791657181671914551615917192387943238318159741174050916986591352568059901",
+                "0.684676468533383893208342818328085448384082807612056761681840258825949083013408647431940102"
+              ],
+              [
+                "0.144878609239663065773384341954101243390740097831824829448078156362825851010934764068871733",
+                "0.855121390760336934226615658045898756609259902168175170551921843637174148989065235931128266"
+              ]
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "alg3_three_node_path_three_support_two_updates",
+      "observation_count": 30,
+      "scalar_entry_count": 248,
+      "max_absolute_error": "6.843616339059806636723987992940723211572769419857865471687337517882628067E-17",
+      "checks": {
+        "graph_connected": true,
+        "full_laplacian": true,
+        "laplacian_norm_upper": "4",
+        "conservative_m_scaled_L_upper": "12",
+        "coefficient_checks": [
+          {
+            "t": 1,
+            "left": "15/2",
+            "cumulative_alpha_right": "36",
+            "literal_repeated_alpha_right": "24"
+          },
+          {
+            "t": 2,
+            "left": "225/4",
+            "cumulative_alpha_right": "165/2",
+            "literal_repeated_alpha_right": "225/2"
+          }
+        ],
+        "min_categorical_boundary_distance": "0.005938825760655972337761750212608008066177971418759673859107852501151624457004786168749735",
+        "min_nonzero_quantization_difference": "0.066275420601824681162915205111511407275163917289998373429933681564868189578635517633359765",
+        "source_samples_strictly_inside_support": true,
+        "exact_graph_and_dual_invariants": true,
+        "expected_oracle_calls": 3,
+        "observed_oracle_calls": 3
+      },
+      "comparisons": [
+        {
+          "step": 0,
+          "name": "A",
+          "shape": [],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "graph_gradient",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "lambda",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "6.666666666666666666666666666666666666666666666666666666666666666666666667E-19",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "mu",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "oracle_mean",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "3.3498360274126485191108706133381134887210679743841500306240470655250816235E-17",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "pps_indices",
+          "shape": [
+            3,
+            5
+          ],
+          "max_absolute_error": "0",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "quantized_gradient",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 0,
+          "name": "weighted_graph_sum",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "A",
+          "shape": [],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "graph_gradient",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "lambda",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "1.5555555555555555555555555555555555555555555555555555555555555555555555556E-18",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "mu",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "6.666666666666666666666666666666666666666666666666666666666666666666666667E-19",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "mu_hat",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "1.3333333333333333333333333333333333333333333333333333333333333333333333333E-18",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "oracle_mean",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "3.850857370740317062387292105417665033493487060475966503246037993944921207E-17",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "pps_indices",
+          "shape": [
+            3,
+            5
+          ],
+          "max_absolute_error": "0",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "quantized_gradient",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "tau",
+          "shape": [],
+          "max_absolute_error": "3.3333333333333333333333333333333333333333333333333333333333333333333333333E-17",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "weighted_graph_sum",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 1,
+          "name": "z_previous",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "6.666666666666666666666666666666666666666666666666666666666666666666666667E-19",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "A",
+          "shape": [],
+          "max_absolute_error": "0.00",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "graph_gradient",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "lambda",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "4.2424242424242424242424242424242424242424242424242424242424242424242424242E-18",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "mu",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "1.9696969696969696969696969696969696969696969696969696969696969696969696970E-18",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "mu_hat",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "3.3333333333333333333333333333333333333333333333333333333333333333333333333E-18",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "oracle_mean",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "6.843616339059806636723987992940723211572769419857865471687337517882628067E-17",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "pps_indices",
+          "shape": [
+            3,
+            5
+          ],
+          "max_absolute_error": "0",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "quantized_gradient",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "tau",
+          "shape": [],
+          "max_absolute_error": "1.5454545454545454545454545454545454545454545454545454545454545454545454545E-17",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "weighted_graph_sum",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "0.0",
+          "within_tolerance": true
+        },
+        {
+          "step": 2,
+          "name": "z_previous",
+          "shape": [
+            3,
+            3
+          ],
+          "max_absolute_error": "6.666666666666666666666666666666666666666666666666666666666666666666666667E-19",
+          "within_tolerance": true
+        }
+      ],
+      "independent_observations": [
+        {
+          "step": 0,
+          "name": "A",
+          "value": {
+            "fraction": "1",
+            "decimal": "1"
+          }
+        },
+        {
+          "step": 0,
+          "name": "mu",
+          "value": [
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "oracle_mean",
+          "value": [
+            [
+              "0.51762142114319429726302167820892908231859706320404954605813017848524036538201865979743204",
+              "0.419207552162924280486254159263052532014605558327465129281150946369124476946260385145539249",
+              "0.0631710266938814222507241625280183856667973784684853246607188751456351576717209550570287145"
+            ],
+            [
+              "0.202151393103184802130413144805331315830928731962480435386780993054870392817633340804107636",
+              "0.516654040720290482493020609130639609181687500568914916159745715446590806784072772648955365",
+              "0.281194566176524715376566246064029074987383767468604648453473291498538800398293886546937000"
+            ],
+            [
+              "0.0583938186599764117813624160191030268529949974463063801592369307831810863037187603492703525",
+              "0.422229749898037721716997858107382164255711135934828507051442813058319219936751894901545883",
+              "0.519376431441985866501639725873514808891293866618865112789320256158499693759529344749183765"
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              1,
+              2,
+              3
+            ],
+            [
+              1,
+              2,
+              2,
+              3,
+              3
+            ],
+            [
+              1,
+              2,
+              3,
+              3,
+              3
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              {
+                "fraction": "3/5",
+                "decimal": "0.6"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              }
+            ],
+            [
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              },
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              }
+            ],
+            [
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "3/5",
+                "decimal": "0.6"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "graph_gradient",
+          "value": [
+            [
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              },
+              {
+                "fraction": "-1/5",
+                "decimal": "-0.2"
+              },
+              {
+                "fraction": "-1/5",
+                "decimal": "-0.2"
+              }
+            ],
+            [
+              {
+                "fraction": "-2/5",
+                "decimal": "-0.4"
+              },
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "-1/5",
+                "decimal": "-0.2"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              },
+              {
+                "fraction": "-1/5",
+                "decimal": "-0.2"
+              },
+              {
+                "fraction": "-1/5",
+                "decimal": "-0.2"
+              }
+            ],
+            [
+              {
+                "fraction": "-2/5",
+                "decimal": "-0.4"
+              },
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "-1/5",
+                "decimal": "-0.2"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "lambda",
+          "value": [
+            [
+              {
+                "fraction": "-1/60",
+                "decimal": "-0.0166666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "1/120",
+                "decimal": "0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              },
+              {
+                "fraction": "1/120",
+                "decimal": "0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ],
+            [
+              {
+                "fraction": "1/60",
+                "decimal": "0.0166666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "-1/60",
+                "decimal": "-0.0166666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "1/120",
+                "decimal": "0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              },
+              {
+                "fraction": "-1/120",
+                "decimal": "-0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "A",
+          "value": {
+            "fraction": "3/2",
+            "decimal": "1.5"
+          }
+        },
+        {
+          "step": 1,
+          "name": "tau",
+          "value": {
+            "fraction": "1/3",
+            "decimal": "0.333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+          }
+        },
+        {
+          "step": 1,
+          "name": "z_previous",
+          "value": [
+            [
+              {
+                "fraction": "-1/60",
+                "decimal": "-0.0166666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "1/120",
+                "decimal": "0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              },
+              {
+                "fraction": "1/120",
+                "decimal": "0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ],
+            [
+              {
+                "fraction": "1/60",
+                "decimal": "0.0166666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "-1/60",
+                "decimal": "-0.0166666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "1/120",
+                "decimal": "0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              },
+              {
+                "fraction": "-1/120",
+                "decimal": "-0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu",
+          "value": [
+            [
+              {
+                "fraction": "-1/60",
+                "decimal": "-0.0166666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "1/120",
+                "decimal": "0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              },
+              {
+                "fraction": "1/120",
+                "decimal": "0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ],
+            [
+              {
+                "fraction": "1/60",
+                "decimal": "0.0166666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "-1/60",
+                "decimal": "-0.0166666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "1/120",
+                "decimal": "0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              },
+              {
+                "fraction": "-1/120",
+                "decimal": "-0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "oracle_mean",
+          "value": [
+            [
+              "0.489080659223701379500718290924800878844072594435163800625764530854584837196905016258311258",
+              "0.451015362807794471669064447413866068476836977604693132810785940066946651552846057509878374",
+              "0.059903977968504148830217261661333052679090427960143066563449529078468511250248926231810369"
+            ],
+            [
+              "0.163609539800754474371250197660069231868637071942245277116801439789032342046582477978848540",
+              "0.51418840929155806149142629259682937612707894582334966506512939524033496753962006055078793",
+              "0.322202050907687464137323509743101392004283982234405057818069164970632690413797461470363530"
+            ],
+            [
+              "0.0784559115562215752282340819987273683635310996424968843562343682263829759290150130508890485",
+              "0.470591721994458803388793083557436517908365038300793724986122120837698175948172571072658695",
+              "0.450952366449319621382972834443836113728103862056709390657643510935918848122812415876452256"
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              1,
+              2,
+              3
+            ],
+            [
+              1,
+              2,
+              2,
+              3,
+              3
+            ],
+            [
+              1,
+              2,
+              2,
+              3,
+              3
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              {
+                "fraction": "3/5",
+                "decimal": "0.6"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              }
+            ],
+            [
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              },
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              }
+            ],
+            [
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              },
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "graph_gradient",
+          "value": [
+            [
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              },
+              {
+                "fraction": "-1/5",
+                "decimal": "-0.2"
+              },
+              {
+                "fraction": "-1/5",
+                "decimal": "-0.2"
+              }
+            ],
+            [
+              {
+                "fraction": "-2/5",
+                "decimal": "-0.4"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              {
+                "fraction": "3/5",
+                "decimal": "0.6"
+              },
+              {
+                "fraction": "-3/10",
+                "decimal": "-0.3"
+              },
+              {
+                "fraction": "-3/10",
+                "decimal": "-0.3"
+              }
+            ],
+            [
+              {
+                "fraction": "-3/5",
+                "decimal": "-0.6"
+              },
+              {
+                "fraction": "1/2",
+                "decimal": "0.5"
+              },
+              {
+                "fraction": "1/10",
+                "decimal": "0.1"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "-1/5",
+                "decimal": "-0.2"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu_hat",
+          "value": [
+            [
+              {
+                "fraction": "-1/40",
+                "decimal": "-0.025"
+              },
+              {
+                "fraction": "1/80",
+                "decimal": "0.0125"
+              },
+              {
+                "fraction": "1/80",
+                "decimal": "0.0125"
+              }
+            ],
+            [
+              {
+                "fraction": "1/40",
+                "decimal": "0.025"
+              },
+              {
+                "fraction": "-1/48",
+                "decimal": "-0.0208333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              },
+              {
+                "fraction": "-1/240",
+                "decimal": "-0.00416666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "1/120",
+                "decimal": "0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              },
+              {
+                "fraction": "-1/120",
+                "decimal": "-0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "lambda",
+          "value": [
+            [
+              {
+                "fraction": "-7/360",
+                "decimal": "-0.0194444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+              },
+              {
+                "fraction": "7/720",
+                "decimal": "0.00972222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
+              },
+              {
+                "fraction": "7/720",
+                "decimal": "0.00972222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
+              }
+            ],
+            [
+              {
+                "fraction": "7/360",
+                "decimal": "0.0194444444444444444444444444444444444444444444444444444444444444444444444444444444444444444"
+              },
+              {
+                "fraction": "-13/720",
+                "decimal": "-0.0180555555555555555555555555555555555555555555555555555555555555555555555555555555555555556"
+              },
+              {
+                "fraction": "-1/720",
+                "decimal": "-0.00138888888888888888888888888888888888888888888888888888888888888888888888888888888888888889"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "1/120",
+                "decimal": "0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              },
+              {
+                "fraction": "-1/120",
+                "decimal": "-0.00833333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "A",
+          "value": {
+            "fraction": "11/4",
+            "decimal": "2.75"
+          }
+        },
+        {
+          "step": 2,
+          "name": "tau",
+          "value": {
+            "fraction": "5/11",
+            "decimal": "0.454545454545454545454545454545454545454545454545454545454545454545454545454545454545454545"
+          }
+        },
+        {
+          "step": 2,
+          "name": "z_previous",
+          "value": [
+            [
+              {
+                "fraction": "-1/50",
+                "decimal": "-0.02"
+              },
+              {
+                "fraction": "1/100",
+                "decimal": "0.01"
+              },
+              {
+                "fraction": "1/100",
+                "decimal": "0.01"
+              }
+            ],
+            [
+              {
+                "fraction": "1/50",
+                "decimal": "0.02"
+              },
+              {
+                "fraction": "-1/60",
+                "decimal": "-0.0166666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "-1/300",
+                "decimal": "-0.00333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "1/150",
+                "decimal": "0.00666666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "-1/150",
+                "decimal": "-0.00666666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu",
+          "value": [
+            [
+              {
+                "fraction": "-13/660",
+                "decimal": "-0.0196969696969696969696969696969696969696969696969696969696969696969696969696969696969696970"
+              },
+              {
+                "fraction": "13/1320",
+                "decimal": "0.00984848484848484848484848484848484848484848484848484848484848484848484848484848484848484848"
+              },
+              {
+                "fraction": "13/1320",
+                "decimal": "0.00984848484848484848484848484848484848484848484848484848484848484848484848484848484848484848"
+              }
+            ],
+            [
+              {
+                "fraction": "13/660",
+                "decimal": "0.0196969696969696969696969696969696969696969696969696969696969696969696969696969696969696970"
+              },
+              {
+                "fraction": "-23/1320",
+                "decimal": "-0.0174242424242424242424242424242424242424242424242424242424242424242424242424242424242424242"
+              },
+              {
+                "fraction": "-1/440",
+                "decimal": "-0.00227272727272727272727272727272727272727272727272727272727272727272727272727272727272727273"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "1/132",
+                "decimal": "0.00757575757575757575757575757575757575757575757575757575757575757575757575757575757575757576"
+              },
+              {
+                "fraction": "-1/132",
+                "decimal": "-0.00757575757575757575757575757575757575757575757575757575757575757575757575757575757575757576"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "oracle_mean",
+          "value": [
+            [
+              "0.485938825760655972337761750212608008066177971418759673859107852501151624457004786168749735",
+              "0.441372977069281257791125573932155143873210043110734550075532368671133670055304970943224007",
+              "0.072688197170062769871112675855236848060611985470505776065359778827714705487690242888026258"
+            ],
+            [
+              "0.245684277728459690704470320793981500363740457179651176454279562922644792417647966265764161",
+              "0.533724579398175318837084794888488592724836082710001626570066318435131810421364482366640235",
+              "0.220591142873364990458444884317529906911423460110347196975654118642223397160987551367595606"
+            ],
+            [
+              "0.0395408485434262311828048349908945672652436763638437021574927785327423832241532311305176013",
+              "0.379722376930320900381031774411039065494876394228924182114813022888602899902471590043201728",
+              "0.58073677452625286843616339059806636723987992940723211572769419857865471687337517882628067"
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "pps_indices",
+          "value": [
+            [
+              1,
+              1,
+              1,
+              2,
+              3
+            ],
+            [
+              1,
+              2,
+              2,
+              2,
+              3
+            ],
+            [
+              1,
+              2,
+              3,
+              3,
+              3
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "quantized_gradient",
+          "value": [
+            [
+              {
+                "fraction": "3/5",
+                "decimal": "0.6"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              }
+            ],
+            [
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "3/5",
+                "decimal": "0.6"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              }
+            ],
+            [
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "1/5",
+                "decimal": "0.2"
+              },
+              {
+                "fraction": "3/5",
+                "decimal": "0.6"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "graph_gradient",
+          "value": [
+            [
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              },
+              {
+                "fraction": "-2/5",
+                "decimal": "-0.4"
+              },
+              {
+                "fraction": "0",
+                "decimal": "0"
+              }
+            ],
+            [
+              {
+                "fraction": "-2/5",
+                "decimal": "-0.4"
+              },
+              {
+                "fraction": "4/5",
+                "decimal": "0.8"
+              },
+              {
+                "fraction": "-2/5",
+                "decimal": "-0.4"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "-2/5",
+                "decimal": "-0.4"
+              },
+              {
+                "fraction": "2/5",
+                "decimal": "0.4"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "weighted_graph_sum",
+          "value": [
+            [
+              {
+                "fraction": "11/10",
+                "decimal": "1.1"
+              },
+              {
+                "fraction": "-4/5",
+                "decimal": "-0.8"
+              },
+              {
+                "fraction": "-3/10",
+                "decimal": "-0.3"
+              }
+            ],
+            [
+              {
+                "fraction": "-11/10",
+                "decimal": "-1.1"
+              },
+              {
+                "fraction": "3/2",
+                "decimal": "1.5"
+              },
+              {
+                "fraction": "-2/5",
+                "decimal": "-0.4"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "-7/10",
+                "decimal": "-0.7"
+              },
+              {
+                "fraction": "7/10",
+                "decimal": "0.7"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu_hat",
+          "value": [
+            [
+              {
+                "fraction": "-11/300",
+                "decimal": "-0.0366666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "2/75",
+                "decimal": "0.0266666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "1/100",
+                "decimal": "0.01"
+              }
+            ],
+            [
+              {
+                "fraction": "11/300",
+                "decimal": "0.0366666666666666666666666666666666666666666666666666666666666666666666666666666666666666667"
+              },
+              {
+                "fraction": "-1/20",
+                "decimal": "-0.05"
+              },
+              {
+                "fraction": "1/75",
+                "decimal": "0.0133333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "7/300",
+                "decimal": "0.0233333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              },
+              {
+                "fraction": "-7/300",
+                "decimal": "-0.0233333333333333333333333333333333333333333333333333333333333333333333333333333333333333333"
+              }
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "lambda",
+          "value": [
+            [
+              {
+                "fraction": "-3/110",
+                "decimal": "-0.0272727272727272727272727272727272727272727272727272727272727272727272727272727272727272727"
+              },
+              {
+                "fraction": "23/1320",
+                "decimal": "0.0174242424242424242424242424242424242424242424242424242424242424242424242424242424242424242"
+              },
+              {
+                "fraction": "13/1320",
+                "decimal": "0.00984848484848484848484848484848484848484848484848484848484848484848484848484848484848484848"
+              }
+            ],
+            [
+              {
+                "fraction": "3/110",
+                "decimal": "0.0272727272727272727272727272727272727272727272727272727272727272727272727272727272727272727"
+              },
+              {
+                "fraction": "-43/1320",
+                "decimal": "-0.0325757575757575757575757575757575757575757575757575757575757575757575757575757575757575758"
+              },
+              {
+                "fraction": "7/1320",
+                "decimal": "0.00530303030303030303030303030303030303030303030303030303030303030303030303030303030303030303"
+              }
+            ],
+            [
+              {
+                "fraction": "0",
+                "decimal": "0"
+              },
+              {
+                "fraction": "1/66",
+                "decimal": "0.0151515151515151515151515151515151515151515151515151515151515151515151515151515151515151515"
+              },
+              {
+                "fraction": "-1/66",
+                "decimal": "-0.0151515151515151515151515151515151515151515151515151515151515151515151515151515151515151515"
+              }
+            ]
+          ]
+        }
+      ],
+      "sample_probability_evidence": [
+        {
+          "step": 0,
+          "sample_probabilities": [
+            [
+              [
+                "0.677207314284942754027775844482143752114549951957789105256594149443330443572846402880273874",
+                "0.304288861020259047575193845420381998651458074921650707697320145538634762408326512768024943",
+                "0.0185038246947981983970303100974742492339919731205601870460857050180347940188270843517011834"
+              ],
+              [
+                "0.358035528001445840498267511935714412522644174450309986859666207527150287191190916714590202",
+                "0.534126243305589513397314473105723065377753041733279550864981747199614191484194257523053555",
+                "0.107838228692964646104418014958562522099602783816410462275352045273235521324614825762356246"
+              ]
+            ],
+            [
+              [
+                "0.331498960424091505086971281371144049918468988524114343051719436498796205669547762587682932",
+                "0.546549387266179637707176164590132218486609802113365628287847143240514041159354582512058805",
+                "0.121951652309728857205852554038723731594921209362520028660433420260689753171097654900258265"
+              ],
+              [
+                "0.0728038257822780991738550082395185817433884754008465277218425496109445799657189190205323412",
+                "0.486758694174401327278865053671146999876765199024464204031644287652667572408790962785851921",
+                "0.440437480043320573547279938089334418379846325574689268246513162736387847625490118193615734"
+              ]
+            ],
+            [
+              [
+                "0.0949744519612873431309953905070682616929367194507516246873032511549519978721010260631458188",
+                "0.519885153594209083680725422311023209951286937417018989937891510896900098650171665854199598",
+                "0.385140394444503573188279187181908528355776343132229385374805237948147903477727308082654586"
+              ],
+              [
+                "0.0218131853586654804317294415311377920130532754418611356311706104114101747353364946353948864",
+                "0.324574346201866359753270293903741118560135334452638024164994115219738341223332123948892168",
+                "0.653612468439468159815000264565121089426811390105500840203835274368851484041331381415712942"
+              ]
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "sample_probabilities": [
+            [
+              [
+                "0.571546553177080631966874443418364085968380964542588921778419609357432408834243969536071864",
+                "0.392817818328541787429704724546998625633450530790668509600075927113024066958445620921142365",
+                "0.0356356284943775806034208320346372883981685046667425686215044635295435242073104095427857713"
+              ],
+              [
+                "0.406614765270322127034562138431237671719764224327738679473109452351737265559566062980550652",
+                "0.509212907287047155908424170280733511320223424418717756021495953020869236147246494098614384",
+                "0.0841723274426307170570136912880288169600123512535435645053945946273934982931874429208349663"
+              ]
+            ],
+            [
+              [
+                "0.262341897625785594185169686671241838624406611826516081336949035165800316230424573131699686",
+                "0.564711664455411213699579412074210511287693196733123426273832459087535649257212189892012681",
+                "0.172946437918803192115250901254547650087900191440360492389218505746664034512363236976287634"
+              ],
+              [
+                "0.0648771819757233545573307086488966251128675320579744728966538444122643678627403828259973952",
+                "0.463665154127704909283273173119448240966464694913575903856426331393134285822027931209563179",
+                "0.471457663896571736159396118231655133920667773028449623246919824194601346315231685964439427"
+              ]
+            ],
+            [
+              [
+                "0.121729788133675693528587547454380489231590695239745688930140538111658002172224646367206352",
+                "0.550120348801364624251005292841996487008484527176845605959189384447514702734702566809056440",
+                "0.328149863064959682220407159703623023759924777583408705110670077440827295093072786823737208"
+              ],
+              [
+                "0.0351820349787674569278806165430742474954715040452480797823281983411079496858053797345717448",
+                "0.391063095187552982526580874272876548808245549424741844013054857227881649161642575336260950",
+                "0.573754869833679560545538509184049203696282946530010076204616944431010401152552044929167305"
+              ]
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "sample_probabilities": [
+            [
+              [
+                "0.646893276088357982448028125872916475922964130164030544436017088358632299716468767222675209",
+                "0.330870408460634628549305302832123326121280432470255089036732259798598347199053580028943233",
+                "0.0222363154510073890026665712949601979557554373657143665272506518427693530844776527483815591"
+              ],
+              [
+                "0.324984375432953962227495374552299540209391812673488803282198616643670949197540805114824261",
+                "0.551875545677927887032945845032186961625139653751214011114332477543668992911556361857504781",
+                "0.123140078889118150739558780415513498165468533575297185603468905812660057890902833027670957"
+              ]
+            ],
+            [
+              [
+                "0.366017361650050282436745727533279971299826883138370861424452724902639594982376969270158595",
+                "0.526135906298472216951833744653062467014783914756698152527073935545323754896821176011035653",
+                "0.107846732051477500611420527813657561685389202104930986048473339552036650120801854718805753"
+              ],
+              [
+                "0.125351193806869098972194914054683029427654031220931491484106400942649989852918963261369727",
+                "0.541313252497878420722335845123914718434888250663305100613058701324939865945907788722244815",
+                "0.333335553695252480305469240821402252137457718115763407902834897732410144201173248016385458"
+              ]
+            ],
+            [
+              [
+                "0.0633772349142774816231820571474268886595366501092727188475920168262736976506477455261598833",
+                "0.471859128176372769080614379189344957332138795663518910617134254121473423763432567681473769",
+                "0.464763636909349749296203563663228154008324554227208370535273729052252878585919686792366348"
+              ],
+              [
+                "0.0157044621725749807424276128343622458709507026184146854673935402392110687976587167348753193",
+                "0.287585625684269031681449169632733173657613992794329453612491791655732376041510612404929688",
+                "0.696709912143155987576123217532904580471435304587255860920114668105056555160830670860194994"
+              ]
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

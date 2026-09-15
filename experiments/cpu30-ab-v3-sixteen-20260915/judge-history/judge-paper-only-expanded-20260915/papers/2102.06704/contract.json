@@ -1,0 +1,637 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2102.06704",
+    "title": "Proximal and Federated Random Reshuffling",
+    "sha256": "765342ddc320fe1b8f0507848a2ee818e9fd5080fa57d980bfa44acce44a7ae0"
+  },
+  "algorithm": {
+    "name": "Proximal Random Reshuffling (ProxRR) and Federated Random Reshuffling (FedRR)",
+    "citations": [
+      "PDF p.1 Eq.(1) and Assumption 1: composite finite-sum objective.",
+      "PDF p.2: proximal operator definition; p.3 Algorithm 1 lines 3-7: ProxRR.",
+      "PDF p.7 Eq.(13) and Algorithm 3 lines 4-9: product-space reformulation and FedRR.",
+      "PDF p.8 Eq.(14): logistic regression with elastic net.",
+      "PDF p.21, Proximal operator calculation: elastic-net shrinkage and soft threshold."
+    ],
+    "core_mechanisms": [
+      "sequential_permuted_epoch",
+      "single_epoch_end_prox_with_n_scaling",
+      "elastic_net_threshold_and_quadratic_shrinkage",
+      "epoch_specific_stepsize",
+      "separate_complete_client_epochs",
+      "equal_device_average_then_N_over_M_prox"
+    ],
+    "assumptions": [
+      "These are synthetic deterministic algorithm experiments derived only from the original PDF, not benchmark recreation or claims about statistical convergence.",
+      "All page numbers are one-based physical PDF pages. Original is arXiv:2102.06704v1 dated 12 Feb 2021.",
+      "All component objectives are smooth and convex, and all regularizers are proper closed convex elastic nets. Quadratic maximum smoothness is 4; all chosen quadratic stepsizes are at most 1/4.",
+      "Supplied order lists fix realizations of reshuffling randomness. Each list is a full permutation; no RNG seed convention is needed.",
+      "ProxRR gamma_t is supplied explicitly and is constant within each epoch, as allowed by Algorithm 1. The test does not invoke the specific theoretical schedule in Eq.(11).",
+      "The federated test follows the general unequal-sample Algorithm 3; the equal-sample restrictions of later convergence theorems are not imposed on the algorithm.",
+      "Coverage focuses on Algorithms 1 and 3. Shuffle-Once, importance resampling, convergence bounds and empirical performance claims are outside this finite numeric contract."
+    ]
+  },
+  "cases": [
+    {
+      "id": "proxrr_quadratic_three_epochs",
+      "purpose": "Order-sensitive convex component steps, changing epoch learning rates, and exactly one n-scaled elastic-net prox per epoch.",
+      "covers": [
+        "sequential_permuted_epoch",
+        "single_epoch_end_prox_with_n_scaling",
+        "elastic_net_threshold_and_quadratic_shrinkage",
+        "epoch_specific_stepsize"
+      ],
+      "inputs": {
+        "x0": [
+          2,
+          -1
+        ],
+        "loss": "f_i(x)=0.5*sum_j diagonal_i[j]*(x_j-center_i[j])^2; gradient_j=diagonal_i[j]*(x_j-center_i[j]).",
+        "diagonals": [
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            4,
+            2
+          ]
+        ],
+        "centers": [
+          [
+            3,
+            -1
+          ],
+          [
+            -2,
+            2
+          ],
+          [
+            1,
+            -3
+          ]
+        ],
+        "epoch_sample_orders": [
+          [
+            2,
+            0,
+            1
+          ],
+          [
+            1,
+            2,
+            0
+          ],
+          [
+            0,
+            1,
+            2
+          ]
+        ]
+      },
+      "parameters": {
+        "objective_normalization": "P(x)=(1/n)*sum_i f_i(x)+psi(x). Component gradients are NOT divided by n.",
+        "regularizer": "psi(x)=lambda1*sum_j abs(x_j)+(lambda2/2)*sum_j x_j^2.",
+        "prox_convention": "prox_(alpha psi)(v)=argmin_z alpha*psi(z)+0.5*||z-v||_2^2; coordinate result is sign(v_j)*max(abs(v_j)-alpha*lambda1,0)/(1+alpha*lambda2).",
+        "sample_index_base": 0,
+        "permutation_policy": "Condition on the explicitly supplied permutation for each epoch; do not generate or sort a different order.",
+        "gradient_evaluation": "At the latest inner iterate; no prox or added regularizer gradient inside an epoch.",
+        "observations": {
+          "step": "One-based completed epoch; step 1 is t=0.",
+          "inner_iterates": "Rows are x_t^1 through x_t^n in supplied sample order, before any regularizer operation.",
+          "iterate": "x_(t+1), after the single epoch-end proximal operation."
+        },
+        "algorithm": "ProxRR",
+        "n": 3,
+        "dimension": 2,
+        "epochs": 3,
+        "epoch_stepsizes": [
+          0.125,
+          0.0625,
+          0.125
+        ],
+        "lambda1": 0.25,
+        "lambda2": 0.5
+      },
+      "derivation": "Algorithm 1 (PDF p.3, lines 4-7): x <- x-gamma_t*diag_i*(x-center_i), then alpha=3*gamma_t. Apply the elastic-net formula on PDF p.21. All entries below are exact fractions, cross-checked by affine-map composition and proximal KKT: [{\"epoch\": 1, \"inner_iterates\": [[\"3/2\", \"-3/2\"], [\"27/16\", \"-21/16\"], [\"49/64\", \"-115/128\"]], \"iterate\": [\"43/76\", \"-103/152\"]}, {\"epoch\": 2, \"inner_iterates\": [[\"149/608\", \"-1241/2432\"], [\"1055/2432\", \"-15983/19456\"], [\"23121/38912\", \"-266147/311296\"]], \"iterate\": [\"21297/42560\", \"-50311/68096\"]}, {\"epoch\": 3, \"inner_iterates\": [[\"39537/48640\", \"-455843/544768\"], [\"21331/194560\", \"-300195/622592\"], [\"215891/389120\", \"-2768361/2490368\"]], \"iterate\": [\"179411/462080\", \"-2534889/2957312\"]}]",
+      "expected": [
+        {
+          "step": 1,
+          "name": "inner_iterates",
+          "value": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              1.6875,
+              -1.3125
+            ],
+            [
+              0.765625,
+              -0.8984375
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "iterate",
+          "value": [
+            0.5657894736842105,
+            -0.6776315789473685
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_iterates",
+          "value": [
+            [
+              0.2450657894736842,
+              -0.5102796052631579
+            ],
+            [
+              0.43379934210526316,
+              -0.8214946546052632
+            ],
+            [
+              0.5941868832236842,
+              -0.8549644068667763
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "iterate",
+          "value": [
+            0.5003994360902255,
+            -0.7388246005639098
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_iterates",
+          "value": [
+            [
+              0.8128495065789474,
+              -0.8367653753524437
+            ],
+            [
+              0.10963712993421053,
+              -0.48216970343338816
+            ],
+            [
+              0.5548185649671052,
+              -1.111627277575041
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "iterate",
+          "value": [
+            0.38826826523545704,
+            -0.8571598126947715
+          ]
+        }
+      ],
+      "atol": 1e-10,
+      "rtol": 1e-09
+    },
+    {
+      "id": "proxrr_logistic_elastic_net_three_epochs",
+      "purpose": "Use the paper experimental logistic objective with nonzero positive and negative margins and a genuinely active soft threshold that zeros a coordinate after every epoch.",
+      "covers": [
+        "sequential_permuted_epoch",
+        "single_epoch_end_prox_with_n_scaling",
+        "elastic_net_threshold_and_quadratic_shrinkage",
+        "epoch_specific_stepsize"
+      ],
+      "inputs": {
+        "x0": [
+          0.6,
+          -0.2
+        ],
+        "features": [
+          [
+            1,
+            2
+          ],
+          [
+            -2,
+            1
+          ],
+          [
+            1,
+            -1
+          ]
+        ],
+        "labels": [
+          1,
+          0,
+          1
+        ],
+        "epoch_sample_orders": [
+          [
+            2,
+            0,
+            1
+          ],
+          [
+            1,
+            2,
+            0
+          ],
+          [
+            0,
+            1,
+            2
+          ]
+        ],
+        "loss": "f_i(x)=-b_i*log(h(a_i^T*x))-(1-b_i)*log(1-h(a_i^T*x)); h(s)=1/(1+exp(-s)); gradient=(h(a_i^T*x)-b_i)*a_i. No intercept is added."
+      },
+      "parameters": {
+        "objective_normalization": "P(x)=(1/n)*sum_i f_i(x)+psi(x). Component gradients are NOT divided by n.",
+        "regularizer": "psi(x)=lambda1*sum_j abs(x_j)+(lambda2/2)*sum_j x_j^2.",
+        "prox_convention": "prox_(alpha psi)(v)=argmin_z alpha*psi(z)+0.5*||z-v||_2^2; coordinate result is sign(v_j)*max(abs(v_j)-alpha*lambda1,0)/(1+alpha*lambda2).",
+        "sample_index_base": 0,
+        "permutation_policy": "Condition on the explicitly supplied permutation for each epoch; do not generate or sort a different order.",
+        "gradient_evaluation": "At the latest inner iterate; no prox or added regularizer gradient inside an epoch.",
+        "observations": {
+          "step": "One-based completed epoch; step 1 is t=0.",
+          "inner_iterates": "Rows are x_t^1 through x_t^n in supplied sample order, before any regularizer operation.",
+          "iterate": "x_(t+1), after the single epoch-end proximal operation."
+        },
+        "algorithm": "ProxRR",
+        "n": 3,
+        "dimension": 2,
+        "epochs": 3,
+        "epoch_stepsizes": [
+          0.25,
+          0.125,
+          0.0625
+        ],
+        "lambda1": 0.3,
+        "lambda2": 0.4
+      },
+      "derivation": "PDF p.8 Eq.(14) defines the sample loss and elastic net. Differentiate the sample loss to get (h(a_i^T*x)-b_i)*a_i; Algorithm 1 p.3 uses that gradient in the given order, then p.21 prox with alpha=3*gamma_t. Computed at 80 Decimal digits; independently checked by binary64 exp at every inner and outer iterate. Decimal trajectories: [{\"epoch\": 1, \"inner_iterates\": [[\"0.67750637971809688934153148451289083618585195320357498706444045844581229028002820\", \"-0.27750637971809688934153148451289083618585195320357498706444045844581229028002820\"], [\"0.79486008691289906270052330166111044689387590037486528699590623776794083856745076\", \"-0.04279896532849254262354785021645161476980405886099438720150889980155519370518308\"], [\"0.87660286521246590951329680230814088097391699081526830702301052203937192138003918\", \"-0.083670354478275966029934600539966831809824604081195897215061041937270735111477290\"]], \"iterate\": [\"0.50123297324035839193330523254472375459532076216559100540231578618413224721541475\", \"0E+3\"]}, {\"epoch\": 2, \"inner_iterates\": [[\"0.56834718904068941615690291616386625518758777929006437036519005681302732545185314\", \"-0.033557107900165512111798841809571250296133508562236682481437135314447539118219195\"], [\"0.61258570673905993996363822546751486426051625563088478288256944114505024424795016\", \"-0.077795625598536035918534151113219859369061984903057094998816519646470457914316213\"], [\"0.66104808977368947660546882343825435362127456067015478314739919049716452706298023\", \"0.019129140470723037365127044828259119352454625175482905530842979057758107715743935\"]], \"iterate\": [\"0.47699833893364302313519028125065595967067353101752589838904277434536045831563498\", \"0E+4\"]}, {\"epoch\": 3, \"inner_iterates\": [[\"0.50093341229955275377895151217929720013320686899998203327257967148458849783495093\", \"0.047870146731819461287522461857282480925066675964912269767073794278456079038631905\"], [\"0.53569363336467271946809414446846774423649246521702657485712968383776963631082993\", \"0.030490036199259478442951145712697208873423877856389998974798788101865509800692406\"], [\"0.55921354496791638119652428962592284721768597812116322739322040413518858468478093\", \"0.006970124596015816714521000555242105892230364952253346438708067804446561426741407\"]], \"iterate\": [\"0.46787306508643384297351096709388171834203346801968672315648409686994286947421482\", \"0E+5\"]}]",
+      "expected": [
+        {
+          "step": 1,
+          "name": "inner_iterates",
+          "value": [
+            [
+              0.6775063797180969,
+              -0.2775063797180969
+            ],
+            [
+              0.7948600869128991,
+              -0.04279896532849254
+            ],
+            [
+              0.8766028652124659,
+              -0.08367035447827596
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "iterate",
+          "value": [
+            0.5012329732403584,
+            0.0
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_iterates",
+          "value": [
+            [
+              0.5683471890406894,
+              -0.033557107900165514
+            ],
+            [
+              0.61258570673906,
+              -0.07779562559853603
+            ],
+            [
+              0.6610480897736895,
+              0.019129140470723036
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "iterate",
+          "value": [
+            0.476998338933643,
+            0.0
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_iterates",
+          "value": [
+            [
+              0.5009334122995528,
+              0.04787014673181946
+            ],
+            [
+              0.5356936333646727,
+              0.03049003619925948
+            ],
+            [
+              0.5592135449679164,
+              0.006970124596015817
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "iterate",
+          "value": [
+            0.46787306508643384,
+            0.0
+          ]
+        }
+      ],
+      "atol": 1e-10,
+      "rtol": 1e-09
+    },
+    {
+      "id": "fedrr_unequal_clients_three_rounds",
+      "purpose": "Exercise independent local full passes on heterogeneous clients with unequal sample counts, reset from the preceding global iterate, equal device weighting and gamma*N/M regularization.",
+      "covers": [
+        "sequential_permuted_epoch",
+        "elastic_net_threshold_and_quadratic_shrinkage",
+        "separate_complete_client_epochs",
+        "equal_device_average_then_N_over_M_prox"
+      ],
+      "inputs": {
+        "x0": [
+          1,
+          -2
+        ],
+        "client_sample_counts": [
+          2,
+          3
+        ],
+        "client_diagonals": [
+          [
+            [
+              2,
+              1
+            ],
+            [
+              1,
+              3
+            ]
+          ],
+          [
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              2,
+              4
+            ]
+          ]
+        ],
+        "client_centers": [
+          [
+            [
+              3,
+              -1
+            ],
+            [
+              -1,
+              2
+            ]
+          ],
+          [
+            [
+              -2,
+              1
+            ],
+            [
+              2,
+              -3
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        ],
+        "epoch_client_sample_orders": [
+          [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0,
+              1
+            ]
+          ],
+          [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2,
+              0
+            ]
+          ],
+          [
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              2,
+              1
+            ]
+          ]
+        ],
+        "loss": "f_mi(x)=0.5*sum_j client_diagonals[m][i][j]*(x_j-client_centers[m][i][j])^2; gradient_j=client_diagonals[m][i][j]*(x_j-client_centers[m][i][j])."
+      },
+      "parameters": {
+        "algorithm": "FedRR",
+        "dimension": 2,
+        "epochs": 3,
+        "M": 2,
+        "N": 5,
+        "n": 3,
+        "stepsize": 0.125,
+        "lambda1": 0.1,
+        "lambda2": 0.5,
+        "objective_normalization": "P(x)=(1/N)*sum_m sum_i f_mi(x)+R(x). Each local sample gradient is unnormalized.",
+        "regularizer": "R(x)=lambda1*sum_j abs(x_j)+(lambda2/2)*sum_j x_j^2.",
+        "prox_convention": "prox_(alpha R)(v)=argmin_z alpha*R(z)+0.5*||z-v||_2^2; coordinate result is sign(v_j)*max(abs(v_j)-alpha*lambda1,0)/(1+alpha*lambda2).",
+        "sample_index_base": 0,
+        "client_index_base": 0,
+        "permutation_policy": "Use the given order separately for each client and epoch. The order lists contain only real samples.",
+        "local_update": "Each round begins with every client at x_t. Client m performs N_m sequential sample gradient steps with constant gamma and no regularizer. For padding to n=max_m N_m, dummy losses have zero gradient and leave the completed local state unchanged.",
+        "server_update": "z_(t+1)=(1/M)*sum_m local_endpoint_m; x_(t+1)=prox_(gamma*N/M*R)(z_(t+1)). All clients participate in every round.",
+        "observations": {
+          "step": "One-based completed communication round; step 1 is t=0.",
+          "local_after_first_sample": "Rows are the two clients, each after its first real sample gradient update in this round.",
+          "local_endpoints": "Rows are the two clients after all their real sample updates, before aggregation.",
+          "aggregate": "Equal-weight mean z_(t+1) of completed client vectors before regularization.",
+          "iterate": "Global x_(t+1) after server proximal operation."
+        }
+      },
+      "derivation": "PDF p.7 Algorithm 3 lines 4-9 uses unnormalized sample gradients, copies each completed local state through zero padding, averages by M, and applies prox_(gamma*N/M*R). Here N=5, M=2, n=3, gamma=1/8 and alpha=5/16, so threshold=1/32 and shrinkage denominator=37/32. All numbers are exact fractions checked by affine map composition, scalar prox KKT and product-space consensus stationarity. Equal device averages differ from sample-count-weighted averages in every round. Exact trajectories: [{\"epoch\": 1, \"local_trajectories\": [[[\"3/4\", \"-1/2\"], [\"21/16\", \"-9/16\"]], [[\"3/4\", \"0\"], [\"13/32\", \"1/4\"], [\"257/256\", \"-5/32\"]]], \"local_endpoints\": [[\"21/16\", \"-9/16\"], [\"257/256\", \"-5/32\"]], \"aggregate\": [\"593/512\", \"-23/64\"], \"iterate\": [\"577/592\", \"-21/74\"]}, {\"epoch\": 2, \"local_trajectories\": [[[\"3507/2368\", \"-221/592\"], [\"22181/18944\", \"2447/4736\"]], [[\"6437/4736\", \"-369/592\"], [\"19311/18944\", \"815/1184\"], [\"97289/151552\", \"3629/4736\"]]], \"local_endpoints\": [[\"22181/18944\", \"2447/4736\"], [\"97289/151552\", \"3629/4736\"]], \"aggregate\": [\"274737/303104\", \"1519/2368\"], \"iterate\": [\"265265/350464\", \"1445/2738\"]}, {\"epoch\": 3, \"local_trajectories\": [[[\"1506391/2803712\", \"23653/21904\"], [\"12930309/11214848\", \"143667/175232\"]], [[\"1155927/2803712\", \"7073/10952\"], [\"3467781/11214848\", \"28977/21904\"], [\"84627993/89718784\", \"137127/175232\"]]], \"local_endpoints\": [[\"12930309/11214848\", \"143667/175232\"], [\"84627993/89718784\", \"137127/175232\"]], \"aggregate\": [\"188070465/179437568\", \"140397/175232\"], \"iterate\": [\"182463041/207474688\", \"134921/202612\"]}]",
+      "expected": [
+        {
+          "step": 1,
+          "name": "local_after_first_sample",
+          "value": [
+            [
+              0.75,
+              -0.5
+            ],
+            [
+              0.75,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "local_endpoints",
+          "value": [
+            [
+              1.3125,
+              -0.5625
+            ],
+            [
+              1.00390625,
+              -0.15625
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "aggregate",
+          "value": [
+            1.158203125,
+            -0.359375
+          ]
+        },
+        {
+          "step": 1,
+          "name": "iterate",
+          "value": [
+            0.9746621621621622,
+            -0.28378378378378377
+          ]
+        },
+        {
+          "step": 2,
+          "name": "local_after_first_sample",
+          "value": [
+            [
+              1.4809966216216217,
+              -0.3733108108108108
+            ],
+            [
+              1.3591638513513513,
+              -0.6233108108108109
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "local_endpoints",
+          "value": [
+            [
+              1.1708720439189189,
+              0.5166807432432432
+            ],
+            [
+              0.6419512774493243,
+              0.7662584459459459
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "aggregate",
+          "value": [
+            0.9064116606841216,
+            0.6414695945945946
+          ]
+        },
+        {
+          "step": 2,
+          "name": "iterate",
+          "value": [
+            0.7568965714024836,
+            0.5277574872169467
+          ]
+        },
+        {
+          "step": 3,
+          "name": "local_after_first_sample",
+          "value": [
+            [
+              0.5372844999771731,
+              1.0798484295105917
+            ],
+            [
+              0.41228449997717315,
+              0.6458181154127101
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "local_endpoints",
+          "value": [
+            [
+              1.1529633749828798,
+              0.8198673758217677
+            ],
+            [
+              0.9432583593642999,
+              0.7825454254930606
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "aggregate",
+          "value": [
+            1.04811086717359,
+            0.8012064006574142
+          ]
+        },
+        {
+          "step": 3,
+          "name": "iterate",
+          "value": [
+            0.8794472364744561,
+            0.6659082384064122
+          ]
+        }
+      ],
+      "atol": 1e-10,
+      "rtol": 1e-09
+    }
+  ]
+}

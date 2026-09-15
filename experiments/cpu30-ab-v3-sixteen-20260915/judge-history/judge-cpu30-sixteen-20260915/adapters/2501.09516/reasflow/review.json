@@ -1,0 +1,35 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "/root/adapter16_b",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Approved after revision as a blocked partial invocation. Only initial X and genuine Riemannian gradient are comparable; unsupported metric/inner-solver trajectory is isolated as diagnostics.",
+  "scope_notes": [
+    "Inspected manpqn/algorithms.py solve, objectives.cm_objective/Objective, subproblem.solve_tangent_subproblem and manifold projections/retraction. Native bdiag begins at objective Lipschitz; delta=1/t0 and Armijo fraction=1e-4 are hardcoded. Only bdiag is stored, not a dense B matrix; conditional beta has no undamped sentinel. The finite projected proximal inner solve, damping and stopping are retained. The cm_objective optional Lipschitz scalar does not independently expose requested B0, later delta, full-B recursion or exact inner solver.",
+    "Public objective normalization is preserved by H=Q/2 (Codex) or h=-Q/2 (ReasFlow). Original CM nonsmooth value and l1 prox remain unchanged; the nonzero linear c term is added only to smooth value/gradient. This is public problem-input extension, not a replacement algorithm mechanism.",
+    "Initial X0 enters original API. Codex performs its native initial polar retraction; ReasFlow copies X0. Only step1 X_before and Riemannian gradient precede unsupported tuning/inner updates and remain in standard observations. All 34 other requested items per case are missing; actual source-tuned states stay in diagnostics and cannot be treated as requested-experiment outputs.",
+    "Public exact subproblem, fixed delta/B0 and full-B/damping observations cannot be faithfully forced through these sources without replacing core update/inner solve. No full B matrix, damping sentinel, tangent norm or exact tangent solution is reconstructed from paper formulas. Approval is adaptation fidelity, not coverage or numeric algorithm correctness.",
+    "Readonly smoke on revised bytes exited 0 for both cases, with two standard observations per case and blocked status."
+  ],
+  "substitutions": [
+    {
+      "symbol": "CM quadratic data and linear c",
+      "role": "problem_input",
+      "reason": "Retains original CM quadratic/penalty/prox, adding public linear smooth term only when needed."
+    },
+    {
+      "symbol": "sys.settrace",
+      "role": "observation",
+      "reason": "Reads native states and accepted line-search locals; unsupported-parameter trajectory goes exclusively to diagnostics."
+    },
+    {
+      "symbol": "initial Riemannian gradient",
+      "role": "observation",
+      "reason": "ReasFlow uses native projected grad local; Codex applies original project_tangent to native Euclidean gradient at actual X without influencing updates."
+    }
+  ],
+  "public_digest": "b4a91d79d8ea1dec2fec28979dc3a51c12fa4cecf11fb6bb3849dc3864c85824",
+  "adapter_sha256": "f0c43208304401d2cb304fb382aaf12a5ec3b5022e3ef3558d08f4619b6e8ca6",
+  "workspace_digest": "fca11e005f8fae9f9af5ba2cddb0fa0bb36716f94e0f8e4877b8f07669126484",
+  "bindings_digest": "d886d3509aaa3f3d01b11243112338521ef1489606de6229d12fa2d0f2b10215"
+}

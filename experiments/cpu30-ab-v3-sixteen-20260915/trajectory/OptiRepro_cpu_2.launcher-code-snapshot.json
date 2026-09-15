@@ -1,0 +1,14 @@
+[
+  {
+    "source": "/home/hzy/optirepro/agent_reproduction/tools/codex_runner/cpu30_lightweight_runtime.py",
+    "sha256": "1ff93af431d60d4da3388a686b41c4d1e834ffb1b392a95ada7654b4ca5f718d",
+    "line": 558,
+    "text": "    def _launch_command(self, run: ConditionRun) -> list[str]:\n        return [\n            \"taskset\",\n            \"--cpu-list\",\n            self.cpu_sets[run.condition],\n            str(self._launcher_script()),\n            str(run.run_dir),\n            NETWORK_MODE,\n        ]\n\n    def _launch_with_script("
+  },
+  {
+    "source": "/home/hzy/optirepro/agent_reproduction/tools/codex_runner/cpu30_lightweight_runtime.py",
+    "sha256": "1ff93af431d60d4da3388a686b41c4d1e834ffb1b392a95ada7654b4ca5f718d",
+    "line": 814,
+    "text": "            \"cpuset\": self.cpu_sets[run.condition],\n        }\n\n    def start_pair(\n        self, pair: PairRun, launch_epoch: str, transaction_nonce: str\n    ) -> dict:\n        self._authorize_launch(\n            require_receipt=(\n                self._require_launch_receipt\n                and self._launcher == self._launch_with_script\n            )"
+  }
+]

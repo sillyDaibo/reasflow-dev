@@ -1,0 +1,38 @@
+{
+  "session_date": "2026-09-15 Asia/Shanghai",
+  "records": [
+    {
+      "path": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/papers/1811.03761/contract.json",
+      "sha256": "003bba6c7595a7cd36310d6670e83532889b6858aec3958e735d7c34fa544c53",
+      "author": "paper_rsa",
+      "access_scope": "original PDF only; no workspace or existing evaluation access; exact arithmetic script and visual PDF checks saved beside contract"
+    },
+    {
+      "path": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/papers/2212.02387/contract.json",
+      "sha256": "c570b8369e774545720866140ed390b78db948566a729ebe20ca58d95667d9be",
+      "author": "paper_dream",
+      "access_scope": "original PDF only; no workspace or existing evaluation access; exact arithmetic script and visual PDF checks saved beside contract"
+    },
+    {
+      "path": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/dream/native/adapter.py",
+      "sha256": "89a91bd0ed6e14aa55d106fd8832e6fee1ff9525ca1345803ffa1ff41926170b",
+      "access_scope": "public input/observation schema and original workspace only; no private expectations/derivations; adapter notes saved beside script"
+    },
+    {
+      "path": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/dream/reasflow/adapter.py",
+      "sha256": "4b8c556ef2f30b402bae30c25a2fd867b8dcabaf8b4b8361c203a41d0a5b3abb",
+      "access_scope": "public input/observation schema and original workspace only; no private expectations/derivations; adapter notes saved beside script"
+    },
+    {
+      "path": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/rsa/codex/adapter.py",
+      "sha256": "9fa52dfc45b622bdf9e938ca12c71d6f216c9120614357a6fa5e730ae347fa6f",
+      "access_scope": "public input/observation schema and original workspace only; no private expectations/derivations; adapter notes saved beside script"
+    },
+    {
+      "path": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/rsa/reasflow/adapter.py",
+      "sha256": "3084c89c5eddedacba1d0229dc3496d99ba332709c6fd994e16f5159d1fa23e0",
+      "access_scope": "public input/observation schema and original workspace only; no private expectations/derivations; adapter notes saved beside script"
+    }
+  ],
+  "scope_note": "Agent access boundaries were task instructions and separate contexts; not a claim of OS isolation against a hostile local process."
+}

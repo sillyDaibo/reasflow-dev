@@ -1,0 +1,3304 @@
+{
+  "snapshot": [
+    {
+      "host": "OptiRepro_cpu",
+      "captured_at_utc": "2026-09-05T16:26:14.847774+00:00"
+    },
+    {
+      "host": "OptiRepro_cpu_2",
+      "captured_at_utc": "2026-09-05T16:26:12.841166+00:00"
+    }
+  ],
+  "paper_count": 16,
+  "summaries": [
+    {
+      "paper_id": "1811.03761",
+      "midloop": {
+        "A": {
+          "earned": 162,
+          "weight": 177,
+          "total_score": 0.9153,
+          "algorithm_impl_score": 0.875,
+          "exp_setup_score": 0.9193,
+          "exp_results_score": 0.0,
+          "total_rubrics": 103,
+          "passed": 92,
+          "failed": 11,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        },
+        "B": {
+          "earned": 149,
+          "weight": 177,
+          "total_score": 0.8418,
+          "algorithm_impl_score": 0.9375,
+          "exp_setup_score": 0.8323,
+          "exp_results_score": 0.0,
+          "total_rubrics": 103,
+          "passed": 85,
+          "failed": 18,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 35,
+          "weight": 36,
+          "total_score": 0.9722,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.9722,
+          "total_rubrics": 22,
+          "passed": 21,
+          "failed": 1,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": true
+        },
+        "B": {
+          "earned": 31,
+          "weight": 36,
+          "total_score": 0.8611,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.8611,
+          "total_rubrics": 22,
+          "passed": 19,
+          "failed": 3,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": true
+        }
+      }
+    },
+    {
+      "paper_id": "1904.12017",
+      "midloop": {
+        "A": {
+          "earned": 93,
+          "weight": 111,
+          "total_score": 0.8378,
+          "algorithm_impl_score": 0.7368,
+          "exp_setup_score": 0.8587,
+          "exp_results_score": 0.0,
+          "total_rubrics": 68,
+          "passed": 54,
+          "failed": 14,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        },
+        "B": {
+          "earned": 94,
+          "weight": 111,
+          "total_score": 0.8468,
+          "algorithm_impl_score": 0.7368,
+          "exp_setup_score": 0.8696,
+          "exp_results_score": 0.0,
+          "total_rubrics": 68,
+          "passed": 56,
+          "failed": 12,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 26,
+          "weight": 59,
+          "total_score": 0.4407,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.4407,
+          "total_rubrics": 33,
+          "passed": 14,
+          "failed": 19,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 27,
+          "weight": 59,
+          "total_score": 0.4576,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.4576,
+          "total_rubrics": 33,
+          "passed": 14,
+          "failed": 19,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2102.06704",
+      "midloop": {
+        "A": {
+          "earned": 31,
+          "weight": 45,
+          "total_score": 0.6889,
+          "algorithm_impl_score": 0.7778,
+          "exp_setup_score": 0.6296,
+          "exp_results_score": 0.0,
+          "total_rubrics": 27,
+          "passed": 17,
+          "failed": 10,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 27,
+          "weight": 45,
+          "total_score": 0.6,
+          "algorithm_impl_score": 0.6667,
+          "exp_setup_score": 0.5556,
+          "exp_results_score": 0.0,
+          "total_rubrics": 27,
+          "passed": 14,
+          "failed": 13,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 3,
+          "weight": 5,
+          "total_score": 0.6,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.6,
+          "total_rubrics": 3,
+          "passed": 2,
+          "failed": 1,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 4,
+          "weight": 5,
+          "total_score": 0.8,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.8,
+          "total_rubrics": 3,
+          "passed": 2,
+          "failed": 1,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2111.03820",
+      "midloop": {
+        "A": {
+          "earned": 43,
+          "weight": 44,
+          "total_score": 0.9773,
+          "algorithm_impl_score": 0.9333,
+          "exp_setup_score": 1.0,
+          "exp_results_score": 0.0,
+          "total_rubrics": 27,
+          "passed": 26,
+          "failed": 1,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        },
+        "B": {
+          "earned": 43,
+          "weight": 44,
+          "total_score": 0.9773,
+          "algorithm_impl_score": 0.9333,
+          "exp_setup_score": 1.0,
+          "exp_results_score": 0.0,
+          "total_rubrics": 27,
+          "passed": 26,
+          "failed": 1,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 5,
+          "weight": 31,
+          "total_score": 0.1613,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.1613,
+          "total_rubrics": 17,
+          "passed": 3,
+          "failed": 14,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 7,
+          "weight": 31,
+          "total_score": 0.2258,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.2258,
+          "total_rubrics": 17,
+          "passed": 4,
+          "failed": 13,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2201.13320",
+      "midloop": {
+        "A": {
+          "earned": 71,
+          "weight": 103,
+          "total_score": 0.6893,
+          "algorithm_impl_score": 0.9375,
+          "exp_setup_score": 0.6437,
+          "exp_results_score": 0.0,
+          "total_rubrics": 59,
+          "passed": 38,
+          "failed": 21,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 83,
+          "weight": 103,
+          "total_score": 0.8058,
+          "algorithm_impl_score": 0.9375,
+          "exp_setup_score": 0.7816,
+          "exp_results_score": 0.0,
+          "total_rubrics": 59,
+          "passed": 45,
+          "failed": 14,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 8,
+          "weight": 26,
+          "total_score": 0.3077,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.3077,
+          "total_rubrics": 18,
+          "passed": 4,
+          "failed": 14,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 6,
+          "weight": 26,
+          "total_score": 0.2308,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.2308,
+          "total_rubrics": 18,
+          "passed": 6,
+          "failed": 12,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2207.04555",
+      "midloop": {
+        "A": {
+          "earned": 89,
+          "weight": 105,
+          "total_score": 0.8476,
+          "algorithm_impl_score": 0.8235,
+          "exp_setup_score": 0.8704,
+          "exp_results_score": 0.0,
+          "total_rubrics": 60,
+          "passed": 51,
+          "failed": 9,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        },
+        "B": {
+          "earned": 88,
+          "weight": 105,
+          "total_score": 0.8381,
+          "algorithm_impl_score": 0.8235,
+          "exp_setup_score": 0.8519,
+          "exp_results_score": 0.0,
+          "total_rubrics": 60,
+          "passed": 51,
+          "failed": 9,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 8,
+          "weight": 51,
+          "total_score": 0.1569,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.1569,
+          "total_rubrics": 27,
+          "passed": 5,
+          "failed": 22,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 10,
+          "weight": 51,
+          "total_score": 0.1961,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.1961,
+          "total_rubrics": 27,
+          "passed": 6,
+          "failed": 21,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2212.02387",
+      "midloop": {
+        "A": {
+          "earned": 26,
+          "weight": 46,
+          "total_score": 0.5652,
+          "algorithm_impl_score": 0.6087,
+          "exp_setup_score": 0.5217,
+          "exp_results_score": 0.0,
+          "total_rubrics": 27,
+          "passed": 13,
+          "failed": 14,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 26,
+          "weight": 46,
+          "total_score": 0.5652,
+          "algorithm_impl_score": 0.5217,
+          "exp_setup_score": 0.6087,
+          "exp_results_score": 0.0,
+          "total_rubrics": 27,
+          "passed": 13,
+          "failed": 14,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 2,
+          "weight": 12,
+          "total_score": 0.1667,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.1667,
+          "total_rubrics": 6,
+          "passed": 1,
+          "failed": 5,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 0,
+          "weight": 12,
+          "total_score": 0.0,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.0,
+          "total_rubrics": 6,
+          "passed": 0,
+          "failed": 6,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2306.04961",
+      "midloop": {
+        "A": {
+          "earned": 160,
+          "weight": 225,
+          "total_score": 0.7111,
+          "algorithm_impl_score": 0.7647,
+          "exp_setup_score": 0.7067,
+          "exp_results_score": 0.0,
+          "total_rubrics": 145,
+          "passed": 98,
+          "failed": 47,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 132,
+          "weight": 225,
+          "total_score": 0.5867,
+          "algorithm_impl_score": 0.8824,
+          "exp_setup_score": 0.5625,
+          "exp_results_score": 0.0,
+          "total_rubrics": 145,
+          "passed": 72,
+          "failed": 73,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 4,
+          "weight": 28,
+          "total_score": 0.1429,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.1429,
+          "total_rubrics": 17,
+          "passed": 3,
+          "failed": 14,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 0,
+          "weight": 28,
+          "total_score": 0.0,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.0,
+          "total_rubrics": 17,
+          "passed": 0,
+          "failed": 17,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2306.05100",
+      "midloop": {
+        "A": {
+          "earned": 102,
+          "weight": 143,
+          "total_score": 0.7133,
+          "algorithm_impl_score": 0.6,
+          "exp_setup_score": 0.7573,
+          "exp_results_score": 0.0,
+          "total_rubrics": 84,
+          "passed": 60,
+          "failed": 24,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 105,
+          "weight": 143,
+          "total_score": 0.7343,
+          "algorithm_impl_score": 0.65,
+          "exp_setup_score": 0.767,
+          "exp_results_score": 0.0,
+          "total_rubrics": 84,
+          "passed": 61,
+          "failed": 23,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 22,
+          "weight": 33,
+          "total_score": 0.6667,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.6667,
+          "total_rubrics": 19,
+          "passed": 12,
+          "failed": 7,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 21,
+          "weight": 33,
+          "total_score": 0.6364,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.6364,
+          "total_rubrics": 19,
+          "passed": 11,
+          "failed": 8,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2309.05204",
+      "midloop": {
+        "A": {
+          "earned": 33,
+          "weight": 46,
+          "total_score": 0.7174,
+          "algorithm_impl_score": 0.5238,
+          "exp_setup_score": 0.88,
+          "exp_results_score": 0.0,
+          "total_rubrics": 26,
+          "passed": 18,
+          "failed": 8,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 35,
+          "weight": 46,
+          "total_score": 0.7609,
+          "algorithm_impl_score": 0.619,
+          "exp_setup_score": 0.88,
+          "exp_results_score": 0.0,
+          "total_rubrics": 26,
+          "passed": 19,
+          "failed": 7,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 32,
+          "weight": 68,
+          "total_score": 0.4706,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.4706,
+          "total_rubrics": 34,
+          "passed": 16,
+          "failed": 18,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 24,
+          "weight": 68,
+          "total_score": 0.3529,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.3529,
+          "total_rubrics": 34,
+          "passed": 12,
+          "failed": 22,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2310.09804",
+      "midloop": {
+        "A": {
+          "earned": 193,
+          "weight": 230,
+          "total_score": 0.8391,
+          "algorithm_impl_score": 0.8448,
+          "exp_setup_score": 0.8372,
+          "exp_results_score": 0.0,
+          "total_rubrics": 131,
+          "passed": 105,
+          "failed": 26,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        },
+        "B": {
+          "earned": 185,
+          "weight": 230,
+          "total_score": 0.8043,
+          "algorithm_impl_score": 0.7759,
+          "exp_setup_score": 0.814,
+          "exp_results_score": 0.0,
+          "total_rubrics": 131,
+          "passed": 101,
+          "failed": 30,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 17,
+          "weight": 49,
+          "total_score": 0.3469,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.3469,
+          "total_rubrics": 28,
+          "passed": 9,
+          "failed": 19,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 13,
+          "weight": 49,
+          "total_score": 0.2653,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.2653,
+          "total_rubrics": 28,
+          "passed": 7,
+          "failed": 21,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2501.04443",
+      "midloop": {
+        "A": {
+          "earned": 85,
+          "weight": 106,
+          "total_score": 0.8019,
+          "algorithm_impl_score": 0.85,
+          "exp_setup_score": 0.7907,
+          "exp_results_score": 0.0,
+          "total_rubrics": 60,
+          "passed": 47,
+          "failed": 13,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        },
+        "B": {
+          "earned": 87,
+          "weight": 106,
+          "total_score": 0.8208,
+          "algorithm_impl_score": 0.85,
+          "exp_setup_score": 0.814,
+          "exp_results_score": 0.0,
+          "total_rubrics": 60,
+          "passed": 48,
+          "failed": 12,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 10,
+          "weight": 12,
+          "total_score": 0.8333,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.8333,
+          "total_rubrics": 10,
+          "passed": 8,
+          "failed": 2,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 6,
+          "weight": 12,
+          "total_score": 0.5,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.5,
+          "total_rubrics": 10,
+          "passed": 5,
+          "failed": 5,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2501.09516",
+      "midloop": {
+        "A": {
+          "earned": 45,
+          "weight": 103,
+          "total_score": 0.4369,
+          "algorithm_impl_score": 0.3929,
+          "exp_setup_score": 0.4533,
+          "exp_results_score": 0.0,
+          "total_rubrics": 63,
+          "passed": 28,
+          "failed": 35,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 58,
+          "weight": 103,
+          "total_score": 0.5631,
+          "algorithm_impl_score": 0.7857,
+          "exp_setup_score": 0.48,
+          "exp_results_score": 0.0,
+          "total_rubrics": 63,
+          "passed": 34,
+          "failed": 29,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 6,
+          "weight": 494,
+          "total_score": 0.0121,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.0121,
+          "total_rubrics": 361,
+          "passed": 4,
+          "failed": 357,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 2,
+          "weight": 494,
+          "total_score": 0.004,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.004,
+          "total_rubrics": 361,
+          "passed": 1,
+          "failed": 360,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2501.18312",
+      "midloop": {
+        "A": {
+          "earned": 23,
+          "weight": 40,
+          "total_score": 0.575,
+          "algorithm_impl_score": 0.5455,
+          "exp_setup_score": 0.6111,
+          "exp_results_score": 0.0,
+          "total_rubrics": 24,
+          "passed": 14,
+          "failed": 10,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 29,
+          "weight": 40,
+          "total_score": 0.725,
+          "algorithm_impl_score": 0.7273,
+          "exp_setup_score": 0.7222,
+          "exp_results_score": 0.0,
+          "total_rubrics": 24,
+          "passed": 17,
+          "failed": 7,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 5,
+          "weight": 7,
+          "total_score": 0.7143,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.7143,
+          "total_rubrics": 5,
+          "passed": 3,
+          "failed": 2,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 5,
+          "weight": 7,
+          "total_score": 0.7143,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.7143,
+          "total_rubrics": 5,
+          "passed": 4,
+          "failed": 1,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    },
+    {
+      "paper_id": "2503.07594",
+      "midloop": {
+        "A": {
+          "earned": 28,
+          "weight": 34,
+          "total_score": 0.8235,
+          "algorithm_impl_score": 0.8333,
+          "exp_setup_score": 0.8182,
+          "exp_results_score": 0.0,
+          "total_rubrics": 20,
+          "passed": 17,
+          "failed": 3,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        },
+        "B": {
+          "earned": 28,
+          "weight": 34,
+          "total_score": 0.8235,
+          "algorithm_impl_score": 0.8333,
+          "exp_setup_score": 0.8182,
+          "exp_results_score": 0.0,
+          "total_rubrics": 20,
+          "passed": 17,
+          "failed": 3,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": true
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 6,
+          "weight": 7,
+          "total_score": 0.8571,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.8571,
+          "total_rubrics": 4,
+          "passed": 3,
+          "failed": 1,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": true
+        },
+        "B": {
+          "earned": 6,
+          "weight": 7,
+          "total_score": 0.8571,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.8571,
+          "total_rubrics": 4,
+          "passed": 3,
+          "failed": 1,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": true
+        }
+      }
+    },
+    {
+      "paper_id": "2504.19004",
+      "midloop": {
+        "A": {
+          "earned": 89,
+          "weight": 121,
+          "total_score": 0.7355,
+          "algorithm_impl_score": 1.0,
+          "exp_setup_score": 0.6484,
+          "exp_results_score": 0.0,
+          "total_rubrics": 73,
+          "passed": 53,
+          "failed": 20,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 88,
+          "weight": 121,
+          "total_score": 0.7273,
+          "algorithm_impl_score": 0.9667,
+          "exp_setup_score": 0.6484,
+          "exp_results_score": 0.0,
+          "total_rubrics": 73,
+          "passed": 53,
+          "failed": 20,
+          "errors": 0,
+          "pass_threshold": 0.8,
+          "gate_passed": false
+        }
+      },
+      "bigloop": {
+        "A": {
+          "earned": 22,
+          "weight": 41,
+          "total_score": 0.5366,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.5366,
+          "total_rubrics": 30,
+          "passed": 15,
+          "failed": 15,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        },
+        "B": {
+          "earned": 17,
+          "weight": 41,
+          "total_score": 0.4146,
+          "algorithm_impl_score": 0.0,
+          "exp_setup_score": 0.0,
+          "exp_results_score": 0.4146,
+          "total_rubrics": 30,
+          "passed": 12,
+          "failed": 18,
+          "errors": 0,
+          "pass_threshold": 0.85,
+          "gate_passed": false
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "midloop": {
+      "A_mean": 0.74219375,
+      "B_mean": 0.75130625,
+      "B_minus_A_mean": 0.009112499999999992,
+      "A_median": 0.72645,
+      "B_median": 0.7826,
+      "B_wins": 7,
+      "B_losses": 6,
+      "ties": 3,
+      "A_gate_passed": 7,
+      "B_gate_passed": 8,
+      "A_micro_score": 0.7581893984514592,
+      "A_item_count": 997,
+      "B_micro_score": 0.7486599166170339,
+      "B_item_count": 997
+    },
+    "bigloop": {
+      "A_mean": 0.461625,
+      "B_mean": 0.40725,
+      "B_minus_A_mean": -0.05437499999999999,
+      "A_median": 0.45565,
+      "B_median": 0.38375000000000004,
+      "B_wins": 4,
+      "B_losses": 10,
+      "ties": 2,
+      "A_gate_passed": 2,
+      "B_gate_passed": 2,
+      "A_micro_score": 0.22002085505735142,
+      "A_item_count": 634,
+      "B_micro_score": 0.18665276329509906,
+      "B_item_count": 634
+    },
+    "leave_one_paper_out_bigloop_delta_range": [
+      -0.07133333333333333,
+      -0.035779999999999985
+    ]
+  },
+  "bigloop_verification_type_sensitivity": {
+    "boolean": {
+      "A": {
+        "n": 52,
+        "weight": 62,
+        "earned": 28
+      },
+      "B": {
+        "n": 52,
+        "weight": 62,
+        "earned": 23
+      }
+    },
+    "extensible": {
+      "A": {
+        "n": 8,
+        "weight": 10,
+        "earned": 8
+      },
+      "B": {
+        "n": 8,
+        "weight": 10,
+        "earned": 8
+      }
+    },
+    "numerical": {
+      "A": {
+        "n": 429,
+        "weight": 626,
+        "earned": 61
+      },
+      "B": {
+        "n": 429,
+        "weight": 626,
+        "earned": 47
+      }
+    },
+    "ranking": {
+      "A": {
+        "n": 145,
+        "weight": 261,
+        "earned": 114
+      },
+      "B": {
+        "n": 145,
+        "weight": 261,
+        "earned": 101
+      }
+    }
+  },
+  "groups": [
+    {
+      "paper_id": "1811.03761",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 10,
+      "denominator": 16,
+      "A": 14,
+      "B": 15
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_no_byzantine_attacks",
+      "n": 10,
+      "denominator": 18,
+      "A": 12,
+      "B": 12
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp2_same_value_attacks",
+      "n": 11,
+      "denominator": 15,
+      "A": 14,
+      "B": 14
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp3_sign_flipping_attacks",
+      "n": 10,
+      "denominator": 15,
+      "A": 15,
+      "B": 15
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp4_gaussian_attacks",
+      "n": 11,
+      "denominator": 20,
+      "A": 19,
+      "B": 19
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp5_runtime_comparison",
+      "n": 11,
+      "denominator": 20,
+      "A": 18,
+      "B": 16
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp6_impact_of_lambda",
+      "n": 12,
+      "denominator": 22,
+      "A": 20,
+      "B": 20
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp7_rsa_different_norms",
+      "n": 17,
+      "denominator": 30,
+      "A": 29,
+      "B": 17
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp8_heterogeneous_data",
+      "n": 11,
+      "denominator": 21,
+      "A": 21,
+      "B": 21
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_no_byzantine_attacks",
+      "n": 2,
+      "denominator": 4,
+      "A": 4,
+      "B": 4
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp2_same_value_attacks",
+      "n": 7,
+      "denominator": 9,
+      "A": 8,
+      "B": 8
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp3_sign_flipping_attacks",
+      "n": 2,
+      "denominator": 4,
+      "A": 4,
+      "B": 4
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp4_gaussian_attacks",
+      "n": 3,
+      "denominator": 5,
+      "A": 5,
+      "B": 5
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp5_runtime_comparison",
+      "n": 2,
+      "denominator": 4,
+      "A": 4,
+      "B": 2
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp7_rsa_different_norms",
+      "n": 2,
+      "denominator": 4,
+      "A": 4,
+      "B": 2
+    },
+    {
+      "paper_id": "1811.03761",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp8_heterogeneous_data",
+      "n": 4,
+      "denominator": 6,
+      "A": 6,
+      "B": 6
+    },
+    {
+      "paper_id": "1904.12017",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 12,
+      "denominator": 19,
+      "A": 14,
+      "B": 14
+    },
+    {
+      "paper_id": "1904.12017",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_mesothelioma_cls",
+      "n": 15,
+      "denominator": 24,
+      "A": 20,
+      "B": 22
+    },
+    {
+      "paper_id": "1904.12017",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp2_house_price_pred",
+      "n": 11,
+      "denominator": 18,
+      "A": 16,
+      "B": 15
+    },
+    {
+      "paper_id": "1904.12017",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp3_senate_elections",
+      "n": 15,
+      "denominator": 24,
+      "A": 23,
+      "B": 23
+    },
+    {
+      "paper_id": "1904.12017",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp4_chicago_crime",
+      "n": 15,
+      "denominator": 26,
+      "A": 20,
+      "B": 20
+    },
+    {
+      "paper_id": "1904.12017",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_mesothelioma_cls",
+      "n": 8,
+      "denominator": 15,
+      "A": 5,
+      "B": 10
+    },
+    {
+      "paper_id": "1904.12017",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp2_house_price_pred",
+      "n": 9,
+      "denominator": 14,
+      "A": 9,
+      "B": 5
+    },
+    {
+      "paper_id": "1904.12017",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp3_senate_elections",
+      "n": 8,
+      "denominator": 16,
+      "A": 6,
+      "B": 6
+    },
+    {
+      "paper_id": "1904.12017",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp4_chicago_crime",
+      "n": 8,
+      "denominator": 14,
+      "A": 6,
+      "B": 6
+    },
+    {
+      "paper_id": "2102.06704",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 12,
+      "denominator": 18,
+      "A": 14,
+      "B": 12
+    },
+    {
+      "paper_id": "2102.06704",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_prox_logreg_a1a",
+      "n": 8,
+      "denominator": 15,
+      "A": 11,
+      "B": 7
+    },
+    {
+      "paper_id": "2102.06704",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp2_fedrr_mushrooms",
+      "n": 7,
+      "denominator": 12,
+      "A": 6,
+      "B": 8
+    },
+    {
+      "paper_id": "2102.06704",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_prox_logreg_a1a",
+      "n": 2,
+      "denominator": 3,
+      "A": 3,
+      "B": 2
+    },
+    {
+      "paper_id": "2102.06704",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp2_fedrr_mushrooms",
+      "n": 1,
+      "denominator": 2,
+      "A": 0,
+      "B": 2
+    },
+    {
+      "paper_id": "2111.03820",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 9,
+      "denominator": 15,
+      "A": 14,
+      "B": 14
+    },
+    {
+      "paper_id": "2111.03820",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_time_invariant",
+      "n": 7,
+      "denominator": 11,
+      "A": 11,
+      "B": 11
+    },
+    {
+      "paper_id": "2111.03820",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp2_time_varying",
+      "n": 8,
+      "denominator": 12,
+      "A": 12,
+      "B": 12
+    },
+    {
+      "paper_id": "2111.03820",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp3_ablation_sampling",
+      "n": 3,
+      "denominator": 6,
+      "A": 6,
+      "B": 6
+    },
+    {
+      "paper_id": "2111.03820",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_time_invariant",
+      "n": 3,
+      "denominator": 4,
+      "A": 0,
+      "B": 2
+    },
+    {
+      "paper_id": "2111.03820",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp2_time_varying",
+      "n": 12,
+      "denominator": 23,
+      "A": 3,
+      "B": 3
+    },
+    {
+      "paper_id": "2111.03820",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp3_ablation_sampling",
+      "n": 2,
+      "denominator": 4,
+      "A": 2,
+      "B": 2
+    },
+    {
+      "paper_id": "2201.13320",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 10,
+      "denominator": 16,
+      "A": 15,
+      "B": 15
+    },
+    {
+      "paper_id": "2201.13320",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_logistic_a9a_comparison",
+      "n": 10,
+      "denominator": 19,
+      "A": 16,
+      "B": 16
+    },
+    {
+      "paper_id": "2201.13320",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp2_nn_mnist_comparison",
+      "n": 8,
+      "denominator": 15,
+      "A": 11,
+      "B": 11
+    },
+    {
+      "paper_id": "2201.13320",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp3_topology_a9a",
+      "n": 14,
+      "denominator": 21,
+      "A": 15,
+      "B": 16
+    },
+    {
+      "paper_id": "2201.13320",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp4_compression_a9a",
+      "n": 9,
+      "denominator": 18,
+      "A": 10,
+      "B": 18
+    },
+    {
+      "paper_id": "2201.13320",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp5_cnn_mnist",
+      "n": 8,
+      "denominator": 14,
+      "A": 4,
+      "B": 7
+    },
+    {
+      "paper_id": "2201.13320",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_logistic_a9a_comparison",
+      "n": 4,
+      "denominator": 7,
+      "A": 4,
+      "B": 0
+    },
+    {
+      "paper_id": "2201.13320",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp2_nn_mnist_comparison",
+      "n": 3,
+      "denominator": 5,
+      "A": 0,
+      "B": 1
+    },
+    {
+      "paper_id": "2201.13320",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp3_topology_a9a",
+      "n": 1,
+      "denominator": 1,
+      "A": 0,
+      "B": 1
+    },
+    {
+      "paper_id": "2201.13320",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp4_compression_a9a",
+      "n": 6,
+      "denominator": 6,
+      "A": 0,
+      "B": 4
+    },
+    {
+      "paper_id": "2201.13320",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp5_cnn_mnist",
+      "n": 4,
+      "denominator": 7,
+      "A": 4,
+      "B": 0
+    },
+    {
+      "paper_id": "2207.04555",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 29,
+      "denominator": 51,
+      "A": 42,
+      "B": 42
+    },
+    {
+      "paper_id": "2207.04555",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_ring_5nodes_rank1",
+      "n": 11,
+      "denominator": 20,
+      "A": 17,
+      "B": 18
+    },
+    {
+      "paper_id": "2207.04555",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp2_ring_5nodes_rank3",
+      "n": 9,
+      "denominator": 15,
+      "A": 13,
+      "B": 13
+    },
+    {
+      "paper_id": "2207.04555",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp3_erdosrenyi_10nodes_rank1",
+      "n": 11,
+      "denominator": 19,
+      "A": 17,
+      "B": 15
+    },
+    {
+      "paper_id": "2207.04555",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_ring_5nodes_rank1",
+      "n": 10,
+      "denominator": 18,
+      "A": 3,
+      "B": 3
+    },
+    {
+      "paper_id": "2207.04555",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp2_ring_5nodes_rank3",
+      "n": 8,
+      "denominator": 16,
+      "A": 2,
+      "B": 2
+    },
+    {
+      "paper_id": "2207.04555",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp3_erdosrenyi_10nodes_rank1",
+      "n": 9,
+      "denominator": 17,
+      "A": 3,
+      "B": 5
+    },
+    {
+      "paper_id": "2212.02387",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 12,
+      "denominator": 23,
+      "A": 14,
+      "B": 12
+    },
+    {
+      "paper_id": "2212.02387",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_robust_logistic_regression",
+      "n": 15,
+      "denominator": 23,
+      "A": 12,
+      "B": 14
+    },
+    {
+      "paper_id": "2212.02387",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_robust_logistic_regression",
+      "n": 6,
+      "denominator": 12,
+      "A": 2,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 11,
+      "denominator": 17,
+      "A": 13,
+      "B": 15
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_phase_transition_r1_gaussian",
+      "n": 12,
+      "denominator": 18,
+      "A": 15,
+      "B": 12
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp2_phase_transition_r5_gaussian",
+      "n": 15,
+      "denominator": 23,
+      "A": 18,
+      "B": 14
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp3_phase_transition_r5_overestimated_gaussian",
+      "n": 11,
+      "denominator": 16,
+      "A": 12,
+      "B": 6
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp4_convergence_behavior",
+      "n": 20,
+      "denominator": 29,
+      "A": 21,
+      "B": 18
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp5_random_rank1_measurements_r1",
+      "n": 14,
+      "denominator": 20,
+      "A": 15,
+      "B": 13
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp6_random_rank1_measurements_r5",
+      "n": 11,
+      "denominator": 15,
+      "A": 10,
+      "B": 10
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp7_fourier_rank1_measurements_r1",
+      "n": 12,
+      "denominator": 18,
+      "A": 16,
+      "B": 14
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp8_fourier_rank1_measurements_r5",
+      "n": 11,
+      "denominator": 16,
+      "A": 9,
+      "B": 6
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp9_objective_evolution",
+      "n": 15,
+      "denominator": 27,
+      "A": 9,
+      "B": 4
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp10_noise_robustness",
+      "n": 13,
+      "denominator": 26,
+      "A": 22,
+      "B": 20
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_phase_transition_r1_gaussian",
+      "n": 1,
+      "denominator": 2,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp2_phase_transition_r5_gaussian",
+      "n": 1,
+      "denominator": 2,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp3_phase_transition_r5_overestimated_gaussian",
+      "n": 3,
+      "denominator": 3,
+      "A": 1,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp4_convergence_behavior",
+      "n": 1,
+      "denominator": 2,
+      "A": 2,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp5_random_rank1_measurements_r1",
+      "n": 2,
+      "denominator": 3,
+      "A": 1,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp6_random_rank1_measurements_r5",
+      "n": 1,
+      "denominator": 2,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp7_fourier_rank1_measurements_r1",
+      "n": 1,
+      "denominator": 2,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp8_fourier_rank1_measurements_r5",
+      "n": 1,
+      "denominator": 2,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp9_objective_evolution",
+      "n": 4,
+      "denominator": 6,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp10_noise_robustness",
+      "n": 2,
+      "denominator": 4,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 23,
+      "denominator": 40,
+      "A": 24,
+      "B": 26
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_quadratic_game",
+      "n": 17,
+      "denominator": 34,
+      "A": 32,
+      "B": 32
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_robust_ls_california",
+      "n": 10,
+      "denominator": 16,
+      "A": 16,
+      "B": 14
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_robust_ls_synthetic",
+      "n": 11,
+      "denominator": 16,
+      "A": 12,
+      "B": 13
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_tuned_stepsize",
+      "n": 1,
+      "denominator": 2,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_proxskip_vs_svrgda",
+      "n": 5,
+      "denominator": 5,
+      "A": 2,
+      "B": 3
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_low_high_heterogeneity",
+      "n": 8,
+      "denominator": 14,
+      "A": 2,
+      "B": 2
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_varying_heterogeneity",
+      "n": 4,
+      "denominator": 6,
+      "A": 6,
+      "B": 5
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_policemen_burglar",
+      "n": 5,
+      "denominator": 10,
+      "A": 8,
+      "B": 10
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_quadratic_game",
+      "n": 5,
+      "denominator": 9,
+      "A": 9,
+      "B": 7
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_robust_ls_california",
+      "n": 2,
+      "denominator": 4,
+      "A": 4,
+      "B": 4
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_robust_ls_synthetic",
+      "n": 2,
+      "denominator": 4,
+      "A": 4,
+      "B": 4
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_tuned_stepsize",
+      "n": 2,
+      "denominator": 3,
+      "A": 2,
+      "B": 2
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_proxskip_vs_svrgda",
+      "n": 2,
+      "denominator": 2,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_low_high_heterogeneity",
+      "n": 4,
+      "denominator": 8,
+      "A": 2,
+      "B": 2
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_varying_heterogeneity",
+      "n": 1,
+      "denominator": 1,
+      "A": 1,
+      "B": 0
+    },
+    {
+      "paper_id": "2306.05100",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_policemen_burglar",
+      "n": 1,
+      "denominator": 2,
+      "A": 0,
+      "B": 2
+    },
+    {
+      "paper_id": "2309.05204",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 13,
+      "denominator": 21,
+      "A": 11,
+      "B": 13
+    },
+    {
+      "paper_id": "2309.05204",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_image_deblurring_peppers_cameraman",
+      "n": 13,
+      "denominator": 25,
+      "A": 22,
+      "B": 22
+    },
+    {
+      "paper_id": "2309.05204",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_image_deblurring_peppers_cameraman",
+      "n": 34,
+      "denominator": 68,
+      "A": 32,
+      "B": 24
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 33,
+      "denominator": 58,
+      "A": 49,
+      "B": 45
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_homogeneous_nonconvex_phishing",
+      "n": 13,
+      "denominator": 21,
+      "A": 16,
+      "B": 18
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp2_heterogeneous_nonconvex_phishing",
+      "n": 11,
+      "denominator": 17,
+      "A": 15,
+      "B": 15
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp3_heterogeneous_nonconvex_w8a",
+      "n": 12,
+      "denominator": 22,
+      "A": 20,
+      "B": 19
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp4_pl_condition",
+      "n": 12,
+      "denominator": 21,
+      "A": 18,
+      "B": 18
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp5_error_feedback",
+      "n": 11,
+      "denominator": 21,
+      "A": 18,
+      "B": 16
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp6_neighborhood_size",
+      "n": 13,
+      "denominator": 26,
+      "A": 24,
+      "B": 22
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp7_theoretical_stepsizes",
+      "n": 2,
+      "denominator": 2,
+      "A": 1,
+      "B": 1
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp8_additional_attacks",
+      "n": 12,
+      "denominator": 22,
+      "A": 16,
+      "B": 15
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp9_biased_vs_unbiased",
+      "n": 12,
+      "denominator": 20,
+      "A": 16,
+      "B": 16
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_homogeneous_nonconvex_phishing",
+      "n": 2,
+      "denominator": 4,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp2_heterogeneous_nonconvex_phishing",
+      "n": 4,
+      "denominator": 5,
+      "A": 0,
+      "B": 1
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp3_heterogeneous_nonconvex_w8a",
+      "n": 2,
+      "denominator": 4,
+      "A": 2,
+      "B": 2
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp4_pl_condition",
+      "n": 5,
+      "denominator": 9,
+      "A": 4,
+      "B": 0
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp5_error_feedback",
+      "n": 4,
+      "denominator": 6,
+      "A": 5,
+      "B": 4
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp6_neighborhood_size",
+      "n": 3,
+      "denominator": 6,
+      "A": 0,
+      "B": 6
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp7_theoretical_stepsizes",
+      "n": 4,
+      "denominator": 8,
+      "A": 6,
+      "B": 0
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp8_additional_attacks",
+      "n": 1,
+      "denominator": 2,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2310.09804",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp9_biased_vs_unbiased",
+      "n": 3,
+      "denominator": 5,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2501.04443",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 11,
+      "denominator": 20,
+      "A": 17,
+      "B": 17
+    },
+    {
+      "paper_id": "2501.04443",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_local_sgd_vs_mbsgd_delta",
+      "n": 13,
+      "denominator": 23,
+      "A": 18,
+      "B": 18
+    },
+    {
+      "paper_id": "2501.04443",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp2_scaffold_vs_mbsgd_delta",
+      "n": 8,
+      "denominator": 16,
+      "A": 14,
+      "B": 14
+    },
+    {
+      "paper_id": "2501.04443",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp3_local_sgd_param_dependence",
+      "n": 15,
+      "denominator": 26,
+      "A": 21,
+      "B": 21
+    },
+    {
+      "paper_id": "2501.04443",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp4_scaffold_param_dependence",
+      "n": 13,
+      "denominator": 21,
+      "A": 15,
+      "B": 17
+    },
+    {
+      "paper_id": "2501.04443",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_local_sgd_vs_mbsgd_delta",
+      "n": 3,
+      "denominator": 4,
+      "A": 3,
+      "B": 3
+    },
+    {
+      "paper_id": "2501.04443",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp2_scaffold_vs_mbsgd_delta",
+      "n": 3,
+      "denominator": 4,
+      "A": 4,
+      "B": 2
+    },
+    {
+      "paper_id": "2501.04443",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp3_local_sgd_param_dependence",
+      "n": 3,
+      "denominator": 3,
+      "A": 3,
+      "B": 1
+    },
+    {
+      "paper_id": "2501.04443",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp4_scaffold_param_dependence",
+      "n": 1,
+      "denominator": 1,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2501.09516",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 16,
+      "denominator": 28,
+      "A": 11,
+      "B": 22
+    },
+    {
+      "paper_id": "2501.09516",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_cm_problem",
+      "n": 9,
+      "denominator": 18,
+      "A": 4,
+      "B": 8
+    },
+    {
+      "paper_id": "2501.09516",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_sparse_pca_random",
+      "n": 12,
+      "denominator": 22,
+      "A": 10,
+      "B": 11
+    },
+    {
+      "paper_id": "2501.09516",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_sparse_pca_uf",
+      "n": 16,
+      "denominator": 18,
+      "A": 11,
+      "B": 6
+    },
+    {
+      "paper_id": "2501.09516",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp_joint_diag",
+      "n": 10,
+      "denominator": 17,
+      "A": 9,
+      "B": 11
+    },
+    {
+      "paper_id": "2501.09516",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_cm_problem",
+      "n": 50,
+      "denominator": 100,
+      "A": 0,
+      "B": 2
+    },
+    {
+      "paper_id": "2501.09516",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_sparse_pca_random",
+      "n": 10,
+      "denominator": 16,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2501.09516",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_sparse_pca_uf",
+      "n": 108,
+      "denominator": 184,
+      "A": 6,
+      "B": 0
+    },
+    {
+      "paper_id": "2501.09516",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp_joint_diag",
+      "n": 193,
+      "denominator": 194,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2501.18312",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 12,
+      "denominator": 22,
+      "A": 12,
+      "B": 16
+    },
+    {
+      "paper_id": "2501.18312",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_gaussian_wb",
+      "n": 6,
+      "denominator": 8,
+      "A": 4,
+      "B": 6
+    },
+    {
+      "paper_id": "2501.18312",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp2_mnist_wb",
+      "n": 6,
+      "denominator": 10,
+      "A": 7,
+      "B": 7
+    },
+    {
+      "paper_id": "2501.18312",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_gaussian_wb",
+      "n": 4,
+      "denominator": 6,
+      "A": 4,
+      "B": 4
+    },
+    {
+      "paper_id": "2501.18312",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp2_mnist_wb",
+      "n": 1,
+      "denominator": 1,
+      "A": 1,
+      "B": 1
+    },
+    {
+      "paper_id": "2503.07594",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 8,
+      "denominator": 12,
+      "A": 10,
+      "B": 10
+    },
+    {
+      "paper_id": "2503.07594",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_linear_logistic_regression",
+      "n": 12,
+      "denominator": 22,
+      "A": 18,
+      "B": 18
+    },
+    {
+      "paper_id": "2503.07594",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_linear_logistic_regression",
+      "n": 4,
+      "denominator": 7,
+      "A": 6,
+      "B": 6
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "midloop",
+      "dimension": "algorithm_impl",
+      "experiment": "算法实现",
+      "n": 18,
+      "denominator": 30,
+      "A": 30,
+      "B": 29
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp1_speedup_nmax",
+      "n": 10,
+      "denominator": 11,
+      "A": 10,
+      "B": 9
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp2_scaling_nodes",
+      "n": 5,
+      "denominator": 10,
+      "A": 10,
+      "B": 10
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp3_est_vs_exact_lipschitz",
+      "n": 9,
+      "denominator": 18,
+      "A": 16,
+      "B": 16
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp4_iter_vs_comm",
+      "n": 5,
+      "denominator": 9,
+      "A": 9,
+      "B": 9
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp5_async_comm_overhead",
+      "n": 11,
+      "denominator": 17,
+      "A": 2,
+      "B": 2
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp6_token_comparison",
+      "n": 6,
+      "denominator": 11,
+      "A": 1,
+      "B": 3
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "midloop",
+      "dimension": "exp_setup",
+      "experiment": "exp7_dual_unfriendly_logreg",
+      "n": 9,
+      "denominator": 15,
+      "A": 11,
+      "B": 10
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp1_speedup_nmax",
+      "n": 3,
+      "denominator": 6,
+      "A": 2,
+      "B": 2
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp2_scaling_nodes",
+      "n": 1,
+      "denominator": 1,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp3_est_vs_exact_lipschitz",
+      "n": 2,
+      "denominator": 4,
+      "A": 4,
+      "B": 2
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp4_iter_vs_comm",
+      "n": 11,
+      "denominator": 14,
+      "A": 13,
+      "B": 10
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp5_async_comm_overhead",
+      "n": 5,
+      "denominator": 5,
+      "A": 1,
+      "B": 0
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp6_token_comparison",
+      "n": 5,
+      "denominator": 7,
+      "A": 0,
+      "B": 0
+    },
+    {
+      "paper_id": "2504.19004",
+      "loop": "bigloop",
+      "dimension": "exp_results",
+      "experiment": "exp7_dual_unfriendly_logreg",
+      "n": 3,
+      "denominator": 4,
+      "A": 2,
+      "B": 3
+    }
+  ],
+  "cross_run_reference_flags": [
+    {
+      "paper_id": "1904.12017",
+      "loop": "bigloop",
+      "condition": "B",
+      "id": "res-001",
+      "verdict": 1,
+      "flag": "other_run_reference",
+      "runs": [
+        "第001次运行"
+      ],
+      "evidence": "File: /home/hzy/optirepro/agent_reproduction/runs/1904.12017/仅PDF论文-没有任何网络限制-Goal/第001次运行/workspace/results/paper/mesothelioma/metrics.json. Under methods.separate: test_anll = 1.3091791588901212. Expected value = 1.31. |1.3092 - 1.31| = 0.0008, which is within the absolute tolerance of 0.1. The file also confirms paper_reference.separate.test_anll = 1.31, matching the claim's source (Table 1). A second run (仅依据结构化资料) produced Separate test_anll = 0.866, which does not match; however the primary paper-scale run (仅PDF论文) clearly supports the claim."
+    },
+    {
+      "paper_id": "2306.04961",
+      "loop": "bigloop",
+      "condition": "B",
+      "id": "res-002",
+      "verdict": 0,
+      "flag": "other_condition_path_reference",
+      "evidence": "Found phase_transition_rank5 outputs at /home/hzy/optirepro/agent_reproduction/runs/2306.04961/Codex原生-完整复现-Goal/第003次运行/workspace/results/formal/phase_transition_rank5/metrics.csv. Config: n1=256, n2=40, rank=5, sparsity=40, Gaussian dense measurements at m=700/900/1100, 8 instances each. Success rates: ALL three methods (IRLS-LRRS, SparsePowerFactorization, RiemannianIHT) show 0/8 successes at every tested m value. No method achieves any positive success rate. The ReasFlow run for this paper only has rank=1 phase transition data (2 oversampling values, rank=1). No run outputs show a phase transition curve from which the oversampling factor required for high success probability could be extracted for any method, making the ranking claim unverifiable from run outputs. The experiment was run but only at 3 measurement values (m=700, 900, 1100) and all instances failed. No full phase transition sweep exists in the run outputs that would allow comparing the oversampling factors at which IRLS, SPF, and RiemAdaIHT achieve high success probability for rank-5 Gaussian problems."
+    }
+  ],
+  "verification": [
+    {
+      "paper_id": "1811.03761",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 103
+    },
+    {
+      "paper_id": "1811.03761",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 103
+    },
+    {
+      "paper_id": "1811.03761",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 22
+    },
+    {
+      "paper_id": "1811.03761",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 22
+    },
+    {
+      "paper_id": "1904.12017",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 68
+    },
+    {
+      "paper_id": "1904.12017",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 68
+    },
+    {
+      "paper_id": "1904.12017",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 33
+    },
+    {
+      "paper_id": "1904.12017",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 33
+    },
+    {
+      "paper_id": "2102.06704",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 27
+    },
+    {
+      "paper_id": "2102.06704",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 27
+    },
+    {
+      "paper_id": "2102.06704",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 3
+    },
+    {
+      "paper_id": "2102.06704",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 3
+    },
+    {
+      "paper_id": "2111.03820",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 27
+    },
+    {
+      "paper_id": "2111.03820",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 27
+    },
+    {
+      "paper_id": "2111.03820",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 17
+    },
+    {
+      "paper_id": "2111.03820",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 17
+    },
+    {
+      "paper_id": "2201.13320",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 59
+    },
+    {
+      "paper_id": "2201.13320",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 59
+    },
+    {
+      "paper_id": "2201.13320",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 18
+    },
+    {
+      "paper_id": "2201.13320",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 18
+    },
+    {
+      "paper_id": "2207.04555",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 60
+    },
+    {
+      "paper_id": "2207.04555",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 60
+    },
+    {
+      "paper_id": "2207.04555",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 27
+    },
+    {
+      "paper_id": "2207.04555",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 27
+    },
+    {
+      "paper_id": "2212.02387",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 27
+    },
+    {
+      "paper_id": "2212.02387",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 27
+    },
+    {
+      "paper_id": "2212.02387",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 6
+    },
+    {
+      "paper_id": "2212.02387",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 6
+    },
+    {
+      "paper_id": "2306.04961",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 145
+    },
+    {
+      "paper_id": "2306.04961",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 145
+    },
+    {
+      "paper_id": "2306.04961",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 17
+    },
+    {
+      "paper_id": "2306.04961",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 17
+    },
+    {
+      "paper_id": "2306.05100",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 84
+    },
+    {
+      "paper_id": "2306.05100",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 84
+    },
+    {
+      "paper_id": "2306.05100",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 19
+    },
+    {
+      "paper_id": "2306.05100",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 19
+    },
+    {
+      "paper_id": "2309.05204",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 26
+    },
+    {
+      "paper_id": "2309.05204",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 26
+    },
+    {
+      "paper_id": "2309.05204",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 34
+    },
+    {
+      "paper_id": "2309.05204",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 34
+    },
+    {
+      "paper_id": "2310.09804",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 131
+    },
+    {
+      "paper_id": "2310.09804",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 131
+    },
+    {
+      "paper_id": "2310.09804",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 28
+    },
+    {
+      "paper_id": "2310.09804",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 28
+    },
+    {
+      "paper_id": "2501.04443",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 60
+    },
+    {
+      "paper_id": "2501.04443",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 60
+    },
+    {
+      "paper_id": "2501.04443",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 10
+    },
+    {
+      "paper_id": "2501.04443",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 10
+    },
+    {
+      "paper_id": "2501.09516",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 63
+    },
+    {
+      "paper_id": "2501.09516",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 63
+    },
+    {
+      "paper_id": "2501.09516",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 361
+    },
+    {
+      "paper_id": "2501.09516",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 361
+    },
+    {
+      "paper_id": "2501.18312",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 24
+    },
+    {
+      "paper_id": "2501.18312",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 24
+    },
+    {
+      "paper_id": "2501.18312",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 5
+    },
+    {
+      "paper_id": "2501.18312",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 5
+    },
+    {
+      "paper_id": "2503.07594",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 20
+    },
+    {
+      "paper_id": "2503.07594",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 20
+    },
+    {
+      "paper_id": "2503.07594",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 4
+    },
+    {
+      "paper_id": "2503.07594",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 4
+    },
+    {
+      "paper_id": "2504.19004",
+      "condition": "A",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 73
+    },
+    {
+      "paper_id": "2504.19004",
+      "condition": "B",
+      "loop": "midloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 73
+    },
+    {
+      "paper_id": "2504.19004",
+      "condition": "A",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 30
+    },
+    {
+      "paper_id": "2504.19004",
+      "condition": "B",
+      "loop": "bigloop",
+      "rubrics_hash_match": true,
+      "result_hash_match": true,
+      "recomputed_score_match": true,
+      "item_count": 30
+    }
+  ]
+}

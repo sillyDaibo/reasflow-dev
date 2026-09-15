@@ -1,0 +1,91 @@
+{
+  "paper_id": "2212.02387",
+  "evaluated_at": "2026-09-04T08:19:38.186018+00:00",
+  "summary": {
+    "total_score": 0.1667,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.1667,
+    "total_rubrics": 6,
+    "passed": 1,
+    "failed": 5,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.1667,
+      "passed": 1,
+      "total": 6
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On a9a, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of SFO calls.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/robust_logistic_a9a/metrics.csv and summary.json. At every one of 48 recorded SFO checkpoints, GT-DA and GT-GDA achieve strictly lower primal values than DREAM, contradicting two of the four required rankings. Specifically: DREAM best primal = 3.071e-04; GT-DA best = 5.047e-05; GT-GDA best = 3.006e-05. At the common SFO budget of ~7.8M: DREAM=1.108e-03, GT-DA=1.261e-04, GT-GDA=3.398e-05 — both GT-DA and GT-GDA outperform DREAM (lower is better). DREAM vs DM-HSGD: DREAM wins 46/48 checkpoints (supports). DREAM vs GT-SRVR: DREAM wins 47/48 checkpoints (supports). DREAM vs GT-DA: DREAM wins 0/48 checkpoints (refutes required ranking). DREAM vs GT-GDA: DREAM wins 0/48 checkpoints (refutes required ranking).",
+      "note": "The run outputs directly contradict the paper's claimed Figure 1(a) ranking for the a9a dataset. GT-GDA and GT-DA both achieve substantially lower primal function values than DREAM across all recorded SFO checkpoints. This may indicate the reproduction run did not match paper hyperparameters/settings, or the claim as stated is incorrect for this reproduction.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On w8a, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of SFO calls.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/robust_logistic_w8a/metrics.csv and summary.json. At ~10M SFO calls: DREAM=2.31e-3, DM-HSGD=6.91e-1, GT-DA=3.25e-4, GT-GDA=3.75e-4, GT-SRVR=4.37e-1. At ~40M SFO calls: DREAM=2.98e-3, GT-DA=3.07e-4, GT-GDA=3.03e-4. DREAM > DM-HSGD (DREAM lower=better: 2.31e-3 < 6.91e-1): TRUE. DREAM > GT-SRVR (2.31e-3 < 4.37e-1): TRUE. DREAM > GT-DA (2.31e-3 < 3.25e-4): FALSE — GT-DA achieves a lower primal value than DREAM at every SFO checkpoint tested. DREAM > GT-GDA (2.31e-3 < 3.75e-4): FALSE — GT-GDA also achieves lower primal values than DREAM. The required ranking DREAM > GT-DA and DREAM > GT-GDA is violated throughout the run.",
+      "note": "DREAM does outperform DM-HSGD and GT-SRVR, but GT-DA and GT-GDA consistently beat DREAM on primal value across all SFO call points in the w8a run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On ijcnn1, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of SFO calls.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Run output file: results/formal/robust_logistic_ijcnn1/metrics.csv and summary.json. At the common SFO budget (~22.9M calls), best primal values achieved (running minimum): DREAM=4.487e-05, DM-HSGD=3.153e-05, GT-DA=6.235e-06, GT-GDA=6.916e-06, GT-SRVR=4.487e-05. DREAM (4.487e-05) is WORSE (higher) than DM-HSGD (3.153e-05), GT-DA (6.235e-06), and GT-GDA (6.916e-06). Only versus GT-SRVR does DREAM match at the start; GT-SRVR later diverges to 0.347. Across all 15 data points within the shared SFO budget, DREAM's running-minimum primal value never beats any of the four baselines (0/15 wins for each pairwise comparison). The required ranking DREAM > DM-HSGD, DREAM > GT-DA, DREAM > GT-GDA is violated by a wide margin.",
+      "note": "The paper claims DREAM outperforms competitors; the run outputs show the opposite — GT-DA and GT-GDA achieve roughly 7× lower primal values than DREAM within the same SFO budget. DREAM only outperforms the diverging GT-SRVR in later iterations.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On a9a, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of communication rounds.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/robust_logistic_a9a/metrics.csv and results/formal/robust_logistic_a9a/summary.json. Best primal values achieved (lower_is_better) across all communication rounds logged: DREAM=3.071482e-04, DM-HSGD=1.959376e-04, GT-DA=5.047175e-05, GT-GDA=3.005554e-05, GT-SRVR=3.071482e-04. At every communication-round threshold tested (800, 1200, 1600, 1882), DREAM's best primal value (3.07e-4) is WORSE than DM-HSGD (1.96e-4), GT-DA (5.05e-5), and GT-GDA (3.01e-5). All three required rankings — DREAM > DM-HSGD, DREAM > GT-DA, DREAM > GT-GDA — FAIL. Only GT-SRVR matches DREAM (3.07e-4 vs 3.07e-4), so DREAM > GT-SRVR also does not hold.",
+      "note": "The run outputs directly contradict the paper's claim for Figure 2(a). GT-DA and GT-GDA substantially outperform DREAM in the a9a experiment as recorded. DREAM appears to converge more slowly at early communication rounds in these run outputs, possibly due to different hyperparameter choices or a different total budget than used in the paper.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On w8a, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of communication rounds.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/robust_logistic_w8a/metrics.csv and summary.json. Best primal_value up to 2522 communication rounds: DREAM=0.00023053, GT-GDA=0.00024400, GT-DA=0.00027670, DM-HSGD=0.00144848, GT-SRVR=0.00176986. All four required comparisons hold (lower_is_better): DREAM(0.00023053) < DM-HSGD(0.00144848), DREAM < GT-DA(0.00027670), DREAM < GT-GDA(0.00024400), DREAM < GT-SRVR(0.00176986).",
+      "note": "Comparison made at the common communication-round limit of 2522 (the max reached by DM-HSGD, GT-DA, GT-GDA, GT-SRVR). DREAM ran further (up to 5044 rounds) but its best value within 2522 rounds already beats all baselines.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On ijcnn1, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of communication rounds.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Source: results/formal/robust_logistic_ijcnn1/metrics.csv and summary.json. At every DREAM checkpoint with communication rounds ≤ 5522 (69 checkpoints), GT-DA and GT-GDA consistently achieve LOWER (better) primal values than DREAM. Example at round ~1000: DREAM=4.28e-04, GT-DA=6.70e-06, GT-GDA=8.68e-06. Example at round ~5000: DREAM=6.35e-04, GT-DA=7.25e-06, GT-GDA=7.40e-06. Final best values: DREAM best=4.49e-05, GT-DA best=6.23e-06, GT-GDA best=6.38e-06. DREAM does outperform DM-HSGD (wins 66/69 rounds: e.g., DREAM=4.28e-04 < DM-HSGD=6.95e-03 at round 1000) and GT-SRVR (wins all 69 rounds: DREAM=4.28e-04 < GT-SRVR=3.66e-02 at round 1000). However, the required rankings DREAM > GT-DA and DREAM > GT-GDA (meaning DREAM achieves lower primal values) are violated at all tested communication round checkpoints.",
+      "note": "The run outputs show GT-DA and GT-GDA outperform DREAM by roughly an order of magnitude in primal value across all comparable communication rounds. Only the DREAM > DM-HSGD and DREAM > GT-SRVR claims hold; the GT-DA and GT-GDA comparisons fail, invalidating the full ranking claim.",
+      "error": false
+    }
+  ]
+}

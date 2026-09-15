@@ -1,0 +1,539 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2501.04443",
+    "title": "Revisiting LocalSGD and SCAFFOLD: Improved Rates and Missing Analysis",
+    "sha256": "8bb1c22f50d76d0d719e90f9f8a2a55b58404f958cd3cc63682ffcf1603d0085"
+  },
+  "algorithm": {
+    "name": "LocalSGD Eq.(4) and simplified SCAFFOLD Algorithm 1",
+    "citations": [
+      "PDF pp.4-5 Section 3.2, Eq.(4) and Algorithm 1 lines 1-15"
+    ],
+    "core_mechanisms": [
+      "local_sgd_periodic_averaging",
+      "scaffold_frozen_anchor_batch",
+      "scaffold_corrected_steps_and_global_update"
+    ],
+    "assumptions": [
+      "This is primarily an analysis paper; the test instantiates the algorithms it explicitly defines, without inventing a proposed method.",
+      "Smooth convex scalar quadratic local objectives, same initial model, full participation, unbiased bounded additive gradient noise.",
+      "Unequal Hessians are intentional. These trajectories test recursion only, not the global gradient-similarity assumptions of every convergence theorem."
+    ]
+  },
+  "cases": [
+    {
+      "id": "local_sgd",
+      "purpose": "Two synchronization periods of Eq.(4).",
+      "covers": [
+        "local_sgd_periodic_averaging"
+      ],
+      "inputs": {
+        "method": "local_sgd",
+        "dimension": 1,
+        "workers": 2,
+        "x_initial": [
+          0.8,
+          0.8
+        ],
+        "quadratic_a": [
+          1,
+          3
+        ],
+        "quadratic_b": [
+          -1,
+          2
+        ],
+        "local_objective": "f_i(x)=a_i*x^2/2+b_i*x; global f=(f_1+f_2)/2",
+        "stochastic_objective": "F_i(x,z)=f_i(x)+z*x, so g_i(x,z)=a_i*x+b_i+z",
+        "noise": [
+          [
+            0.25,
+            -0.25
+          ],
+          [
+            0.25,
+            0.25
+          ],
+          [
+            -0.25,
+            0.25
+          ],
+          [
+            0.25,
+            -0.25
+          ]
+        ],
+        "randomness": "Independent Rademacher noise +/-0.25 equiprobably for every worker and microstep; condition on supplied [microstep][worker] realization.",
+        "network": "Full synchronous participation; central arithmetic averaging of both workers."
+      },
+      "parameters": {
+        "eta": 0.1,
+        "tau": 2,
+        "microsteps": 4,
+        "outer_cycles": 2,
+        "observation_timing": "step=t+1 for microstep t. x_before and sample_gradient precede action; x_after follows freeze/local update/broadcast. anchor_local/global appear after second frozen microstep of each SCAFFOLD cycle. corrected_gradient at last microstep is the gradient whose average contribution enters Algorithm 1 line 14; no separate last local update is required.",
+        "method_definition": "LocalSGD is Eq.(4): average after each 2 local updates. SCAFFOLD is this paper Algorithm 1: freeze two steps and estimate anchors, perform one corrected local update, then global line-14 update using both training gradients and broadcast; recompute anchors next cycle. Not persistent-control-variate SCAFFOLD."
+      },
+      "atol": 1e-12,
+      "rtol": 1e-12,
+      "expected": [
+        {
+          "step": 1,
+          "name": "x_before",
+          "value": [
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "step": 1,
+          "name": "sample_gradient",
+          "value": [
+            0.05,
+            4.15
+          ]
+        },
+        {
+          "step": 1,
+          "name": "local_proposal",
+          "value": [
+            0.795,
+            0.385
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x_after",
+          "value": [
+            0.795,
+            0.385
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_before",
+          "value": [
+            0.795,
+            0.385
+          ]
+        },
+        {
+          "step": 2,
+          "name": "sample_gradient",
+          "value": [
+            0.045,
+            3.405
+          ]
+        },
+        {
+          "step": 2,
+          "name": "local_proposal",
+          "value": [
+            0.7905,
+            0.0445
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_after",
+          "value": [
+            0.4175,
+            0.4175
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_before",
+          "value": [
+            0.4175,
+            0.4175
+          ]
+        },
+        {
+          "step": 3,
+          "name": "sample_gradient",
+          "value": [
+            -0.8325,
+            3.5025
+          ]
+        },
+        {
+          "step": 3,
+          "name": "local_proposal",
+          "value": [
+            0.50075,
+            0.06725
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_after",
+          "value": [
+            0.50075,
+            0.06725
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x_before",
+          "value": [
+            0.50075,
+            0.06725
+          ]
+        },
+        {
+          "step": 4,
+          "name": "sample_gradient",
+          "value": [
+            -0.24925,
+            1.95175
+          ]
+        },
+        {
+          "step": 4,
+          "name": "local_proposal",
+          "value": [
+            0.525675,
+            -0.127925
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x_after",
+          "value": [
+            0.198875,
+            0.198875
+          ]
+        }
+      ],
+      "derivation": "Exact Fraction arithmetic. LocalSGD: g_i=a_i*x_i+b_i+z_i; trial=x_i-eta*g_i; average trials when t+1 is divisible by tau. Algorithm 1 SCAFFOLD: anchor_i is mean of two gradients at unchanged cycle start; anchor_global is worker mean; first training step subtracts eta*(g_i-anchor_i+anchor_global); line 14 gives next broadcast=cycle_start-eta/2*sum_i(sum of two training gradients). Repeat with new anchors. Every value is converted to float only for serialization."
+    },
+    {
+      "id": "simplified_scaffold",
+      "purpose": "Two complete anchor-and-training cycles of the specific simplified SCAFFOLD in Algorithm 1.",
+      "covers": [
+        "scaffold_frozen_anchor_batch",
+        "scaffold_corrected_steps_and_global_update"
+      ],
+      "inputs": {
+        "method": "simplified_scaffold",
+        "dimension": 1,
+        "workers": 2,
+        "x_initial": [
+          0.8,
+          0.8
+        ],
+        "quadratic_a": [
+          1,
+          3
+        ],
+        "quadratic_b": [
+          -1,
+          2
+        ],
+        "local_objective": "f_i(x)=a_i*x^2/2+b_i*x; global f=(f_1+f_2)/2",
+        "stochastic_objective": "F_i(x,z)=f_i(x)+z*x, so g_i(x,z)=a_i*x+b_i+z",
+        "noise": [
+          [
+            0.25,
+            -0.25
+          ],
+          [
+            0.25,
+            0.25
+          ],
+          [
+            -0.25,
+            0.25
+          ],
+          [
+            0.25,
+            -0.25
+          ],
+          [
+            -0.25,
+            0.25
+          ],
+          [
+            -0.25,
+            -0.25
+          ],
+          [
+            0.25,
+            0.25
+          ],
+          [
+            -0.25,
+            0.25
+          ]
+        ],
+        "randomness": "Independent Rademacher noise +/-0.25 equiprobably for every worker and microstep; condition on supplied [microstep][worker] realization.",
+        "network": "Full synchronous participation; central arithmetic averaging of both workers."
+      },
+      "parameters": {
+        "eta": 0.1,
+        "tau": 2,
+        "microsteps": 8,
+        "outer_cycles": 2,
+        "observation_timing": "step=t+1 for microstep t. x_before and sample_gradient precede action; x_after follows freeze/local update/broadcast. anchor_local/global appear after second frozen microstep of each SCAFFOLD cycle. corrected_gradient at last microstep is the gradient whose average contribution enters Algorithm 1 line 14; no separate last local update is required.",
+        "method_definition": "LocalSGD is Eq.(4): average after each 2 local updates. SCAFFOLD is this paper Algorithm 1: freeze two steps and estimate anchors, perform one corrected local update, then global line-14 update using both training gradients and broadcast; recompute anchors next cycle. Not persistent-control-variate SCAFFOLD."
+      },
+      "atol": 1e-12,
+      "rtol": 1e-12,
+      "expected": [
+        {
+          "step": 1,
+          "name": "x_before",
+          "value": [
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "step": 1,
+          "name": "sample_gradient",
+          "value": [
+            0.05,
+            4.15
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x_after",
+          "value": [
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_before",
+          "value": [
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "step": 2,
+          "name": "sample_gradient",
+          "value": [
+            0.05,
+            4.65
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_after",
+          "value": [
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "step": 2,
+          "name": "anchor_local",
+          "value": [
+            0.05,
+            4.4
+          ]
+        },
+        {
+          "step": 2,
+          "name": "anchor_global",
+          "value": 2.225
+        },
+        {
+          "step": 3,
+          "name": "x_before",
+          "value": [
+            0.8,
+            0.8
+          ]
+        },
+        {
+          "step": 3,
+          "name": "sample_gradient",
+          "value": [
+            -0.45,
+            4.65
+          ]
+        },
+        {
+          "step": 3,
+          "name": "corrected_gradient",
+          "value": [
+            1.725,
+            2.475
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_after",
+          "value": [
+            0.6275,
+            0.5525
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x_before",
+          "value": [
+            0.6275,
+            0.5525
+          ]
+        },
+        {
+          "step": 4,
+          "name": "sample_gradient",
+          "value": [
+            -0.1225,
+            3.4075
+          ]
+        },
+        {
+          "step": 4,
+          "name": "corrected_gradient",
+          "value": [
+            2.0525,
+            1.2325
+          ]
+        },
+        {
+          "step": 4,
+          "name": "x_after",
+          "value": [
+            0.42575,
+            0.42575
+          ]
+        },
+        {
+          "step": 5,
+          "name": "x_before",
+          "value": [
+            0.42575,
+            0.42575
+          ]
+        },
+        {
+          "step": 5,
+          "name": "sample_gradient",
+          "value": [
+            -0.82425,
+            3.52725
+          ]
+        },
+        {
+          "step": 5,
+          "name": "x_after",
+          "value": [
+            0.42575,
+            0.42575
+          ]
+        },
+        {
+          "step": 6,
+          "name": "x_before",
+          "value": [
+            0.42575,
+            0.42575
+          ]
+        },
+        {
+          "step": 6,
+          "name": "sample_gradient",
+          "value": [
+            -0.82425,
+            3.02725
+          ]
+        },
+        {
+          "step": 6,
+          "name": "x_after",
+          "value": [
+            0.42575,
+            0.42575
+          ]
+        },
+        {
+          "step": 6,
+          "name": "anchor_local",
+          "value": [
+            -0.82425,
+            3.27725
+          ]
+        },
+        {
+          "step": 6,
+          "name": "anchor_global",
+          "value": 1.2265
+        },
+        {
+          "step": 7,
+          "name": "x_before",
+          "value": [
+            0.42575,
+            0.42575
+          ]
+        },
+        {
+          "step": 7,
+          "name": "sample_gradient",
+          "value": [
+            -0.32425,
+            3.52725
+          ]
+        },
+        {
+          "step": 7,
+          "name": "corrected_gradient",
+          "value": [
+            1.7265,
+            1.4765
+          ]
+        },
+        {
+          "step": 7,
+          "name": "x_after",
+          "value": [
+            0.2531,
+            0.2781
+          ]
+        },
+        {
+          "step": 8,
+          "name": "x_before",
+          "value": [
+            0.2531,
+            0.2781
+          ]
+        },
+        {
+          "step": 8,
+          "name": "sample_gradient",
+          "value": [
+            -0.9969,
+            3.0843
+          ]
+        },
+        {
+          "step": 8,
+          "name": "corrected_gradient",
+          "value": [
+            1.05385,
+            1.03355
+          ]
+        },
+        {
+          "step": 8,
+          "name": "x_after",
+          "value": [
+            0.16123,
+            0.16123
+          ]
+        }
+      ],
+      "derivation": "Exact Fraction arithmetic. LocalSGD: g_i=a_i*x_i+b_i+z_i; trial=x_i-eta*g_i; average trials when t+1 is divisible by tau. Algorithm 1 SCAFFOLD: anchor_i is mean of two gradients at unchanged cycle start; anchor_global is worker mean; first training step subtracts eta*(g_i-anchor_i+anchor_global); line 14 gives next broadcast=cycle_start-eta/2*sum_i(sum of two training gradients). Repeat with new anchors. Every value is converted to float only for serialization."
+    }
+  ]
+}
