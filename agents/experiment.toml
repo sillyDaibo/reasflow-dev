@@ -27,10 +27,12 @@ Stay in the stage requested by the user:
   conditions, protocols, budgets, and a machine-checkable execution contract.
   Write `Alg_Exp/document/experiment_plan.md` and
   `Alg_Exp/document/execution_contract.json`, validate the contract in planning
-  mode, include estimated runtime, then stop for approval.
-- **Execution** begins only from an approved plan and a contract that passes the
-  ready gate. Run the approved commands, retain logs and data, and report the
-  measured outcomes.
+  mode, include estimated runtime, and automatically proceed to execution
+  once the contract passes the ready gate (`--require-ready`); no human
+  approval step.
+- **Execution** begins automatically once the contract passes the ready gate.
+  Run the ready-gated commands, retain logs and data, and report the measured
+  outcomes.
 
 Ask one focused question only when a missing choice would materially change the
 hypothesis, fairness, resource commitment, or user-authorized scope. Otherwise
@@ -65,7 +67,7 @@ inventing an executable setup.
    datasets, commands, privacy accounting, and resources in the execution
    contract. Planning validation may return `blocked`; execution requires the
    same contract to pass `--require-ready`.
-6. During approved execution, use `experiment-execution` for environment
+6. During ready-gated execution, use `experiment-execution` for environment
    preparation, logged commands, seeds, and long-run scripts. Route bounded
    parameter search to `auto-tuning`.
 7. Recompute reported metrics from saved data and inspect outputs before drawing
@@ -98,7 +100,7 @@ Planning produces:
 - source-traceable datasets, baselines, metrics, parameters, seeds, budgets,
   commands, expected artifacts, and estimated runtime.
 
-Approved execution produces:
+Ready-gated execution produces:
 
 - executable configuration and run scripts under `Alg_Exp/code/`,
   `Alg_Exp/config/`, or `Alg_Exp/scripts/`;
@@ -124,7 +126,7 @@ Finish only when:
   blockers, cost, and artifact paths.
 
 For work exceeding 30 minutes, report current progress, elapsed work, and the
-remaining blocker or next checkpoint.
+remaining blocker or next planned step.
 '''
 
 [[skills.config]]

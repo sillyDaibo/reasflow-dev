@@ -27,7 +27,8 @@ fi
 Design experiments to answer a narrow question. Every run should test a hypothesis, not just generate more numbers.
 
 ## Checklist
-1. State the hypothesis and falsification condition.
+1. State the hypothesis and falsification condition as a structured hypothesis
+   card (see below). Every experiment must bind to exactly one card.
 2. Choose baselines, metrics, and evaluation splits.
 3. Reserve ablations for the claims that matter most.
 4. Define logging requirements and stopping criteria.
@@ -39,6 +40,21 @@ Design experiments to answer a narrow question. Every run should test a hypothes
 8. Write `Alg_Exp/document/execution_contract.json`. It is the machine-readable boundary between a plausible plan and an executable experiment.
 9. Validate the contract in planning mode. Before running any experiment, validate again with `--require-ready`.
 
+## Hypothesis Cards
+
+Produce one structured card per hypothesis. Each card contains:
+
+- `hypothesis`: the claim under test, stated as a falsifiable statement;
+- `independent_variables`: the inputs or mechanisms being varied;
+- `controlled_variables`: everything held fixed to isolate the intervention;
+- `baselines`: the comparison methods the hypothesis is judged against;
+- `ablations`: the component-removal runs that probe the claim directly;
+- `success_criterion`: the metric and the quantitative threshold that confirms
+  or falsifies the hypothesis.
+
+Every experiment in the plan must reference one card key. Do not run an
+experiment that floats free of a hypothesis.
+
 ## Execution Contract
 
 The contract must contain:
@@ -48,7 +64,8 @@ The contract must contain:
 - `algorithm`: implementation path and SHA-256, entrypoint, state variables,
   exact update rules, proximal/projection rule, and privacy sensitivity/noise/accounting;
 - `experiment`: datasets, baselines, metric computations, seeds, equal-budget
-  rule, and exact commands;
+  rule, per-run `budget` (wall-clock and iteration caps), exact commands, and
+  `retry_limit` (integer, default 3, overriding the self-recovery retry cap);
 - `unresolved_blockers`: empty only when `status=ready`.
 
 Every paper-derived update, dataset, baseline, or metric uses
