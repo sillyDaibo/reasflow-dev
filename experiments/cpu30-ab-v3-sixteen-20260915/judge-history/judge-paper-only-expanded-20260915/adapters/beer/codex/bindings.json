@@ -1,0 +1,14 @@
+[
+  {
+    "path": "beer_repro/runner.py",
+    "symbol": "run_experiment"
+  },
+  {
+    "path": "beer_repro/algorithms.py",
+    "symbol": "initialize"
+  },
+  {
+    "path": "beer_repro/algorithms.py",
+    "symbol": "step"
+  }
+]

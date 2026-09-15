@@ -1,0 +1,1229 @@
+{
+  "paper_id": "2501.04443",
+  "method": "Independent original-paper recurrence; Decimal 100 digits for logistic, Fraction exact for polynomial arithmetic",
+  "numeric_leaves": 94,
+  "all_passed": true,
+  "max_absolute_error": 0.0,
+  "checks": [
+    {
+      "path": [
+        "local_sgd",
+        1,
+        "x_before",
+        0
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        1,
+        "x_before",
+        1
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        1,
+        "sample_gradient",
+        0
+      ],
+      "expected": 0.05,
+      "independent": 0.05,
+      "absolute_error": 0.0,
+      "tolerance": 1.05e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        1,
+        "sample_gradient",
+        1
+      ],
+      "expected": 4.15,
+      "independent": 4.15,
+      "absolute_error": 0.0,
+      "tolerance": 5.15e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        1,
+        "local_proposal",
+        0
+      ],
+      "expected": 0.795,
+      "independent": 0.795,
+      "absolute_error": 0.0,
+      "tolerance": 1.795e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        1,
+        "local_proposal",
+        1
+      ],
+      "expected": 0.385,
+      "independent": 0.385,
+      "absolute_error": 0.0,
+      "tolerance": 1.385e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        1,
+        "x_after",
+        0
+      ],
+      "expected": 0.795,
+      "independent": 0.795,
+      "absolute_error": 0.0,
+      "tolerance": 1.795e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        1,
+        "x_after",
+        1
+      ],
+      "expected": 0.385,
+      "independent": 0.385,
+      "absolute_error": 0.0,
+      "tolerance": 1.385e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        2,
+        "x_before",
+        0
+      ],
+      "expected": 0.795,
+      "independent": 0.795,
+      "absolute_error": 0.0,
+      "tolerance": 1.795e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        2,
+        "x_before",
+        1
+      ],
+      "expected": 0.385,
+      "independent": 0.385,
+      "absolute_error": 0.0,
+      "tolerance": 1.385e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        2,
+        "sample_gradient",
+        0
+      ],
+      "expected": 0.045,
+      "independent": 0.045,
+      "absolute_error": 0.0,
+      "tolerance": 1.045e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        2,
+        "sample_gradient",
+        1
+      ],
+      "expected": 3.405,
+      "independent": 3.405,
+      "absolute_error": 0.0,
+      "tolerance": 4.405e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        2,
+        "local_proposal",
+        0
+      ],
+      "expected": 0.7905,
+      "independent": 0.7905,
+      "absolute_error": 0.0,
+      "tolerance": 1.7905e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        2,
+        "local_proposal",
+        1
+      ],
+      "expected": 0.0445,
+      "independent": 0.0445,
+      "absolute_error": 0.0,
+      "tolerance": 1.0445e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        2,
+        "x_after",
+        0
+      ],
+      "expected": 0.4175,
+      "independent": 0.4175,
+      "absolute_error": 0.0,
+      "tolerance": 1.4175e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        2,
+        "x_after",
+        1
+      ],
+      "expected": 0.4175,
+      "independent": 0.4175,
+      "absolute_error": 0.0,
+      "tolerance": 1.4175e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        3,
+        "x_before",
+        0
+      ],
+      "expected": 0.4175,
+      "independent": 0.4175,
+      "absolute_error": 0.0,
+      "tolerance": 1.4175e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        3,
+        "x_before",
+        1
+      ],
+      "expected": 0.4175,
+      "independent": 0.4175,
+      "absolute_error": 0.0,
+      "tolerance": 1.4175e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        3,
+        "sample_gradient",
+        0
+      ],
+      "expected": -0.8325,
+      "independent": -0.8325,
+      "absolute_error": 0.0,
+      "tolerance": 1.8325e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        3,
+        "sample_gradient",
+        1
+      ],
+      "expected": 3.5025,
+      "independent": 3.5025,
+      "absolute_error": 0.0,
+      "tolerance": 4.5025e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        3,
+        "local_proposal",
+        0
+      ],
+      "expected": 0.50075,
+      "independent": 0.50075,
+      "absolute_error": 0.0,
+      "tolerance": 1.50075e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        3,
+        "local_proposal",
+        1
+      ],
+      "expected": 0.06725,
+      "independent": 0.06725,
+      "absolute_error": 0.0,
+      "tolerance": 1.06725e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        3,
+        "x_after",
+        0
+      ],
+      "expected": 0.50075,
+      "independent": 0.50075,
+      "absolute_error": 0.0,
+      "tolerance": 1.50075e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        3,
+        "x_after",
+        1
+      ],
+      "expected": 0.06725,
+      "independent": 0.06725,
+      "absolute_error": 0.0,
+      "tolerance": 1.06725e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        4,
+        "x_before",
+        0
+      ],
+      "expected": 0.50075,
+      "independent": 0.50075,
+      "absolute_error": 0.0,
+      "tolerance": 1.50075e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        4,
+        "x_before",
+        1
+      ],
+      "expected": 0.06725,
+      "independent": 0.06725,
+      "absolute_error": 0.0,
+      "tolerance": 1.06725e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        4,
+        "sample_gradient",
+        0
+      ],
+      "expected": -0.24925,
+      "independent": -0.24925,
+      "absolute_error": 0.0,
+      "tolerance": 1.24925e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        4,
+        "sample_gradient",
+        1
+      ],
+      "expected": 1.95175,
+      "independent": 1.95175,
+      "absolute_error": 0.0,
+      "tolerance": 2.95175e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        4,
+        "local_proposal",
+        0
+      ],
+      "expected": 0.525675,
+      "independent": 0.525675,
+      "absolute_error": 0.0,
+      "tolerance": 1.525675e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        4,
+        "local_proposal",
+        1
+      ],
+      "expected": -0.127925,
+      "independent": -0.127925,
+      "absolute_error": 0.0,
+      "tolerance": 1.127925e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        4,
+        "x_after",
+        0
+      ],
+      "expected": 0.198875,
+      "independent": 0.198875,
+      "absolute_error": 0.0,
+      "tolerance": 1.198875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "local_sgd",
+        4,
+        "x_after",
+        1
+      ],
+      "expected": 0.198875,
+      "independent": 0.198875,
+      "absolute_error": 0.0,
+      "tolerance": 1.198875e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        1,
+        "x_before",
+        0
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        1,
+        "x_before",
+        1
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        1,
+        "sample_gradient",
+        0
+      ],
+      "expected": 0.05,
+      "independent": 0.05,
+      "absolute_error": 0.0,
+      "tolerance": 1.05e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        1,
+        "sample_gradient",
+        1
+      ],
+      "expected": 4.15,
+      "independent": 4.15,
+      "absolute_error": 0.0,
+      "tolerance": 5.15e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        1,
+        "x_after",
+        0
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        1,
+        "x_after",
+        1
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        2,
+        "x_before",
+        0
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        2,
+        "x_before",
+        1
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        2,
+        "sample_gradient",
+        0
+      ],
+      "expected": 0.05,
+      "independent": 0.05,
+      "absolute_error": 0.0,
+      "tolerance": 1.05e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        2,
+        "sample_gradient",
+        1
+      ],
+      "expected": 4.65,
+      "independent": 4.65,
+      "absolute_error": 0.0,
+      "tolerance": 5.65e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        2,
+        "x_after",
+        0
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        2,
+        "x_after",
+        1
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        2,
+        "anchor_local",
+        0
+      ],
+      "expected": 0.05,
+      "independent": 0.05,
+      "absolute_error": 0.0,
+      "tolerance": 1.05e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        2,
+        "anchor_local",
+        1
+      ],
+      "expected": 4.4,
+      "independent": 4.4,
+      "absolute_error": 0.0,
+      "tolerance": 5.4e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        2,
+        "anchor_global"
+      ],
+      "expected": 2.225,
+      "independent": 2.225,
+      "absolute_error": 0.0,
+      "tolerance": 3.225e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        3,
+        "x_before",
+        0
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        3,
+        "x_before",
+        1
+      ],
+      "expected": 0.8,
+      "independent": 0.8,
+      "absolute_error": 0.0,
+      "tolerance": 1.8e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        3,
+        "sample_gradient",
+        0
+      ],
+      "expected": -0.45,
+      "independent": -0.45,
+      "absolute_error": 0.0,
+      "tolerance": 1.45e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        3,
+        "sample_gradient",
+        1
+      ],
+      "expected": 4.65,
+      "independent": 4.65,
+      "absolute_error": 0.0,
+      "tolerance": 5.65e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        3,
+        "corrected_gradient",
+        0
+      ],
+      "expected": 1.725,
+      "independent": 1.725,
+      "absolute_error": 0.0,
+      "tolerance": 2.725e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        3,
+        "corrected_gradient",
+        1
+      ],
+      "expected": 2.475,
+      "independent": 2.475,
+      "absolute_error": 0.0,
+      "tolerance": 3.475e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        3,
+        "x_after",
+        0
+      ],
+      "expected": 0.6275,
+      "independent": 0.6275,
+      "absolute_error": 0.0,
+      "tolerance": 1.6275e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        3,
+        "x_after",
+        1
+      ],
+      "expected": 0.5525,
+      "independent": 0.5525,
+      "absolute_error": 0.0,
+      "tolerance": 1.5525e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        4,
+        "x_before",
+        0
+      ],
+      "expected": 0.6275,
+      "independent": 0.6275,
+      "absolute_error": 0.0,
+      "tolerance": 1.6275e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        4,
+        "x_before",
+        1
+      ],
+      "expected": 0.5525,
+      "independent": 0.5525,
+      "absolute_error": 0.0,
+      "tolerance": 1.5525e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        4,
+        "sample_gradient",
+        0
+      ],
+      "expected": -0.1225,
+      "independent": -0.1225,
+      "absolute_error": 0.0,
+      "tolerance": 1.1225e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        4,
+        "sample_gradient",
+        1
+      ],
+      "expected": 3.4075,
+      "independent": 3.4075,
+      "absolute_error": 0.0,
+      "tolerance": 4.4075e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        4,
+        "corrected_gradient",
+        0
+      ],
+      "expected": 2.0525,
+      "independent": 2.0525,
+      "absolute_error": 0.0,
+      "tolerance": 3.0525e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        4,
+        "corrected_gradient",
+        1
+      ],
+      "expected": 1.2325,
+      "independent": 1.2325,
+      "absolute_error": 0.0,
+      "tolerance": 2.2325e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        4,
+        "x_after",
+        0
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        4,
+        "x_after",
+        1
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        5,
+        "x_before",
+        0
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        5,
+        "x_before",
+        1
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        5,
+        "sample_gradient",
+        0
+      ],
+      "expected": -0.82425,
+      "independent": -0.82425,
+      "absolute_error": 0.0,
+      "tolerance": 1.82425e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        5,
+        "sample_gradient",
+        1
+      ],
+      "expected": 3.52725,
+      "independent": 3.52725,
+      "absolute_error": 0.0,
+      "tolerance": 4.52725e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        5,
+        "x_after",
+        0
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        5,
+        "x_after",
+        1
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        6,
+        "x_before",
+        0
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        6,
+        "x_before",
+        1
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        6,
+        "sample_gradient",
+        0
+      ],
+      "expected": -0.82425,
+      "independent": -0.82425,
+      "absolute_error": 0.0,
+      "tolerance": 1.82425e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        6,
+        "sample_gradient",
+        1
+      ],
+      "expected": 3.02725,
+      "independent": 3.02725,
+      "absolute_error": 0.0,
+      "tolerance": 4.02725e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        6,
+        "x_after",
+        0
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        6,
+        "x_after",
+        1
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        6,
+        "anchor_local",
+        0
+      ],
+      "expected": -0.82425,
+      "independent": -0.82425,
+      "absolute_error": 0.0,
+      "tolerance": 1.82425e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        6,
+        "anchor_local",
+        1
+      ],
+      "expected": 3.27725,
+      "independent": 3.27725,
+      "absolute_error": 0.0,
+      "tolerance": 4.27725e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        6,
+        "anchor_global"
+      ],
+      "expected": 1.2265,
+      "independent": 1.2265,
+      "absolute_error": 0.0,
+      "tolerance": 2.2265e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        7,
+        "x_before",
+        0
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        7,
+        "x_before",
+        1
+      ],
+      "expected": 0.42575,
+      "independent": 0.42575,
+      "absolute_error": 0.0,
+      "tolerance": 1.42575e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        7,
+        "sample_gradient",
+        0
+      ],
+      "expected": -0.32425,
+      "independent": -0.32425,
+      "absolute_error": 0.0,
+      "tolerance": 1.32425e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        7,
+        "sample_gradient",
+        1
+      ],
+      "expected": 3.52725,
+      "independent": 3.52725,
+      "absolute_error": 0.0,
+      "tolerance": 4.52725e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        7,
+        "corrected_gradient",
+        0
+      ],
+      "expected": 1.7265,
+      "independent": 1.7265,
+      "absolute_error": 0.0,
+      "tolerance": 2.7265e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        7,
+        "corrected_gradient",
+        1
+      ],
+      "expected": 1.4765,
+      "independent": 1.4765,
+      "absolute_error": 0.0,
+      "tolerance": 2.4765e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        7,
+        "x_after",
+        0
+      ],
+      "expected": 0.2531,
+      "independent": 0.2531,
+      "absolute_error": 0.0,
+      "tolerance": 1.2531e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        7,
+        "x_after",
+        1
+      ],
+      "expected": 0.2781,
+      "independent": 0.2781,
+      "absolute_error": 0.0,
+      "tolerance": 1.2781e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        8,
+        "x_before",
+        0
+      ],
+      "expected": 0.2531,
+      "independent": 0.2531,
+      "absolute_error": 0.0,
+      "tolerance": 1.2531e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        8,
+        "x_before",
+        1
+      ],
+      "expected": 0.2781,
+      "independent": 0.2781,
+      "absolute_error": 0.0,
+      "tolerance": 1.2781e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        8,
+        "sample_gradient",
+        0
+      ],
+      "expected": -0.9969,
+      "independent": -0.9969,
+      "absolute_error": 0.0,
+      "tolerance": 1.9969e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        8,
+        "sample_gradient",
+        1
+      ],
+      "expected": 3.0843,
+      "independent": 3.0843,
+      "absolute_error": 0.0,
+      "tolerance": 4.0843e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        8,
+        "corrected_gradient",
+        0
+      ],
+      "expected": 1.05385,
+      "independent": 1.05385,
+      "absolute_error": 0.0,
+      "tolerance": 2.05385e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        8,
+        "corrected_gradient",
+        1
+      ],
+      "expected": 1.03355,
+      "independent": 1.03355,
+      "absolute_error": 0.0,
+      "tolerance": 2.03355e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        8,
+        "x_after",
+        0
+      ],
+      "expected": 0.16123,
+      "independent": 0.16123,
+      "absolute_error": 0.0,
+      "tolerance": 1.16123e-12,
+      "passed": true
+    },
+    {
+      "path": [
+        "simplified_scaffold",
+        8,
+        "x_after",
+        1
+      ],
+      "expected": 0.16123,
+      "independent": 0.16123,
+      "absolute_error": 0.0,
+      "tolerance": 1.16123e-12,
+      "passed": true
+    }
+  ]
+}

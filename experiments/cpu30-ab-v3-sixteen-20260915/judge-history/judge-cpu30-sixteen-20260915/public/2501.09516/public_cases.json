@@ -1,0 +1,612 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2501.09516",
+    "title": "Proximal Quasi-Newton Method for Composite Optimization over the Stiefel Manifold",
+    "sha256": "760d1ac9d4201cf630b174585acf192612eacd60ac39c4a0eb3155c89d62d0cc"
+  },
+  "algorithm": {
+    "name": "ManPQN Algorithm 1 with diagonal damped LBFGS, memory one",
+    "citations": [
+      "PDF p.4 Eqs. (2.1)-(2.2)",
+      "PDF pp.6-7 Eqs. (3.1)-(3.4) and Algorithm 1",
+      "PDF pp.8-9 Eqs. (3.6)-(3.10)",
+      "PDF p.21 SVD retraction choice"
+    ],
+    "core_mechanisms": [
+      "tangent-proximal-subproblem",
+      "diagonal-damped-lbfgs",
+      "polar-retraction",
+      "nonmonotone-armijo"
+    ],
+    "assumptions": [
+      "Use St(2,1), exact tangent subproblem solve and memory p=1; this is the smallest nontrivial curved Stiefel case with nonsmooth h and anisotropic diagonal curvature.",
+      "Algorithm 1 requires identity only on initial k=0; every later curvature is independently updated, and no fixed identity surrogate is substituted.",
+      "Only the prescribed finite iterates are tested, not semismooth-Newton inner iteration details, r>1 matrix-column interactions or global/local convergence rates.",
+      "This is an explicitly requested exact-inner-solve specialization. The paper defines V by argmin but its numerical procedure uses ASSN and a maximum of 100 inner iterations (pp.10-11 and pp.20-21), without a complete uniquely specified inner accuracy policy in the supplied text. A valid implementation using a permitted inexact inner solve can therefore return a different trajectory; mismatch against this exact-direction contract alone must not be labeled a general ManPQN algorithm error.",
+      "Use the practical Euclidean secant and diagonal approximation Eqs. (3.6)-(3.10), not the vector-transported theoretical formula (3.5)."
+    ]
+  },
+  "cases": [
+    {
+      "id": "quadratic_l1",
+      "purpose": "Three complete ManPQN iterations with an active l1 proximal tangent solve, diagonal damped BFGS curvature, polar retraction, and nonmonotone Armijo backtracking.",
+      "covers": [
+        "tangent-proximal-subproblem",
+        "diagonal-damped-lbfgs",
+        "polar-retraction",
+        "nonmonotone-armijo"
+      ],
+      "inputs": {
+        "manifold": "St(2,1), embedded Euclidean metric",
+        "X0": [
+          [
+            0.6
+          ],
+          [
+            0.8
+          ]
+        ],
+        "Q": [
+          [
+            12,
+            1.5
+          ],
+          [
+            1.5,
+            3
+          ]
+        ],
+        "linear_c": [
+          0,
+          0
+        ],
+        "mu": 0.2,
+        "smooth_objective": "f(X)=0.5*X^T Q X + c^T X",
+        "nonsmooth_objective": "h(X)=mu*(abs(X_1)+abs(X_2))",
+        "randomness": "none"
+      },
+      "parameters": {
+        "iterations": 3,
+        "memory_p": 1,
+        "delta": 1.0,
+        "sigma": 0.5,
+        "gamma": 0.5,
+        "nonmonotone_m": 1,
+        "B0": "identity as required by Algorithm 1",
+        "curvature_initialization_each_k_ge_1": "B_k,0=delta*I, retain exactly the most recent pair",
+        "curvature_pairs": "s=X_k-X_(k-1); y=grad f(X_k)-grad f(X_(k-1)) using Riemannian smooth gradients, Eqs. (2.1),(2.2)",
+        "metric": "Use diag(B_k), projected as Eq. (3.7), not full B_k in the subproblem",
+        "retraction": "polar/SVD: R_X(V)=(X+V)/sqrt((X+V)^T(X+V)) for r=1",
+        "inner_solver": "exact minimizer of Eq. (3.6); do not use approximate inner stopping",
+        "stopping": "exactly 3 iterations, no early stopping",
+        "observation_timing": "step j means k=j-1. X_before,g,B,beta,V,norm and reference precede retraction; alpha/backtracks are accepted line search results; X and objective are after retraction. At k=0 damping_beta=1 is a neutral no-pair sentinel."
+      },
+      "atol": 1e-09,
+      "rtol": 1e-08,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "X_before",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "riemannian_gradient",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "B_matrix",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "metric_diagonal",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "damping_beta",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "V",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "tangent_metric_norm_squared",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "line_search_reference",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "alpha",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "backtracks",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "X",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "X_before",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "riemannian_gradient",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "B_matrix",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "metric_diagonal",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "damping_beta",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "V",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "tangent_metric_norm_squared",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "line_search_reference",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "alpha",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "backtracks",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "X_before",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 3,
+          "name": "riemannian_gradient",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 3,
+          "name": "B_matrix",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "metric_diagonal",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "damping_beta",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "V",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 3,
+          "name": "tangent_metric_norm_squared",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "line_search_reference",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "alpha",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "backtracks",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "shape": []
+        }
+      ]
+    },
+    {
+      "id": "indefinite_l1",
+      "purpose": "Three complete ManPQN iterations with an active l1 proximal tangent solve, diagonal damped BFGS curvature, polar retraction, and nonmonotone Armijo backtracking.",
+      "covers": [
+        "tangent-proximal-subproblem",
+        "diagonal-damped-lbfgs",
+        "polar-retraction",
+        "nonmonotone-armijo"
+      ],
+      "inputs": {
+        "manifold": "St(2,1), embedded Euclidean metric",
+        "X0": [
+          [
+            0.8
+          ],
+          [
+            0.6
+          ]
+        ],
+        "Q": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            -2
+          ]
+        ],
+        "linear_c": [
+          0.5,
+          -0.2
+        ],
+        "mu": 0.3,
+        "smooth_objective": "f(X)=0.5*X^T Q X + c^T X",
+        "nonsmooth_objective": "h(X)=mu*(abs(X_1)+abs(X_2))",
+        "randomness": "none"
+      },
+      "parameters": {
+        "iterations": 3,
+        "memory_p": 1,
+        "delta": 2.0,
+        "sigma": 0.5,
+        "gamma": 0.5,
+        "nonmonotone_m": 1,
+        "B0": "identity as required by Algorithm 1",
+        "curvature_initialization_each_k_ge_1": "B_k,0=delta*I, retain exactly the most recent pair",
+        "curvature_pairs": "s=X_k-X_(k-1); y=grad f(X_k)-grad f(X_(k-1)) using Riemannian smooth gradients, Eqs. (2.1),(2.2)",
+        "metric": "Use diag(B_k), projected as Eq. (3.7), not full B_k in the subproblem",
+        "retraction": "polar/SVD: R_X(V)=(X+V)/sqrt((X+V)^T(X+V)) for r=1",
+        "inner_solver": "exact minimizer of Eq. (3.6); do not use approximate inner stopping",
+        "stopping": "exactly 3 iterations, no early stopping",
+        "observation_timing": "step j means k=j-1. X_before,g,B,beta,V,norm and reference precede retraction; alpha/backtracks are accepted line search results; X and objective are after retraction. At k=0 damping_beta=1 is a neutral no-pair sentinel."
+      },
+      "atol": 1e-09,
+      "rtol": 1e-08,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "X_before",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "riemannian_gradient",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "B_matrix",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "metric_diagonal",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "damping_beta",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "V",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "tangent_metric_norm_squared",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "line_search_reference",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "alpha",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "backtracks",
+          "shape": []
+        },
+        {
+          "step": 1,
+          "name": "X",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "X_before",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "riemannian_gradient",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "B_matrix",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "metric_diagonal",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "damping_beta",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "V",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "tangent_metric_norm_squared",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "line_search_reference",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "alpha",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "backtracks",
+          "shape": []
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "X_before",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 3,
+          "name": "riemannian_gradient",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 3,
+          "name": "B_matrix",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "metric_diagonal",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "damping_beta",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "V",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 3,
+          "name": "tangent_metric_norm_squared",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "line_search_reference",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "alpha",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "backtracks",
+          "shape": []
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "shape": [
+            2,
+            1
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "shape": []
+        }
+      ]
+    }
+  ]
+}

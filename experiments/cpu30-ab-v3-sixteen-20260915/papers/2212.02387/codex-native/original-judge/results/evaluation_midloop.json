@@ -1,0 +1,332 @@
+{
+  "paper_id": "2212.02387",
+  "evaluated_at": "2026-09-04T08:12:37.189656+00:00",
+  "summary": {
+    "total_score": 0.5652,
+    "algorithm_impl_score": 0.6087,
+    "exp_setup_score": 0.5217,
+    "exp_results_score": 0.0,
+    "total_rubrics": 27,
+    "passed": 13,
+    "failed": 14,
+    "errors": 0,
+    "pass_threshold": 0.8,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.6842,
+      "passed": 13,
+      "total": 19
+    },
+    "secondary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 7
+    },
+    "tertiary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "id": "alg-001",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The FastMix subroutine (Algorithm 1) computes a^{(k+1)} = (1 + ηa) W a^{(k)} - ηa a^{(k-1)} with ηa = 1/(1+√(1-λ2^2(W))).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In dream_repro/mixing.py, the fast_mix function (lines ~40-52) computes: updated = (1.0 + eta) * mixed - eta * previous, where mixed = W @ current. This matches the structural form (1+ηa) W a^(k) - ηa a^(k-1). However, the momentum parameter η is computed in _momentum() as (1-q)/(1+q) where q=sqrt(1-sigma^2) and sigma=λ2(W). This gives η = (1-√(1-λ2²))/(1+√(1-λ2²)), NOT η = 1/(1+√(1-λ2²)) as the rubric states. The two formulas are numerically different.",
+      "note": "The update recurrence structure is implemented correctly, but the ηa formula diverges from the paper's specification. The rubric is only partially satisfied.",
+      "error": false
+    },
+    {
+      "id": "alg-002",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "In Algorithm 2, the initial local variables are set to z0 = 1 z̄0, meaning each agent i initializes z0(i) = z̄0.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In dream_repro/algorithms.py, function `_initial_state` (lines 70-74): x is initialized as `np.ones((cfg.agents, trimmed.n_features))` and y as `np.full((cfg.agents, trimmed.n_samples), 1.0/trimmed.n_samples)`. Both are uniform across all agents — every agent i gets the same initial value z0(i) = z̄0 (ones for x, uniform distribution for y). This directly implements the claim that z0 = 1·z̄0, meaning each agent initializes with the shared value z̄0.",
+      "note": "The combined state z=(x,y) is uniformly initialized across all agents: x with all-ones vectors and y with uniform probability vectors. This matches \"z0(i) = z̄0 for all i\".",
+      "error": false
+    },
+    {
+      "id": "alg-003",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The initial gradient estimators g0(i) are computed as the average of b' stochastic gradients: g0(i) = (1/b') Σ_{ξ∈B_i} ∇F_i(z̄0; ξ), where b' = n for the offline case.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "algorithms.py lines 107–113: `local_large = local_n if cfg.large_batch_size <= 0 else ...` sets b' = n for the offline case; `initial_samples = full` (full local partition); `g = _gradients(dataset, partitions, x, y, initial_samples, cfg)` (line 112) calls `local_gradient` over all local samples for each agent. In `objective.py` `gradient_x` (lines 28–47), `sample_scale = float(local_size) / len(indices)` normalizes by the batch size, so when called with all n local samples the result is the average gradient (1/b') Σ ∇F_i(z̄0; ξ). The `_gradients` helper (lines 77–81) stacks these per-agent averages into g[i], matching g0(i) = (1/b') Σ_{ξ∈B_i} ∇F_i(z̄0; ξ) with b' = local_n = n (offline).",
+      "note": "For the online/mini-batch case (large_batch_size > 0), b' = min(large_batch_size, local_n) rather than n, but the offline case (large_batch_size ≤ 0) correctly uses b' = n as claimed.",
+      "error": false
+    },
+    {
+      "id": "alg-004",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The initial gradient tracker s0 is obtained by applying FastMix to g0 with K0 rounds: s0 = FastMix(g0, K0).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "dream_repro/algorithms.py line 114: `s = fast_mix(g, matrix, cfg.initial_mix) if name == \"DREAM\" else consensus(g, matrix)`. Here `g` is the initial gradient array (g0), `cfg.initial_mix` is the K0 parameter (number of mixing rounds), and `fast_mix` is defined in dream_repro/mixing.py line 46 as Algorithm 1 FastMix. This exactly implements s0 = FastMix(g0, K0).",
+      "note": "The variable `cfg.initial_mix` holds K0. The implementation is conditional on `name == \"DREAM\"`, which is the relevant algorithm path.",
+      "error": false
+    },
+    {
+      "id": "alg-005",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "At each iteration t, the algorithm computes z_{t+1/2} = FastMix(zt, K) if ζ_t=1, else FastMix(zt, K').",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In dream_repro/algorithms.py, the DREAM algorithm uses a single mixing matrix `matrix` (returned by `ring_matrix`) for all branches. When ζ_t=1 (large_event=True) it calls fast_mix(..., matrix, cfg.large_mix) and when ζ_t=0 it calls fast_mix(..., matrix, cfg.small_mix). Both branches use the same matrix — the only difference is the number of rounds (large_mix vs small_mix). The rubric claims two different matrices K and K' are used depending on ζ_t, but the code uses only one matrix (K) with different round counts, not K'.",
+      "note": "It's possible the paper uses K and K' to denote the same matrix applied different numbers of times (K^large_mix vs K^small_mix), but the rubric specifically says \"FastMix(zt, K)\" vs \"FastMix(zt, K')\" implying two distinct matrix arguments, which is not what the code implements.",
+      "error": false
+    },
+    {
+      "id": "alg-006",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The update rules for x and y are: y_{t+1} = Π(z_{t+1/2,y} + η vt) and x_{t+1} = z_{t+1/2,x} - γη ut, identical regardless of ζ_t.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In dream_repro/algorithms.py, the DREAM branch (lines 124–151) computes x_new and y_new with the identical formula in BOTH the large_event branch (lines 128–130) and the small_event branch (lines 136–138): `x_new = fast_mix(x - cfg.lr_x * s[:, :x.shape[1]], matrix, mix_rounds)` and `y_new = project_simplex_rows(fast_mix(y + cfg.lr_y * s[:, x.shape[1]:], matrix, mix_rounds))`. The only thing that differs between the two branches (ζ_t=large vs ζ_t=small) is `mix_rounds` and how `g_new` is computed — the x/y update expressions are the same regardless of ζ_t. This matches the paper's Algorithm 2 lines 13–14 / 16–17 structure: y_{t+1} = Π(z_{t+1/2,y} + η vt) and x_{t+1} = z_{t+1/2,x} - γη ut, where fast_mix implements z_{t+1/2} (gossip), lr_y/lr_x are η/γη, s are the gradient-tracking vectors (vt/ut), and project_simplex_rows is Π.",
+      "note": "The number of mixing rounds differs between ζ_t branches (large_mix vs small_mix), but the algebraic form of the update rule is identical in both — consistent with the paper's claim.",
+      "error": false
+    },
+    {
+      "id": "alg-007",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The projection Π is defined element-wise as Π(y) = [Π(y(1)); ... ; Π(y(m))] where Π(y(i)) = arg min_{y'∈Y} ||y' - y(i)||.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "dream_repro/objective.py lines 88-117 implement the projection. `project_simplex` (lines 88-102) computes the Euclidean projection of a single vector onto the probability simplex {y≥0, sum(y)=1} via the classical sort-and-threshold algorithm (arg min_{y'∈Y} ||y'-y||). `project_simplex_rows` (lines 105-117) applies this independently to every row of a 2D matrix (one row per agent), which is precisely Π(y) = [Π(y(1)); ...; Π(y(m))] from Definition 2.4. Used in algorithms.py at lines 130, 138, 155, and 170.",
+      "note": "The set Y is the probability simplex, consistent with the minimax objective (mixing distribution over samples). The element-wise structure is enforced by the row-wise application in project_simplex_rows.",
+      "error": false
+    },
+    {
+      "id": "alg-008",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The recursive gradient update is: gt+1(i) = ∇̃F_i(zt+1(i); ξ) + (1 - c_t)(gt(i) - ∇̃F_i(zt(i); ξ)), where c_t = 1 if ζ_t=1 else 0.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In dream_repro/algorithms.py lines 124-151 (DREAM branch), the gradient update for the recursive (small-event) case at line 144 is: g_new = g + (g_at_new - g_at_old) / max(cfg.q, 1e-12). This divides the correction term by q, producing g + (∇̃F(z_new) - ∇̃F(z_old)) / q, not the formula g_at_new + (1-c_t)*(g - g_at_old) claimed by the rubric (where c_t=0 yields g_new = ∇̃F(z_new) + (g - ∇̃F(z_old))). For the large-event case (c_t=1), the code does a full recompute (line 132-133), which is consistent with c_t=1 yielding g_new = ∇̃F(z_new), but the recursive branch critically diverges. The DM-HSGD branch (line 158) has the structurally matching formula g_at_new + (1-beta)*(g - g_at_old) but that is a different algorithm.",
+      "note": "The DREAM algorithm uses a 1/q scaling on the variance-reduction correction which is absent from the claimed formula. The claimed formula matches DM-HSGD (beta=c_t), not DREAM's Algorithm 2.",
+      "error": false
+    },
+    {
+      "id": "alg-009",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The stochastic gradient ∇̃F_i(zt+1(i); ξ) is computed using a mini-batch of size b if ζ_t=1, else b'.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In dream_repro/algorithms.py lines 124-145, the DREAM algorithm branch implements exactly this logic: `large_event = bool(rngs[0].random() < cfg.probability)` (line 125). When `large_event` is True (ζ_t=1), it uses `local_large` samples (line 131: `_sample(..., local_large)`, where `local_large` corresponds to the large batch size b'). When `large_event` is False (ζ_t=0), it uses `cfg.batch_size` samples (line 141: `_sample(..., cfg.batch_size)`, the small batch b). The two distinct batch sizes are `cfg.batch_size` (default 64, small batch b) and `local_large` (derived from `large_batch_size`, large batch b'). The gradient `g_at_new` is computed via `_gradients(dataset, partitions, x_new, y_new, samples, cfg)` in both branches, implementing ∇̃F_i(z_{t+1}^(i); ξ) with the appropriately-sized mini-batch.",
+      "note": "The rubric labels b as used when ζ_t=1 (large event) and b' otherwise, but whether b or b' is the larger batch depends on paper convention. The code clearly implements two distinct batch sizes conditioned on the large_event flag, matching the algorithmic intent regardless of label convention.",
+      "error": false
+    },
+    {
+      "id": "alg-010",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The gradient tracker update is: st+1 = FastMix(st + gt+1 - gt, K) if ζ_t=1, else FastMix(st + gt+1 - gt, K').",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "dream_repro/algorithms.py, lines 125–148: `large_event = bool(rngs[0].random() < cfg.probability)` selects between `mix_rounds = cfg.large_mix` (ζ_t=1) and `mix_rounds = cfg.small_mix` (ζ_t=0). Line 148: `s = fast_mix(s + g_new - g, matrix, mix_rounds)` implements exactly st+1 = FastMix(st + g_{t+1} - g_t, K) if ζ_t=1, else FastMix(st + g_{t+1} - g_t, K').",
+      "note": "K corresponds to cfg.large_mix and K' corresponds to cfg.small_mix in config.",
+      "error": false
+    },
+    {
+      "id": "alg-011",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The output xout is uniformly sampled from the set {x0(1), x0(2), ..., x_{T-1}(m)}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched dream_repro/algorithms.py thoroughly. The DREAM algorithm implementation (run_algorithm with name==\"DREAM\") maintains and updates x iterates but never collects them into a pool for final uniform sampling. The function returns metrics history (scalar values like primal_value, stationarity_norm, etc.) and the final x is simply the last iterate after all steps. No code pattern matching 'xout = rng.choice(all_iterates)' or any uniform sampling over {x0(1),...,x_{T-1}(m)} exists anywhere in the codebase (grep for 'uniform', 'choice', 'xout', 'x_out', 'output.*sample' found no relevant matches).",
+      "note": "Algorithm 2 line 25 in the paper specifies that the final output xout should be uniformly sampled from the set of all iterates collected across all agents and time steps. This is a standard technique for non-convex optimization convergence guarantees. The reproduction does not implement this — it simply uses the final iterate x as the output.",
+      "error": false
+    },
+    {
+      "id": "alg-012",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The stepsize ratio γ is set according to γ = (1/(2κ+1)) · (ηµ)/(1+ηµ), where κ = L/µ.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all Python files (dream_repro/algorithms.py, dream_repro/mixing.py, dream_repro/objective.py, scripts/run_formal.py, tests/test_core.py) and configs (configs/section4.json). The variable `kappa` (value=0.999) is used exclusively as the gossip/mixing matrix diagonal weight in ring_matrix(), not as the condition number κ=L/µ. No formula involving γ, L, µ, or η appears anywhere. Learning rates are hardcoded: lr_x=0.1, lr_y=1.0. No computation of γ=(1/(2κ+1))·(ηµ)/(1+ηµ) is present. Grep for 'gamma', 'eta.*mu', '1/(2', 'L/mu', 'stepsize_ratio', '2*kappa' returned no matches in code files.",
+      "note": "The paper's κ=L/µ (condition number) is a completely different concept from the repo's `kappa` (mixing matrix parameter). The stepsize ratio γ from Lemma 3.1 is not implemented.",
+      "error": false
+    },
+    {
+      "id": "setup-001",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The experiment uses m = 8 agents connected in a ring graph.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/section4.json: \"agents\": 8. scripts/run_formal.py line 108: default --agents=8, and line 102 in dream_repro/algorithms.py calls ring_matrix(cfg.agents, cfg.kappa). dream_repro/mixing.py implements ring_matrix() as a ring topology where each of the 'agents' nodes is connected to neighbors (i-1)%agents and (i+1)%agents. results/formal/robust_logistic_a9a/config.json confirms \"agents\": 8 in the actual experimental run.",
+      "note": "The ring graph is implemented via ring_matrix() in mixing.py; the number of agents is set to 8 in all configs and scripts. Both conditions (m=8 and ring topology) are satisfied.",
+      "error": false
+    },
+    {
+      "id": "setup-002",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The mixing matrix W is set as the π-lazy random walk matrix on a ring graph with 8 nodes and τ = 0.999, which leads to λ_2(W) = τ + (1 − τ) cos(2π(m − 1)/m).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "dream_repro/mixing.py:ring_matrix() builds the π-lazy ring matrix: diagonal=kappa (τ), off-diagonal neighbors=(1-kappa)/2, giving W=τI+(1-τ)P on a ring, whose second eigenvalue is τ+(1-τ)cos(2π(m-1)/m). Default kappa=0.999 (line 9). In dream_repro/algorithms.py line 18 default agents=8, line 29 default kappa=0.999, line 102 calls ring_matrix(cfg.agents, cfg.kappa). configs/section4.json confirms agents=8 and kappa=0.999. All experiment run logs also show agents=8, kappa=0.999.",
+      "note": "The code uses 'kappa' for τ (paper notation) and the ring_matrix construction exactly implements the π-lazy random walk, yielding the claimed λ₂ formula.",
+      "error": false
+    },
+    {
+      "id": "setup-003",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The robust logistic regression model uses local functions f_i(x, y) = (1/n) ∑_{j=1}^n [ l_{ij}(x) + τ (y_j − b_{ij} a_{ij}^⊤ x)^2 ] where l_{ij}(x) = log(1 + exp(b_{ij} a_{ij}^⊤ x)), and y_i ∈ Δ_N = { y ∈ R^N : ∑_{j=1}^N y_j = 1, y_j ≥ 0 }.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In dream_repro/objective.py, the logistic loss is implemented as softplus(-margin) = log(1+exp(-b*a^T*x)) (line 16: `softplus(-margin)`), and there is no τ (y_j − b_{ij}a_{ij}^⊤x)^2 quadratic penalty term anywhere. A grep for 'tau', 'TAU', 'quadratic', '**2', 'penalty', 'sq_pen' across all .py files returns no matches. The gradient_y function (lines 50-67) computes a uniform-simplex offset plus logistic losses, which does not correspond to the rubric's f_i formula. The rubric's specific form with τ-scaled quadratic penalty and l_{ij}(x) = log(1+exp(b_{ij}a_{ij}^⊤x)) (no negation) is not implemented.",
+      "note": "The code implements a related but different robust logistic regression saddle-point formulation (without the τ quadratic penalty term). The simplex constraint y ∈ Δ_N is present via project_simplex, but the local function formula does not match the rubric's specification.",
+      "error": false
+    },
+    {
+      "id": "setup-004",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The total N samples are equally distributed on the m agents, with n = N/m samples per agent.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "dream_repro/data.py, function `partition_dataset` (lines 154-173): line 160 computes `used = (n // agents) * agents` (trimming N to be divisible by m), line 171 sets `local_n = used // agents` (i.e., n = N/m), and line 172 assigns each agent exactly `local_n` contiguous samples via `indices = [np.arange(i * local_n, (i + 1) * local_n, ...) for i in range(agents)]`. This function is used by the experiment scripts for the a9a, w8a, and ijcnn1 datasets.",
+      "note": "The implementation drops remainder samples (drop_remainder=True by default) to ensure all m agents get exactly the same number of samples n = N/m.",
+      "error": false
+    },
+    {
+      "id": "setup-005",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The datasets are “a9a”, “w8a” and “ijcnn1” from Chang and Lin (2011).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "All three datasets are explicitly implemented: (1) dream_repro/data.py lines 17-25 defines download URLs for \"a9a\", \"w8a\", and \"ijcnn1\" pointing to https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/ (Chang and Lin's LIBSVM repository). (2) scripts/run_formal.py line 105 defines --dataset choices=[\"a9a\",\"w8a\",\"ijcnn1\"] and line 116 runs all three by default. (3) configs/section4.json line 23 lists \"datasets\": [\"a9a\",\"w8a\",\"ijcnn1\"]. (4) Results directories results/formal/robust_logistic_a9a/, results/formal/robust_logistic_w8a/, and results/formal/robust_logistic_ijcnn1/ all exist with metrics.csv, run.log, and provenance.json files confirming actual execution on each dataset. Actual dataset files are present in .run-data/.",
+      "note": "The datasets are sourced from the LIBSVM tools website (csie.ntu.edu.tw/~cjlin/libsvmtools), which is the canonical source for Chang and Lin (2011). The repository does not explicitly cite \"Chang and Lin (2011)\" in code but uses their standard LIBSVM dataset repository URLs.",
+      "error": false
+    },
+    {
+      "id": "setup-006",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "For DREAM, b and b′ are tuned from {64, 128, 256, 512}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched scripts/run_formal.py, dream_repro/algorithms.py, and configs/section4.json. The batch_size is a fixed value (default 512 in run_formal.py:110, set to 512 in configs/section4.json:6). ExperimentConfig in algorithms.py:20-21 defines batch_size=64 and large_batch_size=0 as single defaults — no grid search or tuning over {64, 128, 256, 512} exists anywhere in the codebase. There is no hyperparameter sweep or tuning loop for DREAM's b or b′ parameters.",
+      "note": "The repo fixes a single batch_size value rather than tuning from the set {64, 128, 256, 512} as described in the paper's §4.",
+      "error": false
+    },
+    {
+      "id": "setup-007",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "For DREAM, p and q are tuned from {0.2, 0.5, 0.9}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all Python files, configs, and scripts. `scripts/run_formal.py` hardcodes `probability=0.5, q=0.5`. `configs/section4.json` also fixes `\"probability\": 0.5, \"q\": 0.5`. The `ExperimentConfig` defaults in `dream_repro/algorithms.py` are both 0.5. No grid search, hyperparameter sweep, or tuning code over {0.2, 0.5, 0.9} exists anywhere in the repository. Values 0.2 and 0.9 only appear in unrelated contexts (test arrays, matplotlib alpha, kappa).",
+      "note": "The repository uses a single fixed configuration (p=q=0.5) rather than tuning from the set {0.2, 0.5, 0.9} as described in the paper.",
+      "error": false
+    },
+    {
+      "id": "setup-008",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "For DREAM, K0, K, K′ are tuned from {2, 5, 10}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No tuning over {2, 5, 10} is implemented. In scripts/run_formal.py lines 136-138, values are hardcoded: initial_mix=2, large_mix=2, small_mix=2. In dream_repro/algorithms.py lines 31-33, defaults are initial_mix=10, large_mix=10, small_mix=2. In configs/section4.json, initial_mix=2, large_mix=2, small_mix=2 are fixed. No grid search loop, no candidate set {2, 5, 10}, and no hyperparameter selection mechanism exists anywhere in the codebase. CLAIM_RESULTS.json explicitly acknowledges: 'The paper describes hyperparameter tuning over grids; this delivery fixes a documented grid point instead.'",
+      "note": "The repo deliberately uses a single fixed configuration rather than implementing the tuning procedure described in §4 of the paper.",
+      "error": false
+    },
+    {
+      "id": "setup-009",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For DM-HSGD, momentum parameter β = 0.01.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In dream_repro/algorithms.py line 24, the AlgorithmConfig dataclass sets `beta: float = 0.01` as the default. In scripts/run_formal.py line 130, DM-HSGD is explicitly configured with `beta=0.01`.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-010",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "For DM-HSGD, b and b0 are tuned from {64, 128, 256, 512}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The repository uses a single fixed batch_size of 512 (configs/section4.json line 6: \"batch_size\": 512). The algorithm code in dream_repro/algorithms.py uses cfg.batch_size as a single value (lines 141, 153, 175). The scripts/run_formal.py takes batch_size as a single CLI argument with no grid sweep. The README (line ~75) explicitly states \"this reproduction fixes a published grid choice (b=512)\" rather than implementing tuning from {64, 128, 256, 512}. There is no code anywhere that sweeps or tunes b or b0 over the set {64, 128, 256, 512} for DM-HSGD.",
+      "note": "The paper's tuning procedure is acknowledged in the README but intentionally not reproduced; only a single fixed configuration is used.",
+      "error": false
+    },
+    {
+      "id": "setup-011",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For GT-SRVR, the epoch length Q = ⌈√n⌉.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In dream_repro/algorithms.py line 122, the GT-SRVR epoch length (refresh_period) is set as `refresh_period = max(1, local_n)  # Q=n as specified for GT-SRVR.` — this is Q = n, not Q = ⌈√n⌉. No use of `math.sqrt`, `math.ceil`, or equivalent appears anywhere in the codebase for the refresh period. The full-gradient refresh check at line 171 uses `step % refresh_period == 0` with this Q=n value.",
+      "note": "The comment in the code explicitly says \"Q=n\" contradicting the paper's specification of Q = ⌈√n⌉. This is a deliberate divergence from the paper.",
+      "error": false
+    },
+    {
+      "id": "setup-012",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For GT-DA, the number of inner loops R = 4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In `dream_repro/algorithms.py` line 34, the `ExperimentConfig` dataclass has `multi_step: int = 4`. In `scripts/run_formal.py` line 139, the config for the robust logistic regression experiment explicitly sets `multi_step=4`. The algorithms.py code at line 166 uses this parameter specifically for GT-DA: `if name == \"GT-DA\" and step % max(1, cfg.multi_step) != 1:` — meaning the primal x-update is skipped unless at the first step of every 4-step block, implementing R=4 inner loops for GT-DA.",
+      "note": "The parameter is named `multi_step` in code rather than R, but it directly controls the number of inner loops for GT-DA and is set to 4.",
+      "error": false
+    },
+    {
+      "id": "setup-013",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "For each algorithm, η is tuned from {1, 0.1, 0.01, 0.001}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The repository uses fixed learning rates (lr_x=0.1, lr_y=1.0) hardcoded in both scripts/run_formal.py and configs/section4.json. No grid search or η tuning over {1, 0.1, 0.01, 0.001} is implemented anywhere in dream_repro/, scripts/, or configs/. CLAIM_RESULTS.json explicitly acknowledges: \"The paper describes hyperparameter tuning over grids; this delivery fixes a documented grid point instead of selecting a favorable seed or curve.\"",
+      "note": "The repo intentionally uses a single fixed configuration rather than the paper's described tuning procedure.",
+      "error": false
+    },
+    {
+      "id": "setup-014",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "For each algorithm, γ is tuned from {0.1, 0.01, 0.001, 0.0001}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all Python files (dream_repro/algorithms.py, scripts/run_formal.py), configs/section4.json, and results. No grid search or tuning loop over gamma/γ values {0.1, 0.01, 0.001, 0.0001} exists. The run_formal.py script uses a single fixed configuration (lr_x=0.1, beta=0.01, etc.) with no hyperparameter sweep. CLAIM_RESULTS.json explicitly states: \"The paper describes hyperparameter tuning over grids; this delivery fixes a documented grid point instead of selecting a favorable seed or curve.\" grep for 'gamma', '0.0001', 'grid_search', 'tuning', and '[0.1' across all .py and .json files returns no matches related to a gamma sweep.",
+      "note": "The repository acknowledges that the paper performs hyperparameter tuning but explicitly chooses not to implement it, using a single fixed configuration instead.",
+      "error": false
+    },
+    {
+      "id": "setup-015",
+      "dimension": "exp_setup",
+      "priority": "tertiary",
+      "description": "All algorithms are implemented by MPI to simulate the distributed training scenario.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "dream_repro/algorithms.py implements all five algorithms (DREAM, DM-HSGD, GT-DA, GT-GDA, GT-SRVR) using pure NumPy, simulating multiple agents as array rows (e.g., x shape=(agents, features)). No MPI calls exist anywhere. The only MPI references are comments (line 98: \"dataset is trimmed exactly as the MPI reference\"). requirements.txt contains only numpy, matplotlib, pytest — no mpi4py. dream_repro/data.py line 155 also only mentions MPI in a comment about partitioning logic, not actual usage.",
+      "note": "The code simulates distributed training by vectorizing over the agent dimension in NumPy arrays, which is functionally equivalent but does NOT use MPI for actual distributed/parallel execution.",
+      "error": false
+    }
+  ]
+}

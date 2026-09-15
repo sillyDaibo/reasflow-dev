@@ -1,0 +1,39 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "/root/adapter16_a",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Original APDG hardcodes spectral tuning, including sigma_y=1; no parameter interface can express the public tuple. Revised adapter properly reports all standard observations missing/blocked and separates the real source-tuned trajectory into diagnostics.",
+  "scope_notes": [
+    "Inspected apdg and model objective/gradient/A operators directly. Public-only readonly smoke completed both cases; no numeric comparison.",
+    "Initial x/fast-x and y/fast-y/previous-y are injected once before the loop; later states are only observed. Native float dtype, update order and stopping branches retained.",
+    "The regenerated problem objective differs only by residual expansion constant; measured public objective at true x has that irrelevant constant removed. Cached constructor optimum is diagnostic-only and is not a stopping criterion.",
+    "Challenged unsupported claim: apdg signature only accepts problem,max_iter,tolerance, directly calls spectral_constants, and fixes sigma_y=1. Altering spectral constants cannot realize public sigma_y=.9. Standard observations empty with every public schema item in missing_observations. Actual differing-parameter states are diagnostics only, not judged observations."
+  ],
+  "substitutions": [
+    {
+      "symbol": "SyntheticProblem data fields",
+      "role": "problem_input",
+      "reason": "Public quadratic coefficients and constraints replace generated objective/linear-map data; original gradient executes."
+    },
+    {
+      "symbol": "sys.settrace initialization",
+      "role": "problem_input",
+      "reason": "Writes only the initial states required by public inputs."
+    },
+    {
+      "symbol": "sys.settrace snapshots and public objective",
+      "role": "observation",
+      "reason": "Copies source local arrays after updates; evaluates declared objective at actual x without manufacturing a trajectory."
+    },
+    {
+      "symbol": "diagnostics",
+      "role": "observation",
+      "reason": "Actual native source-tuned observations are excluded from standard observations because requested parameters cannot be supplied."
+    }
+  ],
+  "public_digest": "8c62d0e4156513c0211d249ba209d8af10877432414fff4ad74fcda460c98128",
+  "adapter_sha256": "e0c5564cf805511473cc5ac6051fa19cdbf90cbf80a31d6f2afe8ba9b0d4b3ec",
+  "workspace_digest": "2fab8b5886eaef44557c4feda677246a3f7caa4d50ba9c53ceac59128498c16e",
+  "bindings_digest": "50fc6cc00d49010f840347316bf0946135d0219890d089496aba8f615dc3f1e3"
+}

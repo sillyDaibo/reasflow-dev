@@ -1,0 +1,10 @@
+[
+  {
+    "paper_id": "2501.04443",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.04443/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/05/rollout-2026-09-05T01-41-42-01a06d83-1752-7c62-b242-7d2dcfad529d.jsonl",
+    "expected_sha256": "e77e78f317a7bb6e1b69121c598062316afb4737e24cbe83fab88a2305841038",
+    "source_sha256": "e77e78f317a7bb6e1b69121c598062316afb4737e24cbe83fab88a2305841038",
+    "original_hash_matches": true
+  }
+]

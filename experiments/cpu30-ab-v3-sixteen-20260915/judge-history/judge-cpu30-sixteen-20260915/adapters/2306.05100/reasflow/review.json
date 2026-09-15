@@ -1,0 +1,35 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "/root/adapter16_a",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Original ProxSkip solver and matching affine finite-sum operator execute unchanged; trace captures actual operator, proposal, worker, control and communication-count states after each requested local update.",
+  "scope_notes": [
+    "Inspected vip_repro.algorithms.proxskip and AffineVIP.client directly; public operators are passed as one exact component and retain source float dtype and full local operator normalization.",
+    "Both cases have equal initial worker states, so the original shared-x0 argument is sufficient. Nonzero h0 is injected only once before the first while iteration.",
+    "The supplied Bernoulli outcomes are consumed in source order; deterministic full operators require no other RNG draws. Source branches and update order remain unchanged.",
+    "Source terminates on communication count, while the public budget is four local updates. The adapter sets a nonbinding communication cap and stops through a sentinel only at the next while condition after the fourth completed update, before another update or draw. This is a finite execution window, not a rewritten step.",
+    "mean_x is the explicitly requested diagnostic mean of real worker states; it does not feed the algorithm. Public-only readonly smoke produced 24 required observations per case."
+  ],
+  "substitutions": [
+    {
+      "symbol": "LinearFiniteSumVIP/AffineVIP constructor",
+      "role": "problem_input",
+      "reason": "Public matrices and offsets use the original matching affine problem class with one component."
+    },
+    {
+      "symbol": "trace initial h and RNG",
+      "role": "problem_input",
+      "reason": "Initial control state and declared Bernoulli realization only."
+    },
+    {
+      "symbol": "trace observation/window",
+      "role": "observation",
+      "reason": "Reads actual original locals after completed steps and ends at the public finite budget; creates no state updates."
+    }
+  ],
+  "public_digest": "4871b55760a1a8ae1131b53ad6957beb5e9f97815463b1d7f160bef6b46d7f99",
+  "adapter_sha256": "827c0f59af2351f24f76e3cafed172d4004f89bf4ec3b34ffecd5d9d9f635b8c",
+  "workspace_digest": "fec4282d740118d3af73d08ef4ef5cf5387088e4c216afdfecefc682a1a1b222",
+  "bindings_digest": "e6a51ab8b81aec61c38d910f338cafc5f222bc7e9981f1306bdfaf34e664a511"
+}

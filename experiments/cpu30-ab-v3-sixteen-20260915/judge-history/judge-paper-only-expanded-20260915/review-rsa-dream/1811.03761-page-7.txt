@@ -1,0 +1,130 @@
+(a)
+(b)
+Figure 5: Top-1 accuracy under sign-ﬂipping attacks: (a) q =
+4 and σ = −4; (b) q = 8 and σ = −4.
+0
+1000
+2000
+3000
+4000
+5000
+Number of Iterations
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+1.0
+Top-1 Accuracy
+GeoMde
+Krum
+Median
+RSA
+SGD
+0
+1000
+2000
+3000
+4000
+5000
+Number of Iterations
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Top-1 Accuracy
+GeoMde
+Krum
+Median
+RSA
+SGD
+(a)
+(b)
+Figure 6: Top-1 accuracy under gaussian attacks: (a) q = 4
+and c = 10000; (b) q = 8 and c = 10000.
+vary λ, run RSA for 5000 iterations, and depict the ﬁnal top-
+1 accuracy in Figure 8. The number of Byzantine workers is
+q = 8 and the step sizes are hand-tuned to the best. Observe
+that when λ is small, a regular worker tends to rely on its
+own data such that information fusion over the network is
+slow, which leads to slow convergence and large error. On
+the other hand, a large λ also incurs remarkable error, as we
+have investigated in the convergence analysis.
+RSA with different norms
+Now we compare RSA methods regularized with different
+norms. The results without Byzantine attacks and under the
+same-value attacks with q = 8 and c = 100 are demon-
+strated in Figures 9 and 10, respectively. We consider two
+performance metrics, top-1 accuracy and variance of the reg-
+ular workers’ local iterates. A small variance means that the
+regular workers reach similar solutions. Without the Byzan-
+tine attacks, ℓ1 is with λ = 0.1 and αk = 0.001/
+√
+k, ℓ2
+is with λ = 1.4 and αk = 0.001/
+√
+k, while ℓ∞is with
+λ = 51 and αk = 0.0001/
+√
+k. Under the same-value at-
+tacks, ℓ1 is with λ = 0.07 and αk = 0.001/
+√
+k, ℓ2 is with
+λ = 1.2 and αk = 0.001/
+√
+k, while ℓ∞is with λ = 20 and
+αk = 0.0001/
+√
+k. In both cases, ℓ1-norm RSA and ℓ2-norm
+RSA are close in terms of top-1 accuracy, and both of them is
+better than ℓ∞-norm RSA. This observation coincides with
+our convergence analysis, namely, ℓ∞-norm RSA needs a
+large λ to ensure consensus, which in turn causes a large
+error. Indeed, we deliberately choose a not-too-large λ for
+ℓ∞-norm RSA so as to reduce the error, but sacriﬁcing the
+consensus property. Therefore, regarding the variance of the
+regular workers’ local iterates, ℓ∞-norm RSA is the largest,
+Figure 7: Runtime under same-value attacks with q = 8 and
+c = 100.
+Figure 8: Top-1 accuracy with varying λ. We use same-value
+attacks with q = 8 and c = 100.
+while ℓ2-norm RSA is smaller than ℓ1-norm RSA.
+Heterogeneous Data
+To show the robustness of RSA on heterogeneous dataset,
+we re-distribute the MNIST data in this way: each two work-
+ers associate with the data about the same handwriting digit.
+In experiment, each Byzantine worker i transmits vk
+i = vk
+r ,
+where worker r is one of the regular workers. We set r = 1
+in the experiment. The results are shown in Figure 11. When
+q = 4, two handwriting numbers’ data are not available
+in the experiment, such that the best possible accuracy is
+around 0.8. When q = 8, the best possible accuracy is
+around 0.6. The parameters of ℓ1-norm RSA are λ = 0.5
+and αk = 0.0005/
+√
+k. Observe that when q = 4, Krum
+fails, while RSA outperforms GeoMed and Median. When q
+increases to 8, GeoMed, Krum and Median all fail, but RSA
+still performs well and reaches the near-optimal accuracy.
+Conclusions
+This paper dealt with distributed learning under Byzantine
+attacks. While the existing work mostly focuses on the case
+of i.i.d. data and relies on costly gradient aggregation rules,
+we developed an efﬁcient variant of SGD for distributed
+learning from heterogeneous datasets under the Byzantine
+attacks. The resultant SGD-based methods that we term
+RSA converges to a near-optimal solution at an O(1/k) con-
+vergence rate, where the optimality gap depends on the num-
+ber of Byzantine workers. In the Byzantine-free settings,
+both SGD and RSA converge to the optimal solution at sub-
+linear convergence rate. Numerically, experiments on real
+data corroborate the competitive performance of RSA com-
+pared to the state-of-the-art alternatives.

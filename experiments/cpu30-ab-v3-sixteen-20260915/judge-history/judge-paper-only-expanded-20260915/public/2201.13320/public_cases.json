@@ -1,0 +1,455 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2201.13320",
+    "title": "BEER: Fast O(1/T) Rate for Decentralized Nonconvex Optimization with Communication Compression",
+    "sha256": "7f6492f9472edfeb6133d39667df94e17e1cdd3ee7af21166491e9a0110eae22"
+  },
+  "algorithm": {
+    "name": "BEER (Algorithm 1), full-gradient deterministic specialization",
+    "citations": [
+      "PDF p.4 Assumption 2.1 and Eq.(2): symmetric doubly stochastic mixing W with positive spectral gap.",
+      "PDF p.5 Definition 2.2, Eq.(3): E||C(v)-v||^2 <= (1-alpha)||v||^2; biased compression is allowed.",
+      "PDF p.6 Section 3 matrix notation: X=[x1,...,xn] is d by n and compression applies independently to columns.",
+      "PDF p.7 Algorithm 1 line 1: common X0, H0=G0=0 and V0=grad F(X0).",
+      "PDF p.7 Algorithm 1 lines 3-5: descent using V and consensus using H, then compress Xnew-H and accumulate into H.",
+      "PDF p.7 Algorithm 1 lines 6-8: gradient tracking using old G consensus plus consecutive gradient difference, then compress Vnew-G and accumulate into G.",
+      "PDF p.7 Section 4.1: exact full gradients may replace stochastic minibatch gradients when local variance is zero."
+    ],
+    "core_mechanisms": [
+      "paper_initialization",
+      "model_descent_with_compressed_consensus",
+      "residual_model_compression_accumulation",
+      "gradient_tracking_with_old_compressed_gradient_consensus",
+      "residual_gradient_compression_accumulation",
+      "columnwise_biased_contractive_compression"
+    ],
+    "assumptions": [
+      "The allowed source is only the designated arXiv:2201.13320v3 PDF. Cases are independently derived finite trajectories; no implementation or prior evaluation output was consulted.",
+      "The deterministic diagonal quadratic objectives are smooth, bounded below, have a minimizer, and are a valid zero-variance specialization. They test the algorithmic recurrence, not nonconvex convergence rates or stochastic minibatch sampling.",
+      "Mixing matrices are symmetric, nonnegative, doubly stochastic, connected and have positive spectral gap: first case eigenvalues (1,0.5), second case (1,0.75,0.25).",
+      "Top1 in dimension two satisfies Definition 2.2 with alpha=1/2; scaling by 1/2 satisfies it with alpha=3/4. The scale case tests the mathematical compressor interface and makes no claim of actual communication savings.",
+      "The finite input step sizes are explicit; the paper convergence theorem contains unspecified absolute constants, so these three-round probes do not claim a theorem-certified learning-rate choice or eventual convergence.",
+      "Matrix and objective layouts, exact gradient formula, compressor tie rule, initialization, update order, observation timing and output names are fully specified in each public case.",
+      "The paper does not prescribe a generic software return object or stopping rule. After exactly three full rounds, observe all four algorithm states; no implicit averaging or random-iterate selection is used."
+    ]
+  },
+  "cases": [
+    {
+      "id": "beer_top1_two_clients_three_rounds",
+      "purpose": "Activate biased sparse communication, residual accumulation and support changes in both control sequences, and distinguish gradient tracking from plain local gradients after consensus starts.",
+      "covers": [
+        "paper_initialization",
+        "model_descent_with_compressed_consensus",
+        "residual_model_compression_accumulation",
+        "gradient_tracking_with_old_compressed_gradient_consensus",
+        "residual_gradient_compression_accumulation",
+        "columnwise_biased_contractive_compression"
+      ],
+      "inputs": {
+        "initial_common_point": [
+          1,
+          -1
+        ],
+        "quadratic_centers_by_client": [
+          [
+            -1,
+            2
+          ],
+          [
+            3,
+            -2
+          ]
+        ],
+        "quadratic_diagonals_by_client": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "mixing_matrix_W": [
+          [
+            0.75,
+            0.25
+          ],
+          [
+            0.25,
+            0.75
+          ]
+        ]
+      },
+      "parameters": {
+        "eta": 0.1,
+        "gamma": 0.5,
+        "iterations": 3,
+        "gradient_oracle": "full_deterministic",
+        "minibatch_size": 1,
+        "compressor": {
+          "name": "top1",
+          "rule": "Retain the original value at the coordinate of largest absolute value; set all other coordinates to zero. On an exact tie choose the lowest zero-based coordinate index. C(0)=0. No rescaling.",
+          "contraction_alpha": 0.5
+        },
+        "observation_semantics": {
+          "state_layout": "All observed X,H,V,G matrices have shape [dimension][number_of_clients]; columns index clients in the same order as W rows/columns. Objectives below use [client][dimension] arrays.",
+          "step_semantics": "Step 0 is immediately after Algorithm 1 initialization. Step t>=1 is after completing lines 3-8 for iteration t-1. Report exactly X,H,V,G at every requested step. Q_h,Q_g and averages are not requested observations.",
+          "initialization": "X^0 has every column equal to initial_common_point; H^0=G^0=zero matrices; V^0=the exact local gradient at each corresponding column of X^0.",
+          "objective": "Client i has f_i(x)=0.5*sum_j quadratic_diagonals_by_client[i][j]*(x[j]-quadratic_centers_by_client[i][j])^2. Gradient coordinate j is diagonal[i][j]*(x[j]-center[i][j]). Global f is (1/n)*sum_i f_i. No extra regularization, momentum, projection, clipping, or stochastic noise.",
+          "update_order": "Execute Algorithm 1: Xnew=X+gamma*H*(W-I)-eta*V; Qh=C(Xnew-H); Hnew=H+Qh; Vnew=V+gamma*G*(W-I)+gradF(Xnew)-gradF(X); Qg=C(Vnew-G); Gnew=G+Qg. Unsubscripted X,H,V,G on right sides denote pre-round values, except the explicitly named Xnew/Vnew.",
+          "compression_scope": "Invoke the same deterministic compressor independently on each client column of each residual matrix, for both the H and G channels. Do not compress globally across the matrix or compress the raw X/V in place of residuals."
+        }
+      },
+      "atol": 1e-09,
+      "rtol": 1e-07,
+      "observation_schema": [
+        {
+          "step": 0,
+          "name": "X",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 0,
+          "name": "H",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 0,
+          "name": "V",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 0,
+          "name": "G",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "X",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "H",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "V",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "G",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "H",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "V",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "G",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "H",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "V",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "G",
+          "shape": [
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "beer_half_compressor_three_client_path",
+      "purpose": "Exercise a different valid biased contractive map on both residual channels with a noncomplete graph, dimension unequal to client count, and client-specific anisotropic quadratic curvature.",
+      "covers": [
+        "paper_initialization",
+        "model_descent_with_compressed_consensus",
+        "residual_model_compression_accumulation",
+        "gradient_tracking_with_old_compressed_gradient_consensus",
+        "residual_gradient_compression_accumulation",
+        "columnwise_biased_contractive_compression"
+      ],
+      "inputs": {
+        "initial_common_point": [
+          -1,
+          2
+        ],
+        "quadratic_centers_by_client": [
+          [
+            2,
+            -1
+          ],
+          [
+            -2,
+            3
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "quadratic_diagonals_by_client": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            3,
+            1
+          ]
+        ],
+        "mixing_matrix_W": [
+          [
+            0.75,
+            0.25,
+            0
+          ],
+          [
+            0.25,
+            0.5,
+            0.25
+          ],
+          [
+            0,
+            0.25,
+            0.75
+          ]
+        ]
+      },
+      "parameters": {
+        "eta": 0.125,
+        "gamma": 0.25,
+        "iterations": 3,
+        "gradient_oracle": "full_deterministic",
+        "minibatch_size": 1,
+        "compressor": {
+          "name": "scale",
+          "factor": 0.5,
+          "rule": "For every residual vector v return C(v)=0.5*v, coordinatewise. This deterministic biased map satisfies Definition 2.2 with alpha=0.75; it is an algebraic compression-map test, not a claim of bit savings.",
+          "contraction_alpha": 0.75
+        },
+        "observation_semantics": {
+          "state_layout": "All observed X,H,V,G matrices have shape [dimension][number_of_clients]; columns index clients in the same order as W rows/columns. Objectives below use [client][dimension] arrays.",
+          "step_semantics": "Step 0 is immediately after Algorithm 1 initialization. Step t>=1 is after completing lines 3-8 for iteration t-1. Report exactly X,H,V,G at every requested step. Q_h,Q_g and averages are not requested observations.",
+          "initialization": "X^0 has every column equal to initial_common_point; H^0=G^0=zero matrices; V^0=the exact local gradient at each corresponding column of X^0.",
+          "objective": "Client i has f_i(x)=0.5*sum_j quadratic_diagonals_by_client[i][j]*(x[j]-quadratic_centers_by_client[i][j])^2. Gradient coordinate j is diagonal[i][j]*(x[j]-center[i][j]). Global f is (1/n)*sum_i f_i. No extra regularization, momentum, projection, clipping, or stochastic noise.",
+          "update_order": "Execute Algorithm 1: Xnew=X+gamma*H*(W-I)-eta*V; Qh=C(Xnew-H); Hnew=H+Qh; Vnew=V+gamma*G*(W-I)+gradF(Xnew)-gradF(X); Qg=C(Vnew-G); Gnew=G+Qg. Unsubscripted X,H,V,G on right sides denote pre-round values, except the explicitly named Xnew/Vnew.",
+          "compression_scope": "Invoke the same deterministic compressor independently on each client column of each residual matrix, for both the H and G channels. Do not compress globally across the matrix or compress the raw X/V in place of residuals."
+        }
+      },
+      "atol": 1e-09,
+      "rtol": 1e-07,
+      "observation_schema": [
+        {
+          "step": 0,
+          "name": "X",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 0,
+          "name": "H",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 0,
+          "name": "V",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 0,
+          "name": "G",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 1,
+          "name": "X",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 1,
+          "name": "H",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 1,
+          "name": "V",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 1,
+          "name": "G",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 2,
+          "name": "H",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 2,
+          "name": "V",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 2,
+          "name": "G",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "name": "H",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "name": "V",
+          "shape": [
+            2,
+            3
+          ]
+        },
+        {
+          "step": 3,
+          "name": "G",
+          "shape": [
+            2,
+            3
+          ]
+        }
+      ]
+    }
+  ]
+}

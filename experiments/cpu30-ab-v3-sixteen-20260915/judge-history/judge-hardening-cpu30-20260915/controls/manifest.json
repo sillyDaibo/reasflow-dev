@@ -1,0 +1,170 @@
+{
+  "schema_version": "optirepro.mutation_controls.v1",
+  "controls": [
+    {
+      "id": "stratified-codex-positive",
+      "base_target": "stratified-codex",
+      "workspace": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/stratified-codex-positive/workspace",
+      "mutation": null,
+      "expected_numeric_outcome": "match",
+      "expectation_basis": "Prospective control expectation from intentional source mutation; no hidden expected values or verdicts consulted.",
+      "original_workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/1904.12017/Codex原生-完整复现-Goal/第003次运行/workspace",
+      "original_workspace_digest": "23d7b41b7eecd4a120c43104997dde11a6ff57cf910d19eb008f19a8843f1eea",
+      "workspace_digest": "23d7b41b7eecd4a120c43104997dde11a6ff57cf910d19eb008f19a8843f1eea",
+      "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/stratified/codex/adapter.py",
+      "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/stratified/codex/bindings.json",
+      "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/1904.12017/public_cases.json",
+      "adapter_review_path": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/adapter_reviews/stratified-codex-positive.json"
+    },
+    {
+      "id": "stratified-codex-missing_loss_dual",
+      "base_target": "stratified-codex",
+      "workspace": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/stratified-codex-missing_loss_dual/workspace",
+      "mutation": {
+        "path": "strat_models/solvers.py",
+        "before": "        u += r1\n",
+        "after": "        u += 0.0 * r1\n",
+        "reason": "Suppress the loss-consensus scaled dual update; leave post-dual observation anchor unchanged."
+      },
+      "expected_numeric_outcome": "mismatch",
+      "expectation_basis": "Prospective control expectation from intentional source mutation; no hidden expected values or verdicts consulted.",
+      "original_workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/1904.12017/Codex原生-完整复现-Goal/第003次运行/workspace",
+      "original_workspace_digest": "23d7b41b7eecd4a120c43104997dde11a6ff57cf910d19eb008f19a8843f1eea",
+      "workspace_digest": "a6a213e6b925528fd1b19a60398f8bdcaa99ab79e37b94a959109a2bd2508979",
+      "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/stratified/codex/adapter.py",
+      "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/stratified/codex/bindings.json",
+      "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/1904.12017/public_cases.json",
+      "adapter_review_path": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/adapter_reviews/stratified-codex-missing_loss_dual.json"
+    },
+    {
+      "id": "stratified-codex-wrong_consensus_rhs",
+      "base_target": "stratified-codex",
+      "workspace": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/stratified-codex-wrong_consensus_rhs/workspace",
+      "mutation": {
+        "path": "strat_models/solvers.py",
+        "before": "        rhs = rho * (theta + u + v + w)\n",
+        "after": "        rhs = 0.5 * rho * (theta + u + v + w)\n",
+        "reason": "Halve the consensus-system right side while retaining the original CG solver and trace anchor."
+      },
+      "expected_numeric_outcome": "mismatch",
+      "expectation_basis": "Prospective control expectation from intentional source mutation; no hidden expected values or verdicts consulted.",
+      "original_workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/1904.12017/Codex原生-完整复现-Goal/第003次运行/workspace",
+      "original_workspace_digest": "23d7b41b7eecd4a120c43104997dde11a6ff57cf910d19eb008f19a8843f1eea",
+      "workspace_digest": "1b4721972bbd9bdc204d0d1a604c4dedad6a26514f3e34503de640bd6bd72761",
+      "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/stratified/codex/adapter.py",
+      "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/stratified/codex/bindings.json",
+      "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/1904.12017/public_cases.json",
+      "adapter_review_path": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/adapter_reviews/stratified-codex-wrong_consensus_rhs.json"
+    },
+    {
+      "id": "proxrr-codex-positive",
+      "base_target": "proxrr-codex",
+      "workspace": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/proxrr-codex-positive/workspace",
+      "mutation": null,
+      "expected_numeric_outcome": "match",
+      "expectation_basis": "Prospective control expectation from intentional source mutation; no hidden expected values or verdicts consulted.",
+      "original_workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/Codex原生-完整复现-Goal/第003次运行/workspace",
+      "original_workspace_digest": "fe47f42853c05b8f3a7396f76f21e5383190ad5e9e3b1575375898f25d216e6c",
+      "workspace_digest": "fe47f42853c05b8f3a7396f76f21e5383190ad5e9e3b1575375898f25d216e6c",
+      "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/proxrr/codex/adapter.py",
+      "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/proxrr/codex/bindings.json",
+      "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2102.06704/public_cases.json",
+      "adapter_review_path": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/adapter_reviews/proxrr-codex-positive.json"
+    },
+    {
+      "id": "proxrr-codex-wrong_prox_scale",
+      "base_target": "proxrr-codex",
+      "workspace": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/proxrr-codex-wrong_prox_scale/workspace",
+      "mutation": {
+        "path": "rr_prox_fed/algorithms.py",
+        "before": "                x = self.objective.regularizer(x, step * steps_per_epoch)\n",
+        "after": "                x = self.objective.regularizer(x, step)\n",
+        "reason": "Remove epoch length from the proximal scale; retain original proximal function and observation prefix."
+      },
+      "expected_numeric_outcome": "mismatch",
+      "expectation_basis": "Prospective control expectation from intentional source mutation; no hidden expected values or verdicts consulted.",
+      "original_workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/Codex原生-完整复现-Goal/第003次运行/workspace",
+      "original_workspace_digest": "fe47f42853c05b8f3a7396f76f21e5383190ad5e9e3b1575375898f25d216e6c",
+      "workspace_digest": "589acfd6a1c5bcb38fcf28aa008fe0b9f5b726d7f5fbe0e5161f9b04a17365d5",
+      "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/proxrr/codex/adapter.py",
+      "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/proxrr/codex/bindings.json",
+      "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2102.06704/public_cases.json",
+      "adapter_review_path": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/adapter_reviews/proxrr-codex-wrong_prox_scale.json"
+    },
+    {
+      "id": "proxrr-codex-wrong_inner_step",
+      "base_target": "proxrr-codex",
+      "workspace": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/proxrr-codex-wrong_inner_step/workspace",
+      "mutation": {
+        "path": "rr_prox_fed/algorithms.py",
+        "before": "                x -= step * grad\n",
+        "after": "                x -= 0.5 * step * grad\n",
+        "reason": "Halve each actual inner descent update without changing objective inputs or trace prefix."
+      },
+      "expected_numeric_outcome": "mismatch",
+      "expectation_basis": "Prospective control expectation from intentional source mutation; no hidden expected values or verdicts consulted.",
+      "original_workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/Codex原生-完整复现-Goal/第003次运行/workspace",
+      "original_workspace_digest": "fe47f42853c05b8f3a7396f76f21e5383190ad5e9e3b1575375898f25d216e6c",
+      "workspace_digest": "56c0b500ee3a993a1e0dac389d2ce8febe7589e702182bc432130add63db5739",
+      "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/proxrr/codex/adapter.py",
+      "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/proxrr/codex/bindings.json",
+      "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2102.06704/public_cases.json",
+      "adapter_review_path": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/adapter_reviews/proxrr-codex-wrong_inner_step.json"
+    },
+    {
+      "id": "beer-codex-positive",
+      "base_target": "beer-codex",
+      "workspace": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/beer-codex-positive/workspace",
+      "mutation": null,
+      "expected_numeric_outcome": "match",
+      "expectation_basis": "Prospective control expectation from intentional source mutation; no hidden expected values or verdicts consulted.",
+      "original_workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2201.13320/Codex原生-完整复现-Goal/第003次运行/workspace",
+      "original_workspace_digest": "95e9c5e61f2cb08899d56de18c5b6ee73e7c7de5c5ecbe7b7097e57759afce11",
+      "workspace_digest": "95e9c5e61f2cb08899d56de18c5b6ee73e7c7de5c5ecbe7b7097e57759afce11",
+      "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/beer/codex/adapter.py",
+      "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/beer/codex/bindings.json",
+      "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2201.13320/public_cases.json",
+      "adapter_review_path": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/adapter_reviews/beer-codex-positive.json"
+    },
+    {
+      "id": "beer-codex-stale_gradient_tracker",
+      "base_target": "beer-codex",
+      "workspace": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/beer-codex-stale_gradient_tracker/workspace",
+      "mutation": {
+        "path": "beer_repro/algorithms.py",
+        "before": "        self.v += self.gamma * ((self.w - np.eye(self.w.shape[0])) @ self.g) + gradients - self.grad_previous\n",
+        "after": "        self.v += self.gamma * ((self.w - np.eye(self.w.shape[0])) @ self.g) + 0.0 * (gradients - self.grad_previous)\n",
+        "reason": "Suppress the gradient-difference correction while preserving original driver gradient locations, compressions and method-return observation."
+      },
+      "expected_numeric_outcome": "mismatch",
+      "expectation_basis": "Prospective control expectation from intentional source mutation; no hidden expected values or verdicts consulted.",
+      "original_workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2201.13320/Codex原生-完整复现-Goal/第003次运行/workspace",
+      "original_workspace_digest": "95e9c5e61f2cb08899d56de18c5b6ee73e7c7de5c5ecbe7b7097e57759afce11",
+      "workspace_digest": "48cfa1ad4feebb3d283559bd8f4150725d1eea63778f7a0c8e1694b254ed11ec",
+      "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/beer/codex/adapter.py",
+      "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/beer/codex/bindings.json",
+      "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2201.13320/public_cases.json",
+      "adapter_review_path": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/adapter_reviews/beer-codex-stale_gradient_tracker.json"
+    },
+    {
+      "id": "beer-codex-wrong_h_residual",
+      "base_target": "beer-codex",
+      "workspace": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/beer-codex-wrong_h_residual/workspace",
+      "mutation": {
+        "path": "beer_repro/algorithms.py",
+        "before": "            qh[i] = compress(self.x[i] - self.h[i], self.compressor, self.compression_param, self.rng)\n",
+        "after": "            qh[i] = compress(self.x[i], self.compressor, self.compression_param, self.rng)\n",
+        "reason": "Compress the raw iterate instead of the H residual. The public compressor remains input-only and cannot erase this defect."
+      },
+      "expected_numeric_outcome": "mismatch",
+      "expectation_basis": "Prospective control expectation from intentional source mutation; no hidden expected values or verdicts consulted.",
+      "original_workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2201.13320/Codex原生-完整复现-Goal/第003次运行/workspace",
+      "original_workspace_digest": "95e9c5e61f2cb08899d56de18c5b6ee73e7c7de5c5ecbe7b7097e57759afce11",
+      "workspace_digest": "ce3e8e6cab3169566962585c0548ebab47b546d8a2c189442cbae1627d037aec",
+      "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/beer/codex/adapter.py",
+      "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/beer/codex/bindings.json",
+      "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2201.13320/public_cases.json",
+      "adapter_review_path": "/Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/controls/adapter_reviews/beer-codex-wrong_h_residual.json"
+    }
+  ]
+}

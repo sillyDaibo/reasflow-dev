@@ -1,0 +1,84 @@
+{
+  "mode": "Codex collaboration agents; no standalone model API used",
+  "new_paper_preparers": {
+    "paper16_a": [
+      "2111.03820",
+      "2501.04443",
+      "2503.07594",
+      "2504.19004"
+    ],
+    "paper16_b": [
+      "2207.04555",
+      "2306.05100",
+      "2310.09804",
+      "2501.18312"
+    ],
+    "paper16_c": [
+      "2306.04961",
+      "2309.05204",
+      "2501.09516"
+    ]
+  },
+  "cross_review_assignment": {
+    "paper16_a": [
+      "2207.04555",
+      "2306.05100",
+      "2310.09804",
+      "2501.18312"
+    ],
+    "paper16_b": [
+      "2306.04961",
+      "2309.05204",
+      "2501.09516"
+    ],
+    "paper16_c": [
+      "2111.03820",
+      "2501.04443",
+      "2503.07594",
+      "2504.19004"
+    ]
+  },
+  "boundary": "Paper preparers/reviewers cannot read reproduced workspaces, adapters or actual results. Fresh adapter agents will receive public inputs/source only, never expected values.",
+  "previous_five": "Reused frozen contracts and independent reviews from earlier reports; replayed separately in this report.",
+  "limitations": "Instruction-separated agent contexts, not a hostile-code sandbox or proof of independent mathematical correctness.",
+  "adapter_preparers": {
+    "adapter16_a": [
+      "2111.03820",
+      "2501.04443",
+      "2503.07594",
+      "2504.19004"
+    ],
+    "adapter16_b": [
+      "2207.04555",
+      "2306.05100",
+      "2310.09804",
+      "2501.18312"
+    ],
+    "adapter16_c": [
+      "2306.04961",
+      "2309.05204",
+      "2501.09516"
+    ]
+  },
+  "adapter_reviewers": {
+    "root_independent_source_audit": [
+      "2111.03820"
+    ],
+    "adapter16_a": [
+      "2207.04555",
+      "2306.05100",
+      "2310.09804",
+      "2501.18312"
+    ],
+    "adapter16_b": [
+      "2306.04961",
+      "2309.05204",
+      "2501.09516"
+    ],
+    "adapter16_c": [
+      "2501.04443",
+      "2503.07594",
+      "2504.19004"
+    ]
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "paper_id": "2102.06704",
+  "evaluated_at": "2026-09-04T06:06:48.825833+00:00",
+  "summary": {
+    "total_score": 0.8,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.8,
+    "total_rubrics": 3,
+    "passed": 2,
+    "failed": 1,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "secondary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    },
+    "primary": {
+      "score": 1.0,
+      "passed": 2,
+      "total": 2
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "On the a1a dataset, SGD, RR (proposed), and RR (heuristic) exhibit similar convergence behavior in terms of \\|x - x*\\|^2 versus iteration count.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/prox_rr_a1a_formal_v1/sgd.csv, prox_rr.csv, rr_heuristic.csv — at epoch 35 (final recorded point), the distance_sq values are: SGD seeds 0/1/2: 33.69, 32.43, 39.64 (mean 35.25); RR (proposed) seeds 0/1/2: 7.95, 7.35, 10.49 (mean 8.60); RR (heuristic) seeds 0/1/2: 24.93, 24.25, 32.66 (mean 27.28). RR (proposed) achieves roughly 4× lower |x-x*|² than SGD and 3× lower than RR (heuristic). These are substantially different convergence levels, not 'similar' behavior.",
+      "note": "The distance_sq column is only populated on the final row of each seed (epoch 35), so comparison is made at that single snapshot. The paper claims 'all methods behave more or less the same way', but the outputs show RR (proposed) converges considerably better than both SGD and RR (heuristic) on this run.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RR (proposed) requires only a small fraction of proximal operator evaluations compared to SGD and RR (heuristic) to achieve the same suboptimality \\|x - x*\\|^2 on the a1a dataset.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/prox_rr_a1a_formal_v1/prox_rr.csv, sgd.csv, rr_heuristic.csv: At epoch 35 (final), prox_calls are — RR (proposed)/prox_rr: 35 (all 3 seeds), SGD: 56,175 (all 3 seeds), RR (heuristic): 56,175 (all 3 seeds). RR (proposed) uses only ~0.062% as many proximal operator evaluations as both SGD and RR (heuristic), satisfying both required ordering constraints: RR (proposed) < SGD (35 vs 56175) and RR (proposed) < RR (heuristic) (35 vs 56175).",
+      "note": "The distance_sq (||x - x*||^2) values at the final epoch are also lower for prox_rr (7.9–10.5) vs SGD (32–40) and RR heuristic (24–33), showing prox_rr achieves better suboptimality with far fewer prox calls — consistent with the paper's Figure 1 claim.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "FedRR achieves lower suboptimality than both Local-SGD (full pass) and Local-SGD (partial pass), and Local-SGD (partial pass) achieves lower suboptimality than Local-SGD (full pass), as shown in the communication rounds and data passes plots.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/fed_rr_mushrooms_formal_v1/metrics.csv. At round=40 (averaged across 3 seeds): FedRR suboptimality=2.9835e-05, Local-SGD (partial pass)=2.6188e-02, Local-SGD (full pass)=2.6306e-02. All three required rankings hold (lower is better): (1) FedRR < partial pass < full pass at final round. This pattern is consistent from round 5 onward across all intermediate checkpoints. The plot metadata confirms 3 series were plotted for both rounds and passes plots.",
+      "note": "The margin between partial and full pass is small (~0.5%) but consistently holds in favor of partial pass across all rounds from R=5 to R=40.",
+      "error": false
+    }
+  ]
+}

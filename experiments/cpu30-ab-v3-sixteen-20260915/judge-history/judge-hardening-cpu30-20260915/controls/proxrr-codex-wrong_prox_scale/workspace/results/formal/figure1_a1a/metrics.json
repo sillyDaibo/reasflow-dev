@@ -1,0 +1,32 @@
+{
+  "elapsed_seconds": {
+    "ProxRR": 19.01039483398199,
+    "ProxSGD": 20.48058968409896,
+    "RR_heuristic": 19.625506775919348
+  },
+  "experiment": "figure1",
+  "f_star": 0.35323900868401276,
+  "final_gap": {
+    "ProxRR": 0.005570644423612214,
+    "ProxSGD": 0.004594397629326785,
+    "RR_heuristic": 0.014227195269169268
+  },
+  "final_objective": {
+    "ProxRR": 0.35880965310762497,
+    "ProxSGD": 0.35783340631333954,
+    "RR_heuristic": 0.367466203953182
+  },
+  "provenance": {
+    "bytes": 114818,
+    "features": 120,
+    "name": "a1a",
+    "path": ".run-data/datasets/a1a",
+    "rows": 1605,
+    "sha256": "eb54c45f1bdb51286f803dd092eb8202b44637a858fc6c4e533a2d64a0d94b4e"
+  },
+  "prox_evaluations": {
+    "ProxRR": 100,
+    "ProxSGD": 160500,
+    "RR_heuristic": 160500
+  }
+}

@@ -1,0 +1,2799 @@
+
+PDF PAGE 1
+RSA: Byzantine-Robust Stochastic Aggregation Methods for
+Distributed Learning from Heterogeneous Datasets
+Liping Li∗
+Wei Xu∗
+Tianyi Chen†
+Georgios B. Giannakis†
+Qing Ling‡
+∗Department of Automation, University of Science and Technology of China, Hefei, Anhui, China
+†Digital Technology Center, University of Minnesota, Twin Cities, Minneapolis, Minnesota, USA
+‡School of Data and Computer Science, Sun Yat-Sen University, Guangzhou, Guangdong, China
+Abstract
+In this paper, we propose a class of robust stochastic sub-
+gradient methods for distributed learning from heterogeneous
+datasets at presence of an unknown number of Byzantine
+workers. The Byzantine workers, during the learning pro-
+cess, may send arbitrary incorrect messages to the master
+due to data corruptions, communication failures or malicious
+attacks, and consequently bias the learned model. The key
+to the proposed methods is a regularization term incorpo-
+rated with the objective function so as to robustify the learn-
+ing task and mitigate the negative effects of Byzantine at-
+tacks. The resultant subgradient-based algorithms are termed
+Byzantine-Robust Stochastic Aggregation methods, justifying
+our acronym RSA used henceforth. In contrast to most of
+the existing algorithms, RSA does not rely on the assump-
+tion that the data are independent and identically distributed
+(i.i.d.) on the workers, and hence ﬁts for a wider class of ap-
+plications. Theoretically, we show that: i) RSA converges to
+a near-optimal solution with the learning error dependent on
+the number of Byzantine workers; ii) the convergence rate
+of RSA under Byzantine attacks is the same as that of the
+stochastic gradient descent method, which is free of Byzan-
+tine attacks. Numerically, experiments on real dataset corrob-
+orate the competitive performance of RSA and a complexity
+reduction compared to the state-of-the-art alternatives.
+Introduction
+The past decade has witnessed the proliferation of smart
+phones and Internet-of-Things (IoT) devices. They gener-
+ate a huge amount of data every day, from which one can
+learn models of cyber-physical systems and make decisions
+to improve the welfare of human being. Nevertheless, stan-
+dard machine learning approaches that require centraliz-
+ing the training data on one machine or in a datacenter
+may not be suitable for such applications, as data collected
+from distributed devices and stored at clouds lead to sig-
+niﬁcant privacy risks (Sicari et al. 2015). To alleviate user
+privacy concerns, a new distributed machine learning frame-
+work called federated learning has been proposed by Google
+and become popular recently (McMahan and Ramage 2017;
+Smith et al. 2017). Federated learning allows the training
+data to be kept locally on the owners’ devices. Data samples
+Copyright c⃝2019, Association for the Advancement of Artiﬁcial
+Intelligence (www.aaai.org). All rights reserved.
+and computation tasks are distributed across multiple work-
+ers such as Internet-of-Things (IoT) devices in a smart home,
+which are programmed to collaboratively learn a model.
+Parallel implementations of popular machine learning algo-
+rithms, such as stochastic gradient descent (SGD), are ap-
+plied to learning from the distributed data (Bottou 2010).
+However, federated learning still faces two signiﬁcant
+challenges: high communication overhead and serious secu-
+rity risk. While several recent approaches have been devel-
+oped to tackle the communication bottleneck of distributed
+learning (Li et al. 2014; Liu et al. 2017; Smith et al. 2017;
+Chen et al. 2018b), the security issue has not been ade-
+quately addressed. In federated learning applications, a num-
+ber of devices may be highly unreliable or even easily com-
+promised by hackers. We call these devices as Byzantine
+workers. In this scenario, the learner lacks secure training
+ability, which makes it vulnerable to failures, not mention-
+ing adversarial attacks (Lynch 1996). For example, SGD, the
+workhorse of large-scale machine learning, is vulnerable to
+even one Byzantine worker (Chen, Su, and Xu 2017).
+In this context, the present paper studies distributed ma-
+chine learning under a general Byzantine failure model,
+where the Byzantine workers can arbitrarily modify the mes-
+sages transmitted from themselves to the master. With such
+a model, it simply does not have any constraints on the com-
+munication failures or attacks. We aim to develop efﬁcient
+distributed machine learning methods tailored for this set-
+ting with provable performance guarantee.
+Related work
+Byzantine-robust distributed learning has received increas-
+ing attention in recent years. Most of the existing algo-
+rithms extend SGD to incorporate the Byzantine-robust set-
+ting and assume that the data are independent and identi-
+cally distributed (i.i.d.) on the workers. Under this assump-
+tion, stochastic gradients computed by regular workers are
+presumably distributed around the true gradient, while those
+sent from the Byzantine workers to the master could be ar-
+bitrary. Thus, the master is able to apply robust estimation
+techniques to aggregate the stochastic gradients. Typical gra-
+dient aggregation rules include geometric median (Chen, Su,
+and Xu 2017), marginal trimmed mean (Yin et al. 2018a;
+Xie, Koyejo, and Gupta 2018b), dimensional median (Xie,
+Koyejo, and Gupta 2018a; Alistarh, Allen-Zhu, and Li
+arXiv:1811.03761v2  [cs.LG]  11 Nov 2019
+
+
+PDF PAGE 2
+2018), etc. A more sophisticated algorithm termed as Krum
+selects a gradient which has minimal summation of Eu-
+clidean distances from a given number of nearest gradients
+(Blanchard et al. 2017). Targeting high-dimensional learn-
+ing, an iterative ﬁltering algorithm is developed in (Su and
+Xu 2018), which achieves the optimal error rate in the high-
+dimensional regime. The main disadvantage of these exist-
+ing algorithms comes from the i.i.d. assumption, which is ar-
+guably not the case in federated learning over heterogeneous
+computing units. Actually, generalizing these algorithms to
+the non-i.i.d. setting is not straightforward. In addition, some
+of these algorithms rely on sophisticated gradient selection
+subroutines, such as those in Krum and geometric median,
+which incur high computational complexity.
+Other related work in this context includes (Yin et al.
+2018b) that targets escaping saddle points of nonconvex op-
+timization problems under Byzantine attacks, and (Chen et
+al. 2018a) that leverages a gradient-coding based algorithm
+for robust learning. However, the approach in (Chen et al.
+2018a) needs to relocate the data points, which is not easy
+to implement in the federated learning paradigm. Leverag-
+ing additional data, (Xie, Koyejo, and Gupta 2018c) stud-
+ies the trustworthy score-based schemes that guarantee ef-
+ﬁcient learning even when there is only one non-Byzantine
+worker, but additional data may not always be available in
+practice. Our algorithms are also related to robust decentral-
+ized optimization studied in, e.g., (Ben-Ameur, Bianchi, and
+Jakubowicz 2016; Xu, Li, and Ling 2018), which consider
+optimizing a static or dynamic cost function over a decen-
+tralized network with unreliable nodes. In contrast, the focus
+of this work is Byzantine-robust stochastic optimization.
+Our contributions
+The contributions of this paper are summarized as follows.
+c1) We develop a class of robust stochastic methods ab-
+breviated as RSA for distributed learning over heteroge-
+neous datasets and under Byzantine attacks. RSA has several
+variants, each tailored for an ℓp-norm regularized robustify-
+ing objective function.
+c2) Performance is rigorously established for the resultant
+RSA approaches, in terms of the convergence rate as well as
+the error caused by the Byzantine attacks.
+c3) Extensive numerical tests using the MNIST dataset
+are conducted to corroborate the effectiveness of RSA in
+term of both classiﬁcation accuracy under Byzantine attacks
+and runtime.
+Distributed SGD
+We consider a general distributed system, consisting of a
+master and m workers, among which q workers are Byzan-
+tine (behaving arbitrarily). The goal is to ﬁnd the optimizer
+of the following problem:
+min
+˜x∈Rd
+m
+X
+i=1
+E[F(˜x, ξi)] + f0(˜x).
+(1)
+Here ˜x ∈Rd is the optimization variable, f0(˜x) is a regu-
+larization term, and F(˜x, ξi) is the loss function of worker
+i with respect to a random variable ξi. Unlike the previous
+Algorithm 1 Distributed SGD
+Master:
+1: Input: ˜x0, αk. At time k + 1:
+2: Broadcast its current iterate ˜xk to all workers;
+3: Receive all gradients ∇F(˜xk, ξk
+i ) sent by workers;
+4: Update the iterate via (2).
+Worker i:
+1: At time k + 1:
+2: Receive the master’s current iterate ˜xk;
+3: Compute a local stochastic gradient ∇F(˜xk, ξk
+i );
+4: Send the local stochastic gradient to the server.
+work which assumes the distributed data across the workers
+are i.i.d., we consider a more practical situation: ξi ∼Di,
+where Di is the data distribution on worker i and could be
+different to the distributions on other workers.
+In the master-worker architecture, at time k +1 of the dis-
+tributed SGD algorithm, every worker i receives the current
+model ˜xk from the master, samples a data point from the dis-
+tribution Di with respect to a random variable ξk
+i , and com-
+putes the gradient of the local empirical loss ∇F(˜xk, ξk
+i ).
+Note that this sampling process can be easily generalized to
+the mini-batch setting, in which every worker samples mul-
+tiple i.i.d. data points and computes the averaged gradient
+of the local empirical losses. The master collects and ag-
+gregates the gradients sent by the workers, and updates the
+model. Its update at time k + 1 is:
+˜xk+1 = ˜xk −αk+1
+ 
+∇f0(˜xk) +
+m
+X
+i=1
+∇F(˜xk, ξk
+i )
+!
+(2)
+where αk+1 is a diminishing learning rate at time k +1. The
+distributed SGD is outlined in Algorithm 1.
+SGD is vulnerable to Byzantine attacks. While SGD has
+well-documented performance in conventional large-scale
+machine learning settings, its performance will signiﬁcantly
+degrade at the presence of Byzantine workers (Chen, Su,
+and Xu 2017). Suppose that some of the workers are Byzan-
+tine, they can report arbitrary messages or strategically send
+well-designed messages according to the information sent
+by other workers so as to bias the learning process. Speciﬁ-
+cally, if worker m is Byzantine, at time k + 1, it can choose
+one of two following attacks:
+a1) sending ∇F(˜xk, ξk
+m) = ∞;
+a2) sending ∇F(˜xk, ξk
+m) = −Pm−1
+i=1 ∇F(˜xk, ξk
+i ).
+In any case, the aggregated gradient Pm
+i=1 ∇F(˜xk, ξk
+i ) used
+in the SGD update (2) will be either inﬁnite or null, and thus
+the learned model ˜xk will either not converge or converge to
+an incorrect value. The operation of SGD under Byzantine
+attacks is illustrated in Figure 1.
+Instead of using the simple averaging in (2), robust gra-
+dient aggregation rules have been incorporated with SGD in
+(Blanchard et al. 2017; Chen, Su, and Xu 2017; Xie, Koyejo,
+and Gupta 2018a; Yin et al. 2018b; 2018a; Xie, Koyejo, and
+Gupta 2018c). However, in the federated learning setting,
+these aggregation rules become less effective due to the difﬁ-
+
+
+PDF PAGE 3
+ Master
+...
+...
+1
+...
+r
+r + 1
+m
+Worker
+...
+...
+...
+Figure 1: The operation of SGD. There are m workers, r
+being regular and the rest of q = m −r being Byzantine.
+The master sends the current iterate to the workers, and the
+regular workers send back the stochastic gradients. The red
+devil marks denote the wrong messages that the Byzantine
+workers send to the master.
+culty of distinguishing the statistical heterogeneity from the
+Byzantine attacks. In what follows, we develop a counter-
+part of SGD to address the issue of robust learning from dis-
+tributed heterogeneous data.
+RSA for Robust Distributed Learning
+Observe that due to the presence of the Byzantine workers, it
+is meaningless to solve (1), which minimizes the summation
+of all workers’ local expected losses without distinguishing
+regular and Byzantine workers, because the Byzantine work-
+ers can always prevent the learner from accessing their local
+data and ﬁnding the optimal solution. Instead, a less ambi-
+tious goal is to ﬁnd a solution that minimizes the summation
+of the regular workers’ local expected cost functions plus the
+regularization term:
+˜x∗= arg min
+˜x∈Rd
+X
+i∈R
+E[F(˜x, ξi)] + f0(˜x)
+(3)
+Here we denote B as the set of Byzantine workers and R as
+the set of regular workers, with |B| = q and |R| = m −q.
+Letting each regular worker i have its local iterate xi and the
+master have its local iterate x0, we obtain an equivalent form
+to (3):
+min
+x:=[xi;x0]
+X
+i∈R
+E[F(xi, ξi)] + f0(x0)
+(4a)
+s.to x0 = xi, ∀i ∈R
+(4b)
+where x := [xi; x0] ∈R(|R|+1)d is a vector that stacks the
+regular workers’ local variables xi and the master’s variable
+x0. The formulation (4) is aligned with the concept of con-
+sensus optimization in, e.g., (Shi et al. 2014).
+ℓ1-norm RSA
+Directly solving (3) or (4) by iteratively updating ˜x or x is
+impossible since the identities of Byzantine workers are not
+available to the master. Therefore, we introduce an ℓ1-norm
+regularized form of (4):
+x∗:= arg min
+x:=[xi;x0]
+X
+i∈R
+
+E[F(xi, ξi)] + λ||xi −x0||1
+
++ f0(x0)
+(5)
+where λ is a positive constant. The second term in the cost
+function (5) is the ℓ1-norm penalty, whose minimization
+forces every xi to be close to the master’s variable x0. We
+will show next that how this relaxed form brings the advan-
+tage of robust learning under Byzantine attacks.
+In the ideal case that the identities of Byzantine workers
+are revealed, we can apply a stochastic subgradient method
+to solve (5). The optimization only involves the regular
+workers and the master. At time k + 1, the updates of xk+1
+i
+at regular worker i and xk+1
+0
+at the master are given by:
+xk+1
+i
+= xk
+i −αk+1  ∇F(xk
+i , ξk
+i )+λsign(xk
+i −xk
+0)
+
+(6a)
+xk+1
+0
+= xk
+0−αk+1
+∇f0(xk
+0)+λ
+ X
+i∈R
+sign(xk
+0−xk
+i )
+
+(6b)
+where sign(·) is the element-wise sign function. Given a ∈
+R, sign(a) equals to 1 when a > 0, −1 when a < 0, and an
+arbitrary value within [−1, 1] when a = 0. At time k + 1,
+each worker i sends the local iterate xk
+i to the master, in-
+stead of sending its local stochastic gradient in distributed
+SGD. The master aggregates the models sent by the work-
+ers to update its own model xk+1
+0
+. In this sense, the updates
+in (6) are based on model aggregation, different to gradient
+aggregation in SGD.
+Now let us consider how the updates in (6) behave at pres-
+ence of Byzantine workers. The update of a regular worker
+i is the same as (6a), which is:
+xk+1
+i
+= xk
+i −αk+1  ∇F(xk
+i , ξk
+i )+λsign(xk
+i −xk
+0)
+
+.
+(7)
+If worker i is Byzantine, instead of sending the value xk
+i
+computed from (6a) to the master, it sends an arbitrary vari-
+able zk
+i ∈Rd. The master is unable to distinguish xk
+i sent by
+a regular worker or zk
+i sent by a Byzantine worker. There-
+fore, the update of the master at time k +1 is no longer (6b),
+but:
+xk+1
+0
+= xk
+0−αk+1
+∇f0(xk
+0) + λ
+ X
+i∈R
+sign(xk
+0 −xk
+i )
++
+X
+j∈B
+sign(xk
+0 −zk
+j )
+
+.
+(8)
+We term this algorithm as ℓ1-norm RSA (Byzantine-robust
+stochastic aggregation).
+ℓ1-norm RSA is robust to Byzantine attacks. ℓ1-norm
+RSA is robust to Byzantine attacks due to the introduction
+of the ℓ1-norm regularized term to (5). The regularization
+term allows every xi to be different from x0, and the bias
+is controlled by the parameter λ. This modiﬁcation robus-
+tiﬁes the objective function when any worker is Byzantine
+and behaves arbitrarily. From the algorithmic perspective,
+we can observe from the update (8) that the impacts of a
+regular worker and a Byzantine worker on xk+1
+0
+are similar,
+no matter the how different the values sent by them to the
+master are. Therefore, only the number of Byzantine work-
+ers will inﬂuence the RSA update (8), rather than the magni-
+tudes of malicious messages sent by the Byzantine workers.
+In this sense, ℓ1-norm RSA is robust to arbitrary attacks from
+Byzantine workers. This is in sharp comparison with SGD,
+which is vulnerable to even a single Byzantine worker.
+
+
+PDF PAGE 4
+Algorithm 2 RSA for Robust Distributed Learning
+Master:
+1: Input: x0
+0, λ > 0, αk. At time k + 1:
+2: Broadcast its current iterates xk
+0 to all workers;
+3: Receive all local iterates xk
+i sent by regular workers or
+faulty values zk
+i sent by Byzantine workers;
+4: Update the iterate via (8) or (11).
+Regular Worker i:
+1: Input: x0
+i , λ > 0, αk. At time k + 1:
+2: Send the current local iterate xk
+i to the master;
+3: Receive the master’s local iterate xk
+0;
+4: Update the local iterate via (7) or (10).
+Generalization to ℓp-norm RSA
+In addition to solving ℓ1-norm regularized problem (5), we
+can also solve the following ℓp-norm regularized problem:
+x∗:= arg min
+x:=[xi;x0]
+X
+i∈R
+
+E[F(xi, ξi)] + λ||xi −x0||p
+
++ f0(x0)
+(9)
+where p ≥1. Similar to the case of ℓ1-regularized objec-
+tive in (5), the ℓp norm penalty helps mitigate the negative
+inﬂuence of the Byzantine workers.
+Akin to the ℓ1-norm RSA, the ℓp-norm RSA still operates
+using subgradient recursions. For each regular worker i, its
+local update at time k + 1 is:
+xk+1
+i
+= xk
+i −αk+1  ∇F(xk
+i , ξk
+i ) + λ∂xi∥xk
+i −xk
+0∥p
+
+(10)
+where ∂xi∥xk
+i −xk
+0∥p is a subgradient of ∥xi −xk
+0∥p at xi =
+xk
+i . Likewise, for the master, its update at time k + 1 is:
+xk+1
+0
+= xk
+0−αk+1
+∇f0(xk
+0) + λ
+ X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p
++
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p
+
+(11)
+where ∂x0∥xk
+0 −xk
+i ∥p and ∂x0∥xk
+0 −zk
+j ∥p are subgradients
+of ∥x0 −xk
+j ∥p and ∥x0 −zk
+j ∥p at x0 = xk
+0, respectively.
+To compute the subgradient involved in ℓp-norm RSA, we
+will rely on the following proposition.
+Proposition 1. Let p ≥1 and b satisfy 1
+b + 1
+p = 1. For
+x ∈Rd, we have the subdifferential ∂x∥x∥p = {z ∈Rd :
+⟨z, x⟩= ∥x∥p, ∥z∥b ≤1}.
+Here and thereafter, we slightly abuse the notation by us-
+ing ∂to denote both subgradient and subdifferential. The
+proof of Proposition 1 is in the supplementary document.
+Together with ℓ1-norm RSA, ℓp-norm RSA for robust dis-
+tributed stochastic optimization under Byzantine attacks is
+summarized in Algorithm 2 and illustrated in Figure 2.
+Remark 1 (Model vs. gradient aggregation). Most exist-
+ing Byzantine-robust methods are based on gradient ag-
+gregation. Since each worker computes its gradient using
+the same iterate, these methods do not have the consen-
+sus issue (Blanchard et al. 2017; Chen, Su, and Xu 2017;
+ Master
+...
+...
+1
+...
+r
+r + 1
+m
+Worker
+...
+...
+...
+Figure 2: The operation of RSA. There are m workers, r
+being regular and the rest of q = m−r being Byzantine. The
+master sends its local variable to the workers, and the regular
+workers send back their local variables. The red devil marks
+denote the wrong messages that the Byzantine workers send
+to the master.
+Xie, Koyejo, and Gupta 2018a; Yin et al. 2018b; 2018a;
+Xie, Koyejo, and Gupta 2018c). However, to enable efﬁ-
+cient gradient aggregation, these methods require the data
+stored in the workers are i.i.d., which is impractical in the
+federated learning setting. Under the assumption that data
+are i.i.d. on all the workers, the stochastic gradients com-
+puted by regular workers are also i.i.d. and their expecta-
+tions are equal. Using this prior knowledge, the master is
+able to apply robust estimation techniques to aggregate the
+stochastic gradients collected from both regular and Byzan-
+tine workers. When the i.i.d. assumption does not hold, even
+the stochastic gradients computed by regular workers are
+different in expectation, such that the gradient aggregation-
+based methods no longer work. In comparison, the proposed
+RSA methods utilize model aggregation aiming at ﬁnding a
+consensual model, and do not rely on the i.i.d. assumption.
+On the other hand, the existing gradient aggregation meth-
+ods generally require to design nontrivial subroutines to ag-
+gregate gradients, and hence incur relatively high complex-
+ities (Xie, Koyejo, and Gupta 2018a; Blanchard et al. 2017;
+Su and Xu 2018). In contrast, the proposed RSA methods en-
+joy much lower complexities, which are the same as that of
+the standard distributed SGD working in the Byzantine-free
+setting. We shall demonstrate the advantage of RSA in com-
+putational time in the numerical tests, in comparison with
+several state-of-the-art alternatives.
+Convergence Analysis
+This section analyzes the performance of the proposed RSA
+methods, with proofs given in the supplementary document.
+We make the following assumptions.
+Assumption 1. (Strong convexity) The local cost functions
+E[F(˜x, ξi)] and the regularization term f0(˜x) are strongly
+convex with constants µi and µ0, respectively.
+Assumption 2. (Lipschitz continuous gradients) The lo-
+cal cost functions E[F(˜x, ξi)] and the regularization term
+f0(˜x) have Lipschitz continuous gradients with constants Li
+and L0, respectively.
+
+
+PDF PAGE 5
+Assumption 3. (Bounded variance) For every worker i,
+the data sampling is i.i.d. across time such that ξk
+i ∼Di.
+The variance of ∇F(˜x, ξi) is upper bounded by δ2
+i , namely,
+E[||∇E[F(˜x, ξi)] −∇F(˜x, ξi)||2] ≤δ2
+i .
+Note that Assumptions 1-3 are standard for performance
+analysis of stochastic gradient-based methods (Nemirovski
+et al. 2009), and they are satisﬁed in a wide range of machine
+learning problems such as ℓ2-regularized least squares and
+logistic regression.
+We start with investigating the ℓp-norm regularized prob-
+lem (9), showing the condition under which the optimal so-
+lution of (9) is consensual and identical to that of (3).
+Theorem 1. Suppose that Assumptions 1 and 2 hold. If
+λ ≥λ0 := maxi∈R ∥∇E[F(˜x∗, ξi)]∥b with p ≥1 and b
+satisfying 1
+b + 1
+p = 1, then we have x∗= [˜x∗], where ˜x∗and
+x∗are the optimal solutions of (3) and (9), respectively.
+Theorem 1 asserts that if the penalty constant λ is selected
+to be large enough, the optimal solution of the regularized
+problem (9) is the same as that of (3). Next, we shall check
+the convergence properties of the RSA iterates with respect
+to the optimal solution of (9) under Byzantine attacks.
+Theorem 2. Suppose that Assumptions 1, 2 and 3 hold.
+Set the step size of ℓp-norm RSA (p ≥1) as αk+1 =
+min{α,
+α
+k+1}, where α and α depend on {µ0, µi, L0, Li}.
+Then, for k0 satisfying min{k : α ≥
+α
+k+1}, we have:
+E∥xk+1−x∗∥2 ≤(1−ηα)k∥x0−x∗∥2+α∆0 + ∆2
+η
+, k < k0
+(12)
+and
+E∥xk+1 −x∗∥2 ≤
+∆1
+k + 1 + α∆2, k ≥k0
+(13)
+where η, ∆1 and ∆2 = O(λ2q2) are certain positive con-
+stants.
+Theorem 2 shows that the sequence of local iterates con-
+verge sublinearly to the near-optimal solution of the regu-
+larized problem (9). The asymptotic sub-optimality gap is
+quadratically dependent on the number of Byzantine work-
+ers q. Building upon Theorems 1 and 2, we can arrive at the
+following theorem.
+Theorem 3. Under the same assumptions as those in The-
+orem 2, if we choose λ ≥λ0 according to Theorem 1, then
+for a sufﬁciently large k ≥k0, we have:
+E||xk −[˜x∗]||2 ≤
+∆1
+k + 1 + α∆2
+(14)
+If we choose 0 < λ < λ0, and suppose that the difference
+between the optimizer of (9) and that of (3) is bounded by
+||x∗−[˜x∗]||2 ≤∆3, then for k ≥k0 we have:
+E||xk −[˜x∗]||2 ≤2∆1
+k + 1 + 2α∆2 + 2∆3
+(15)
+Theorem 3 implies that the sequence of local iterates also
+converge sublinearly to the near-optimal solution of the orig-
+inal (3). Under a properly selected λ, the sub-optimality
+gap in the limit is proportional to the number of Byzantine
+workers. Note that since the O(1/k) step size is quite sensi-
+tive to its initial value (Nemirovski et al. 2009), we use the
+O(1/
+√
+k) step size in our numerical tests. Its corresponding
+theoretical claim and convergence analysis are given in the
+supplementary document.
+Regarding the optimal selection of the penalty constant λ
+and the ℓp norm, a remark follows next.
+Remark 2 (Optimal selection of λ and p). Selecting dif-
+ferent penalty constant λ and ℓp norms in RSA generally
+leads to distinct performance. For a ﬁxed λ, if a norm ℓp
+with a small p is used, the dual norm ℓb has a large b and
+thus results in a small λ0 in Theorem 1. Therefore, the lo-
+cal solutions are likely to be consensual. From the numer-
+ical tests, RSA with ℓ∞norm does not provide competitive
+performance, while those with ℓ1 and ℓ2 norms work well.
+On the other hand, for a ﬁxed p, a small λ cannot guar-
+antee consensus among local solutions, but it gives a small
+sub-optimality gap ∆2. We recommend to use a λ that is
+relatively smaller than λ0, slightly sacriﬁcing consensus but
+reducing the sub-optimality gap.
+Numerical Tests
+In this section, we evaluate the robustness of the proposed
+RSA methods to Byzantine attacks and compare them with
+several benchmark algorithms. We conduct experiments on
+the MNIST dataset, which has 60k training samples and
+10k testing samples, and use softmax regression with an ℓ2-
+norm regularization term f0(˜x) = 0.01
+2 ∥˜x∥2. We launch 20
+worker processes and 1 master process on a computer with
+Intel i7-6700 CPU @ 3.40GHz. In the i.i.d. case, the train-
+ing samples are randomly evenly assigned to the workers. In
+the heterogeneous case, every two workers evenly share the
+training samples of one digit. At every iteration, every reg-
+ular worker estimates its local gradient on a mini-batch of
+32 samples. The top-1 accuracy (evaluated with x0 in RSA
+and ˜x in the benchmark algorithms) on the test dataset is
+used as the performance metric. The code is available at
+https://github.com/liepill/rsa-byzantine
+Benchmark algorithms
+We use the SGD iteration (2) without attacks as the oracle,
+which is referred as Ideal SGD. Note that this method is not
+affected by q, the number of Byzantine workers. The other
+benchmark algorithms implement the following stochastic
+gradient aggregation recursion:
+˜xk+1 = ˜xk −αk+1 ˜∇(˜xk)
+(16)
+where ˜∇(˜xk) is an algorithm-dependent aggregated stochas-
+tic gradient that approximates the gradient direction, at the
+point ˜xk sent by the master to the workers. Let the message
+sent by worker i to the master be vk
+i , which is a stochas-
+tic gradient ∇F(˜xk, ξk
+i ) if i is regular, while arbitrary if i is
+Byzantine. The benchmark algorithms use different rules to
+calculate the aggregated stochastic gradient.
+GeoMed (Chen, Su, and Xu 2017). The geometric median
+
+
+PDF PAGE 6
+of {vk
+i : i ∈[m]} is denoted by:
+GeoMed({vk
+i }) = arg min
+v∈Rd
+m
+X
+i=1
+||v −vk
+i ||2.
+(17)
+We use a fast Weiszfeld’s algorithm (Weiszfeld and Plastria
+2009) to compute the geometric median in the experiments.
+Krum (Blanchard et al. 2017). Krum calculates ˜∇(˜xk) by:
+Krum({vk
+i }) = vk
+i∗, i∗= arg min
+i∈[m]
+X
+i→j
+||vk
+i −vk
+j ||2
+(18)
+where i →j(i ̸= j) selects the indexes j of the m −q −2
+nearest neighbors of vk
+i in {vk
+j : j ∈[m]}, measured by
+Euclidean distances. Note that q, the number of Byzantine
+workers, must be known in advance in Krum.
+0
+1000
+2000
+3000
+4000
+5000
+Number of Iterations
+0.78
+0.80
+0.82
+0.84
+0.86
+0.88
+0.90
+0.92
+0.94
+Top-1 Accuracy
+Ideal SGD
+GeoMed
+Krum
+Median
+RSA
+Figure 3: Top-1 accuracy without Byzantine attacks.
+Median (Xie, Koyejo, and Gupta 2018a). The marginal me-
+dian aggregation rule returns the element-wise median of the
+vectors {vk
+i : i ∈[m]}.
+SGD (Bottou 2010). The classical SGD aggregates {vk
+i :
+i ∈[m]} by returning the mean, and is hence not robust to
+Byzantine attacks.
+In the following experiments, step sizes of the benchmark
+algorithms are all hand-tuned to the best.
+Without Byzantine attacks
+In this test, we consider learning without Byzantine workers,
+and show the performance of all algorithms in Figure 3. ℓ1-
+norm RSA chooses the parameter λ = 0.1 and the step size
+αk = 0.003/
+√
+k. RSA and GeoMed are close to Ideal SGD,
+and signiﬁcantly outperform Krum and Median. Therefore,
+robustifying the cost in RSA, though introduces bias, does
+not sacriﬁce performance in the regular case.
+Same-value attacks
+The same-value attacks set the message sent by a Byzantine
+worker i as vk
+i = c1. Here 1 ∈Rd is an all-one vector
+and c is a constant, which we set as 100. We consider two
+different numbers of Byzantine workers, q = 4 and q = 8,
+and demonstrate the performance in Figure 4. ℓ1-norm RSA
+chooses the regularization parameter λ = 0.07 and the step
+size αk = 0.001/
+√
+k. When q = 4, RSA and GeoMed are
+still close to Ideal SGD and outperform Krum and Median.
+When q to q = 8, Krum and Median perform worse than
+in q = 4, while RSA and GeoMed are almost the same as
+in q = 4. Note that due to the special structure of softmax
+regression, SGD still works under the same-value attacks.
+Sign-ﬂipping attacks
+The sign-ﬂipping attacks ﬂip the signs of messages (gra-
+dients or local iterates) and enlarge the magnitudes. To be
+speciﬁc, a Byzantine worker i ﬁrst calculates the true value
+ˆvk
+i , and then sends vk
+i = σˆvk
+i to the master, where σ is a
+negative constant. We test σ = −4 while set q = 4 and
+q = 8, as shown in Figure 5. The parameters are λ = 0.07
+and α = 0.001/
+√
+k for q = 4, while λ = 0.01 and
+α = 0.0003/
+√
+k for q = 8. Not surprisingly, SGD fails in
+both cases. GeoMed, Median and ℓ1-norm RSA show simi-
+lar performance, and Median is slightly worse than the other
+Byzantine-robust algorithms.
+Gaussian attacks
+The Gaussian attacks set the message sent by a Byzantine
+worker i as vk
+i , where each element follows Gaussian dis-
+tribution ∼N(0, g2). We test g = 10000 while q = 4 and
+q = 8, as shown in Figure 6. In ℓ-norm RSA, the parameters
+are λ = 0.07 and α = 0.002/
+√
+k for both q = 4 and q = 8.
+SGD falis in both cases. RSA and GeoMed have similar re-
+sults and outperform Median and Krum.
+Runtime comparison
+We show in Figure 7 the runtime of the algorithms under
+the same-value attacks with parameter c = 100 and q = 8
+Byzantine workers. The total number of iterations for ev-
+ery algorithm is 5000. Though the algorithms are not im-
+plemented in a federated learning platform, the comparison
+clearly demonstrates the additional per-iteration computa-
+tional costs incurred in handling Byzantine attacks. GeoMed
+has the largest per-iteration computational cost due to the
+difﬁculty of calculating the geometric median. ℓ1-norm RSA
+and Median are both slightly slower than Ideal SGD, but
+faster than Krum. The only computational overhead of RSA
+than Ideal SDG lies in the computation of sign functions,
+which is light-weight. Therefore, RSA is advantageous in
+computational complexity comparing to other complicated
+gradient aggregation approaches.
+0
+1000
+2000
+3000
+4000
+5000
+Number of Iterations
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Top-1 Accuracy
+Ideal SGD
+GeoMed
+Krum
+Median
+RSA
+SGD
+0
+1000
+2000
+3000
+4000
+5000
+Number of Iterations
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Top-1 Accuracy
+Ideal SGD
+GeoMed
+Krum
+Median
+RSA
+SGD
+(a)
+(b)
+Figure 4: Top-1 accuracy under same-value attacks: (a) q =
+4 and c = 100; (b) q = 8 and c = 100.
+Impact of hyper-parameter λ
+We vary the hyper-parameter λ, and show how it affects the
+performance. We use the same value attacks with c = 100,
+
+
+PDF PAGE 7
+(a)
+(b)
+Figure 5: Top-1 accuracy under sign-ﬂipping attacks: (a) q =
+4 and σ = −4; (b) q = 8 and σ = −4.
+0
+1000
+2000
+3000
+4000
+5000
+Number of Iterations
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+1.0
+Top-1 Accuracy
+GeoMde
+Krum
+Median
+RSA
+SGD
+0
+1000
+2000
+3000
+4000
+5000
+Number of Iterations
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Top-1 Accuracy
+GeoMde
+Krum
+Median
+RSA
+SGD
+(a)
+(b)
+Figure 6: Top-1 accuracy under gaussian attacks: (a) q = 4
+and c = 10000; (b) q = 8 and c = 10000.
+vary λ, run RSA for 5000 iterations, and depict the ﬁnal top-
+1 accuracy in Figure 8. The number of Byzantine workers is
+q = 8 and the step sizes are hand-tuned to the best. Observe
+that when λ is small, a regular worker tends to rely on its
+own data such that information fusion over the network is
+slow, which leads to slow convergence and large error. On
+the other hand, a large λ also incurs remarkable error, as we
+have investigated in the convergence analysis.
+RSA with different norms
+Now we compare RSA methods regularized with different
+norms. The results without Byzantine attacks and under the
+same-value attacks with q = 8 and c = 100 are demon-
+strated in Figures 9 and 10, respectively. We consider two
+performance metrics, top-1 accuracy and variance of the reg-
+ular workers’ local iterates. A small variance means that the
+regular workers reach similar solutions. Without the Byzan-
+tine attacks, ℓ1 is with λ = 0.1 and αk = 0.001/
+√
+k, ℓ2
+is with λ = 1.4 and αk = 0.001/
+√
+k, while ℓ∞is with
+λ = 51 and αk = 0.0001/
+√
+k. Under the same-value at-
+tacks, ℓ1 is with λ = 0.07 and αk = 0.001/
+√
+k, ℓ2 is with
+λ = 1.2 and αk = 0.001/
+√
+k, while ℓ∞is with λ = 20 and
+αk = 0.0001/
+√
+k. In both cases, ℓ1-norm RSA and ℓ2-norm
+RSA are close in terms of top-1 accuracy, and both of them is
+better than ℓ∞-norm RSA. This observation coincides with
+our convergence analysis, namely, ℓ∞-norm RSA needs a
+large λ to ensure consensus, which in turn causes a large
+error. Indeed, we deliberately choose a not-too-large λ for
+ℓ∞-norm RSA so as to reduce the error, but sacriﬁcing the
+consensus property. Therefore, regarding the variance of the
+regular workers’ local iterates, ℓ∞-norm RSA is the largest,
+Figure 7: Runtime under same-value attacks with q = 8 and
+c = 100.
+Figure 8: Top-1 accuracy with varying λ. We use same-value
+attacks with q = 8 and c = 100.
+while ℓ2-norm RSA is smaller than ℓ1-norm RSA.
+Heterogeneous Data
+To show the robustness of RSA on heterogeneous dataset,
+we re-distribute the MNIST data in this way: each two work-
+ers associate with the data about the same handwriting digit.
+In experiment, each Byzantine worker i transmits vk
+i = vk
+r ,
+where worker r is one of the regular workers. We set r = 1
+in the experiment. The results are shown in Figure 11. When
+q = 4, two handwriting numbers’ data are not available
+in the experiment, such that the best possible accuracy is
+around 0.8. When q = 8, the best possible accuracy is
+around 0.6. The parameters of ℓ1-norm RSA are λ = 0.5
+and αk = 0.0005/
+√
+k. Observe that when q = 4, Krum
+fails, while RSA outperforms GeoMed and Median. When q
+increases to 8, GeoMed, Krum and Median all fail, but RSA
+still performs well and reaches the near-optimal accuracy.
+Conclusions
+This paper dealt with distributed learning under Byzantine
+attacks. While the existing work mostly focuses on the case
+of i.i.d. data and relies on costly gradient aggregation rules,
+we developed an efﬁcient variant of SGD for distributed
+learning from heterogeneous datasets under the Byzantine
+attacks. The resultant SGD-based methods that we term
+RSA converges to a near-optimal solution at an O(1/k) con-
+vergence rate, where the optimality gap depends on the num-
+ber of Byzantine workers. In the Byzantine-free settings,
+both SGD and RSA converge to the optimal solution at sub-
+linear convergence rate. Numerically, experiments on real
+data corroborate the competitive performance of RSA com-
+pared to the state-of-the-art alternatives.
+
+
+PDF PAGE 8
+(a)
+(b)
+Figure 9: RSA with different norms, without Byzantine at-
+tacks: (a) top-1 accuracy; (b) variance of regular workers’
+local iterates.
+(a)
+(b)
+Figure 10: RSA with different norms, under same-value at-
+tacks with q = 8 and c = 100: (a) top-1 accuracy; (b) vari-
+ance of regular workers’ local iterates.
+(a)
+(b)
+Figure 11: Top-1 accuracy under attacks on heterogeneous
+data: (a) q = 4; (b) q = 8.
+Acknowledgments.
+The work by T. Chen and G. Gian-
+nakis is supported in part by NSF 1500713 and 1711471.
+The work by Q. Ling is supported in part by NSF China
+61573331 and Guangdong IIET 2017ZT07X355.
+References
+Alistarh, D.; Allen-Zhu, Z.; and Li, J.
+2018.
+Byzan-
+tine
+stochastic
+gradient
+descent.
+arXiv
+preprint
+arXiv:1803.08917.
+Ben-Ameur, W.; Bianchi, P.; and Jakubowicz, J. 2016. Ro-
+bust distributed consensus using total variation.
+In IEEE
+Trans. Automat. Contr. 61(6):1550–1564.
+Blanchard, P.; Guerraoui, R.; Stainer, J.; and Mhamdi, E.
+M. E. 2017. Machine learning with adversaries: Byzantine
+tolerant gradient descent. In Advances in Neural Information
+Processing Systems, 119–129.
+Bottou, L. 2010. Large-scale machine learning with stochas-
+tic gradient descent. In International Conference on Com-
+putational Statistics. Physica-Verlag HD. 177–186.
+Chen, L.; Wang, H.; Charles, Z.; and Papailiopoulos, D.
+2018a. Draco: Byzantine-resilient distributed training via
+redundant gradients. In International Conference on Ma-
+chine Learning, 902–911.
+Chen,
+T.;
+Giannakis,
+G.
+B.;
+Sun,
+T.;
+and
+Yin,
+W.
+2018b.
+LAG: Lazily aggregated gradient for
+communication-efﬁcient
+distributed
+learning.
+arXiv
+preprint arXiv:1805.09965.
+Chen, Y.; Su, L.; and Xu, J. 2017. Distributed statistical
+machine learning in adversarial settings: Byzantine gradient
+descent. In ACM Conference on Measurement and Analysis
+of Computing Systems 1(2):44.
+Li, M.; Andersen, D. G.; Smola, A. J.; and Yu, K. 2014.
+Communication efﬁcient distributed machine learning with
+the parameter server. In Advances in Neural Information
+Processing Systems, 19–27.
+Li, L.
+2019.
+https://github.com/liepill/rsa-byzantine.
+Github.
+Liu, Y.; Nowzari, C.; Tian, Z.; and Ling, Q. 2017. Asyn-
+chronous periodic event-triggered coordination of multi-
+agent systems. In IEEE Conference Decision Control, 6696–
+6701.
+Lynch, N. A. 1996. Distributed algorithms. Elsevier.
+McMahan, B., and Ramage, D. 2017. Federated learning:
+Collaborative machine learning without centralized training
+data. Google Research Blog.
+Nemirovski, A.; Juditsky, A.; Lan, G.; and Shapiro, A. 2009.
+Robust stochastic approximation approach to stochastic pro-
+gramming. SIAM J. Optimization 19(4):1574–1609.
+Nesterov, Y. 2013. Introductory lectures on convex opti-
+mization: A basic course, volume 87. Springer Science &
+Business Media.
+Shi, W.; Ling, Q.; Yuan, K.; Wu, G.; and Yin, W. 2014.
+On the linear convergence of the ADMM in decentralized
+consensus optimization.
+In IEEE Trans. Signal Process.
+62(7):1750–1761.
+Sicari, S.; Rizzardi, A.; Grieco, L. A.; and Coen-Porisini, A.
+2015. Security, privacy and trust in Internet of Things: The
+road ahead. Computer Networks 76:146–164.
+Smith, V.; Chiang, C.-K.; Sanjabi, M.; and Talwalkar, A. S.
+2017. Federated multi-task learning. In Advances in Neural
+Information Processing Systems, 4427–4437.
+Su, L., and Xu, J. 2018. Securing distributed machine learn-
+ing in high dimensions. arXiv preprint arXiv:1804.10140.
+Weiszfeld, E., and Plastria, F. 2009. On the point for which
+the sum of the distances to n given points is minimum. An-
+nals of Operations Research 167(1):7–41.
+Xie, C.; Koyejo, O.; and Gupta, I.
+2018a.
+Generalized
+Byzantine-tolerant SGD. arXiv preprint arXiv:1802.10116.
+
+
+PDF PAGE 9
+Xie, C.; Koyejo, O.; and Gupta, I. 2018b. Phocas: Dimen-
+sional byzantine-resilient stochastic gradient descent. arXiv
+preprint arXiv:1805.09682.
+Xie, C.; Koyejo, O.; and Gupta, I. 2018c. Zeno: Byzantine-
+suspicious stochastic gradient descent.
+arXiv preprint
+arXiv:1805.10032.
+Xu, W.; Li, Z.; and Ling, Q. 2018. Robust decentralized
+dynamic optimization at presence of malfunctioning agents.
+Signal Processing 153:24–33.
+Yin, D.; Chen, Y.; Ramchandran, K.; and Bartlett, P. 2018a.
+Byzantine-robust distributed learning: Towards optimal sta-
+tistical rates. arXiv preprint arXiv:1803.01498.
+Yin, D.; Chen, Y.; Ramchandran, K.; and Bartlett, P. 2018b.
+Defending against saddle point attack in Byzantine-robust
+distributed learning. arXiv preprint arXiv:1806.05358.
+
+
+PDF PAGE 10
+Supplementary Document for “RSA: Byzantine-Robust Stochastic Aggregation Methods for
+Distributed Learning from Heterogeneous Datasets”
+In this supplementary document, we present omitted proofs in the main manuscript.
+Proof of Proposition 1
+Proof. The proof has two parts.
+• Proof of {z ∈Rd : ⟨z, x⟩= ∥x∥p, ∥z∥b ≤1} ⊆∂x∥x∥p :
+Considering any z ∈{z ∈Rd : ⟨z, x⟩= ∥x∥p, ∥z∥b ≤1}, we have:
+∥x∥p + ⟨z, y −x⟩= ⟨z, y⟩≤∥z∥b∥y∥p ≤∥y∥p
+where ⟨z, y⟩≤∥z∥b∥y∥p due to Holder’s inequality. According to the deﬁnition of subdifferential, it holds that z ∈∂x∥x∥p.
+• Proof of ∂x∥x∥p ⊆{z ∈Rd : ⟨z, x⟩= ∥x∥p, ∥z∥b ≤1} :
+Considering any z ∈∂x∥x∥p, one can always ﬁnd a vector xz that satisﬁes ∥xz∥p = 1 and ⟨z, xz⟩= ∥z∥b since 1
+b + 1
+p = 1.
+Let y = ∥x∥pxz, we have:
+∥y∥p −∥x∥p ≥⟨z, y −x⟩= ⟨z, y⟩−⟨z, x⟩= ∥x∥p∥z∥b −⟨z, x⟩
+where the ﬁrst inequality comes from the deﬁnition of subdifferential. Since ∥y∥p −∥x∥p = 0 when y = ∥x∥pxz and
+∥xz∥p = 1, the above result yields 0 ≥∥x∥p∥z∥b −⟨z, x⟩. However, due to the Holder’s inequality it also holds ∥x∥p∥z∥b ≥
+⟨z, x⟩. Thus, we must have ∥x∥p∥z∥b = ⟨z, x⟩.
+For x ̸= 0, we use the deﬁnition of subdifferential to derive ∥2x∥p −∥x∥p ≥⟨z, x⟩and ∥0∥p −∥x∥p ≥⟨z, −x⟩, from which
+we conclude that ⟨z, x⟩= ∥x∥p. Since ∥x∥p∥z∥b = ⟨z, x⟩, we have ∥z∥b = 1.
+For x = 0, it holds that ⟨z, x⟩= ∥x∥p. Due to ∥xz∥p −∥0∥p ≥⟨z, xz⟩from the deﬁnition of subdifferential, as well as
+∥xz∥p = 1 and ⟨z, xz⟩= ∥z∥b by hypothesis, we have ∥z∥b ≤1.
+Proof of Theorem 1
+Proof. Since λ0 = maxi∈R ∥∇E[F(˜x∗, ξi)]∥b and λ ≥λ0, we have ∇E[F(˜x∗, ξi)] ∈{λz : ∥z∥b ≤1}. As p ≥1 and
+1
+b + 1
+p = 1, by Proposition 1, we have ∇E
+
+F(˜x∗, ξi)
+
+∈λ∂∥0∥p for all i ∈R, and consequently:
+0 ∈∇E
+
+F(˜x∗, ξi)
+
++ λ∂∥˜x∗−˜x∗∥p, ∀i ∈R
+(19)
+Also, by ∇E
+
+F(˜x∗, ξi)
+
+∈λ∂∥0∥p for all i ∈R, there exists νi ∈∂∥0∥p such that:
+∇E
+
+F(˜x∗, ξi)
+
++ λνi = 0, ∀i ∈R
+(20)
+Summing (20) up for i ∈R, we have:
+X
+i∈R
+
+∇E
+
+F(˜x∗, ξi)
+
++ λνi
+
+= 0
+(21)
+From the optimality condition of (3), P
+i∈R ∇E
+
+F(˜x∗, ξi)
+
++∇f0(˜x∗) = 0. Substituting this equality to (21), we have:
+∇f0(˜x∗) −
+X
+i∈R
+λνi = 0
+(22)
+Because every νi is a vector satisfying νi ∈∂∥0∥p, it is straightforward to conclude that:
+0 ∈∇f0(˜x∗) +
+X
+i∈R
+λ∂∥˜x∗−˜x∗∥p
+(23)
+Combining (19) and (23), we know that x∗:= [˜x∗] (that is, x∗
+i = ˜x∗for all i ∈R and x∗
+0 = ˜x∗) satisﬁes the optimality
+condition of (9). This solution is also unique due to Assumption 1.
+
+
+PDF PAGE 11
+Proof of Theorem 2
+We ﬁrst give a complete form of Theorem 2 as follows.
+A complete form of Theorem 2. Suppose that Assumptions 1, 2 and 3 hold. Set the step size of ℓp-norm RSA (p ≥1) as
+αk+1 = min{α,
+α
+k+1}, where α = min{mini∈R
+1
+2(µi+Li),
+1
+2(µ0+L0)}, and α > 1
+η with η = min{mini∈R
+2µiLi
+µi+Li , 2µ0L0
+µ0+L0 −ϵ},
+and ϵ is any constant within (0, 2µ0L0
+µ0+L0 ). Then, there exists a smallest integer k0 satisfying α ≥
+α
+k0+1 such that:
+E∥xk+1 −x∗∥2 ≤(1 −ηα)kE∥x0 −x∗∥2 + 1
+η (α∆0 + ∆2),
+∀k < k0
+(24)
+and
+E∥xk+1 −x∗∥2 ≤
+∆1
+k + 1 + α∆2,
+∀k ≥k0.
+(25)
+Here we deﬁne
+∆1 = max
+ α2∆0
+ηα −1, (k0 + 1)E∥xk0 −x∗∥2 + α2∆0
+k0 + 1
+
+as well as
+∆0 = 16λ2rd + 16λ2r2d + 2λ2q2d + 2
+X
+i∈R
+δ2
+i
+and
+∆2 = λ2q2d
+ϵ
+.
+Proof. The proof contains the following steps.
+Step 1. From the RSA update (10) at every regular worker i, we have:
+E∥xk+1
+i
+−x∗
+i ∥2
+=E∥xk
+i −x∗
+i −αk+1
+
+∇F(xk
+i , ξk
+i ) + λ∂xi∥xk
+i −xk
+0∥p
+
+∥2
+=E∥xk
+i −x∗
+i ∥2 + (αk+1)2E∥∇F(xk
+i , ξk
+i ) + λ∂xi∥xk
+i −xk
+0∥p∥2
+−2αk+1E⟨∇F(xk
+i , ξk
+i ), xk
+i −x∗
+i ⟩−2αk+1E⟨λ∂xi∥xk
+i −xk
+0∥p, xk
+i −x∗
+i ⟩
+(26)
+Since xk
+i is independent with ξk
+i , it follows that:
+E
+
+⟨∇F(xk
+i , ξk
+i ), xk
+i −x∗
+i ⟩
+
+= E
+
+⟨∇E
+
+F(xk
+i , ξk
+i )
+
+, xk
+i −x∗
+i ⟩
+
+.
+(27)
+Substituting (27) to (26), we have:
+E∥xk+1
+i
+−x∗
+i ∥2 =E∥xk
+i −x∗
+i ∥2 + (αk+1)2E∥∇F(xk
+i , ξk
+i ) + λ∂xi∥xk
+i −xk
+0∥p∥2
+−2αk+1E⟨∇E
+
+F(xk
+i , ξk
+i )
+
+, xk
+i −x∗
+i ⟩−2αk+1E⟨λ∂xi∥xk
+i −xk
+0∥p, xk
+i −x∗
+i ⟩
+(a)
+=E∥xk
+i −x∗
+i ∥2 + (αk+1)2E∥∇F(xk
+i , ξk
+i ) + λ∂xi∥xk
+i −xk
+0∥p∥2
+−2αk+1E⟨∇E
+
+F(xk
+i , ξk
+i )
+
+−∇E
+
+F(x∗
+i , ξk
+i )
+
+, xk
+i −x∗
+i ⟩
+−2αk+1E⟨λ∂xi∥xk
+i −xk
+0∥p −λ∂xi∥x∗
+i −x∗
+0∥p, xk
+i −x∗
+i ⟩
+(28)
+where in (a), we insert the optimality condition of (9) with respect to xi, namely, E
+
+∇F(x∗
+i , ξi)
+
++ λ∂xi∥x∗
+i −x∗
+0∥p = 0, and
+replace ξi by ξk
+i due to ξk
+i ∼Di.
+For the second term at the right-hand side of (28), we have:
+E∥∇F(xk
+i , ξk
+i ) + λ∂xi∥xk
+i −xk
+0∥p∥2
+=E∥∇E
+
+F(xk
+i , ξk
+i )
+
++ λ∂xi∥xk
+i −xk
+0∥p + ∇F(xk
+i , ξk
+i ) −∇E
+
+F(xk
+i , ξk
+i )
+
+∥2
+≤2E∥∇E
+
+F(xk
+i , ξk
+i )
+
++ λ∂xi∥xk
+i −xk
+0∥p∥2 + 2E[∥∇F(xk
+i , ξk
+i ) −∇E
+
+F(xk
+i , ξk
+i )
+
+∥2]
+(b)
+≤2E∥∇E
+
+F(xk
+i , ξk
+i )
+
++ λ∂xi∥xk
+i −xk
+0∥p∥2 + 2δ2
+i
+(29)
+where (b) is due to the bounded variance given by Assumption 3. Plugging the optimality condition E
+
+∇F(x∗
+i , ξk
+i )
+
++λ∂xi∥x∗
+i −
+x∗
+0∥p = 0 into the right-hand side of (29) yields:
+E∥∇F(xk
+i , ξk
+i ) + λ∂xi∥xk
+i −xk
+0∥p∥2
+≤2E∥∇E
+
+F(xk
+i , ξk
+i )
+
+−∇E
+
+F(x∗
+i , ξk
+i )
+
++ λ∂xi∥xk
+i −xk
+0∥p −λ∂xi∥x∗
+i −x∗
+0∥p∥2 + 2δ2
+i
+≤4E∥∇E
+
+F(xk
+i , ξk
+i )
+
+−∇E
+
+F(x∗
+i , ξk
+i )
+
+∥2 + 4λ2E∥∂xi∥xk
+i −xk
+0∥p −∂xi∥x∗
+i −x∗
+0∥p∥2 + 2δ2
+i
+(c)
+≤4E∥∇E
+
+F(xk
+i , ξk
+i )
+
+−∇E
+
+F(x∗
+i , ξk
+i )
+
+∥2 + 16λ2d + 2δ2
+i
+(30)
+
+
+PDF PAGE 12
+where (c) holds true because the b-norm of ∂xi∥xk
+i −xk
+0∥p (or ∂xi∥x∗
+i −x∗
+0∥p) is no larger than 1 according to Proposition 1,
+and thus the absolute value of every element of the d-dimensional vector ∂xi∥xk
+i −xk
+0∥p (or ∂xi∥x∗
+i −x∗
+0∥p) is no larger than 1.
+For the third term at the right-hand side of (28), since E
+
+F(xi, ξk
+i )
+
+is strongly convex and has Lipschitz continuous gradients
+by hypothesis, we have (Nesterov 2013):
+E⟨∇E
+
+F(xk
+i , ξk
+i )
+
+−∇E
+
+F(x∗
+i , ξk
+i )
+
+, xk
+i −x∗
+i ⟩≥
+µiLi
+µi + Li
+E∥xk
+i −x∗
+i ∥2 +
+1
+µi + Li
+E∥∇E
+
+F(xk
+i , ξk
+i )
+
+−∇E
+
+F(x∗
+i , ξk
+i )
+
+∥2
+(31)
+Substituting (30) and (31) into (28), we have:
+E∥xk+1
+i
+−x∗
+i ∥2 ≤
+
+1 −2αk+1µiLi
+µi + Li
+
+E∥xk
+i −x∗
+i ∥2 + (αk+1)2(16λ2d + 2δ2
+i )
+−2αk+1
+
+1
+µi + Li
+−2αk+1
+
+E∥∇E
+
+F(xk
+i , ξk
+i )
+
+−∇E
+
+F(x∗
+i , ξk
+i )
+
+∥2
+−2αk+1E⟨λ∂xi∥xk
+i −xk
+0∥p −λ∂xi∥x∗
+i −x∗
+0∥p, xk
+i −x∗
+i ⟩
+≤
+ 1 −ηαk+1
+E∥xk
+i −x∗
+i ∥2 + (αk+1)2(16λ2d + 2δ2
+i )
+−2αk+1E⟨λ∂xi∥xk
+i −xk
+0∥p −λ∂xi∥x∗
+i −x∗
+0∥p, xk
+i −x∗
+i ⟩
+(32)
+where we drop the term of E∥∇E
+
+F(xk
+i , ξk
+i )
+
+−∇E
+
+F(x∗
+i , ξk
+i )
+
+∥2 because
+1
+µi+Li −2αk+1 ≥0 according to the step size rule.
+Step 2. From the RSA update (11) at the master, we have:
+E∥xk+1
+0
+−x∗
+0∥2
+=E
+xk
+0 −x∗
+0 −αk+1
+
+∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p + λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p
+
+2
+=E∥xk
+0 −x∗
+0∥2 + (αk+1)2E
+∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p + λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥pv
+
+2
+−2αk+1E⟨∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p, xk
+0 −x∗
+0⟩−2αk+1E⟨λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p, xk
+0 −x∗
+0⟩.
+(33)
+For the second term at the right-hand side of (33), we have:
+E
+∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p + λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p
+
+2
+≤2E
+∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p
+
+2
++ 2λ2E
+
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p
+
+2
+.
+(34)
+Since every element of the d-dimensional vector ∂x0∥xk
+0 −zk
+j ∥p is within [−1, 1], it holds:
+E
+
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p
+
+2
+≤q2d.
+(35)
+For E∥∇f0(xk
+0) + λ P
+i∈R ∂x0∥xk
+0 −xk
+i ∥p∥2, we insert the optimality condition of (9) with respect to x0, namely, ∇f0(x∗
+0) +
+λ P
+i∈R ∂x0∥x∗
+i −x∗
+0∥p = 0 to obtain:
+E
+∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p
+
+2
+≤E
+∇f0(xk
+0) −∇f0(x∗
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p −λ
+X
+i∈R
+∂x0∥x∗
+i −x∗
+0∥p
+
+2
+≤2E∥∇f0(xk
+0) −∇f0(x∗
+0)∥2 + 2λ2E
+
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p −
+X
+i∈R
+∂x0∥x∗
+0 −x∗
+i ∥p
+
+2
+≤2E∥∇f0(xk
+0) −∇f0(x∗
+0)∥2 + 8λ2r2d
+(36)
+
+
+PDF PAGE 13
+Substituting (35) and (36) into (34) yields:
+E∥∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p + λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p∥2
+≤4E∥∇f0(xk
+0) −∇f0(x∗
+0)∥2 + 16λ2r2d + 2λ2q2d
+(37)
+For the third term at the right-hand side of (33), we insert ∇f0(x∗
+0) + λ P
+i∈R ∂x0∥x∗
+i −x∗
+0∥p = 0, the optimality condition
+of (9) with respect to x0, and obtain:
+E⟨∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p, xk
+0 −x∗
+0⟩
+=E⟨λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p −λ
+X
+i∈R
+∂x0∥x∗
+0 −x∗
+i ∥p, xk
+0 −x∗
+0⟩+ E⟨∇f0(xk
+0) −∇f0(x∗
+0), xk
+0 −x∗
+0⟩
+(d)
+≥E⟨λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p −λ
+X
+i∈R
+∂x0∥x∗
+0 −x∗
+i ∥p, xk
+0 −x∗
+0⟩+
+µ0L0
+µ0 + L0
+E∥xk
+0 −x∗
+0∥2 +
+1
+µ0 + L0
+E∥∇f0(xk
+0) −∇f0(x∗
+0)∥2
+(38)
+where (d) is due to the fact that f0 is strongly convex and has Lipschitz continuous gradients (cf. Assumptions 1 and 2).
+For the last term at the right-hand side of (33), it holds for any ϵ > 0 that:
+2E
+D
+λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p, xk
+0 −x∗
+0
+E
+≤ϵE∥xk
+0 −x∗
+0∥2 + λ2
+ϵ E
+
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p
+
+2
+≤ϵE∥xk
+0 −x∗
+0∥2 + λ2q2d
+ϵ
+.
+(39)
+Substituting (37), (38) and (39) into (33), we have:
+E∥xk+1
+0
+−x∗
+0∥2 ≤
+
+1 −( 2µ0L0
+µ0 + L0
+−ϵ)αk+1
+
+E∥xk−1
+0
+−x∗
+0∥2 + (αk+1)2(16λ2r2d + 2λ2q2d) + αk+1λ2q2d
+ϵ
+−αk+1
+
+2
+µ0 + L0
+−4αk+1
+
+E∥∇f0(xk
+0) −∇f0(x∗
+0)∥2
+−2αk+1E⟨λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p −λ
+X
+i∈R
+∂x0∥x∗
+0 −x∗
+i ∥p, xk
+0 −x∗
+0⟩
+≤(1 −ηαk+1)E∥xk
+0 −x∗
+0∥2 + (αk+1)2(16λ2r2d + 2λ2q2d) + αk+1λ2q2d
+ϵ
+−2αk+1E⟨λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p −λ
+X
+i∈R
+∂x0∥x∗
+0 −x∗
+i ∥p, xk
+0 −x∗
+0⟩.
+(40)
+We drop the term of E∥∇f0(xk
+0) −∇f0(x∗
+0)∥2 because
+1
+µ0+L0 −2αk+1 ≥0 according to the step size rule.
+Step 3. Denote gp(x) = P
+i∈R ∥xi −x0∥p. Since gp(x) is convex, we have:
+⟨∂xgp(xk) −∂xgp(x∗), xk −x∗⟩
+=
+X
+i∈R
+⟨∂xi∥xk
+i −xk
+0∥p −∂xi∥x∗
+i −x∗
+0∥p, xk
+i −x∗
+i ⟩+
+X
+i∈R
+⟨∂x0∥xk
+0 −xk
+i ∥p −∂x0∥x∗
+0 −x∗
+i ∥p, xk
+0 −x∗
+0⟩≥0.
+(41)
+Summing up (32) for all i ∈R, adding (40) and substituting (41), we have:
+E∥xk+1 −x∗∥2 ≤(1 −ηαk+1)E∥xk −x∗∥2 + (αk+1)2(16λ2rd + 16λ2r2d + 2λ2q2d + 2
+X
+i∈R
+δ2
+i ) + αk+1λ2q2d
+ϵ
+=(1 −ηαk+1)E∥xk −x∗∥2 + (αk+1)2∆0 + αk+1∆2
+(42)
+where for simplicity we denote:
+∆0 = 16λ2rd + 16λ2r2d + 2λ2q2d + 2
+X
+i∈R
+δ2
+i
+and
+∆2 = λ2q2d
+ϵ
+.
+(43)
+
+
+PDF PAGE 14
+According to the step size rule αk+1 = min{α,
+α
+k+1}, there exists a smallest integer k0 satisfying α ≥
+α
+k0+1 such that
+αk+1 = α when k < k0 and αk+1 =
+α
+k+1 when k ≥k0. Then for all k < k0, (42) becomes:
+E∥xk+1 −x∗∥2 ≤(1 −ηα)E∥xk −x∗∥2 + (α)2∆0 + α∆2,
+∀k < k0.
+(44)
+By deﬁnitions η = min{mini∈R
+2µiLi
+µi+Li , 2µ0L0
+µ0+L0 −ϵ} and α = min{mini∈R
+1
+2(µi+Li),
+1
+2(µ0+L0)}, ηα ∈(0, 1
+4). Applying
+telescopic cancellation to (44) through time 0 to k < k0 yields:
+E∥xk+1 −x∗∥2 ≤(1 −ηα)kE∥x0 −x∗∥2 + 1
+η (α∆0 + ∆2),
+∀k < k0
+(45)
+For all k ≥k0, (42) becomes:
+E∥xk+1 −x∗∥2 ≤(1 −
+ηα
+k + 1)E∥xk −x∗∥2 +
+α2∆0
+(k + 1)2 + α∆2
+k + 1,
+∀k ≥k0.
+(46)
+Note that 1 −
+ηα
+k+1 ∈( 3
+4, 1) when k ≥k0 because
+ηα
+k+1 ≤
+ηα
+k0+1 ≤ηα < 1
+4. We use induction to prove that:
+E∥xk+1 −x∗∥2 ≤
+∆1
+k + 1 + α∆2,
+∀k ≥k0
+(47)
+where
+∆1 = max
+ α2∆0
+ηα −1, (k0 + 1)E∥xk0 −x∗∥2 + α2∆0
+k0 + 1
+
+.
+When k = k0, (47) holds because by (46) it follows:
+E∥xk0+1 −x∗∥2 ≤(1 −
+ηα
+k0 + 1)E∥xk0 −x∗∥2 +
+α2∆0
+(k0 + 1)2 + α∆2
+k0 + 1
+≤E∥xk0 −x∗∥2 +
+α2∆0
+(k0 + 1)2 + α∆2
+≤
+∆1
+k0 + 1 + α∆2.
+(48)
+Then, we assume that (47) holds for a certain k ≥k0 and establish an upper bound for E∥xk+2 −x∗∥2 as:
+E∥xk+2 −x∗∥2 ≤(1 −
+ηα
+k + 2)E∥xk+1 −x∗∥2 +
+α2∆0
+(k + 2)2 + α∆2
+k + 2
+≤(1 −
+ηα
+k + 2) ∆1
+k + 1 +
+α2∆0
+(k + 2)2 + α∆2 + (1 −ηα) ∆2
+k + 2
+(e)
+≤(1 −
+ηα
+k + 2) ∆1
+k + 1 +
+α2∆0
+(k + 2)2 + α∆2
+(f)
+≤(1 −
+ηα
+k + 2) ∆1
+k + 1 + (ηα −1)∆1
+(k + 2)2
++ α∆2
+≤(1 −
+ηα
+k + 2) ∆1
+k + 1 +
+(ηα −1)∆1
+(k + 1)(k + 2) + α∆2
+≤
+1
+k + 2∆1 + α∆2
+(49)
+where (e) uses the fact that α > 1
+η, and (f) follows from ∆1 ≥α2∆0
+ηα−1. This completes the induction as well as the proof.
+Convergence of RSA with O(1/
+√
+k) Step Size
+Deﬁne the objective function in (9) as:
+hp(x) :=
+X
+i∈R
+
+E[F(xi, ξi)] + λ||xi −x0||p
+
++ f0(x0).
+(50)
+We have the following theorem for RSA with O(1/
+√
+k) step size.
+
+
+PDF PAGE 15
+Theorem 4. Suppose that Assumptions 1, 2 and 3 hold. Set the step size of ℓp-norm RSA (p ≥1) as αk+1 = min{α,
+α
+√k+1},
+where α = min{mini∈R
+µi
+4L2
+i , µ0−ϵ
+4L2
+0 }, α > 0, and ϵ is any constant within (0, µ0), then we have:
+E
+
+hp(¯xk) −hp(x∗)
+
+≤E∥x0 −x∗∥2 + ∆0
+Pk
+τ=0(ατ+1)2
+2 Pk
+τ=0 ατ+1
++ ∆2
+2 = O
+log k
+√
+k
+
++ ∆2
+2
+(51)
+where ¯xk is the running average solution
+¯xk =
+Pk
+τ=0 ατ+1xτ
+Pk
+τ=0 ατ+1 ,
+while ∆0 and ∆2 = O(λ2q2) are constants deﬁned as
+∆0 = 16λ2rd + 16λ2r2d + 2λ2q2d + 2
+X
+i∈R
+δ2
+i
+and
+∆2 = λ2q2d
+ϵ
+.
+Proof. For those equalities and inequalities that also appear in the proof of Theorem 2, we shall directly cite them. The proof
+contains the following steps.
+Step 1. From the RSA update (10) at every regular worker i, corresponding to (28), we have:
+E∥xk+1
+i
+−x∗
+i ∥2 =E∥xk
+i −x∗
+i ∥2 + (αk+1)2E∥∇F(xk
+i , ξk
+i ) + λ∂xi∥xk
+i −xk
+0∥p∥2
+−2αk+1E⟨∇E
+
+F(xk
+i , ξk
+i )
+
+, xk
+i −x∗
+i ⟩−2αk+1E⟨λ∂xi∥xk
+i −xk
+0∥p, xk
+i −x∗
+i ⟩
+(a)
+≤E∥xk
+i −x∗
+i ∥2 + (αk+1)2E∥∇F(xk
+i , ξk
+i ) + λ∂xi∥xk
+i −xk
+0∥p∥2
+−2αk+1E(E
+
+F(xk
+i , ξk
+i )
+
+−E
+
+F(x∗
+i , ξk
+i )
+
++ µi
+2 ∥xk
+i −x∗
+i ∥2)
+−2αk+1E⟨λ∂xi∥xk
+i −xk
+0∥p, xk
+i −x∗
+i ⟩
+(52)
+where (a) is due to the strong convexity of E
+
+F(xi, ξk
+i )
+
+.
+For the second term at the right-hand side of (52), we have:
+E∥∇F(xk
+i , ξk
+i ) + λ∂xi∥xk
+i −xk
+0∥p∥2
+=E∥∇E
+
+F(xk
+i , ξk
+i )
+
++ λ∂∥xk
+i −xk
+0∥p + ∇F(xk
+i , ξk
+i ) −∇E
+
+F(xk
+i , ξk
+i )
+
+∥2
+≤2E∥∇E
+
+F(xk
+i , ξk
+i )
+
++ λ∂xi∥xk
+i −xk
+0∥p∥2 + 2E[∥∇F(xk
+i , ξk
+i ) −∇E
+
+F(xk
+i , ξk
+i )
+
+∥2]
+(b)
+≤2E∥∇E
+
+F(xk
+i , ξk
+i )
+
++ λ∂xi∥xk
+i −xk
+0∥p∥2 + 2δ2
+i
+(53)
+where (b) is due to the bounded variance given by Assumption 3. Plugging the optimality condition E
+
+∇F(x∗
+i , ξk
+i )
+
++λ∂xi∥x∗
+i −
+x∗
+0∥p = 0 into E∥∇E
+
+F(xk
+i , ξk
+i )
+
++ λ∂xi∥xk
+i −xk
+0∥p∥2 in the right-hand side of (53) yields:
+E∥∇F(xk
+i , ξk
+i ) + λ∂∥xk
+i −xk
+0∥p∥2
+≤2E∥∇E
+
+F(xk
+i , ξk
+i )
+
+−E
+
+F(x∗
+i , ξk
+i )
+
++ λ∂∥xk
+i −xk
+0∥p −λ∂∥x∗
+i −x∗
+0∥p∥2 + 2δ2
+i
+≤4E∥∇E
+
+F(xk
+i , ξk
+i )
+
+−∇E
+
+F(x∗
+i , ξk
+i )
+
+∥2 + 4λ2E∥∂∥xk
+i −xk
+0∥p −∂∥x∗
+i −x∗
+0∥p∥2 + 2δ2
+i
+(c)
+≤4E∥∇E
+
+F(xk
+i , ξk
+i )
+
+−∇E
+
+F(x∗
+i , ξk
+i )
+
+∥2 + 16λ2d + 2δ2
+i
+(d)
+≤4L2
+i E∥xk
+i −x∗
+i ∥2 + 16λ2d + 2δ2
+i
+(54)
+where (c) holds true because the b-norm of ∂xi∥xk
+i −xk
+0∥p (or ∂xi∥x∗
+i −x∗
+0∥p) is no larger than 1 according to Proposition 1,
+and thus the absolute value of every element of the d-dimensional vector ∂xi∥xk
+i −xk
+0∥p (or ∂xi∥x∗
+i −x∗
+0∥p) is no larger than
+1, and (d) is due to the Lipschitz continuous gradients of F(xi, ξk
+i ). Substituting (54) into (52), we have:
+E∥xk+1
+i
+−x∗
+i ∥2 ≤E∥xk
+i −x∗
+i ∥2 −2αk+1E(E
+
+F(xk
+i , ξk
+i )
+
+−E
+
+F(x∗
+i , ξk
+i )
+
+)
+−αk+1(µi −4αk+1L2
+i )E∥xk
+i −x∗
+i ∥2 + (αk+1)2(16λ2d + 2δ2
+i )
+−2αk+1E⟨λ∂xi∥xk
+i −xk
+0∥p, xk
+i −x∗
+i ⟩
+≤E∥xk
+i −x∗
+i ∥2 −2αk+1(E
+
+F(xk
+i , ξk
+i )
+
+−E
+
+F(x∗
+i , ξk
+i )
+
+)
+−2αk+1E⟨λ∂xi∥xk
+i −xk
+0∥p, xk
+i −x∗
+i ⟩+ (αk+1)2(16λ2d + 2δ2
+i )
+(55)
+
+
+PDF PAGE 16
+We drop the term of E∥xk
+i −x∗
+i ∥2 because µi −4αk+1L2
+i ≥0 according to the step size rule.
+Step 2. From the RSA update (11) at the master, we have:
+E∥xk+1
+0
+−x∗
+0∥2
+=E
+xk
+0 −x∗
+0 −αk+1
+
+∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p + λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p
+
+2
+=E∥xk
+0 −x∗
+0∥2 + (αk+1)2E∥∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p + λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p∥2
+−2αk+1E
+D
+∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p, xk
+0 −x∗
+0
+E
+−2αk+1E⟨λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p, xk
+0 −x∗
+0⟩
+(56)
+which is the same as (33).
+For the second term at the right-hand side of (56), corresponding (57), we have:
+E∥∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p + λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p∥2
+≤2E∥∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p∥2 + 2λ2E∥
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p∥2
+(57)
+For E∥∇f0(xk
+0) + λ P
+i∈R ∂x0∥xk
+0 −xk
+i ∥p∥2, we insert the optimality condition of (9) with respect to x0, namely, ∇f0(x∗
+0) +
+λ P
+i∈R ∂x0∥x∗
+i −x∗
+0∥p = 0 to obtain:
+E∥∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p∥2
+≤E∥∇f0(xk
+0) −∇f0(x∗
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p −λ
+X
+i∈R
+∂x0∥x∗
+i −x∗
+0∥p∥2
+≤2E∥∇f0(xk
+0) −∇f0(x∗
+0)∥2 + 2λ2E∥
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p −
+X
+i∈R
+∂x0∥x∗
+0 −x∗
+i ∥p∥2
+≤2E∥∇f0(xk
+0) −∇f0(x∗
+0)∥2 + 8λ2r2d
+(e)
+≤2L2
+0E∥xk
+0 −x∗
+0∥2 + 8λ2r2d
+(58)
+where (e) is due to the Lipschitz continuous gradients of f0(x0). Substituting E∥P
+j∈B ∂x0∥xk
+0 −zk
+j ∥p∥2 ≤q2d in (35) and
+(58) into (57) yields:
+E∥∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p + λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p∥2 ≤4L2
+0E∥xk
+0 −x∗
+0∥2 + 16λ2r2d + 2λ2q2d
+(59)
+For the third term at the right-hand side of (56), since f0(x0) is strongly convex with constant µ0, we have:
+E⟨∇f0(xk
+0) + λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p, xk
+0 −x∗
+0⟩
+≥E(f0(xk
+0) −f0(x∗
+0) + µ0
+2 ∥xk
+0 −x∗
+0∥2) + E⟨λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p, xk
+0 −x∗
+0⟩
+(60)
+For the last term at the right-hand side of (56), it holds for any ϵ > 0 that:
+2E
+D
+λ
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p, xk
+0 −x∗
+0
+E
+≤ϵE∥xk
+0 −x∗
+0∥2 + λ2
+ϵ E
+
+X
+j∈B
+∂x0∥xk
+0 −zk
+j ∥p
+
+2
+≤ϵE∥xk
+0 −x∗
+0∥2 + λ2q2d
+ϵ
+.
+(61)
+
+
+PDF PAGE 17
+Substituting (59), (60) and (61) into (56), we have:
+E∥xk+1
+0
+−x∗
+0∥2 ≤E∥xk
+0 −x∗
+0∥2 + (αk+1)2(16λ2r2d + 2λ2q2d) + αk+1λ2q2d
+ϵ
+−2αk+1E[f0(xk
+0) −f0(x∗
+0)] −2αk+1E⟨λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p, xk
+0 −x∗
+0⟩
+−αk+1(µ0 −4L2
+0αk+1 −ϵ)E∥xk
+0 −x∗
+0∥2
+≤E∥xk
+0 −x∗
+0∥2 + (αk+1)2(16λ2r2d + 2λ2q2d) + αk+1λ2q2d
+ϵ
+−2αk+1E[f0(xk
+0) −f0(x∗
+0)] −2αk+1E⟨λ
+X
+i∈R
+∂x0∥xk
+0 −xk
+i ∥p, xk
+0 −x∗
+0⟩
+(62)
+where we drop the term of E∥xk
+0 −x∗
+0∥2 because µ0 −4L2
+0αk+1 −ϵ ≥0 according to the step size rule.
+Step 3. Using the convexity of ∥xi −x0∥p, we have:
+X
+i∈R
+⟨∂xi∥xk
+0 −xk
+i ∥p, xk
+i −x∗
+i ⟩+
+X
+i∈R
+⟨∂x0∥xk
+0 −xk
+i ∥p, xk
+0 −x∗
+0⟩≥
+X
+i∈R
+∥xk
+i −xk
+0∥p −
+X
+i∈R
+∥x∗
+i −x∗
+0∥p.
+(63)
+Summing up (55) for all i ∈R, as well as combining (62) and (63), we have:
+2αk+1E(hp(xk) −hp(x∗)) ≤E∥xk −x∗∥2 −E∥xk+1 −x∗∥2 + (αk+1)2∆0 + αk+1∆2.
+(64)
+where ∆0 and ∆2 are constants deﬁned in (43). Summing up (64) for all times k, we have:
+2
+k
+X
+τ=0
+ατ+1E
+
+k
+X
+τ=0
+ατ+1
+Pk
+τ=0 ατ+1 (hp(xτ) −hp(x∗))
+
+≤E∥x0 −x∗∥2 + ∆0
+k
+X
+τ=0
+(ατ+1)2 + ∆2
+k
+X
+τ=0
+ατ+1
+(65)
+Since hp(x) is convex, we have:
+k
+X
+τ=0
+ατ+1
+Pk
+τ=0 ατ+1 (hp(xτ) −hp(x∗)) ≥hp(¯xk) −hp(x∗).
+(66)
+Substituting (66) to (65) yields:
+E
+
+hp(¯xk) −hp(x∗)
+
+≤E∥x0 −x∗∥2 + ∆0
+Pk
+τ=0(ατ+1)2
+2 Pk
+τ=0 ατ+1
++ ∆2
+2 .
+(67)
+Proof of Theorem 3
+Proof. When λ ≥λ0, combining Theorem 1 and Theorem 2 directly yields (14). When 0 < λ < λ0, we have:
+E[∥xk −[˜x∗]∥2] ≤2E[∥xk −x∗∥2] + 2E[∥x∗−[˜x∗]∥2]
+where the inequality follows from (a + b)2 ≤2a2 + 2b2. By Theorem 2 and E[∥x∗−[˜x∗]∥2] ≤∆3, (15) holds true.

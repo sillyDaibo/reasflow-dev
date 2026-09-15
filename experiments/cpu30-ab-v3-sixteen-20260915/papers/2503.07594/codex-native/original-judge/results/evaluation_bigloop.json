@@ -1,0 +1,74 @@
+{
+  "paper_id": "2503.07594",
+  "evaluated_at": "2026-09-05T00:05:08.208039+00:00",
+  "summary": {
+    "total_score": 0.8571,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.8571,
+    "total_rubrics": 4,
+    "passed": 3,
+    "failed": 1,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": true
+  },
+  "by_priority": {
+    "primary": {
+      "score": 1.0,
+      "passed": 3,
+      "total": 3
+    },
+    "secondary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "SCAFFOLD consistently outperforms FEDAVG in terms of MSE across all numbers of clients N ∈ {10, 100, 1000, 10000} and both linear and logistic regression.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure1-linear/summary.json and results/formal/figure1-logistic/summary.json contain final_mse_mean for each algorithm × n_agents combination. LINEAR REGRESSION: N=10 SCAFFOLD=58.95 < FEDAVG=176.54; N=100 SCAFFOLD=2.63 < FEDAVG=5.07; N=1000 SCAFFOLD=0.553 < FEDAVG=1.347; N=10000 SCAFFOLD=0.0457 < FEDAVG=0.1353. LOGISTIC REGRESSION: N=10 SCAFFOLD=0.02180 < FEDAVG=0.27731; N=100 SCAFFOLD=0.000879 < FEDAVG=0.06353; N=1000 SCAFFOLD=0.000182 < FEDAVG=0.02217; N=10000 SCAFFOLD=0.000135 < FEDAVG=0.01419. SCAFFOLD has strictly lower MSE than FEDAVG in all 8 (problem, N) combinations.",
+      "note": "Comparison is based on final_mse_mean (the MSE at the last round). The stationary_tail_mse_mean values tell the same story consistently.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In linear regression, as the number of clients increases, the stationary MSE of SCAFFOLD decreases, with N=10000 achieving lower error than N=1000, N=1000 lower than N=100, and N=100 lower than N=10.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure1-linear/summary.json contains scaffold stationary_tail_mse_mean values: N=10 → 70.163, N=100 → 3.397, N=1000 → 0.545, N=10000 → 0.059. All three pairwise constraints hold (lower_is_better): N=10000 (0.059) < N=1000 (0.545) < N=100 (3.397) < N=10 (70.163).",
+      "note": "Values used are stationary_tail_mse_mean (tail average of last 10 rounds), which is the appropriate stationary MSE measure. The ranking is unambiguous with large margins between each level.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In logistic regression, as the number of clients increases from 10 to 1000, the stationary MSE of SCAFFOLD decreases, with N=1000 lower than N=100 and N=100 lower than N=10.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure1-logistic/summary.json: SCAFFOLD stationary_tail_mse_mean values — N=10: 0.032463, N=100: 0.0007545, N=1000: 0.0001632. Both ordering constraints hold: 0.0001632 < 0.0007545 (N=1000 better than N=100) and 0.0007545 < 0.032463 (N=100 better than N=10). Metric is lower_is_better.",
+      "note": "Values taken from stationary_tail_mse_mean (tail_rounds=10), which is the appropriate stationary/convergence metric. The decrease is monotonic and large in magnitude across all three N values.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In logistic regression, there is no improvement in stationary MSE from N=1000 to N=10000.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/figure1-logistic/summary.json: SCAFFOLD stationary_tail_mse_mean for N=1000 is 0.00016324223786852988, and for N=10000 is 0.00012612431792635647. The predicate stationary_mse(N=10000) >= stationary_mse(N=1000) is NOT satisfied: 0.000126 < 0.000163, meaning MSE improved (decreased) by ~22.7% when going from N=1000 to N=10000. The claim of \"no improvement\" is contradicted by the run outputs. Note also that the summary.json records scaffold_adjacent_client_ratios for 1000→10000 as observed_mse_ratio=1.2942962987030497, confirming a ~1.29x reduction (improvement) in MSE.",
+      "note": "The scaffold_adjacent_client_ratios entry for from_n=1000 to to_n=10000 shows ratio=1.29, indicating the N=10000 MSE is lower than N=1000 MSE, directly contradicting the claim of no improvement.",
+      "error": false
+    }
+  ]
+}

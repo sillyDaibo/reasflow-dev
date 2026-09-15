@@ -1,0 +1,8 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "Original source imports NumPy; replay uses a fresh virtual environment even though the public-smoke environment already had NumPy.",
+    "source": "beer_repro/core.py:18"
+  }
+]

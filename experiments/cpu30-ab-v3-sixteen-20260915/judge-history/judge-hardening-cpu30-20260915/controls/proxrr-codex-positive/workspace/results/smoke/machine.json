@@ -1,0 +1,8 @@
+{
+  "elapsed_seconds": 0.6966245230287313,
+  "logical_cpus": 16,
+  "numpy": "2.2.6",
+  "platform": "Linux-5.15.0-186-generic-x86_64-with-glibc2.35",
+  "processor": "x86_64",
+  "python": "3.10.12 (main, Jul 15 2026, 23:40:17) [GCC 11.4.0]"
+}

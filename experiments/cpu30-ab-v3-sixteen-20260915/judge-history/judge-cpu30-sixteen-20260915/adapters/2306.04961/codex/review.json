@@ -1,0 +1,28 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "/root/adapter16_b",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Approved as faithful partial execution with explicit blocked observations. Original IRLS routine and measurement operator are retained; absent spectral/operator states are not reconstructed.",
+  "scope_notes": [
+    "Source simirls/algorithms.py:47 _initial_ls produces the identity-weight constrained minimum-norm initialization; :57 irls_lrrs computes norms/SVD/epsilon/delta and row_w before spectral_grad. Adapter trace at that line captures the post-solve/reweight state, beginning at step 1. Source then uses one-sided spectral_grad, rank/row thresholds and three refinements, not two-sided factors or a fixed W matrix. Adapter neither repairs these equations nor invents absent factors.",
+    "Public rank=1, sparsity=1, measurement matrix/y and iteration cap are native arguments. No smoothing floors, tolerance, inner steps, source weights or update equations are patched. Three traced post-solve states precede an unused final outer solve; step numbering is consistent with initialization being the first identity-weight solve.",
+    "Codex smoke emits 18 observations per case; ReasFlow emits 24 per case. All cases remain blocked for missing native spectral factors and/or weight_operator. This is not a correctness approval for the source IRLS variant."
+  ],
+  "substitutions": [
+    {
+      "symbol": "MeasurementOperator",
+      "role": "problem_input",
+      "reason": "Public sensing matrix and measurements enter original operator; Codex columns permuted from C vectorization to native F order, ReasFlow uses native C order."
+    },
+    {
+      "symbol": "sys.settrace",
+      "role": "observation",
+      "reason": "Copies actual post-solve/reweight locals and first real weight-helper factors without changing state or generating a missing operator."
+    }
+  ],
+  "public_digest": "bd64287f69eda4a22c744b021505b1d525b1aec4de9ef8b887bbfa079e9e54ef",
+  "adapter_sha256": "76b8473ede264805792fae24389a677b2eacb4ef2bc1b549d5aaaf95ea66be75",
+  "workspace_digest": "9b9e5ba4bb38cdebb6d7b68e9249efb1a21202c200a821ef2b0ee90cf4d7ebbe",
+  "bindings_digest": "ac62995c58de1b2acde94082f26dc50e5becfceb6ede15bb1e11adc431585739"
+}

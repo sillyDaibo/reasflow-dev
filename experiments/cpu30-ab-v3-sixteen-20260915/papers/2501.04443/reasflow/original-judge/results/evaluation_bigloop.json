@@ -1,0 +1,145 @@
+{
+  "paper_id": "2501.04443",
+  "evaluated_at": "2026-09-04T19:01:52.545431+00:00",
+  "summary": {
+    "total_score": 0.5,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.5,
+    "total_rubrics": 10,
+    "passed": 5,
+    "failed": 5,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "secondary": {
+      "score": 0.5714,
+      "passed": 4,
+      "total": 7
+    },
+    "primary": {
+      "score": 0.5,
+      "passed": 1,
+      "total": 2
+    },
+    "tertiary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "MbSGD converges at the same rate for δ ≈ 0.01, 0.02, and 0.03.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/fig1_mbsgd_local_delta/curve_0p01.csv, curve_0p02.csv, curve_0p03.csv (3 seeds × 51 rounds each). Final grad_norm_sq at round 50: seed=111: δ=0.01→1.2258e-3, δ=0.02→1.2268e-3, δ=0.03→1.2278e-3 (max rel diff 0.16%); seed=222: δ=0.01→1.3349e-3, δ=0.02→1.3355e-3, δ=0.03→1.3361e-3 (0.09%); seed=333: δ=0.01→9.038e-4, δ=0.02→9.050e-4, δ=0.03→9.061e-4 (0.26%). The convergence curves for all three δ values are essentially identical throughout the 50 rounds, with maximum pairwise relative differences below 0.3%.",
+      "note": "The run output directory is results/formal/fig1_mbsgd_local_delta/, which maps to experiment id exp1_local_sgd_vs_mbsgd_delta. The near-zero differences across δ values strongly confirm convergence-rate independence of δ for MbSGD.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "LocalSGD converges faster as δ decreases: δ=0.01 > δ=0.02 > δ=0.03 in terms of convergence speed (lower squared gradient norm).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/fig1_localsgd_delta/summary.csv and aggregate.csv. Final squared gradient norm (round 50, mean over 3 seeds): δ=0.01 → 0.0012283173, δ=0.02 → 0.0012292754, δ=0.03 → 0.0012302623. Both required ordering constraints hold: δ=0.01 < δ=0.02 (0.001228 < 0.001229) and δ=0.02 < δ=0.03 (0.001229 < 0.001230). Per-seed check confirms the ordering holds for all 3 seeds (111, 222, 333) without exception.",
+      "note": "The absolute differences between delta values are very small (~1e-6), but the monotonic ordering is consistent across all three seeds, making the ranking unambiguous in the run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The most pronounced differences between the LocalSGD runs are observed in later communication rounds (≥ 10).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/fig1_localsgd_delta/aggregate.csv contains the LocalSGD convergence curves for three δ values (0.01, 0.02, 0.03) across rounds 0–50. Computing the spread (Max-Min across curves) at each round shows the OPPOSITE pattern: spread is largest at early rounds (round 0: 4.39e-4, round 1: 3.85e-4, ..., round 9: 8.0e-5) and monotonically decreases from round 10 onward (round 10: 6.2e-5, round 20: 4e-6, round 50: 2e-6). The most pronounced differences between LocalSGD runs occur in the EARLY rounds (0–9), not at rounds ≥10 as claimed. No other output files (fig1_local_comparison/plot_metadata.json, metrics.csv, summary.csv) provide evidence of a widening gap at later rounds.",
+      "note": "The claim references Figure 1 (left) of the paper and states the \"heterogeneity term dominates the rate\" at later rounds causing wider gaps. However, the actual run output data shows the gap between δ-varied LocalSGD curves narrows continuously. It is possible the paper's Figure 1 shows a different quantity (e.g. loss gap vs. mini-batch SGD baseline rather than spread among LocalSGD variants), but the experiment ID exp1_local_sgd_vs_mbsgd_delta and the available delta curves do not support a widening gap at round ≥10.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "MbSGD converges at the same rate despite variations in δ (δ ≈ 0.1, 0.2, 0.3).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/fig1_mbsgd_scaffold_delta/ contains per-seed convergence curves for MbSGD at δ=0.1, 0.2, 0.3 (curve_0p1.csv, curve_0p2.csv, curve_0p3.csv) and a summary.csv. Averaging across seeds, the grad_norm_sq values are virtually identical at every round: at round 0 all three are ≈0.6183, at round 25 ≈0.009464, and at round 50 (final) d=0.1→0.001121, d=0.2→0.001122, d=0.3→0.001123. The maximum relative deviation from the mean across all 50 rounds and all three δ values is only 0.1%. Per-seed final values in summary.csv confirm the same: seed 111 gives 0.001069/0.001071/0.001072 for δ=0.1/0.2/0.3; seed 222 gives 0.001194/0.001192/0.001191; seed 333 gives 0.001100/0.001102/0.001105. Curves are indistinguishable across δ values.",
+      "note": "The experiment metadata (run_metadata.json) explicitly labels this as \"fig1_mbsgd_scaffold_delta\" with values [0.1, 0.2, 0.3], matching the claim exactly. The near-zero variation in convergence curves strongly supports the claim that MbSGD converges at the same rate regardless of δ.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "SCAFFOLD converges faster as δ decreases: SCAFFOLD with δ≈0.1 outperforms SCAFFOLD with δ≈0.2, which outperforms SCAFFOLD with δ≈0.3.",
+      "verdict": 0,
+      "confidence": "medium",
+      "evidence": "Source: results/formal/fig1_scaffold_delta/summary.csv and aggregate.csv. At the final round (round=50), aggregate mean squared_gradient_norms are: delta=0.1: 0.0012014278, delta=0.2: 0.0012022029, delta=0.3: 0.0012029727. While the aggregate means technically satisfy 0.1 < 0.2 < 0.3 (lower is better), the differences are ~7.7e-7, which is approximately 1/100th of the standard deviation (~7.8e-5). More critically, per-seed inspection shows seed=222 has the reverse ordering: delta=0.1=1.285013e-03, delta=0.2=1.283251e-03, delta=0.3=1.281478e-03, violating both required constraints. Seeds 111 and 333 individually show the expected order, but seed 222 contradicts it. The effect is not robustly supported across seeds — the differences are entirely within stochastic noise (CV ~6%). This does not constitute a reliable demonstration that SCAFFOLD converges faster as δ decreases.",
+      "note": "The aggregate means satisfy the required ranking, but the margin (~0.065%) is far below the noise level (~6% CV) and one of three seeds inverts the ordering, indicating the effect is not meaningfully supported in the run outputs for this experiment.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The most pronounced difference between the SCAFFOLD runs is observed in early communication rounds (≤ 10).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Run outputs in results/formal/fig1_scaffold_delta/ (curve_0p1.csv, curve_0p2.csv, curve_0p3.csv) contain per-seed per-round grad_norm_sq for SCAFFOLD with δ=0.1, 0.2, 0.3 over 51 rounds. After averaging across 3 seeds, the spread (max−min across the three δ values) at rounds 0–10 ranges from 6.7e-5 (round 10) to 6.7e-4 (round 0), with an average of 2.67e-4. In rounds 11–50 the spread falls monotonically from 5.4e-5 to 2e-6, averaging 1.0e-5. The early-round spread is ~26× larger on average than the late-round spread, confirming the most pronounced difference between SCAFFOLD runs is in early communication rounds (≤10).",
+      "note": "The experiment directory is named fig1_scaffold_delta rather than exp2_scaffold_vs_mbsgd_delta, but it contains exactly the described data: SCAFFOLD curves for δ≈0.1, 0.2, 0.3.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the ζ dependence experiment, the squared gradient norm at the 50th communication round (‖∇f(x̄_{2500})‖_2^2) is positively correlated with ζ^2.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/appendix_localsgd_zeta/aggregate.csv and metrics.csv contain round-by-round grad_norm_sq for each zeta value. At communication round 50, the mean grad_norm_sq values (averaged over seeds 111,222,333) are:\n  zeta=0.03 (zeta^2=0.0009): 0.0012283\n  zeta=0.04 (zeta^2=0.0016): 0.0012278\n  zeta=0.05 (zeta^2=0.0025): 0.0012274\n  zeta=0.06 (zeta^2=0.0036): 0.0012269\n  zeta=0.07 (zeta^2=0.0049): 0.0012265\n\nThe grad_norm_sq is DECREASING monotonically as zeta increases — a negative, not positive, correlation with zeta^2. This directly contradicts the claimed positive correlation.",
+      "note": "The differences across zeta values are very small (order 1e-6 range across the full sweep), which may suggest the experiment's implementation has zeta nearly not affecting convergence at these values, or the curve differences are too subtle. Regardless, the measured values show a slight downward trend in grad_norm_sq as zeta increases — the opposite of the claimed positive correlation.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the δ dependence experiment, the squared gradient norm at the 50th communication round (‖∇f(x̄_{2500})‖_2^2) is positively correlated with δ^{2/3}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/appendix_localsgd_delta/metrics.csv (and summary.csv). At communication round 50 (index 50 in the 0-indexed rounds 0–50), the average ‖∇f(x̄)‖₂² across seeds {111,222,333} increases monotonically with δ:\n  δ=0.01: avg=0.001228317, δ^(2/3)=0.04642\n  δ=0.015: avg=0.001228793, δ^(2/3)=0.06082\n  δ=0.02: avg=0.001229275, δ^(2/3)=0.07368\n  δ=0.025: avg=0.001229765, δ^(2/3)=0.08550\n  δ=0.03: avg=0.001230262, δ^(2/3)=0.09655\nPearson correlation between δ^(2/3) and avg grad_norm_sq = 0.9981 (strongly positive). The same monotone pattern holds for every individual seed. Positive correlation is confirmed.",
+      "note": "The values show the correlation is real but the magnitude of variation across δ values is small (~0.3% change across the δ range tested). The Pearson r is essentially 1.0 indicating a near-perfect positive linear relationship between δ^(2/3) and ‖∇f(x̄_{2500})‖₂².",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the λ dependence experiment, the squared gradient norm at the 10th communication round (‖∇f(x̄_{500})‖_2^2) is positively correlated with λ.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Exhaustive search found no run outputs for a λ (lambda) dependence experiment. The repository contains parameter scans only for `rho`, `zeta`, and `delta` under results/formal/appendix_localsgd_rho/, results/formal/appendix_localsgd_zeta/, and results/formal/appendix_localsgd_delta/. No directory named exp3_local_sgd_param_dependence or any lambda-sweep exists. CLAIMS.json lists only C1, C2, C3 (covering delta, rho, zeta scans) with no mention of lambda. The experiment report (document/experiment_report.md) covers only rho, zeta, delta scans and makes no reference to lambda as a swept parameter. In the source code, `lambda` appears only as an internal eigenvalue variable (sqrt_lambda in datasets.py line 90) — not an exposed configuration parameter. No output file contains the metric ‖∇f(x̄_{500})‖² indexed by lambda values.",
+      "note": "The paper's Figure 2 right / Appendix B.2 may describe a λ-sweep that was not reproduced in this repository. The reproduction covered rho, zeta, and delta sweeps only.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "The convergence rates of SCAFFOLD are positively correlated with the Hessian similarity parameter δ and the weak convexity parameter λ.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Two experiment directories are relevant: results/formal/appendix_scaffold_delta and results/formal/appendix_scaffold_rho.\n\nFor the rho (λ, weak convexity) sweep (appendix_scaffold_rho/summary.csv, nonconvex_shift=true): mean final grad_norm_sq increases monotonically with rho: 0.001295 (rho=0.01) → 0.001347 (0.015) → 0.001422 (0.02) → 0.001520 (0.025) → 0.001641 (0.03). This clearly supports a positive correlation between λ and convergence rate.\n\nFor the delta (δ, Hessian similarity) sweep (appendix_scaffold_delta/summary.csv, nonconvex_shift=false): mean final grad_norm_sq across delta=0.1–0.3 is essentially flat: 0.001201, 0.001202, 0.001202, 0.001203, 0.001203. The total range is ~0.000002, which is negligible compared to the scale of the values. There is NO meaningful positive correlation between δ and convergence rate in the run outputs. The δ sweep results fail to demonstrate the claimed positive correlation with Hessian similarity parameter δ.",
+      "note": "The claim requires positive correlation with BOTH δ and λ. The λ (rho) part is clearly supported, but the δ part shows negligible variation (flat line) across all tested values (0.1–0.3), failing to demonstrate the claimed positive correlation. The two experiments use different settings (nonconvex_shift=false for delta, true for rho), which may explain why δ shows no effect in the delta sweep.",
+      "error": false
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "adapter16_c",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Native batched regression gradient, sampling, corrected local updates, averaging and persistent control update are retained; only initial control allocation and random realization are injected.",
+  "scope_notes": [
+    "algorithms.py:19-34 retains original regression gradient and batch normalization; 37-59 draws one batch-size-one index per client and local step.",
+    "Public X=sqrt(a),y=-(b+z)/sqrt(a) exactly represents a*theta+b+z without replacing gradient callbacks.",
+    "algorithms.py:129-130 initializes controls once; the adapter writes public xi into that initial array before history or iteration use. No later control mutation occurs outside source.",
+    "Trace 135/143/144/146 observes pre-reset, pre-subtraction gradient+control, actual local endpoint, and post-source control update. Source lines 143-145 execute every update.",
+    "Independent smoke used only public cases under execution._readonly_tree; checked successful invocation and observation schema coverage. No private expected values, papers, prior verdicts or Judge numeric comparisons were read. Approval is fidelity only."
+  ],
+  "substitutions": [
+    {
+      "symbol": "ClientData, default_rng and initial controls injection",
+      "role": "problem_input",
+      "reason": "Encode public regression samples, deterministic record selection, theta0 and centered xi0 before any update."
+    },
+    {
+      "symbol": "_batch_gradient wrapper and scaffold trace",
+      "role": "observation",
+      "reason": "Return original gradient unchanged and observe actual local states and source control/mean state."
+    }
+  ],
+  "public_digest": "58452f0efd8442b7273f261d2ebed0b4fca97bb9fe0b57158edc55ea3136894b",
+  "adapter_sha256": "f1c3c8d1f58ce7509b9f5643d21243a2c2f8e3f1bde6f197fdc2328287048f90",
+  "workspace_digest": "58ff1ce4b7cb268b1c805a34ce9902056dcfdd8e93724f9381f31d75e0cebe58",
+  "bindings_digest": "511d1d57e1f54bce32ae372cf551e2c927637b348434bbaefe2e244c6d6e498d"
+}

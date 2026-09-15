@@ -1,0 +1,390 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2501.18312",
+    "title": "Decentralised convex optimisation with probability-proportional-to-size quantization",
+    "sha256": "65ac545e80f254228f3678602b8c08626f469816c43c524769c2043d8c4e2566"
+  },
+  "algorithm": {
+    "name": "Local component only: Lemma 3 barycenter stochastic gradient and Eq. (1) PPS quantization (not Algorithm 3 verification)",
+    "citations": [
+      "PDF p. 20, Lemma 3, sample conjugate-gradient softmax",
+      "PDF p. 19, Section 6.1 and Eq. (9), continuous source probabilities and continuous transport cost",
+      "PDF pp. 6-7, Section 2, minibatch definition and PPS Eq. (1)",
+      "PDF p. 7, paragraph after Eq. (1), interpretation of fixed uniform random arguments"
+    ],
+    "core_mechanisms": [
+      "sample_barycenter_softmax",
+      "minibatch_before_quantization",
+      "simplex_pps_fixed_uniforms"
+    ],
+    "assumptions": [
+      "Each source law is a bounded continuous uniform probability measure; all supplied samples lie strictly within its support.",
+      "The selected squared-distance cost is continuous and nonnegative; gamma is positive. Every sample and batch gradient lies in the simplex with l1 bound B=1.",
+      "All local arguments are public, nonzero vectors freely chosen from the unconstrained domain of the Lemma 3 conjugate. They are not derived from a repository run or an Algorithm 3 trajectory.",
+      "PPS takes the average unquantized sample gradient and then uses the fixed uniform arguments. The probability vector has no negative part, so no arbitrary negative categorical distribution is introduced.",
+      "A pass establishes only the listed local operators at these finite inputs. It cannot establish graph communication, accelerated updates, primal restoration, global coordinate scaling, or full Algorithm 3 correctness."
+    ]
+  },
+  "cases": [
+    {
+      "id": "local_binary_support_two_nonzero_arguments",
+      "purpose": "Check the signed local argument, non-unit gamma, per-sample softmax normalization, averaging before quantization, and fixed-uniform PPS in two distinct bounded draws.",
+      "covers": [
+        "sample_barycenter_softmax",
+        "minibatch_before_quantization",
+        "simplex_pps_fixed_uniforms"
+      ],
+      "inputs": {
+        "target_support": [
+          0,
+          1
+        ],
+        "source_space": [
+          0,
+          1
+        ],
+        "source_distribution": {
+          "law": "uniform",
+          "interval": [
+            0,
+            1
+          ]
+        },
+        "calls": [
+          {
+            "mu": [
+              0.2,
+              -0.1
+            ],
+            "source_samples": [
+              0.15,
+              0.65
+            ],
+            "pps_uniforms": [
+              0.08,
+              0.35,
+              0.66,
+              0.91
+            ]
+          },
+          {
+            "mu": [
+              -0.25,
+              0.4
+            ],
+            "source_samples": [
+              0.3,
+              0.85
+            ],
+            "pps_uniforms": [
+              0.05,
+              0.24,
+              0.57,
+              0.89
+            ]
+          }
+        ]
+      },
+      "parameters": {
+        "cost": "c(y,xi)=(y-xi)^2",
+        "local_oracle": "At each listed call independently, evaluate p_h=exp((mu_h-c(y_h,xi))/gamma)/sum_l exp((mu_l-c(y_l,xi))/gamma) for every source sample, then average the r vectors before PPS.",
+        "pps_rule": "Apply Eq. (1) to the minibatch mean. Positive mass is 1; negative mass is 0 and its term is absent. Each uniform chooses the first one-based h with u<cumulative_mean_probability[h]; quantized_gradient[h]=count(h)/M.",
+        "step_semantics": "step 1 and step 2 are two separately specified oracle calls at the supplied nonzero local mu vectors. There is no recurrence between calls.",
+        "observation_semantics": "sample_probabilities has source-sample rows and support columns; minibatch_mean and quantized_gradient have one component per support point; positive_mass is the l1 mass of the nonnegative batch gradient; pps_indices are one-based categories in public uniform order.",
+        "scope": "Local Lemma 3 oracle and Eq. (1) PPS only. This contract does not test Algorithm 3 graph communication, accelerated dual updates, primal recovery, any global m-rescaling, or full algorithm correctness.",
+        "gamma": 0.5,
+        "r": 2,
+        "M": 4
+      },
+      "atol": 1e-10,
+      "rtol": 1e-09,
+      "derivation": "For binary support, p_1(mu,xi)=sigmoid((mu_1-mu_2+1-2xi)/gamma) and p_2=1-p_1. Call 1 therefore uses sigmoid(2) and sigmoid(0); call 2 uses sigmoid(-0.5) and sigmoid(-2.7). Average the two vectors in each call before comparing supplied uniforms to the first-component CDF. PPS is the empirical category frequency with unit positive mass. The companion script computes every required observation in 60-digit Decimal arithmetic and checks against an independent ordinary-float evaluation.",
+      "expected": [
+        {
+          "step": 1,
+          "name": "sample_probabilities",
+          "value": [
+            [
+              0.8807970779778824,
+              0.11920292202211756
+            ],
+            [
+              0.5,
+              0.5
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "minibatch_mean",
+          "value": [
+            0.6903985389889412,
+            0.3096014610110588
+          ]
+        },
+        {
+          "step": 1,
+          "name": "positive_mass",
+          "value": 1.0
+        },
+        {
+          "step": 1,
+          "name": "pps_indices",
+          "value": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "quantized_gradient",
+          "value": [
+            0.75,
+            0.25
+          ]
+        },
+        {
+          "step": 2,
+          "name": "sample_probabilities",
+          "value": [
+            [
+              0.37754066879814546,
+              0.6224593312018546
+            ],
+            [
+              0.06297335605699649,
+              0.9370266439430035
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "minibatch_mean",
+          "value": [
+            0.22025701242757095,
+            0.779742987572429
+          ]
+        },
+        {
+          "step": 2,
+          "name": "positive_mass",
+          "value": 1.0
+        },
+        {
+          "step": 2,
+          "name": "pps_indices",
+          "value": [
+            1,
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "quantized_gradient",
+          "value": [
+            0.25,
+            0.75
+          ]
+        }
+      ]
+    },
+    {
+      "id": "local_three_support_minibatch_then_pps",
+      "purpose": "Three support coordinates and three unequal source samples distinguish cost-adjusted softmax from linear normalization and distinguish quantizing a minibatch mean from independently quantizing sample gradients.",
+      "covers": [
+        "sample_barycenter_softmax",
+        "minibatch_before_quantization",
+        "simplex_pps_fixed_uniforms"
+      ],
+      "inputs": {
+        "target_support": [
+          -1,
+          0,
+          1
+        ],
+        "source_space": [
+          -1,
+          1
+        ],
+        "source_distribution": {
+          "law": "uniform",
+          "interval": [
+            -0.8,
+            0.9
+          ]
+        },
+        "calls": [
+          {
+            "mu": [
+              0.3,
+              -0.2,
+              0.1
+            ],
+            "source_samples": [
+              -0.65,
+              -0.1,
+              0.55
+            ],
+            "pps_uniforms": [
+              0.06,
+              0.26,
+              0.48,
+              0.73,
+              0.95
+            ]
+          },
+          {
+            "mu": [
+              -0.2,
+              0.35,
+              -0.1
+            ],
+            "source_samples": [
+              -0.4,
+              0.2,
+              0.8
+            ],
+            "pps_uniforms": [
+              0.04,
+              0.22,
+              0.5,
+              0.79,
+              0.96
+            ]
+          }
+        ]
+      },
+      "parameters": {
+        "cost": "c(y,xi)=(y-xi)^2",
+        "local_oracle": "At each listed call independently, evaluate p_h=exp((mu_h-c(y_h,xi))/gamma)/sum_l exp((mu_l-c(y_l,xi))/gamma) for every source sample, then average the r vectors before PPS.",
+        "pps_rule": "Apply Eq. (1) to the minibatch mean. Positive mass is 1; negative mass is 0 and its term is absent. Each uniform chooses the first one-based h with u<cumulative_mean_probability[h]; quantized_gradient[h]=count(h)/M.",
+        "step_semantics": "step 1 and step 2 are two separately specified oracle calls at the supplied nonzero local mu vectors. There is no recurrence between calls.",
+        "observation_semantics": "sample_probabilities has source-sample rows and support columns; minibatch_mean and quantized_gradient have one component per support point; positive_mass is the l1 mass of the nonnegative batch gradient; pps_indices are one-based categories in public uniform order.",
+        "scope": "Local Lemma 3 oracle and Eq. (1) PPS only. This contract does not test Algorithm 3 graph communication, accelerated dual updates, primal recovery, any global m-rescaling, or full algorithm correctness.",
+        "gamma": 0.75,
+        "r": 3,
+        "M": 5
+      },
+      "atol": 1e-10,
+      "rtol": 1e-09,
+      "derivation": "For each call and each listed xi compute three logits (mu_h-(y_h-xi)^2)/(3/4), exponentiate and normalize each row separately. Average the three normalized rows, sum their CDF in support order (-1,0,1), and apply the five fixed uniforms to this batch CDF. Multiply empirical one-hot frequencies by positive l1 mass 1; the zero negative part contributes nothing. No graph or dual iteration is inferred from these independent nonzero local arguments. The companion script computes every required observation in 60-digit Decimal arithmetic and checks it independently with ordinary-float arithmetic.",
+      "expected": [
+        {
+          "step": 1,
+          "name": "sample_probabilities",
+          "value": [
+            [
+              0.7309584698772246,
+              0.2515621254495943,
+              0.017479404673181168
+            ],
+            [
+              0.3400026367211661,
+              0.5072243307237884,
+              0.15277303255504557
+            ],
+            [
+              0.04195532055896038,
+              0.3542272262113644,
+              0.6038174532296752
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "minibatch_mean",
+          "value": [
+            0.3709721423857837,
+            0.37100456079491567,
+            0.25802329681930064
+          ]
+        },
+        {
+          "step": 1,
+          "name": "positive_mass",
+          "value": 1.0
+        },
+        {
+          "step": 1,
+          "name": "pps_indices",
+          "value": [
+            1,
+            1,
+            2,
+            2,
+            3
+          ]
+        },
+        {
+          "step": 1,
+          "name": "quantized_gradient",
+          "value": [
+            0.4,
+            0.4,
+            0.2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "sample_probabilities",
+          "value": [
+            [
+              0.25949646034241913,
+              0.7053845126982412,
+              0.03511902695933972
+            ],
+            [
+              0.056230777993658394,
+              0.7570764644109546,
+              0.1866927575953871
+            ],
+            [
+              0.006705235192641774,
+              0.44714753376377087,
+              0.5461472310435874
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "minibatch_mean",
+          "value": [
+            0.10747749117623977,
+            0.6365361702909889,
+            0.2559863385327714
+          ]
+        },
+        {
+          "step": 2,
+          "name": "positive_mass",
+          "value": 1.0
+        },
+        {
+          "step": 2,
+          "name": "pps_indices",
+          "value": [
+            1,
+            2,
+            2,
+            3,
+            3
+          ]
+        },
+        {
+          "step": 2,
+          "name": "quantized_gradient",
+          "value": [
+            0.2,
+            0.4,
+            0.4
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,332 @@
+{
+  "paper_id": "2111.03820",
+  "evaluated_at": "2026-09-04T17:47:19.562111+00:00",
+  "summary": {
+    "total_score": 0.9773,
+    "algorithm_impl_score": 0.9333,
+    "exp_setup_score": 1.0,
+    "exp_results_score": 0.0,
+    "total_rubrics": 27,
+    "passed": 26,
+    "failed": 1,
+    "errors": 0,
+    "pass_threshold": 0.8,
+    "gate_passed": true
+  },
+  "by_priority": {
+    "primary": {
+      "score": 1.0,
+      "passed": 17,
+      "total": 17
+    },
+    "secondary": {
+      "score": 1.0,
+      "passed": 9,
+      "total": 9
+    },
+    "tertiary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "id": "alg-001",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "At each outer iteration t, agent j generates a random permutation π_t = (π_t^0, …, π_t^{n-1}) of {1,…,n} uniformly without replacement.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/disprox_rr/algorithms.py, line 108: `order = rng.permutation(n)` inside `_local_stochastic_epoch` when `mode == \"rr\"`. This function is called once per outer epoch (line 183) for all agents in a loop (lines 105–125). For each agent at each iteration, `rng.permutation(n)` draws a uniform random permutation of {0,…,n-1} without replacement, matching π_t for agent j.",
+      "note": "The permutation indices are 0-based (0,…,n-1) rather than 1-based (1,…,n) as stated in the paper, but this is a standard indexing convention difference and does not affect correctness.",
+      "error": false
+    },
+    {
+      "id": "alg-002",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "For i = 0,…,n-1, agent j updates x_{j,t}^{i+1} = x_{j,t}^i - γ ∇ f_{j,π_t^i}(x_{j,t}^i), where γ is a constant step-size.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/disprox_rr/algorithms.py, function `_local_stochastic_epoch` (called for DPG-RR/DPG-SG/DPG-IG methods), lines ~100-128: for each agent and each step i in the random permutation `order` (π_t^i), the update is `current -= gamma * g * (len(idx) / n)` where `g = logistic_gradient(X[agent, idx], y[agent, idx], current)`. This implements x_{j,t}^{i+1} = x_{j,t}^i - γ ∇ f_{j,π_t^i}(x_{j,t}^i). The parameter `gamma` is passed as a constant float (default 0.3) to `run_method` and is not modified per-epoch for DPG-RR. The scaling `(len(idx)/n)` is a batch normalization factor that equals 1 when batch_size equals n (single-pass per index), consistent with the per-sample gradient formulation.",
+      "note": "The batch_size parameter may cause the effective step to be scaled when batch_size < n, but the structure is x -= gamma * grad_estimate, matching the claimed update with constant gamma.",
+      "error": false
+    },
+    {
+      "id": "alg-003",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "After the inner loop, agent j computes v_{j,t} via a multi-step consensus mapping: v_{j,t} = ∑_{l=1}^m λ_{jl,t} x_{l,t}^n, where λ_{jl,t} is the (j,l)-th entry of the transition matrix Φ(T(t)+t, T(t)), Φ(k,τ) = A(k)⋯A(τ), and A(t) is the doubly stochastic adjacency matrix at time t. The number of communication steps performed at iteration t is exactly t.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/disprox_rr/algorithms.py, `_consensus_matrix` (lines 68-76) computes the product Φ by multiplying `epoch+1` adjacency matrices: `result = np.eye(...); for step in range(epoch+1): result = result @ A[step % len(periodic)]`. The comment at line 72 confirms \"Epoch 0 uses one communication step, epoch 1 uses two, and so on.\" The resulting matrix W is used in `_prox_consensus(q, W, gamma, l1)` (line 186) which computes `W @ q`, implementing v_{j,t} = ∑_l λ_{jl,t} x_{l,t}^n. The number of steps is epoch+1; with 0-indexed epochs this is equivalent to the paper's 1-indexed \"exactly t steps at iteration t\". Called with multi_step=True for DPG-RR (line 185), DPG-SG, DPG-IG, and Prox-G.",
+      "note": "The paper uses 1-indexed iteration t while the code uses 0-indexed epoch; epoch=0 → 1 step, epoch=t-1 → t steps, which is consistent with \"exactly t steps at iteration t\" in 1-indexed notation.",
+      "error": false
+    },
+    {
+      "id": "alg-004",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The consensus mapping is implemented by performing t communication rounds: at each round, agent j sends its current estimate to neighbors, receives their estimates, and updates as a weighted average using the entries of the adjacency matrix A at that communication time step.",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "In `src/disprox_rr/algorithms.py`, `_consensus_matrix` (lines 68-76) computes the t-round consensus as `result = I; for step in range(epoch+1): result = result @ A[step % len(periodic)]`, explicitly multiplying the adjacency matrix for each communication time step in sequence. The result is then applied in `_prox_consensus` (line 130) as `W @ q`. This implements the t-step consensus defined in Section III: agents' estimates are combined via successive weighted averaging using the adjacency matrix at each communication time step. DPG-RR uses `multi_step=True` (line 185) so the number of rounds grows with epoch.",
+      "note": "The t rounds are implemented as a precomputed matrix product (loop over time steps multiplying matrices together), rather than explicit iterative message-passing. Mathematically this is equivalent to t sequential send/receive/average rounds. The claim is substantively implemented but the \"agent j sends to neighbors\" framing is abstracted away into matrix multiplication.",
+      "error": false
+    },
+    {
+      "id": "alg-005",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Agent j then applies the proximal operator: x_{j,t+1} = prox_{γ,φ}(v_{j,t}), where prox_{α,h}(x) = argmin_y { h(y) + (1/(2α))‖y - x‖^2 }.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/disprox_rr/algorithms.py: `_prox_l1(v, gamma, l1)` (line ~56) implements the proximal operator of the L1 regularizer via soft-thresholding: `np.sign(v) * np.maximum(np.abs(v) - gamma * l1, 0.0)`, which solves argmin_y { l1*‖y‖_1 + (1/(2γ))‖y - v‖^2 }. `_prox_consensus(q, W, gamma, l1)` applies this per-agent over `W @ q`. In `run_method` for DPG-RR/SG/IG methods: after the local gradient epoch, `x = _prox_consensus(q, W, gamma, l1)` — implementing x_{j,t+1} = prox_{γ,φ}(v_{j,t}) where v_{j,t} is the consensus-mixed iterate. `proximal_evals += agents` is tracked, confirming proximal steps are applied per agent per epoch.",
+      "note": "The proximal operator is applied to the L1 regularizer (φ = l1*‖·‖_1), which matches the paper's use of a nonsmooth regularizer φ in the proximal step.",
+      "error": false
+    },
+    {
+      "id": "alg-006",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The proximal operator is evaluated exactly once per outer iteration (epoch), not after each inner gradient step.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/disprox_rr/algorithms.py, the DPG-RR (and DPG-SG/DPG-IG) branch (lines 181-187) first calls `_local_stochastic_epoch` which performs n incremental gradient steps per agent (lines 105-126) with NO proximal evaluation inside. After the inner loop completes, `_prox_consensus` (which calls `_prox_l1`) is invoked exactly once per epoch at line 186. The counter `proximal_evals += agents` at line 187 confirms one proximal call per epoch (one per agent). The inner loop `_local_stochastic_epoch` contains only gradient steps (`current -= gamma * g * ...`, line 123) and never calls any prox function.",
+      "note": "The claim matches Remark III.2's description: the proximal step is applied once per outer iteration (epoch), not after each inner gradient step.",
+      "error": false
+    },
+    {
+      "id": "alg-007",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The step-size γ is held constant across all outer iterations; the algorithm does not use a diminishing step-size sequence.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In `src/disprox_rr/algorithms.py`, the `run_method` function accepts `gamma: float = 0.3` as a single scalar parameter. For the DPG-RR algorithm (the paper's Algorithm 1), `gamma` is used as a constant in both `_local_stochastic_epoch(X, y, x, gamma, ...)` and `_prox_consensus(q, W, gamma, l1)` throughout all `epochs` iterations — there is no update or decay applied to `gamma` across outer iterations. The experiment script `scripts/run_experiment.py` also confirms this: `gamma=args.gamma` (default 0.3) is passed as a fixed float to `run_method()`. For contrast, baseline methods DGM and NEXT explicitly use diminishing step-sizes (`step = 0.1 / np.sqrt(epoch + 1.0)` and `step = 0.1 / (epoch + 1.0) ** 0.6` respectively), further confirming that the DPG-RR algorithm intentionally uses a constant step-size.",
+      "note": "The rubric refers specifically to the paper's Algorithm 1 (DPG-RR). The constant step-size is correctly implemented. Other baseline methods (DGM, NEXT) do use diminishing step-sizes, but those are not the algorithm described in Algorithm 1.",
+      "error": false
+    },
+    {
+      "id": "alg-008",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The gradient ∇ f_{j,π_t^i}(x_{j,t}^i) is computed at the current inner iterate x_{j,t}^i, not at the start-of-epoch point x_{j,t}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In `src/disprox_rr/algorithms.py`, function `_local_stochastic_epoch` (called for DPG-RR at line ~155): line 106 initializes `current = x[agent].copy()` (the start-of-epoch point), then the inner loop at line 119 computes `g = logistic_gradient(X[agent, idx], y[agent, idx], current)` — using `current` (the evolving inner iterate), and line 123 updates `current -= gamma * g * (len(idx) / n)`. The gradient is evaluated at `current` which is updated each inner step, matching x_{j,t}^i, not the fixed x_{j,t}.",
+      "note": "The variable `current` tracks the inner iterate and is updated in-place; the gradient is always computed at the latest value of `current`, confirming the claim from Algorithm 1 line 8 / Eq. (7).",
+      "error": false
+    },
+    {
+      "id": "alg-009",
+      "dimension": "algorithm_impl",
+      "priority": "tertiary",
+      "description": "Each agent j initializes its local variable x_{j,0} arbitrarily before the first iteration.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In src/disprox_rr/algorithms.py line 156, all agents are initialized with `x = np.full((agents, d), init_value, dtype=np.float64)` where `init_value` defaults to 1.0 (line 145). In scripts/run_experiment.py lines 114-125, `run_method` is always called without `init_value`, so every agent's x_{j,0} is set to the identical constant 1.0. There is no random or agent-specific arbitrary initialization anywhere in the codebase.",
+      "note": "The paper requires x_{j,0} to be initialized arbitrarily per agent (Algorithm 1, line 2). The code initializes all agents uniformly to 1.0 — a fixed constant, not an arbitrary value. While some papers tolerate constant initializations as a valid special case of \"arbitrary\", the code provides no mechanism for agent-varying or random initialization at startup.",
+      "error": false
+    },
+    {
+      "id": "setup-001",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The experiment uses m = 10 agents.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/time_invariant_e200_s0-1-2/config.json line: \"agents\": 10, datasets include a9a and w8a. The network matrices in data/networks.json are 10×10, further confirming 10 agents for the time-invariant experiment.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-002",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The L1 regularization parameter λ_1 is set to 5 × 10^{-4}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scripts/run_experiment.py line 96: `\"l1\": 5e-4,` hardcodes λ_1 = 5×10⁻⁴ in the config dict. The saved run config results/formal/time_invariant_e200_s0-1-2/config.json line 19 confirms `\"l1\": 0.0005` for the time-invariant experiment on datasets a9a and w8a.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-003",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "All comparative algorithms are initialized with the same initial value.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/disprox_rr/algorithms.py, the `run_method` function (line ~125 area) initializes every algorithm's local variables with: `x = np.full((agents, d), init_value, dtype=np.float64)` where `init_value` defaults to `1.0`. All methods (DPG-RR, GT-SAGA, DSGD, and others) pass through this same code path before any method-specific branching. In scripts/run_experiment.py, all calls to `run_method(method, X, y, ...)` for all methods in GROUPS[\"time_invariant\"] = [\"DPG-RR\", \"GT-SAGA\", \"DSGD\"] use the same function signature without overriding `init_value`, so all methods are initialized to the same `1.0` value uniformly across all agents and dimensions.",
+      "note": "The initialization is a scalar broadcast to a full matrix — all agents in all methods get the same numeric starting value (1.0), which satisfies \"same initial value\" for the comparative algorithms.",
+      "error": false
+    },
+    {
+      "id": "setup-004",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "The problem is logistic regression with L1 regularization (non-smooth).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "algorithms.py lines 53-56: logistic_loss = mean(logaddexp(0,-margin)) + l1*||x||_1, clearly logistic regression with L1 regularization. Line 64-65: _prox_l1 implements soft-thresholding proximal operator, confirming non-smooth treatment. run_experiment.py line 96: config hardcodes \"l1\": 5e-4. Lines 22-24: GROUPS[\"time_invariant\"] = [\"DPG-RR\", \"GT-SAGA\", \"DSGD\"]. Line 83: default --datasets is \"a9a,w8a\".",
+      "note": "The L1 term is non-smooth and handled via proximal operators (soft thresholding), matching the paper's description of a non-smooth regularizer in eq. (28).",
+      "error": false
+    },
+    {
+      "id": "setup-005",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The datasets used are a9a and w8a.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Multiple files confirm a9a and w8a as the datasets: (1) scripts/run_experiment.py line 74: `parser.add_argument(\"--datasets\", default=\"a9a,w8a\")`; (2) run_all.sh lines 4-5: `--experiment time_invariant --datasets a9a,w8a` and `--experiment time_varying --datasets a9a,w8a`; (3) data/sources.json has entries keyed \"a9a\" and \"w8a\" with paths to the respective .mat files; (4) scripts/prepare_data.py: `choices=[\"a9a\", \"w8a\"]`; (5) results/formal/time_invariant run logs show actual runs with dataset=a9a and dataset=w8a.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-006",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "GT-SAGA and DSGD use subgradients instead of gradients because the cost function is non-smooth.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/disprox_rr/algorithms.py: DSGD (line 202) computes `g + l1 * np.sign(x[i])` — adding the subgradient of the L1 term. GT-SAGA (line 236) computes `grad_x = logistic_gradient(...) + l1 * np.sign(xi)` for the same reason. A code comment at line 164–165 explicitly notes \"the reference code calls this GT-SAGA even though it uses a subgradient for the l1 term.\" Both methods use subgradients (np.sign) for the non-smooth L1 regularization component instead of a proximal operator, confirming the claim.",
+      "note": "The non-smoothness comes from the L1 regularization penalty. The smooth logistic loss gradient is computed normally, but the L1 term is handled via its subgradient (sign function) in both GT-SAGA and DSGD.",
+      "error": false
+    },
+    {
+      "id": "setup-007",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The network is a ten-agent connected time-invariant graph.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "data/networks.json contains a \"static\" key with a 10×10 doubly stochastic matrix (all entries >0, all row sums =1.0), confirming a 10-agent fully-connected time-invariant graph. results/formal/time_invariant_e200_s0-1-2/config.json explicitly shows \"agents\": 10, \"time_varying_network\": false, \"datasets\": [\"a9a\", \"w8a\"]. scripts/run_experiment.py lines 98-124 hardcode 10 agents and pass the static mixing matrix when experiment==\"time_invariant\".",
+      "note": "The graph is fully connected (all weights > 0), satisfying the \"connected\" requirement. The config file and run script confirm this is used for both a9a and w8a datasets as specified.",
+      "error": false
+    },
+    {
+      "id": "setup-008",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The number of agents is m = 10.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/time_varying_e200_s0-1-2/config.json has \"agents\": 10; scripts/run_experiment.py line 98 sets \"agents\": 10 and line 109 calls split_agents(dataset, 10); src/disprox_rr/data.py line 135 defines split_agents with default agents=10.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-009",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The regularization parameter λ_1 is set to 5 × 10^{-4}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scripts/run_experiment.py at line 96: `\"l1\": 5e-4`. In results/formal/time_varying_e200_s0-1-2/config.json at line 20: `\"l1\": 0.0005`. Both confirm λ_1 is set to 5 × 10^{-4}.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-010",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "All comparative algorithms are initialized with the same value.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/disprox_rr/algorithms.py, run_method() initializes x = np.full((agents, d), init_value, dtype=np.float64) at line 156, with init_value defaulting to 1.0 (line 145). In scripts/run_experiment.py, every method in the time_varying group ([\"DPG-RR\", \"Prox-G\", \"NEXT\", \"DGM\"]) is passed to run_method() via the loop at line 111-125, with no custom init_value argument, so all algorithms start from the same all-ones vector.",
+      "note": "The shared initialization applies to all experiment groups including exp2_time_varying, since run_experiment.py uses a uniform call pattern for all methods.",
+      "error": false
+    },
+    {
+      "id": "setup-011",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The datasets used are a9a and w8a.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Multiple files confirm both datasets: `scripts/run_experiment.py` line 74 sets `--datasets default=\"a9a,w8a\"`; `run_all.sh` line 5 runs `--experiment time_varying --datasets a9a,w8a`; `scripts/prepare_data.py` lines 5–6 and 25 list choices `[\"a9a\", \"w8a\"]`; `data/sources.json` lines 8–17 define both datasets; `results/formal/time_varying_e200_s0-1-2/run.log` shows actual completed runs for both `dataset=a9a` and `dataset=w8a` under the time_varying experiment.",
+      "note": "The claim specifically mentions exp2_time_varying; run_all.sh confirms this experiment uses both a9a and w8a, and the formal run logs show successful execution with both datasets.",
+      "error": false
+    },
+    {
+      "id": "setup-012",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The time-varying communication network is a periodically time-varying ten-agent graph satisfying Assumption III.2, shown in Fig. 3.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "data/networks.json contains a \"periodic\" key with 5 matrices each of shape 10×10, representing a 5-period time-varying 10-agent graph. src/disprox_rr/data.py:146-168 documents this as \"five-period communication matrices\" and loads them; algorithms.py:75 cycles through them as `periodic[step % len(periodic)]`. scripts/run_experiment.py:99,119,124 uses this periodic network for the \"time_varying\" experiment. The 10×10 symmetric matrices satisfy doubly-stochastic properties consistent with Assumption III.2.",
+      "note": "The repository uses a 5-period cycle over 10-agent graphs, which matches \"periodically time-varying ten-agent graph.\" The exact Fig. 3 topology cannot be visually verified from code alone, but the structural properties (10 agents, periodic, symmetric/doubly-stochastic) are all present.",
+      "error": false
+    },
+    {
+      "id": "setup-013",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "DPG-RR and Prox-G adopt a same constant step-size.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/disprox_rr/algorithms.py, both DPG-RR (lines 181-187) and Prox-G (lines 188-195) use the same `gamma` parameter as their step-size: DPG-RR calls `_local_stochastic_epoch(..., gamma, ...)` and `_prox_consensus(q, W, gamma, l1)`, while Prox-G uses `q[i] -= gamma * logistic_gradient(...)` and `_prox_consensus(q, W, gamma, l1)`. The `gamma` is a fixed constant (default 0.3 per results/formal/time_varying_e200_s0-1-2/config.json), not diminishing. By contrast, DGM uses `step = 0.1 / np.sqrt(epoch + 1.0)` and NEXT uses `step = 0.1 / (epoch + 1.0) ** 0.6`. The run_experiment.py also confirms both methods are in the same `time_varying` group and share the single `--gamma` argument.",
+      "note": "The claim is fully supported: DPG-RR and Prox-G adopt the same constant step-size gamma=0.3 in the time-varying experiment.",
+      "error": false
+    },
+    {
+      "id": "setup-014",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "NEXT uses diminishing step-sizes.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/disprox_rr/algorithms.py, lines 215-219, the NEXT method uses `step = 0.1 / (epoch + 1.0) ** 0.6`, a diminishing step-size that decays as 1/(epoch+1)^0.6. The inline comment at line 216-217 explicitly states \"the diminishing step follows the protocol used in the paper.\"",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-015",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "DGM uses diminishing step-sizes.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/disprox_rr/algorithms.py, lines 205-213, the DGM branch computes `step = 0.1 / np.sqrt(epoch + 1.0)`, a classic O(1/√t) diminishing step-size schedule. DGM is also explicitly included in the \"time_varying\" experiment group in scripts/run_experiment.py (line 24).",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-016",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The experiment is conducted on the w8a dataset.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "run_all.sh line 6: `--experiment sampling_ablation --datasets w8a` (w8a only, no a9a). results/formal/sampling_ablation_e200_s0-1-2/run.log lines 1-10: all 9 runs logged as `dataset=w8a`. results/formal/sampling_ablation_e200_s0-1-2/summary.json: only \"w8a\" key at top level. CLAIM_RESULTS.json line 29 (C3_sampling_ablation): \"On w8a, final objective means are 0.489902 (DPG-RR)...\"",
+      "note": "The sampling ablation experiment is run exclusively on w8a (not on a9a), consistent with the rubric claim.",
+      "error": false
+    },
+    {
+      "id": "setup-017",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "All algorithms (DPG-RR, DPG-SG, DPG-IG) use a constant step-size of 0.3.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "1. `src/disprox_rr/algorithms.py` line 141: `run_method(..., gamma: float = 0.3, ...)` — default step-size is 0.3. Lines 181-186 show DPG-RR, DPG-SG, and DPG-IG all handled in the same branch, all receiving the same `gamma`. 2. `scripts/run_experiment.py` line with `parser.add_argument(\"--gamma\", type=float, default=0.3)` — the CLI default is 0.3. 3. `results/formal/sampling_ablation_e200_s0-1-2/config.json` records `\"gamma\": 0.3` alongside `\"methods\": [\"DPG-RR\", \"DPG-SG\", \"DPG-IG\"]` and `\"datasets\": [\"w8a\"]`, confirming the actual run used gamma=0.3 for all three algorithms.",
+      "note": "All three algorithms share the same gamma parameter; there is no per-algorithm override. The saved config for the sampling ablation experiment confirms gamma=0.3 was used in practice.",
+      "error": false
+    },
+    {
+      "id": "setup-018",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The experiment compares DPG-RR, DPG-SG, and DPG-IG algorithms.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scripts/run_experiment.py line 25: `\"sampling_ablation\": [\"DPG-RR\", \"DPG-SG\", \"DPG-IG\"]` defines the experiment. src/disprox_rr/algorithms.py line 16 includes all three in METHOD_NAMES, and lines 181-182 dispatch on mode \"rr\"/\"sg\"/\"ig\" for these methods. results/formal/sampling_ablation_e200_s0-1-2/summary.json and runs.json contain results for DPG-RR, DPG-SG, and DPG-IG on w8a. CLAIMS.json confirms methods=[\"DPG-RR\",\"DPG-SG\",\"DPG-IG\"] for the ablation experiment (exp3_ablation_sampling).",
+      "note": "Dataset w8a is confirmed in the runs/summary results for this experiment group.",
+      "error": false
+    }
+  ]
+}

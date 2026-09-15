@@ -1,0 +1,18 @@
+[
+  {
+    "path": "src/byz_repro/algorithms.py",
+    "symbol": "_run_dasha"
+  },
+  {
+    "path": "src/byz_repro/compression.py",
+    "symbol": "randk"
+  },
+  {
+    "path": "src/byz_repro/aggregation.py",
+    "symbol": "coordinate_median"
+  },
+  {
+    "path": "src/byz_repro/aggregation.py",
+    "symbol": "_buckets"
+  }
+]

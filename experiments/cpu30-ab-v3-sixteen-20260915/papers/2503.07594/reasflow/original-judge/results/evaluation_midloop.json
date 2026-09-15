@@ -1,0 +1,255 @@
+{
+  "paper_id": "2503.07594",
+  "evaluated_at": "2026-09-05T00:11:26.775267+00:00",
+  "summary": {
+    "total_score": 0.8235,
+    "algorithm_impl_score": 0.8333,
+    "exp_setup_score": 0.8182,
+    "exp_results_score": 0.0,
+    "total_rubrics": 20,
+    "passed": 17,
+    "failed": 3,
+    "errors": 0,
+    "pass_threshold": 0.8,
+    "gate_passed": true
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.7857,
+      "passed": 11,
+      "total": 14
+    },
+    "secondary": {
+      "score": 1.0,
+      "passed": 4,
+      "total": 4
+    },
+    "tertiary": {
+      "score": 1.0,
+      "passed": 2,
+      "total": 2
+    }
+  },
+  "results": [
+    {
+      "id": "alg-001",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The global parameter θ_{t+1} is the average of the final local parameters: θ_{t+1} = (1/N) ∑_{c=1}^N θ_H(c).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_speedup/algorithms.py, the `fedavg` function (lines ~72-87) performs N_local local SGD steps storing results in `local` (shape: n_clients × d), then computes `theta = local.mean(axis=0)` — which is exactly (1/N) ∑_{c=1}^N θ_H(c). The same averaging also appears in `scaffold` at the same position.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "alg-002",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Each client c performs H local updates per round, starting from θ_0(c) = θ_t.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_speedup/algorithms.py: (1) line 91/135: `local = np.broadcast_to(theta, (clients.n_clients, d)).copy()` initializes all clients from the current global model `theta` (θ_0(c) = θ_t); (2) lines 92/136: `for _ in range(n_local):` loops exactly `n_local` (H) times, performing one local gradient step per iteration — implementing H local updates per round. This pattern appears in both `fedavg` (lines 91-99) and `scaffold` (lines 135-145).",
+      "note": "The parameter is named `n_local` in the code, which maps to H in the paper. Default value is 100, consistent with the paper's H=100 configuration mentioned in configs and README.",
+      "error": false
+    },
+    {
+      "id": "alg-003",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The local update for client c at step h is θ_{h+1}(c) = θ_h(c) - γ (∇F_c(Z_{t,h+1}(c), θ_h(c)) - ξ_t(c)).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In scaffold_speedup/algorithms.py, line 143, the local update is: `local -= step * (gradient + controls)`, i.e. θ_{h+1} = θ_h - γ*(∇F_c + ξ_t). The rubric (Algorithm 1 line 7) specifies θ_{h+1}(c) = θ_h(c) - γ*(∇F_c - ξ_t(c)), with subtraction of the control variate. The code adds controls rather than subtracting them, contradicting the claimed formula. The docstring at line 117 also confirms: \"The local update is `theta <- theta - step * (gradient + xi_c)`\".",
+      "note": "This could be a different sign convention for ξ (i.e., the code's `controls` might equal −ξ from the paper), but the code's docstring explicitly says \"+xi_c\" without any indication of a sign flip in definition, and the control update at line 145 is `controls += (local - theta) / (step * n_local)` which aligns with standard SCAFFOLD where c_i is updated to equal the drift — matching a + not - convention. The rubric formula with subtraction does not match what is coded.",
+      "error": false
+    },
+    {
+      "id": "alg-004",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The control variate for client c is updated as ξ_{t+1}(c) = ξ_t(c) - (1/(γH))(θ_{t+1} - θ_H(c)).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scaffold_speedup/algorithms.py, line 145: `controls += (local - theta) / (step * n_local)`. Here `controls`=ξ_t(c), `local`=θ_H(c) (client local model after H steps), `theta`=θ_{t+1} (aggregated global model), `step`=γ, `n_local`=H. Expanding: ξ_{t+1}(c) = ξ_t(c) + (θ_H(c) - θ_{t+1})/(γH) = ξ_t(c) - (1/(γH))(θ_{t+1} - θ_H(c)), which is exactly the claimed formula.",
+      "note": "The sign convention in the code comment on line 118 matches: \"xi_c <- xi_c + (theta_local-theta_global)/(step*H)\", confirming the intended formula aligns with the claim.",
+      "error": false
+    },
+    {
+      "id": "alg-005",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The algorithm uses a single step size γ for all local updates and control variate updates, without a separate global step size.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_speedup/algorithms.py, the `scaffold()` function has a single `step` parameter (corresponding to γ). Local updates use `local -= step * (gradient + controls)` (line ~113) and control variate updates use `controls += (local - theta) / (step * n_local)` (line ~118). There is no separate global step size — only the single `step` variable is used for both local parameter updates and the control variate update formula.",
+      "note": "The control variate update formula uses `step` in the denominator (as 1/(γ·H)), which is algebraically consistent with Algorithm 1 of SCAFFOLD using a single step size γ for all updates.",
+      "error": false
+    },
+    {
+      "id": "alg-006",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The local gradient is computed using a freshly sampled Z_{t,h+1}(c) ∼ ν(c) at each local step.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_speedup/algorithms.py, the scaffold() function has an inner loop `for _ in range(n_local):` (lines ~117-124). Inside this loop, at every local step, `_sample_indices(rng, clients.n_clients, clients.records_per_client, batch_size)` is called fresh to produce a new set of random mini-batch indices. These indices are immediately used by `_batch_gradient(...)` to compute the local stochastic gradient. This directly corresponds to sampling Z_{t,h+1}(c) ~ ν(c) at each local step as stated in Algorithm 1 line 6.",
+      "note": "The full-batch case (batch_size == -1) uses all records, but for the stochastic case (default batch_size=10), new random indices are drawn at every local step, matching the paper's requirement.",
+      "error": false
+    },
+    {
+      "id": "alg-007",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The clients perform local updates in parallel, and the server aggregates the final local parameters.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_speedup/algorithms.py, both fedavg() and scaffold() implement the described behavior. Local updates are performed in parallel (vectorized across all clients) using NumPy: `local` has shape `(n_clients, d)` and all clients update simultaneously via `local -= step * _batch_gradient(...)` (line ~82 for fedavg, ~116 for scaffold) across `n_local` iterations. After the local update loop, the server aggregates by averaging: `theta = local.mean(axis=0)` (line ~85 for fedavg, ~119 for scaffold), which is precisely the server aggregation of final local parameters.",
+      "note": "Parallelism is achieved via NumPy vectorization (all clients processed simultaneously in a single array operation) rather than multi-threading or multi-processing, but this is functionally equivalent to parallel execution and is standard practice for simulation of federated algorithms.",
+      "error": false
+    },
+    {
+      "id": "alg-008",
+      "dimension": "algorithm_impl",
+      "priority": "tertiary",
+      "description": "The algorithm runs for T rounds, with N clients and H local steps per round.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scaffold_speedup/algorithms.py: The `scaffold` function (lines 104-148) implements the algorithm with: T rounds via `n_rounds` parameter and `for round_idx in range(n_rounds):` (line 134); N clients via `clients.n_clients` used for all-client participation each round (line 135, array shape `(clients.n_clients, d)`); H local steps via `n_local` parameter and `for _ in range(n_local):` (line 136). The docstring at line 118 explicitly references H: `(theta_local-theta_global)/(step*H)`, and line 145 computes `controls += (local - theta) / (step * n_local)` matching H=n_local. FedAvg (lines 69-101) follows the same T/N/H pattern.",
+      "note": "The paper's T, N, H are named n_rounds, n_clients (via ClientData), and n_local in the code respectively.",
+      "error": false
+    },
+    {
+      "id": "setup-001",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For linear regression, datasets are generated using scikit-learn's make_regression function with 100N records and 20 features, using two different seeds and n_informative=2 and n_informative=10 respectively. The first dataset is split evenly among the first N/2 clients, the second among the remaining N/2 clients, resulting in 200 records per client.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scaffold_speedup/data.py lines 65-78: `population = (n_clients // 2) * records_per_client` (= 100N when records_per_client=200), then `make_regression(n_samples=population, n_features=n_features, n_informative=2, random_state=42)` and `make_regression(n_samples=population, n_features=n_features, n_informative=10, random_state=123)`. Lines 90-96: first half of clients gets population 1 split, second half gets population 2 split. configs/figure1.json sets `records_per_client=200` and `n_features=20`, confirming 200 records/client and 20 features. The comment at line 63-64 explicitly notes \"100N records per population … each client receives 200 records at the default.\"",
+      "note": "Seeds used are 42 and 123 (not explicitly named in the rubric but consistent with \"two different seeds\"). The rubric says \"100N records\" — confirmed: (N/2)*200 = 100N.",
+      "error": false
+    },
+    {
+      "id": "setup-002",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For logistic regression, datasets are generated using scikit-learn's make_classification function with two different seeds, with the same splitting procedure: each dataset split evenly among N/2 clients, resulting in 200 records per client.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scaffold_speedup/data.py: generate_clients() with problem='logistic' calls make_classification twice — once with random_state=42 (line ~81) and once with random_state=123 (line ~85), both with n_samples = (n_clients//2) * records_per_client. The default records_per_client=200 (line 49). _split_clients() then divides each population evenly among n_clients//2 clients, giving exactly 200 records per client. This exactly matches the claim of two seeds, split evenly among N/2 clients, 200 records per client.",
+      "note": "The function signature defaults to 200 records per client; experiments may override this, but the default and described mechanism match the paper's Section 6 specification precisely.",
+      "error": false
+    },
+    {
+      "id": "setup-003",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "Each client has 200 records.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scaffold_speedup/data.py, line 47: `records_per_client: int = 200` is the default parameter in `generate_clients()`. Line 64 comments: \"each client receives 200 records at the default.\" This function is used to generate both linear_regression and logistic_regression datasets.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-004",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The number of clients N takes values in {10, 100, 1000, 10000}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In configs/figure1.json, the field \"n_agents\": [10, 100, 1000, 10000] specifies exactly those four values for the number of clients N. The experiment runs over \"problems\": [\"linear\", \"logistic\"], covering both linear_regression and logistic_regression datasets. The run_formal.py script iterates over these values at lines ~92-93: `for agents in selected_agents: ... clients = generate_clients(problem, agents, ...)`, confirming the values are actively used.",
+      "note": "The config key is \"n_agents\" rather than \"n_clients\", but it is used directly as the number of clients/workers in the federated learning experiment, making it equivalent.",
+      "error": false
+    },
+    {
+      "id": "setup-005",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The step size γ = 0.05.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/figure1.json line: \"step\": 0.05 — for the experiment covering linear and logistic regression datasets. The algorithm implementation in scaffold_speedup/algorithms.py uses `step: float = 0.05` as the default parameter (line 73, 108), and experiments/run_formal.py passes `step=config[\"step\"]` to the algorithm (line 40).",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-006",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The number of local steps H = 100.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In configs/figure1.json, the field \"n_local\": 100 directly sets H=100 local steps. The file also covers both \"linear\" and \"logistic\" problems (the \"problems\" array). The \"paper_protocol\" comment further confirms: \"5000 total local updates / H=100 = 50 communication rounds\". CLAIMS.json also explicitly states \"H=100 local stochastic updates\" for the linear/logistic regression experiments.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-007",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The number of communication rounds T = 100.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The main experiment config file configs/figure1.json sets \"n_rounds\": 50 (not 100). The same value is confirmed in results/formal/figure1/config.json. The config comment explicitly notes: \"5000 total local updates / H=100 = 50 communication rounds as in official code and plot axis\". The default in scaffold_speedup/algorithms.py also has n_rounds=100 as function default, but this is the function signature default, not the actual experiment value. The actual experiment uses n_rounds=50.",
+      "note": "The paper states T=100 communication rounds, but the repository implements T=50 rounds, justified by interpreting \"5000 total local updates / H=100 = 50 rounds\". The claim that T=100 is NOT implemented in the experiment configs for linear/logistic regression.",
+      "error": false
+    },
+    {
+      "id": "setup-008",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The batch size is 10.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Multiple sources confirm batch_size=10 for the linear/logistic regression experiment (exp1): (1) configs/figure1.json line 10: \"batch_size\": 10, with paper_protocol citing \"Section 6 and Figure 1\"; (2) scaffold_speedup/algorithms.py lines 75 and 110: both fedavg() and scaffold() default to batch_size=10; (3) CLAIMS.json line 15: \"both methods use gamma=0.05, H=100 local stochastic updates, batch size 10, lambda=1e-4\"; (4) document/experiment_report.md line 19: \"FedAvg and SCAFFOLD use all clients, gamma=0.05, H=100, batch size 10\"; (5) results/formal/figure1/config.json line 22: \"batch_size\": 10.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-009",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "FEDAVG is run with the same parameters as SCAFFOLD: γ=0.05, H=100, T=100, batch size 10.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "configs/figure1.json sets: step=0.05 (γ), n_local=100 (H), batch_size=10, but n_rounds=50 (not T=100). The config comment explains: \"5000 total local updates / H=100 = 50 communication rounds\". In experiments/run_formal.py, both fedavg and scaffold share the same config parameters. So γ=0.05, H=100, batch_size=10 are correct, but T=100 is NOT implemented — the experiment uses T=50.",
+      "note": "The repo's comment acknowledges T=50 is their interpretation of the paper's \"5000 total local updates / H=100\". The claim requires T=100, which is not what the code uses.",
+      "error": false
+    },
+    {
+      "id": "setup-010",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The evaluation metric is mean squared error E[∥θ^t − θ⋆∥^2] reported as a function of the number of communication rounds.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In experiments/run_formal.py, line 47: `errors = np.sum((trajectory.parameters - theta_star[None, :]) ** 2, axis=1)` computes the squared Euclidean distance ‖θ^t − θ*‖² at each step. This is stored as `\"mse_parameter_error\"` (line 58/73) and indexed by `\"communication_rounds\"` / `\"communication_round\"` (lines 57/72). The metric is averaged over seeds via `frame.groupby([\"problem\", \"n_agents\", \"method\", \"communication_round\"])` (line 113), implementing E[‖θ^t − θ*‖²] as a function of communication rounds. The trajectory files in results/formal/figure1/trajectories/ (for both linear and logistic regression) store these fields.",
+      "note": "The code computes the per-run squared error and then averages across seeds, which matches the expectation E[‖θ^t − θ*‖²]. Both linear_regression and logistic_regression problems are covered.",
+      "error": false
+    },
+    {
+      "id": "setup-011",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "Results are averaged over 3 runs, with standard deviation shown.",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "configs/figure1.json: \"seeds\": [0, 1, 2] — exactly 3 runs. experiments/run_formal.py: aggregates with .agg(mean_mse=(\"mse_parameter_error\", \"mean\"), std_mse=(\"mse_parameter_error\", \"std\"), ...) and writes summary.csv. document/experiment_report.md table shows mean ± std for all 8 conditions (e.g., \"Linear, N=10, SCAFFOLD: 104.199 +/- 19.728\"). results/formal/figure1/summary.csv contains std_mse column with non-zero values computed from n=3 runs per condition. The figure plot_specs use groupby=\"seed\" showing individual trajectories rather than mean±std bands, but mean and std are computed and shown in the companion results table.",
+      "note": "The actual figure PNGs show individual per-seed trajectories (3 lines per series) rather than a single mean curve with shaded std bands. However, the standard deviation IS explicitly computed (in summary.csv) and shown (in the experiment_report.md table as mean ± std) as part of the results reporting for this experiment. The 3-run methodology is fully implemented; the question is only whether the std visualization format in the figure itself matches exactly what the paper's Figure 1 caption describes.",
+      "error": false
+    },
+    {
+      "id": "setup-012",
+      "dimension": "exp_setup",
+      "priority": "tertiary",
+      "description": "The code is available at https://github.com/pmangold/scaffold-speed-up.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "SOURCES.md (line 4) explicitly states: \"Official reference repository: `https://github.com/pmangold/scaffold-speed-up`, commit `962967b6260eea4802dc41231b32ad8b311b9f0d`.\" Additionally, the read-only snapshot at `../runtime/official_code` exists and contains the code files: algos.py, datasets.py, experiments.py, parameters.py, plot.py, readme.md — confirming the code is available at the stated URL.",
+      "note": "The git remote config does not point to pmangold/scaffold-speed-up (it's a reproduction environment), but SOURCES.md confirms the official code location matches the claimed URL exactly.",
+      "error": false
+    }
+  ]
+}

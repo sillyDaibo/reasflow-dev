@@ -1,0 +1,14 @@
+[
+  {
+    "path": "src/pps_barycenter/algorithms.py",
+    "symbol": "run_algorithm"
+  },
+  {
+    "path": "src/pps_barycenter/objectives.py",
+    "symbol": "local_distribution"
+  },
+  {
+    "path": "src/pps_barycenter/pps.py",
+    "symbol": "simplex_quantize"
+  }
+]

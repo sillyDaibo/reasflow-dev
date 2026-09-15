@@ -1,0 +1,131 @@
+2018), etc. A more sophisticated algorithm termed as Krum
+selects a gradient which has minimal summation of Eu-
+clidean distances from a given number of nearest gradients
+(Blanchard et al. 2017). Targeting high-dimensional learn-
+ing, an iterative ﬁltering algorithm is developed in (Su and
+Xu 2018), which achieves the optimal error rate in the high-
+dimensional regime. The main disadvantage of these exist-
+ing algorithms comes from the i.i.d. assumption, which is ar-
+guably not the case in federated learning over heterogeneous
+computing units. Actually, generalizing these algorithms to
+the non-i.i.d. setting is not straightforward. In addition, some
+of these algorithms rely on sophisticated gradient selection
+subroutines, such as those in Krum and geometric median,
+which incur high computational complexity.
+Other related work in this context includes (Yin et al.
+2018b) that targets escaping saddle points of nonconvex op-
+timization problems under Byzantine attacks, and (Chen et
+al. 2018a) that leverages a gradient-coding based algorithm
+for robust learning. However, the approach in (Chen et al.
+2018a) needs to relocate the data points, which is not easy
+to implement in the federated learning paradigm. Leverag-
+ing additional data, (Xie, Koyejo, and Gupta 2018c) stud-
+ies the trustworthy score-based schemes that guarantee ef-
+ﬁcient learning even when there is only one non-Byzantine
+worker, but additional data may not always be available in
+practice. Our algorithms are also related to robust decentral-
+ized optimization studied in, e.g., (Ben-Ameur, Bianchi, and
+Jakubowicz 2016; Xu, Li, and Ling 2018), which consider
+optimizing a static or dynamic cost function over a decen-
+tralized network with unreliable nodes. In contrast, the focus
+of this work is Byzantine-robust stochastic optimization.
+Our contributions
+The contributions of this paper are summarized as follows.
+c1) We develop a class of robust stochastic methods ab-
+breviated as RSA for distributed learning over heteroge-
+neous datasets and under Byzantine attacks. RSA has several
+variants, each tailored for an ℓp-norm regularized robustify-
+ing objective function.
+c2) Performance is rigorously established for the resultant
+RSA approaches, in terms of the convergence rate as well as
+the error caused by the Byzantine attacks.
+c3) Extensive numerical tests using the MNIST dataset
+are conducted to corroborate the effectiveness of RSA in
+term of both classiﬁcation accuracy under Byzantine attacks
+and runtime.
+Distributed SGD
+We consider a general distributed system, consisting of a
+master and m workers, among which q workers are Byzan-
+tine (behaving arbitrarily). The goal is to ﬁnd the optimizer
+of the following problem:
+min
+˜x∈Rd
+m
+X
+i=1
+E[F(˜x, ξi)] + f0(˜x).
+(1)
+Here ˜x ∈Rd is the optimization variable, f0(˜x) is a regu-
+larization term, and F(˜x, ξi) is the loss function of worker
+i with respect to a random variable ξi. Unlike the previous
+Algorithm 1 Distributed SGD
+Master:
+1: Input: ˜x0, αk. At time k + 1:
+2: Broadcast its current iterate ˜xk to all workers;
+3: Receive all gradients ∇F(˜xk, ξk
+i ) sent by workers;
+4: Update the iterate via (2).
+Worker i:
+1: At time k + 1:
+2: Receive the master’s current iterate ˜xk;
+3: Compute a local stochastic gradient ∇F(˜xk, ξk
+i );
+4: Send the local stochastic gradient to the server.
+work which assumes the distributed data across the workers
+are i.i.d., we consider a more practical situation: ξi ∼Di,
+where Di is the data distribution on worker i and could be
+different to the distributions on other workers.
+In the master-worker architecture, at time k +1 of the dis-
+tributed SGD algorithm, every worker i receives the current
+model ˜xk from the master, samples a data point from the dis-
+tribution Di with respect to a random variable ξk
+i , and com-
+putes the gradient of the local empirical loss ∇F(˜xk, ξk
+i ).
+Note that this sampling process can be easily generalized to
+the mini-batch setting, in which every worker samples mul-
+tiple i.i.d. data points and computes the averaged gradient
+of the local empirical losses. The master collects and ag-
+gregates the gradients sent by the workers, and updates the
+model. Its update at time k + 1 is:
+˜xk+1 = ˜xk −αk+1
+ 
+∇f0(˜xk) +
+m
+X
+i=1
+∇F(˜xk, ξk
+i )
+!
+(2)
+where αk+1 is a diminishing learning rate at time k +1. The
+distributed SGD is outlined in Algorithm 1.
+SGD is vulnerable to Byzantine attacks. While SGD has
+well-documented performance in conventional large-scale
+machine learning settings, its performance will signiﬁcantly
+degrade at the presence of Byzantine workers (Chen, Su,
+and Xu 2017). Suppose that some of the workers are Byzan-
+tine, they can report arbitrary messages or strategically send
+well-designed messages according to the information sent
+by other workers so as to bias the learning process. Speciﬁ-
+cally, if worker m is Byzantine, at time k + 1, it can choose
+one of two following attacks:
+a1) sending ∇F(˜xk, ξk
+m) = ∞;
+a2) sending ∇F(˜xk, ξk
+m) = −Pm−1
+i=1 ∇F(˜xk, ξk
+i ).
+In any case, the aggregated gradient Pm
+i=1 ∇F(˜xk, ξk
+i ) used
+in the SGD update (2) will be either inﬁnite or null, and thus
+the learned model ˜xk will either not converge or converge to
+an incorrect value. The operation of SGD under Byzantine
+attacks is illustrated in Figure 1.
+Instead of using the simple averaging in (2), robust gra-
+dient aggregation rules have been incorporated with SGD in
+(Blanchard et al. 2017; Chen, Su, and Xu 2017; Xie, Koyejo,
+and Gupta 2018a; Yin et al. 2018b; 2018a; Xie, Koyejo, and
+Gupta 2018c). However, in the federated learning setting,
+these aggregation rules become less effective due to the difﬁ-

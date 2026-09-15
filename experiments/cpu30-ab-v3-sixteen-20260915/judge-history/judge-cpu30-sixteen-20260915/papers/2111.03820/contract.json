@@ -1,0 +1,495 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2111.03820",
+    "title": "Distributed stochastic proximal algorithm with random reshuffling for non-smooth finite-sum optimization",
+    "sha256": "3ce09777be924669f8649b920477e4df968f8adce511e8b980d6883e1604b761"
+  },
+  "algorithm": {
+    "name": "DPG-RR, Algorithm 1",
+    "citations": [
+      "PDF p.4 Algorithm 1 and Eqs.(7)-(10)",
+      "PDF p.3 Eq.(5), Assumption III.1; p.4 logistic Example 1 and Assumption III.2"
+    ],
+    "core_mechanisms": [
+      "ordered_without_replacement_inner_gradients",
+      "post_epoch_consensus",
+      "one_prox_per_epoch"
+    ],
+    "assumptions": [
+      "Convex logistic sample losses with bounded gradients and Lipschitz gradients; convex L1 regularizer with bounded subgradients.",
+      "Fixed connected undirected two-node network with positive diagonal and doubly stochastic weights.",
+      "Explicit Lambda mappings avoid the paper communication-count indexing inconsistency; only numerical Eq.(8) is tested."
+    ]
+  },
+  "cases": [
+    {
+      "id": "logistic_mixed_sign",
+      "purpose": "Three DPG-RR epochs with changing sample order, nontrivial mixing, and L1 shrinkage.",
+      "covers": [
+        "ordered_without_replacement_inner_gradients",
+        "post_epoch_consensus",
+        "one_prox_per_epoch"
+      ],
+      "inputs": {
+        "dimension": 1,
+        "agents": 2,
+        "samples_per_agent": 2,
+        "x_initial": [
+          1.2,
+          -0.8
+        ],
+        "signed_features": [
+          [
+            1,
+            -2
+          ],
+          [
+            2,
+            -1
+          ]
+        ],
+        "sample_objective": "f[j,i](x)=log(1+exp(-signed_features[j][i]*x)); labels absorbed into signed_features; gradient=-a/(1+exp(a*x))",
+        "regularizer": "phi(x)=regularizer_strength*abs(x)",
+        "network": "Two connected agents; same constant doubly stochastic A=[[.75,.25],[.25,.75]].",
+        "mixing_matrices": [
+          [
+            [
+              0.75,
+              0.25
+            ],
+            [
+              0.25,
+              0.75
+            ]
+          ],
+          [
+            [
+              0.625,
+              0.375
+            ],
+            [
+              0.375,
+              0.625
+            ]
+          ],
+          [
+            [
+              0.5625,
+              0.4375
+            ],
+            [
+              0.4375,
+              0.5625
+            ]
+          ]
+        ],
+        "permutations": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "randomness": "Condition on the listed shared zero-based sample permutations; no replacement within an epoch; no other random draws."
+      },
+      "parameters": {
+        "gamma": 0.05,
+        "regularizer_strength": 0.4,
+        "epochs": 3,
+        "consensus_convention": "Use explicitly supplied Lambda[t] in Eq.(8), equal to A^(t+1). Eq.(9) writes t+1 factors although nearby prose says t communications; this contract tests the supplied Eq.(8) mapping, not the ambiguous schedule.",
+        "observation_timing": "step=t+1 after epoch t. inner_x rows are before gradients, after first, after second; columns agent. inner_gradient rows are evaluated before each update. consensus_v is before prox; x_next is after the single prox."
+      },
+      "atol": 1e-11,
+      "rtol": 1e-11,
+      "expected": [
+        {
+          "step": 1,
+          "name": "inner_x",
+          "value": [
+            [
+              1.2,
+              -0.8
+            ],
+            [
+              1.2115737608250492,
+              -0.7167981614866076
+            ],
+            [
+              1.1197162135800436,
+              -0.733203083430427
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "inner_gradient",
+          "value": [
+            [
+              -0.23147521650098235,
+              -1.664036770267849
+            ],
+            [
+              1.8371509449001089,
+              0.3280984388763882
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "consensus_v",
+          "value": [
+            0.656486389327426,
+            -0.2699732591778093
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x_next",
+          "value": [
+            0.636486389327426,
+            -0.2499732591778093
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_x",
+          "value": [
+            [
+              0.636486389327426,
+              -0.2499732591778093
+            ],
+            [
+              0.5583612679412091,
+              -0.2718647632254536
+            ],
+            [
+              0.5765576037120316,
+              -0.20859680589102703
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_gradient",
+          "value": [
+            [
+              1.5625024277243373,
+              0.43783008095288634
+            ],
+            [
+              -0.36392671541644755,
+              -1.2653591466885319
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "consensus_v",
+          "value": [
+            0.2821247001108846,
+            0.08583609771011994
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_next",
+          "value": [
+            0.26212470011088457,
+            0.06583609771011993
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_x",
+          "value": [
+            [
+              0.26212470011088457,
+              0.06583609771011993
+            ],
+            [
+              0.2838667741990504,
+              0.11254904058398311
+            ],
+            [
+              0.22004277030230962,
+              0.08614366079261544
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_gradient",
+          "value": [
+            [
+              -0.4348414817633158,
+              -0.9342588574772636
+            ],
+            [
+              1.2764800779348149,
+              0.5281075958273534
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "consensus_v",
+          "value": [
+            0.1614619098918184,
+            0.14472452120310664
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_next",
+          "value": [
+            0.14146190989181842,
+            0.12472452120310663
+          ]
+        }
+      ],
+      "derivation": "Substitute logistic gradients into Eq.(7) in supplied permutation order, multiply by the explicitly supplied Eq.(8) Lambda, then Eq.(10) soft threshold sign(v)*max(abs(v)-gamma*strength,0), once per epoch. All exp and arithmetic use 70 decimal digits before float serialization. Negative, zero, and positive shrinkage are covered across cases. No convergence rate or off-by-one communication scheduler claim."
+    },
+    {
+      "id": "logistic_threshold",
+      "purpose": "Three DPG-RR epochs with changing sample order, nontrivial mixing, and L1 shrinkage.",
+      "covers": [
+        "ordered_without_replacement_inner_gradients",
+        "post_epoch_consensus",
+        "one_prox_per_epoch"
+      ],
+      "inputs": {
+        "dimension": 1,
+        "agents": 2,
+        "samples_per_agent": 2,
+        "x_initial": [
+          0.4,
+          -0.1
+        ],
+        "signed_features": [
+          [
+            1,
+            -2
+          ],
+          [
+            2,
+            -1
+          ]
+        ],
+        "sample_objective": "f[j,i](x)=log(1+exp(-signed_features[j][i]*x)); labels absorbed into signed_features; gradient=-a/(1+exp(a*x))",
+        "regularizer": "phi(x)=regularizer_strength*abs(x)",
+        "network": "Two connected agents; same constant doubly stochastic A=[[.75,.25],[.25,.75]].",
+        "mixing_matrices": [
+          [
+            [
+              0.75,
+              0.25
+            ],
+            [
+              0.25,
+              0.75
+            ]
+          ],
+          [
+            [
+              0.625,
+              0.375
+            ],
+            [
+              0.375,
+              0.625
+            ]
+          ],
+          [
+            [
+              0.5625,
+              0.4375
+            ],
+            [
+              0.4375,
+              0.5625
+            ]
+          ]
+        ],
+        "permutations": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "randomness": "Condition on the listed shared zero-based sample permutations; no replacement within an epoch; no other random draws."
+      },
+      "parameters": {
+        "gamma": 0.05,
+        "regularizer_strength": 0.8,
+        "epochs": 3,
+        "consensus_convention": "Use explicitly supplied Lambda[t] in Eq.(8), equal to A^(t+1). Eq.(9) writes t+1 factors although nearby prose says t communications; this contract tests the supplied Eq.(8) mapping, not the ambiguous schedule.",
+        "observation_timing": "step=t+1 after epoch t. inner_x rows are before gradients, after first, after second; columns agent. inner_gradient rows are evaluated before each update. consensus_v is before prox; x_next is after the single prox."
+      },
+      "atol": 1e-11,
+      "rtol": 1e-11,
+      "expected": [
+        {
+          "step": 1,
+          "name": "inner_x",
+          "value": [
+            [
+              0.4,
+              -0.1
+            ],
+            [
+              0.4200656169943774,
+              -0.04501660026875221
+            ],
+            [
+              0.35021633152662957,
+              -0.06945398777310192
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "inner_gradient",
+          "value": [
+            [
+              -0.401312339887548,
+              -1.099667994624956
+            ],
+            [
+              1.3969857093549567,
+              0.48874775008699434
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "consensus_v",
+          "value": [
+            0.24529875170169668,
+            0.035463592051830944
+          ]
+        },
+        {
+          "step": 1,
+          "name": "x_next",
+          "value": [
+            0.2052987517016967,
+            0.0
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_x",
+          "value": [
+            [
+              0.2052987517016967,
+              0.0
+            ],
+            [
+              0.14517563767184832,
+              -0.025
+            ],
+            [
+              0.1683641227028729,
+              0.026249739648421033
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "inner_gradient",
+          "value": [
+            [
+              1.2024622805969674,
+              0.5
+            ],
+            [
+              -0.4637697006204913,
+              -1.0249947929684207
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "consensus_v",
+          "value": [
+            0.11507122905745344,
+            0.07954263329384048
+          ]
+        },
+        {
+          "step": 2,
+          "name": "x_next",
+          "value": [
+            0.07507122905745345,
+            0.03954263329384048
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_x",
+          "value": [
+            [
+              0.07507122905745345,
+              0.03954263329384048
+            ],
+            [
+              0.09913327915239617,
+              0.08756653147913991
+            ],
+            [
+              0.04419278867183002,
+              0.06147264872806676
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "inner_gradient",
+          "value": [
+            [
+              -0.4812410018988546,
+              -0.9604779637059887
+            ],
+            [
+              1.0988098096113232,
+              0.5218776550214632
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "consensus_v",
+          "value": [
+            0.05175272744643359,
+            0.053912709953463187
+          ]
+        },
+        {
+          "step": 3,
+          "name": "x_next",
+          "value": [
+            0.01175272744643359,
+            0.013912709953463184
+          ]
+        }
+      ],
+      "derivation": "Substitute logistic gradients into Eq.(7) in supplied permutation order, multiply by the explicitly supplied Eq.(8) Lambda, then Eq.(10) soft threshold sign(v)*max(abs(v)-gamma*strength,0), once per epoch. All exp and arithmetic use 70 decimal digits before float serialization. Negative, zero, and positive shrinkage are covered across cases. No convergence rate or off-by-one communication scheduler claim."
+    }
+  ]
+}

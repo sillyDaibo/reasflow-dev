@@ -1,0 +1,8 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "source": "src/algorithms.py",
+    "reason": "Original source imports numpy"
+  }
+]

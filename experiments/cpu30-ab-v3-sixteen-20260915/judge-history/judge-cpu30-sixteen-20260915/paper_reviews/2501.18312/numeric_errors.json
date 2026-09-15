@@ -1,0 +1,3121 @@
+{
+  "paper_id": "2501.18312",
+  "contract_digest": "0592dff933d6b75c881e5696d51ef6e73bb3f74a0e52aca5d7bfd032929b0c31",
+  "numeric_leaves": 240,
+  "case_leaves": {
+    "pps_two_positive_coordinates": 120,
+    "pps_two_negative_coordinates": 120
+  },
+  "max_abs_error": 2.1515151515151516e-16,
+  "passed": true,
+  "checks": [
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "oracle_g",
+      "path": [
+        0
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "oracle_g",
+      "path": [
+        1
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "oracle_g",
+      "path": [
+        2
+      ],
+      "independent_exact": "-3",
+      "contract_value": -3.0,
+      "abs_error": 0.0,
+      "tolerance": 4e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "PPS_G",
+      "path": [
+        0
+      ],
+      "independent_exact": "3",
+      "contract_value": 3.0,
+      "abs_error": 0.0,
+      "tolerance": 4e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "PPS_G",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "PPS_G",
+      "path": [
+        2
+      ],
+      "independent_exact": "-3",
+      "contract_value": -3.0,
+      "abs_error": 0.0,
+      "tolerance": 4e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "lambda",
+      "path": [
+        0
+      ],
+      "independent_exact": "-3/4",
+      "contract_value": -0.75,
+      "abs_error": 0.0,
+      "tolerance": 1.75e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "lambda",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "lambda",
+      "path": [
+        2
+      ],
+      "independent_exact": "3/4",
+      "contract_value": 0.75,
+      "abs_error": 0.0,
+      "tolerance": 1.75e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "positive_negative_mass",
+      "path": [
+        0
+      ],
+      "independent_exact": "3",
+      "contract_value": 3.0,
+      "abs_error": 0.0,
+      "tolerance": 4e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "positive_negative_mass",
+      "path": [
+        1
+      ],
+      "independent_exact": "3",
+      "contract_value": 3.0,
+      "abs_error": 0.0,
+      "tolerance": 4e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "sampled_positive_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "sampled_positive_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "sampled_negative_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 0,
+      "name": "sampled_negative_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "z_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "-3/4",
+      "contract_value": -0.75,
+      "abs_error": 0.0,
+      "tolerance": 1.75e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "z_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "z_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "3/4",
+      "contract_value": 0.75,
+      "abs_error": 0.0,
+      "tolerance": 1.75e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "-3/4",
+      "contract_value": -0.75,
+      "abs_error": 0.0,
+      "tolerance": 1.75e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "3/4",
+      "contract_value": 0.75,
+      "abs_error": 0.0,
+      "tolerance": 1.75e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "oracle_g",
+      "path": [
+        0
+      ],
+      "independent_exact": "5/4",
+      "contract_value": 1.25,
+      "abs_error": 0.0,
+      "tolerance": 2.25e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "oracle_g",
+      "path": [
+        1
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "oracle_g",
+      "path": [
+        2
+      ],
+      "independent_exact": "-9/4",
+      "contract_value": -2.25,
+      "abs_error": 0.0,
+      "tolerance": 3.25e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "positive_negative_mass",
+      "path": [
+        0
+      ],
+      "independent_exact": "9/4",
+      "contract_value": 2.25,
+      "abs_error": 0.0,
+      "tolerance": 3.25e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "positive_negative_mass",
+      "path": [
+        1
+      ],
+      "independent_exact": "9/4",
+      "contract_value": 2.25,
+      "abs_error": 0.0,
+      "tolerance": 3.25e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "sampled_positive_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "sampled_positive_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "sampled_negative_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "sampled_negative_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "PPS_G",
+      "path": [
+        0
+      ],
+      "independent_exact": "9/8",
+      "contract_value": 1.125,
+      "abs_error": 0.0,
+      "tolerance": 2.125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "PPS_G",
+      "path": [
+        1
+      ],
+      "independent_exact": "9/8",
+      "contract_value": 1.125,
+      "abs_error": 0.0,
+      "tolerance": 2.125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "PPS_G",
+      "path": [
+        2
+      ],
+      "independent_exact": "-9/4",
+      "contract_value": -2.25,
+      "abs_error": 0.0,
+      "tolerance": 3.25e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "mu_hat",
+      "path": [
+        0
+      ],
+      "independent_exact": "-33/32",
+      "contract_value": -1.03125,
+      "abs_error": 0.0,
+      "tolerance": 2.03125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "mu_hat",
+      "path": [
+        1
+      ],
+      "independent_exact": "-9/32",
+      "contract_value": -0.28125,
+      "abs_error": 0.0,
+      "tolerance": 1.28125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "mu_hat",
+      "path": [
+        2
+      ],
+      "independent_exact": "21/16",
+      "contract_value": 1.3125,
+      "abs_error": 0.0,
+      "tolerance": 2.3125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "lambda",
+      "path": [
+        0
+      ],
+      "independent_exact": "-57/64",
+      "contract_value": -0.890625,
+      "abs_error": 0.0,
+      "tolerance": 1.890625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "lambda",
+      "path": [
+        1
+      ],
+      "independent_exact": "-9/64",
+      "contract_value": -0.140625,
+      "abs_error": 0.0,
+      "tolerance": 1.140625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "lambda",
+      "path": [
+        2
+      ],
+      "independent_exact": "33/32",
+      "contract_value": 1.03125,
+      "abs_error": 0.0,
+      "tolerance": 2.03125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "restored_primal_at_mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "-5/4",
+      "contract_value": -1.25,
+      "abs_error": 0.0,
+      "tolerance": 2.25e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "restored_primal_at_mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "-1",
+      "contract_value": -1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "restored_primal_at_mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "9/4",
+      "contract_value": 2.25,
+      "abs_error": 0.0,
+      "tolerance": 3.25e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "primal_average",
+      "path": [
+        0
+      ],
+      "independent_exact": "-13/8",
+      "contract_value": -1.625,
+      "abs_error": 0.0,
+      "tolerance": 2.625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "primal_average",
+      "path": [
+        1
+      ],
+      "independent_exact": "-1",
+      "contract_value": -1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "primal_average",
+      "path": [
+        2
+      ],
+      "independent_exact": "21/8",
+      "contract_value": 2.625,
+      "abs_error": 0.0,
+      "tolerance": 3.625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "constraint_residual",
+      "path": [
+        0
+      ],
+      "independent_exact": "-13/8",
+      "contract_value": -1.625,
+      "abs_error": 0.0,
+      "tolerance": 2.625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "constraint_residual",
+      "path": [
+        1
+      ],
+      "independent_exact": "-1",
+      "contract_value": -1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "constraint_residual",
+      "path": [
+        2
+      ],
+      "independent_exact": "21/8",
+      "contract_value": 2.625,
+      "abs_error": 0.0,
+      "tolerance": 3.625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 1,
+      "name": "primal_objective",
+      "path": [],
+      "independent_exact": "9/64",
+      "contract_value": 0.140625,
+      "abs_error": 0.0,
+      "tolerance": 1.140625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "z_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "-33/40",
+      "contract_value": -0.825,
+      "abs_error": 0.0,
+      "tolerance": 1.825e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "z_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "-9/40",
+      "contract_value": -0.225,
+      "abs_error": 0.0,
+      "tolerance": 1.225e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "z_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "21/20",
+      "contract_value": 1.05,
+      "abs_error": 0.0,
+      "tolerance": 2.05e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "-69/80",
+      "contract_value": -0.8625,
+      "abs_error": 0.0,
+      "tolerance": 1.8625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "-99/560",
+      "contract_value": -0.1767857142857143,
+      "abs_error": 1.4285714285714287e-17,
+      "tolerance": 1.1767857142857144e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "291/280",
+      "contract_value": 1.0392857142857144,
+      "abs_error": 1.142857142857143e-16,
+      "tolerance": 2.0392857142857145e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "oracle_g",
+      "path": [
+        0
+      ],
+      "independent_exact": "91/80",
+      "contract_value": 1.1375,
+      "abs_error": 0.0,
+      "tolerance": 2.1375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "oracle_g",
+      "path": [
+        1
+      ],
+      "independent_exact": "461/560",
+      "contract_value": 0.8232142857142857,
+      "abs_error": 1.4285714285714287e-17,
+      "tolerance": 1.8232142857142856e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "oracle_g",
+      "path": [
+        2
+      ],
+      "independent_exact": "-549/280",
+      "contract_value": -1.9607142857142856,
+      "abs_error": 1.142857142857143e-16,
+      "tolerance": 2.960714285714286e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "positive_negative_mass",
+      "path": [
+        0
+      ],
+      "independent_exact": "549/280",
+      "contract_value": 1.9607142857142856,
+      "abs_error": 1.142857142857143e-16,
+      "tolerance": 2.960714285714286e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "positive_negative_mass",
+      "path": [
+        1
+      ],
+      "independent_exact": "549/280",
+      "contract_value": 1.9607142857142856,
+      "abs_error": 1.142857142857143e-16,
+      "tolerance": 2.960714285714286e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "sampled_positive_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "sampled_positive_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "sampled_negative_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "sampled_negative_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "PPS_G",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "PPS_G",
+      "path": [
+        1
+      ],
+      "independent_exact": "549/280",
+      "contract_value": 1.9607142857142856,
+      "abs_error": 1.142857142857143e-16,
+      "tolerance": 2.960714285714286e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "PPS_G",
+      "path": [
+        2
+      ],
+      "independent_exact": "-549/280",
+      "contract_value": -1.9607142857142856,
+      "abs_error": 1.142857142857143e-16,
+      "tolerance": 2.960714285714286e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "mu_hat",
+      "path": [
+        0
+      ],
+      "independent_exact": "-33/40",
+      "contract_value": -0.825,
+      "abs_error": 0.0,
+      "tolerance": 1.825e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "mu_hat",
+      "path": [
+        1
+      ],
+      "independent_exact": "-2277/2800",
+      "contract_value": -0.8132142857142857,
+      "abs_error": 1.4285714285714287e-17,
+      "tolerance": 1.8132142857142857e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "mu_hat",
+      "path": [
+        2
+      ],
+      "independent_exact": "4587/2800",
+      "contract_value": 1.6382142857142856,
+      "abs_error": 1.142857142857143e-16,
+      "tolerance": 2.6382142857142857e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "lambda",
+      "path": [
+        0
+      ],
+      "independent_exact": "-69/80",
+      "contract_value": -0.8625,
+      "abs_error": 0.0,
+      "tolerance": 1.8625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "lambda",
+      "path": [
+        1
+      ],
+      "independent_exact": "-4203/9800",
+      "contract_value": -0.42887755102040814,
+      "abs_error": 2.326530612244898e-17,
+      "tolerance": 1.428877551020408e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "lambda",
+      "path": [
+        2
+      ],
+      "independent_exact": "25311/19600",
+      "contract_value": 1.2913775510204082,
+      "abs_error": 3.673469387755102e-17,
+      "tolerance": 2.2913775510204082e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "restored_primal_at_mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "-91/80",
+      "contract_value": -1.1375,
+      "abs_error": 0.0,
+      "tolerance": 2.1375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "restored_primal_at_mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "-461/560",
+      "contract_value": -0.8232142857142857,
+      "abs_error": 1.4285714285714287e-17,
+      "tolerance": 1.8232142857142856e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "restored_primal_at_mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "549/280",
+      "contract_value": 1.9607142857142856,
+      "abs_error": 1.142857142857143e-16,
+      "tolerance": 2.960714285714286e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "primal_average",
+      "path": [
+        0
+      ],
+      "independent_exact": "-793/560",
+      "contract_value": -1.4160714285714286,
+      "abs_error": 2.8571428571428573e-17,
+      "tolerance": 2.416071428571429e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "primal_average",
+      "path": [
+        1
+      ],
+      "independent_exact": "-3623/3920",
+      "contract_value": -0.924234693877551,
+      "abs_error": 2.0408163265306122e-17,
+      "tolerance": 1.924234693877551e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "primal_average",
+      "path": [
+        2
+      ],
+      "independent_exact": "4587/1960",
+      "contract_value": 2.3403061224489794,
+      "abs_error": 1.9183673469387754e-16,
+      "tolerance": 3.3403061224489794e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "constraint_residual",
+      "path": [
+        0
+      ],
+      "independent_exact": "-793/560",
+      "contract_value": -1.4160714285714286,
+      "abs_error": 2.8571428571428573e-17,
+      "tolerance": 2.416071428571429e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "constraint_residual",
+      "path": [
+        1
+      ],
+      "independent_exact": "-3623/3920",
+      "contract_value": -0.924234693877551,
+      "abs_error": 2.0408163265306122e-17,
+      "tolerance": 1.924234693877551e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "constraint_residual",
+      "path": [
+        2
+      ],
+      "independent_exact": "4587/1960",
+      "contract_value": 2.3403061224489794,
+      "abs_error": 1.9183673469387754e-16,
+      "tolerance": 3.3403061224489794e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 2,
+      "name": "primal_objective",
+      "path": [],
+      "independent_exact": "6007563/15366400",
+      "contract_value": 0.3909544851103707,
+      "abs_error": 2.1116201582673886e-17,
+      "tolerance": 1.3909544851103707e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "z_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "-11/16",
+      "contract_value": -0.6875,
+      "abs_error": 0.0,
+      "tolerance": 1.6875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "z_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "-759/1120",
+      "contract_value": -0.6776785714285715,
+      "abs_error": 7.142857142857143e-17,
+      "tolerance": 1.6776785714285715e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "z_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "1529/1120",
+      "contract_value": 1.3651785714285714,
+      "abs_error": 2.8571428571428573e-17,
+      "tolerance": 2.365178571428571e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "-703/880",
+      "contract_value": -0.7988636363636363,
+      "abs_error": 6.363636363636364e-17,
+      "tolerance": 1.7988636363636363e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "-3999/7700",
+      "contract_value": -0.5193506493506493,
+      "abs_error": 5.064935064935065e-17,
+      "tolerance": 1.5193506493506493e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "3691/2800",
+      "contract_value": 1.3182142857142858,
+      "abs_error": 8.571428571428571e-17,
+      "tolerance": 2.3182142857142857e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "oracle_g",
+      "path": [
+        0
+      ],
+      "independent_exact": "1057/880",
+      "contract_value": 1.2011363636363637,
+      "abs_error": 6.363636363636364e-17,
+      "tolerance": 2.2011363636363636e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "oracle_g",
+      "path": [
+        1
+      ],
+      "independent_exact": "3701/7700",
+      "contract_value": 0.48064935064935066,
+      "abs_error": 1.0649350649350649e-17,
+      "tolerance": 1.4806493506493506e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "oracle_g",
+      "path": [
+        2
+      ],
+      "independent_exact": "-4709/2800",
+      "contract_value": -1.6817857142857142,
+      "abs_error": 8.571428571428571e-17,
+      "tolerance": 2.681785714285714e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "positive_negative_mass",
+      "path": [
+        0
+      ],
+      "independent_exact": "4709/2800",
+      "contract_value": 1.6817857142857142,
+      "abs_error": 8.571428571428571e-17,
+      "tolerance": 2.681785714285714e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "positive_negative_mass",
+      "path": [
+        1
+      ],
+      "independent_exact": "4709/2800",
+      "contract_value": 1.6817857142857142,
+      "abs_error": 8.571428571428571e-17,
+      "tolerance": 2.681785714285714e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "sampled_positive_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "sampled_positive_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "sampled_negative_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "sampled_negative_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "PPS_G",
+      "path": [
+        0
+      ],
+      "independent_exact": "4709/2800",
+      "contract_value": 1.6817857142857142,
+      "abs_error": 8.571428571428571e-17,
+      "tolerance": 2.681785714285714e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "PPS_G",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "PPS_G",
+      "path": [
+        2
+      ],
+      "independent_exact": "-4709/2800",
+      "contract_value": -1.6817857142857142,
+      "abs_error": 8.571428571428571e-17,
+      "tolerance": 2.681785714285714e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "mu_hat",
+      "path": [
+        0
+      ],
+      "independent_exact": "-2621/2100",
+      "contract_value": -1.2480952380952381,
+      "abs_error": 4.761904761904762e-18,
+      "tolerance": 2.248095238095238e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "mu_hat",
+      "path": [
+        1
+      ],
+      "independent_exact": "-759/1120",
+      "contract_value": -0.6776785714285715,
+      "abs_error": 7.142857142857143e-17,
+      "tolerance": 1.6776785714285715e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "mu_hat",
+      "path": [
+        2
+      ],
+      "independent_exact": "32353/16800",
+      "contract_value": 1.9257738095238095,
+      "abs_error": 2.380952380952381e-17,
+      "tolerance": 2.9257738095238096e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "lambda",
+      "path": [
+        0
+      ],
+      "independent_exact": "-92651/92400",
+      "contract_value": -1.0027164502164503,
+      "abs_error": 8.354978354978355e-17,
+      "tolerance": 2.0027164502164503e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "lambda",
+      "path": [
+        1
+      ],
+      "independent_exact": "-3999/7700",
+      "contract_value": -0.5193506493506493,
+      "abs_error": 5.064935064935065e-17,
+      "tolerance": 1.5193506493506493e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "lambda",
+      "path": [
+        2
+      ],
+      "independent_exact": "140639/92400",
+      "contract_value": 1.5220670995670995,
+      "abs_error": 6.70995670995671e-17,
+      "tolerance": 2.5220670995670994e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "restored_primal_at_mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "-1057/880",
+      "contract_value": -1.2011363636363637,
+      "abs_error": 6.363636363636364e-17,
+      "tolerance": 2.2011363636363636e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "restored_primal_at_mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "-3701/7700",
+      "contract_value": -0.48064935064935066,
+      "abs_error": 1.0649350649350649e-17,
+      "tolerance": 1.4806493506493506e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "restored_primal_at_mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "4709/2800",
+      "contract_value": 1.6817857142857142,
+      "abs_error": 8.571428571428571e-17,
+      "tolerance": 2.681785714285714e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "primal_average",
+      "path": [
+        0
+      ],
+      "independent_exact": "-12951/9680",
+      "contract_value": -1.3379132231404958,
+      "abs_error": 6.776859504132232e-17,
+      "tolerance": 2.3379132231404956e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "primal_average",
+      "path": [
+        1
+      ],
+      "independent_exact": "-258481/338800",
+      "contract_value": -0.76293093270366,
+      "abs_error": 2.361275088547816e-17,
+      "tolerance": 1.76293093270366e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "primal_average",
+      "path": [
+        2
+      ],
+      "independent_exact": "32353/15400",
+      "contract_value": 2.1008441558441557,
+      "abs_error": 1.4415584415584415e-16,
+      "tolerance": 3.1008441558441556e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "constraint_residual",
+      "path": [
+        0
+      ],
+      "independent_exact": "-12951/9680",
+      "contract_value": -1.3379132231404958,
+      "abs_error": 6.776859504132232e-17,
+      "tolerance": 2.3379132231404956e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "constraint_residual",
+      "path": [
+        1
+      ],
+      "independent_exact": "-258481/338800",
+      "contract_value": -0.76293093270366,
+      "abs_error": 2.361275088547816e-17,
+      "tolerance": 1.76293093270366e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "constraint_residual",
+      "path": [
+        2
+      ],
+      "independent_exact": "32353/15400",
+      "contract_value": 2.1008441558441557,
+      "abs_error": 1.4415584415584415e-16,
+      "tolerance": 3.1008441558441556e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_positive_coordinates",
+      "step": 3,
+      "name": "primal_objective",
+      "path": [],
+      "independent_exact": "74785117471/114785440000",
+      "contract_value": 0.651520937420286,
+      "abs_error": 5.718634697919875e-17,
+      "tolerance": 1.651520937420286e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "oracle_g",
+      "path": [
+        0
+      ],
+      "independent_exact": "-5/2",
+      "contract_value": -2.5,
+      "abs_error": 0.0,
+      "tolerance": 3.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "oracle_g",
+      "path": [
+        1
+      ],
+      "independent_exact": "7/2",
+      "contract_value": 3.5,
+      "abs_error": 0.0,
+      "tolerance": 4.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "oracle_g",
+      "path": [
+        2
+      ],
+      "independent_exact": "-3/4",
+      "contract_value": -0.75,
+      "abs_error": 0.0,
+      "tolerance": 1.75e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "PPS_G",
+      "path": [
+        0
+      ],
+      "independent_exact": "-13/4",
+      "contract_value": -3.25,
+      "abs_error": 0.0,
+      "tolerance": 4.25e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "PPS_G",
+      "path": [
+        1
+      ],
+      "independent_exact": "7/2",
+      "contract_value": 3.5,
+      "abs_error": 0.0,
+      "tolerance": 4.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "PPS_G",
+      "path": [
+        2
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "lambda",
+      "path": [
+        0
+      ],
+      "independent_exact": "13/16",
+      "contract_value": 0.8125,
+      "abs_error": 0.0,
+      "tolerance": 1.8125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "lambda",
+      "path": [
+        1
+      ],
+      "independent_exact": "-7/8",
+      "contract_value": -0.875,
+      "abs_error": 0.0,
+      "tolerance": 1.875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "lambda",
+      "path": [
+        2
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "positive_negative_mass",
+      "path": [
+        0
+      ],
+      "independent_exact": "7/2",
+      "contract_value": 3.5,
+      "abs_error": 0.0,
+      "tolerance": 4.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "positive_negative_mass",
+      "path": [
+        1
+      ],
+      "independent_exact": "13/4",
+      "contract_value": 3.25,
+      "abs_error": 0.0,
+      "tolerance": 4.25e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "sampled_positive_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "sampled_positive_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "sampled_negative_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 0,
+      "name": "sampled_negative_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "z_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "13/16",
+      "contract_value": 0.8125,
+      "abs_error": 0.0,
+      "tolerance": 1.8125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "z_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "-7/8",
+      "contract_value": -0.875,
+      "abs_error": 0.0,
+      "tolerance": 1.875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "z_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "13/16",
+      "contract_value": 0.8125,
+      "abs_error": 0.0,
+      "tolerance": 1.8125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "-7/8",
+      "contract_value": -0.875,
+      "abs_error": 0.0,
+      "tolerance": 1.875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "oracle_g",
+      "path": [
+        0
+      ],
+      "independent_exact": "-67/32",
+      "contract_value": -2.09375,
+      "abs_error": 0.0,
+      "tolerance": 3.09375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "oracle_g",
+      "path": [
+        1
+      ],
+      "independent_exact": "21/8",
+      "contract_value": 2.625,
+      "abs_error": 0.0,
+      "tolerance": 3.625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "oracle_g",
+      "path": [
+        2
+      ],
+      "independent_exact": "-3/4",
+      "contract_value": -0.75,
+      "abs_error": 0.0,
+      "tolerance": 1.75e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "positive_negative_mass",
+      "path": [
+        0
+      ],
+      "independent_exact": "21/8",
+      "contract_value": 2.625,
+      "abs_error": 0.0,
+      "tolerance": 3.625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "positive_negative_mass",
+      "path": [
+        1
+      ],
+      "independent_exact": "91/32",
+      "contract_value": 2.84375,
+      "abs_error": 0.0,
+      "tolerance": 3.84375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "sampled_positive_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "sampled_positive_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "sampled_negative_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "sampled_negative_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "PPS_G",
+      "path": [
+        0
+      ],
+      "independent_exact": "-91/64",
+      "contract_value": -1.421875,
+      "abs_error": 0.0,
+      "tolerance": 2.421875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "PPS_G",
+      "path": [
+        1
+      ],
+      "independent_exact": "21/8",
+      "contract_value": 2.625,
+      "abs_error": 0.0,
+      "tolerance": 3.625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "PPS_G",
+      "path": [
+        2
+      ],
+      "independent_exact": "-91/64",
+      "contract_value": -1.421875,
+      "abs_error": 0.0,
+      "tolerance": 2.421875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "mu_hat",
+      "path": [
+        0
+      ],
+      "independent_exact": "299/256",
+      "contract_value": 1.16796875,
+      "abs_error": 0.0,
+      "tolerance": 2.16796875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "mu_hat",
+      "path": [
+        1
+      ],
+      "independent_exact": "-49/32",
+      "contract_value": -1.53125,
+      "abs_error": 0.0,
+      "tolerance": 2.53125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "mu_hat",
+      "path": [
+        2
+      ],
+      "independent_exact": "91/256",
+      "contract_value": 0.35546875,
+      "abs_error": 0.0,
+      "tolerance": 1.35546875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "lambda",
+      "path": [
+        0
+      ],
+      "independent_exact": "507/512",
+      "contract_value": 0.990234375,
+      "abs_error": 0.0,
+      "tolerance": 1.990234375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "lambda",
+      "path": [
+        1
+      ],
+      "independent_exact": "-77/64",
+      "contract_value": -1.203125,
+      "abs_error": 0.0,
+      "tolerance": 2.203125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "lambda",
+      "path": [
+        2
+      ],
+      "independent_exact": "91/512",
+      "contract_value": 0.177734375,
+      "abs_error": 0.0,
+      "tolerance": 1.177734375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "restored_primal_at_mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "83/32",
+      "contract_value": 2.59375,
+      "abs_error": 0.0,
+      "tolerance": 3.59375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "restored_primal_at_mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "-25/16",
+      "contract_value": -1.5625,
+      "abs_error": 0.0,
+      "tolerance": 2.5625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "restored_primal_at_mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "primal_average",
+      "path": [
+        0
+      ],
+      "independent_exact": "179/64",
+      "contract_value": 2.796875,
+      "abs_error": 0.0,
+      "tolerance": 3.796875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "primal_average",
+      "path": [
+        1
+      ],
+      "independent_exact": "-57/32",
+      "contract_value": -1.78125,
+      "abs_error": 0.0,
+      "tolerance": 2.78125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "primal_average",
+      "path": [
+        2
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "constraint_residual",
+      "path": [
+        0
+      ],
+      "independent_exact": "147/64",
+      "contract_value": 2.296875,
+      "abs_error": 0.0,
+      "tolerance": 3.296875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "constraint_residual",
+      "path": [
+        1
+      ],
+      "independent_exact": "-49/16",
+      "contract_value": -3.0625,
+      "abs_error": 0.0,
+      "tolerance": 4.0625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "constraint_residual",
+      "path": [
+        2
+      ],
+      "independent_exact": "3/4",
+      "contract_value": 0.75,
+      "abs_error": 0.0,
+      "tolerance": 1.75e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 1,
+      "name": "primal_objective",
+      "path": [],
+      "independent_exact": "561/4096",
+      "contract_value": 0.136962890625,
+      "abs_error": 0.0,
+      "tolerance": 1.136962890625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "z_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "299/320",
+      "contract_value": 0.934375,
+      "abs_error": 0.0,
+      "tolerance": 1.934375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "z_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "-49/40",
+      "contract_value": -1.225,
+      "abs_error": 0.0,
+      "tolerance": 2.225e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "z_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "91/320",
+      "contract_value": 0.284375,
+      "abs_error": 0.0,
+      "tolerance": 1.284375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "4329/4480",
+      "contract_value": 0.9662946428571428,
+      "abs_error": 5.714285714285715e-17,
+      "tolerance": 1.9662946428571428e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "-97/80",
+      "contract_value": -1.2125,
+      "abs_error": 0.0,
+      "tolerance": 2.2125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "143/640",
+      "contract_value": 0.2234375,
+      "abs_error": 0.0,
+      "tolerance": 1.2234375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "oracle_g",
+      "path": [
+        0
+      ],
+      "independent_exact": "-18071/8960",
+      "contract_value": -2.0168526785714285,
+      "abs_error": 7.142857142857143e-17,
+      "tolerance": 3.0168526785714286e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "oracle_g",
+      "path": [
+        1
+      ],
+      "independent_exact": "183/80",
+      "contract_value": 2.2875,
+      "abs_error": 0.0,
+      "tolerance": 3.2875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "oracle_g",
+      "path": [
+        2
+      ],
+      "independent_exact": "-817/1280",
+      "contract_value": -0.63828125,
+      "abs_error": 0.0,
+      "tolerance": 1.63828125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "positive_negative_mass",
+      "path": [
+        0
+      ],
+      "independent_exact": "183/80",
+      "contract_value": 2.2875,
+      "abs_error": 0.0,
+      "tolerance": 3.2875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "positive_negative_mass",
+      "path": [
+        1
+      ],
+      "independent_exact": "2379/896",
+      "contract_value": 2.6551339285714284,
+      "abs_error": 1.7142857142857143e-16,
+      "tolerance": 3.6551339285714286e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "sampled_positive_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "sampled_positive_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "sampled_negative_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "sampled_negative_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "PPS_G",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "PPS_G",
+      "path": [
+        1
+      ],
+      "independent_exact": "183/80",
+      "contract_value": 2.2875,
+      "abs_error": 0.0,
+      "tolerance": 3.2875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "PPS_G",
+      "path": [
+        2
+      ],
+      "independent_exact": "-2379/896",
+      "contract_value": -2.6551339285714284,
+      "abs_error": 1.7142857142857143e-16,
+      "tolerance": 3.6551339285714286e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "mu_hat",
+      "path": [
+        0
+      ],
+      "independent_exact": "299/320",
+      "contract_value": 0.934375,
+      "abs_error": 0.0,
+      "tolerance": 1.934375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "mu_hat",
+      "path": [
+        1
+      ],
+      "independent_exact": "-1529/800",
+      "contract_value": -1.91125,
+      "abs_error": 0.0,
+      "tolerance": 2.91125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "mu_hat",
+      "path": [
+        2
+      ],
+      "independent_exact": "1937/1792",
+      "contract_value": 1.0809151785714286,
+      "abs_error": 2.8571428571428573e-17,
+      "tolerance": 2.0809151785714287e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "lambda",
+      "path": [
+        0
+      ],
+      "independent_exact": "4329/4480",
+      "contract_value": 0.9662946428571428,
+      "abs_error": 5.714285714285715e-17,
+      "tolerance": 1.9662946428571428e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "lambda",
+      "path": [
+        1
+      ],
+      "independent_exact": "-8437/5600",
+      "contract_value": -1.5066071428571428,
+      "abs_error": 5.714285714285715e-17,
+      "tolerance": 2.5066071428571426e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "lambda",
+      "path": [
+        2
+      ],
+      "independent_exact": "7085/12544",
+      "contract_value": 0.564811862244898,
+      "abs_error": 4.0816326530612244e-17,
+      "tolerance": 1.564811862244898e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "restored_primal_at_mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "22551/8960",
+      "contract_value": 2.5168526785714285,
+      "abs_error": 7.142857142857143e-17,
+      "tolerance": 3.5168526785714284e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "restored_primal_at_mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "-223/160",
+      "contract_value": -1.39375,
+      "abs_error": 0.0,
+      "tolerance": 2.39375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "restored_primal_at_mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "1137/1280",
+      "contract_value": 0.88828125,
+      "abs_error": 0.0,
+      "tolerance": 1.88828125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "primal_average",
+      "path": [
+        0
+      ],
+      "independent_exact": "167893/62720",
+      "contract_value": 2.6768654336734694,
+      "abs_error": 1.2244897959183674e-17,
+      "tolerance": 3.6768654336734696e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "primal_average",
+      "path": [
+        1
+      ],
+      "independent_exact": "-1809/1120",
+      "contract_value": -1.6151785714285714,
+      "abs_error": 2.8571428571428573e-17,
+      "tolerance": 2.6151785714285713e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "primal_average",
+      "path": [
+        2
+      ],
+      "independent_exact": "8531/8960",
+      "contract_value": 0.9521205357142857,
+      "abs_error": 1.4285714285714287e-17,
+      "tolerance": 1.9521205357142857e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "constraint_residual",
+      "path": [
+        0
+      ],
+      "independent_exact": "136533/62720",
+      "contract_value": 2.1768654336734694,
+      "abs_error": 1.2244897959183674e-17,
+      "tolerance": 3.176865433673469e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "constraint_residual",
+      "path": [
+        1
+      ],
+      "independent_exact": "-1529/560",
+      "contract_value": -2.7303571428571427,
+      "abs_error": 1.5714285714285713e-16,
+      "tolerance": 3.7303571428571426e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "constraint_residual",
+      "path": [
+        2
+      ],
+      "independent_exact": "6291/8960",
+      "contract_value": 0.7021205357142857,
+      "abs_error": 1.4285714285714287e-17,
+      "tolerance": 1.7021205357142856e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 2,
+      "name": "primal_objective",
+      "path": [],
+      "independent_exact": "158486229/393379840",
+      "contract_value": 0.4028834548308322,
+      "abs_error": 5.3311120366513956e-18,
+      "tolerance": 1.4028834548308323e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "z_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "299/384",
+      "contract_value": 0.7786458333333334,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 1.7786458333333335e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "z_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "-1529/960",
+      "contract_value": -1.5927083333333334,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 2.5927083333333335e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "z_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "9685/10752",
+      "contract_value": 0.9007626488095238,
+      "abs_error": 9.523809523809524e-18,
+      "tolerance": 1.9007626488095239e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "18967/21120",
+      "contract_value": 0.8980587121212121,
+      "abs_error": 2.121212121212121e-17,
+      "tolerance": 1.898058712121212e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "-3691/2400",
+      "contract_value": -1.5379166666666666,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 2.5379166666666666e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "40625/59136",
+      "contract_value": 0.6869757846320347,
+      "abs_error": 6.796536796536796e-17,
+      "tolerance": 1.6869757846320347e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "oracle_g",
+      "path": [
+        0
+      ],
+      "independent_exact": "-86633/42240",
+      "contract_value": -2.0509706439393938,
+      "abs_error": 1.393939393939394e-16,
+      "tolerance": 3.0509706439393936e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "oracle_g",
+      "path": [
+        1
+      ],
+      "independent_exact": "4709/2400",
+      "contract_value": 1.9620833333333334,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 2.9620833333333336e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "oracle_g",
+      "path": [
+        2
+      ],
+      "independent_exact": "-48079/118272",
+      "contract_value": -0.40651210768398266,
+      "abs_error": 2.3982683982683982e-17,
+      "tolerance": 1.4065121076839828e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "positive_negative_mass",
+      "path": [
+        0
+      ],
+      "independent_exact": "4709/2400",
+      "contract_value": 1.9620833333333334,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 2.9620833333333336e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "positive_negative_mass",
+      "path": [
+        1
+      ],
+      "independent_exact": "484419/197120",
+      "contract_value": 2.4574827516233766,
+      "abs_error": 2.3376623376623377e-17,
+      "tolerance": 3.4574827516233765e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "sampled_positive_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "sampled_positive_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "sampled_negative_indices",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "sampled_negative_indices",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "PPS_G",
+      "path": [
+        0
+      ],
+      "independent_exact": "-484419/197120",
+      "contract_value": -2.4574827516233766,
+      "abs_error": 2.3376623376623377e-17,
+      "tolerance": 3.4574827516233765e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "PPS_G",
+      "path": [
+        1
+      ],
+      "independent_exact": "4709/2400",
+      "contract_value": 1.9620833333333334,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 2.9620833333333336e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "PPS_G",
+      "path": [
+        2
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "mu_hat",
+      "path": [
+        0
+      ],
+      "independent_exact": "944879/591360",
+      "contract_value": 1.5978067505411255,
+      "abs_error": 4.112554112554112e-17,
+      "tolerance": 2.5978067505411257e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "mu_hat",
+      "path": [
+        1
+      ],
+      "independent_exact": "-32353/14400",
+      "contract_value": -2.2467361111111113,
+      "abs_error": 1.888888888888889e-16,
+      "tolerance": 3.246736111111111e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "mu_hat",
+      "path": [
+        2
+      ],
+      "independent_exact": "9685/10752",
+      "contract_value": 0.9007626488095238,
+      "abs_error": 9.523809523809524e-18,
+      "tolerance": 1.9007626488095239e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "lambda",
+      "path": [
+        0
+      ],
+      "independent_exact": "972439/813120",
+      "contract_value": 1.195935409287682,
+      "abs_error": 1.49547422274695e-17,
+      "tolerance": 2.195935409287682e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "lambda",
+      "path": [
+        1
+      ],
+      "independent_exact": "-140639/79200",
+      "contract_value": -1.7757449494949495,
+      "abs_error": 5.050505050505051e-18,
+      "tolerance": 2.7757449494949496e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "lambda",
+      "path": [
+        2
+      ],
+      "independent_exact": "40625/59136",
+      "contract_value": 0.6869757846320347,
+      "abs_error": 6.796536796536796e-17,
+      "tolerance": 1.6869757846320347e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "restored_primal_at_mu",
+      "path": [
+        0
+      ],
+      "independent_exact": "107753/42240",
+      "contract_value": 2.5509706439393938,
+      "abs_error": 1.393939393939394e-16,
+      "tolerance": 3.550970643939394e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "restored_primal_at_mu",
+      "path": [
+        1
+      ],
+      "independent_exact": "-5909/4800",
+      "contract_value": -1.2310416666666666,
+      "abs_error": 6.666666666666667e-17,
+      "tolerance": 2.2310416666666665e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "restored_primal_at_mu",
+      "path": [
+        2
+      ],
+      "independent_exact": "77647/118272",
+      "contract_value": 0.6565121076839827,
+      "abs_error": 1.6017316017316018e-17,
+      "tolerance": 1.6565121076839827e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "primal_average",
+      "path": [
+        0
+      ],
+      "independent_exact": "8557553/3252480",
+      "contract_value": 2.6310855101338055,
+      "abs_error": 8.835104289649745e-17,
+      "tolerance": 3.631085510133806e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "primal_average",
+      "path": [
+        1
+      ],
+      "independent_exact": "-38953/26400",
+      "contract_value": -1.4754924242424243,
+      "abs_error": 5.757575757575757e-17,
+      "tolerance": 2.4754924242424243e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "primal_average",
+      "path": [
+        2
+      ],
+      "independent_exact": "2747131/3252480",
+      "contract_value": 0.8446265618850846,
+      "abs_error": 1.2357339630066903e-17,
+      "tolerance": 1.8446265618850845e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "constraint_residual",
+      "path": [
+        0
+      ],
+      "independent_exact": "6931313/3252480",
+      "contract_value": 2.1310855101338055,
+      "abs_error": 8.835104289649745e-17,
+      "tolerance": 3.1310855101338054e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "constraint_residual",
+      "path": [
+        1
+      ],
+      "independent_exact": "-32353/13200",
+      "contract_value": -2.4509848484848487,
+      "abs_error": 2.1515151515151516e-16,
+      "tolerance": 3.4509848484848486e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "constraint_residual",
+      "path": [
+        2
+      ],
+      "independent_exact": "1934011/3252480",
+      "contract_value": 0.5946265618850846,
+      "abs_error": 1.2357339630066903e-17,
+      "tolerance": 1.5946265618850846e-10,
+      "passed": true
+    },
+    {
+      "case_id": "pps_two_negative_coordinates",
+      "step": 3,
+      "name": "primal_objective",
+      "path": [],
+      "independent_exact": "93945499488629/132232826880000",
+      "contract_value": 0.710455200159062,
+      "abs_error": 4.60612813301447e-17,
+      "tolerance": 1.710455200159062e-10,
+      "passed": true
+    }
+  ]
+}

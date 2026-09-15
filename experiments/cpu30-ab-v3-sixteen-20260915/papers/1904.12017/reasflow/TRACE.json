@@ -1,0 +1,10 @@
+[
+  {
+    "paper_id": "1904.12017",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/1904.12017/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/03/rollout-2026-09-03T20-46-17-01a0674e-426d-7010-9e90-cfc32668275b.jsonl",
+    "expected_sha256": "943da9ae7b6a8b98c3ae0ef632e9ddc4124a2b2cd8e724cd171158e2bf07ddfb",
+    "source_sha256": "943da9ae7b6a8b98c3ae0ef632e9ddc4124a2b2cd8e724cd171158e2bf07ddfb",
+    "original_hash_matches": true
+  }
+]

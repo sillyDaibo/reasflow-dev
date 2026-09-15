@@ -1,0 +1,62 @@
+{
+  "rsa-codex": {
+    "workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu/agent_reproduction/runs/1811.03761/Codex原生-完整复现-Goal/第003次运行/workspace",
+    "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/rsa/codex/adapter.py",
+    "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/rsa/codex/bindings.json",
+    "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/public/1811.03761/public_cases.json"
+  },
+  "rsa-reasflow": {
+    "workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu/agent_reproduction/runs/1811.03761/ReasFlow实验Agent-完整复现-Goal/第003次运行/workspace",
+    "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/rsa/reasflow/adapter.py",
+    "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/rsa/reasflow/bindings.json",
+    "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/public/1811.03761/public_cases.json"
+  },
+  "dream-codex": {
+    "workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2212.02387/Codex原生-完整复现-Goal/第003次运行/workspace",
+    "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/dream/native/adapter.py",
+    "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/dream/native/bindings.json",
+    "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/public/2212.02387/public_cases.json"
+  },
+  "dream-reasflow": {
+    "workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2212.02387/ReasFlow实验Agent-完整复现-Goal/第003次运行/workspace",
+    "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/dream/reasflow/adapter.py",
+    "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/adapters/dream/reasflow/bindings.json",
+    "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/public/2212.02387/public_cases.json"
+  },
+  "stratified-codex": {
+    "workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/1904.12017/Codex原生-完整复现-Goal/第003次运行/workspace",
+    "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/stratified/codex/adapter.py",
+    "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/stratified/codex/bindings.json",
+    "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/1904.12017/public_cases.json"
+  },
+  "stratified-reasflow": {
+    "workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/1904.12017/ReasFlow实验Agent-完整复现-Goal/第003次运行/workspace",
+    "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/stratified/reasflow/adapter.py",
+    "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/stratified/reasflow/bindings.json",
+    "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/1904.12017/public_cases.json"
+  },
+  "proxrr-codex": {
+    "workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/Codex原生-完整复现-Goal/第003次运行/workspace",
+    "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/proxrr/codex/adapter.py",
+    "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/proxrr/codex/bindings.json",
+    "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2102.06704/public_cases.json"
+  },
+  "proxrr-reasflow": {
+    "workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/ReasFlow实验Agent-完整复现-Goal/第003次运行/workspace",
+    "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/proxrr/reasflow/adapter.py",
+    "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/proxrr/reasflow/bindings.json",
+    "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2102.06704/public_cases.json"
+  },
+  "beer-codex": {
+    "workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2201.13320/Codex原生-完整复现-Goal/第003次运行/workspace",
+    "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/beer/codex/adapter.py",
+    "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/beer/codex/bindings.json",
+    "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2201.13320/public_cases.json"
+  },
+  "beer-reasflow": {
+    "workspace": "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2201.13320/ReasFlow实验Agent-完整复现-Goal/第003次运行/workspace",
+    "adapter": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/beer/reasflow/adapter.py",
+    "bindings": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/beer/reasflow/bindings.json",
+    "public": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2201.13320/public_cases.json"
+  }
+}

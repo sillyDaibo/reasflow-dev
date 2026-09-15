@@ -1,0 +1,16 @@
+{
+  "experiment_id": "exp_002_mnist_comparison",
+  "task": "mnist",
+  "data_root": "${BEER_MNIST_ROOT}",
+  "clients": 10,
+  "topology": "ring",
+  "lr": 0.1,
+  "gamma": 0.1,
+  "batch_size": 100,
+  "rounds": 35,
+  "compressor": "gsgd",
+  "compression_param": 20,
+  "hidden": 32,
+  "seed": 12,
+  "methods": ["BEER", "CHOCO-SGD", "DSGD", "D2"]
+}

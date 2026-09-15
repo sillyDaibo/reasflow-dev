@@ -1,0 +1,42 @@
+[
+  {
+    "paper_id": "1811.03761",
+    "title": "RSA: Byzantine-Robust Stochastic Aggregation Methods for Distributed Learning from Heterogeneous Datasets",
+    "cases": 3,
+    "observations": 55,
+    "contract": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/papers/1811.03761/contract.json",
+    "raw_sha256": "003bba6c7595a7cd36310d6670e83532889b6858aec3958e735d7c34fa544c53"
+  },
+  {
+    "paper_id": "2212.02387",
+    "title": "An Efficient Stochastic Algorithm for Decentralized Nonconvex-Strongly-Concave Minimax Optimization",
+    "cases": 2,
+    "observations": 45,
+    "contract": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-20260915/papers/2212.02387/contract.json",
+    "raw_sha256": "c570b8369e774545720866140ed390b78db948566a729ebe20ca58d95667d9be"
+  },
+  {
+    "paper_id": "1904.12017",
+    "title": "A Distributed Method for Fitting Laplacian Regularized Stratified Models",
+    "cases": 3,
+    "observations": 45,
+    "contract": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/papers/1904.12017/contract.json",
+    "raw_sha256": "4bab451018b3bcd7195c5904161a58c03d7b0937e57e0a5a86e8588ca199417f"
+  },
+  {
+    "paper_id": "2102.06704",
+    "title": "Proximal and Federated Random Reshuffling",
+    "cases": 3,
+    "observations": 24,
+    "contract": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/papers/2102.06704/contract.json",
+    "raw_sha256": "7a2e8e4717eaa57f727f07c1a58bd2401eaa0d65642bda7241ebfb8c00e4e680"
+  },
+  {
+    "paper_id": "2201.13320",
+    "title": "BEER: Fast O(1/T) Rate for Decentralized Nonconvex Optimization with Communication Compression",
+    "cases": 2,
+    "observations": 32,
+    "contract": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/papers/2201.13320/contract.json",
+    "raw_sha256": "4b084648c30b42eb25854ad345e52171cf63a9c6e1923c41f012735b2fd706c9"
+  }
+]

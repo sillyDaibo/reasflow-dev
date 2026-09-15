@@ -1,0 +1,681 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2201.13320",
+    "title": "BEER: Fast O(1/T) Rate for Decentralized Nonconvex Optimization with Communication Compression",
+    "sha256": "7f6492f9472edfeb6133d39667df94e17e1cdd3ee7af21166491e9a0110eae22"
+  },
+  "algorithm": {
+    "name": "BEER (Algorithm 1), full-gradient deterministic specialization",
+    "citations": [
+      "PDF p.4 Assumption 2.1 and Eq.(2): symmetric doubly stochastic mixing W with positive spectral gap.",
+      "PDF p.5 Definition 2.2, Eq.(3): E||C(v)-v||^2 <= (1-alpha)||v||^2; biased compression is allowed.",
+      "PDF p.6 Section 3 matrix notation: X=[x1,...,xn] is d by n and compression applies independently to columns.",
+      "PDF p.7 Algorithm 1 line 1: common X0, H0=G0=0 and V0=grad F(X0).",
+      "PDF p.7 Algorithm 1 lines 3-5: descent using V and consensus using H, then compress Xnew-H and accumulate into H.",
+      "PDF p.7 Algorithm 1 lines 6-8: gradient tracking using old G consensus plus consecutive gradient difference, then compress Vnew-G and accumulate into G.",
+      "PDF p.7 Section 4.1: exact full gradients may replace stochastic minibatch gradients when local variance is zero."
+    ],
+    "core_mechanisms": [
+      "paper_initialization",
+      "model_descent_with_compressed_consensus",
+      "residual_model_compression_accumulation",
+      "gradient_tracking_with_old_compressed_gradient_consensus",
+      "residual_gradient_compression_accumulation",
+      "columnwise_biased_contractive_compression"
+    ],
+    "assumptions": [
+      "The allowed source is only the designated arXiv:2201.13320v3 PDF. Cases are independently derived finite trajectories; no implementation or prior evaluation output was consulted.",
+      "The deterministic diagonal quadratic objectives are smooth, bounded below, have a minimizer, and are a valid zero-variance specialization. They test the algorithmic recurrence, not nonconvex convergence rates or stochastic minibatch sampling.",
+      "Mixing matrices are symmetric, nonnegative, doubly stochastic, connected and have positive spectral gap: first case eigenvalues (1,0.5), second case (1,0.75,0.25).",
+      "Top1 in dimension two satisfies Definition 2.2 with alpha=1/2; scaling by 1/2 satisfies it with alpha=3/4. The scale case tests the mathematical compressor interface and makes no claim of actual communication savings.",
+      "The finite input step sizes are explicit; the paper convergence theorem contains unspecified absolute constants, so these three-round probes do not claim a theorem-certified learning-rate choice or eventual convergence.",
+      "Matrix and objective layouts, exact gradient formula, compressor tie rule, initialization, update order, observation timing and output names are fully specified in each public case.",
+      "The paper does not prescribe a generic software return object or stopping rule. After exactly three full rounds, observe all four algorithm states; no implicit averaging or random-iterate selection is used."
+    ]
+  },
+  "cases": [
+    {
+      "id": "beer_top1_two_clients_three_rounds",
+      "purpose": "Activate biased sparse communication, residual accumulation and support changes in both control sequences, and distinguish gradient tracking from plain local gradients after consensus starts.",
+      "covers": [
+        "paper_initialization",
+        "model_descent_with_compressed_consensus",
+        "residual_model_compression_accumulation",
+        "gradient_tracking_with_old_compressed_gradient_consensus",
+        "residual_gradient_compression_accumulation",
+        "columnwise_biased_contractive_compression"
+      ],
+      "inputs": {
+        "initial_common_point": [
+          1,
+          -1
+        ],
+        "quadratic_centers_by_client": [
+          [
+            -1,
+            2
+          ],
+          [
+            3,
+            -2
+          ]
+        ],
+        "quadratic_diagonals_by_client": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "mixing_matrix_W": [
+          [
+            0.75,
+            0.25
+          ],
+          [
+            0.25,
+            0.75
+          ]
+        ]
+      },
+      "parameters": {
+        "eta": 0.1,
+        "gamma": 0.5,
+        "iterations": 3,
+        "gradient_oracle": "full_deterministic",
+        "minibatch_size": 1,
+        "compressor": {
+          "name": "top1",
+          "rule": "Retain the original value at the coordinate of largest absolute value; set all other coordinates to zero. On an exact tie choose the lowest zero-based coordinate index. C(0)=0. No rescaling.",
+          "contraction_alpha": 0.5
+        },
+        "observation_semantics": {
+          "state_layout": "All observed X,H,V,G matrices have shape [dimension][number_of_clients]; columns index clients in the same order as W rows/columns. Objectives below use [client][dimension] arrays.",
+          "step_semantics": "Step 0 is immediately after Algorithm 1 initialization. Step t>=1 is after completing lines 3-8 for iteration t-1. Report exactly X,H,V,G at every requested step. Q_h,Q_g and averages are not requested observations.",
+          "initialization": "X^0 has every column equal to initial_common_point; H^0=G^0=zero matrices; V^0=the exact local gradient at each corresponding column of X^0.",
+          "objective": "Client i has f_i(x)=0.5*sum_j quadratic_diagonals_by_client[i][j]*(x[j]-quadratic_centers_by_client[i][j])^2. Gradient coordinate j is diagonal[i][j]*(x[j]-center[i][j]). Global f is (1/n)*sum_i f_i. No extra regularization, momentum, projection, clipping, or stochastic noise.",
+          "update_order": "Execute Algorithm 1: Xnew=X+gamma*H*(W-I)-eta*V; Qh=C(Xnew-H); Hnew=H+Qh; Vnew=V+gamma*G*(W-I)+gradF(Xnew)-gradF(X); Qg=C(Vnew-G); Gnew=G+Qg. Unsubscripted X,H,V,G on right sides denote pre-round values, except the explicitly named Xnew/Vnew.",
+          "compression_scope": "Invoke the same deterministic compressor independently on each client column of each residual matrix, for both the H and G channels. Do not compress globally across the matrix or compress the raw X/V in place of residuals."
+        }
+      },
+      "derivation": "Algorithm 1 p.7 uses exactly its specified common-point initialization. Initial gradients are columns (2,-3),(-4,2). Because H0=G0=0, first-round consensus increments are zero, yet gradient descent and both compression channels are nonzero. At round 2, H1 has row (0.8,1.4) while G1 has columns (0,-2.7),(-3.2,0), producing distinct model/gradient consensus increments. Nonzero Top1 maximum ties are absent throughout. Later Qh/Qg retain previously omitted residual components, so replacing the accumulated controls by compressed raw values is distinguishable.\nAll following matrices are coordinate-by-client. Exact rational arithmetic generated the values; an independent client-wise floating-point recurrence checked every state to 1e-12. At each round, sums of V and exact local gradients agree, and sum(Xnew)=sum(Xold)-eta*sum(Vold).\nInitial state: {\"X\":[[1.0,1.0],[-1.0,-1.0]],\"H\":[[0.0,0.0],[0.0,0.0]],\"V\":[[2.0,-4.0],[-3.0,2.0]],\"G\":[[0.0,0.0],[0.0,0.0]]}\nRound 1 intermediate arithmetic: {\"step\":1,\"gamma_H_W_minus_I\":[[0.0,0.0],[0.0,0.0]],\"Q_h\":[[0.8,1.4],[0.0,0.0]],\"gamma_G_W_minus_I\":[[0.0,0.0],[0.0,0.0]],\"gradient_difference\":[[-0.2,0.8],[0.3,-0.4]],\"Q_g\":[[0.0,-3.2],[-2.7,0.0]]}\nRound 1 states: {\"X\":[[0.8,1.4],[-0.7,-1.2]],\"H\":[[0.8,1.4],[0.0,0.0]],\"V\":[[1.8,-3.2],[-2.7,1.6]],\"G\":[[0.0,-3.2],[-2.7,0.0]]}\nRound 2 intermediate arithmetic: {\"step\":2,\"gamma_H_W_minus_I\":[[0.075,-0.075],[0.0,0.0]],\"Q_h\":[[0.0,0.0],[-0.43,-1.36]],\"gamma_G_W_minus_I\":[[-0.4,0.4],[0.3375,-0.3375]],\"gradient_difference\":[[-0.105,0.49],[0.27,-0.32]],\"Q_g\":[[1.295,0.0],[0.0,0.9425]]}\nRound 2 states: {\"X\":[[0.695,1.645],[-0.43,-1.36]],\"H\":[[0.8,1.4],[-0.43,-1.36]],\"V\":[[1.295,-2.31],[-2.0925,0.9425]],\"G\":[[1.295,-3.2],[-2.7,0.9425]]}\nRound 3 intermediate arithmetic: {\"step\":3,\"gamma_H_W_minus_I\":[[0.075,-0.075],[-0.11625,0.11625]],\"Q_h\":[[-0.1595,0.401],[0.0,0.0]],\"gamma_G_W_minus_I\":[[-0.561875,0.561875],[0.4553125,-0.4553125]],\"gradient_difference\":[[-0.0545,0.312],[0.093,0.044]],\"Q_g\":[[0.0,1.763875],[1.1558125,0.0]]}\nRound 3 states: {\"X\":[[0.6405,1.801],[-0.337,-1.338]],\"H\":[[0.6405,1.801],[-0.43,-1.36]],\"V\":[[0.678625,-1.436125],[-1.5441875,0.5311875]],\"G\":[[1.295,-1.436125],[-1.5441875,0.9425]]}\n",
+      "atol": 1e-09,
+      "rtol": 1e-07,
+      "expected": [
+        {
+          "step": 0,
+          "name": "X",
+          "value": [
+            [
+              1.0,
+              1.0
+            ],
+            [
+              -1.0,
+              -1.0
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "H",
+          "value": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "V",
+          "value": [
+            [
+              2.0,
+              -4.0
+            ],
+            [
+              -3.0,
+              2.0
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "G",
+          "value": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "X",
+          "value": [
+            [
+              0.8,
+              1.4
+            ],
+            [
+              -0.7,
+              -1.2
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "H",
+          "value": [
+            [
+              0.8,
+              1.4
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "V",
+          "value": [
+            [
+              1.8,
+              -3.2
+            ],
+            [
+              -2.7,
+              1.6
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "G",
+          "value": [
+            [
+              0.0,
+              -3.2
+            ],
+            [
+              -2.7,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "value": [
+            [
+              0.695,
+              1.645
+            ],
+            [
+              -0.43,
+              -1.36
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "H",
+          "value": [
+            [
+              0.8,
+              1.4
+            ],
+            [
+              -0.43,
+              -1.36
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "V",
+          "value": [
+            [
+              1.295,
+              -2.31
+            ],
+            [
+              -2.0925,
+              0.9425
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "G",
+          "value": [
+            [
+              1.295,
+              -3.2
+            ],
+            [
+              -2.7,
+              0.9425
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "value": [
+            [
+              0.6405,
+              1.801
+            ],
+            [
+              -0.337,
+              -1.338
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "H",
+          "value": [
+            [
+              0.6405,
+              1.801
+            ],
+            [
+              -0.43,
+              -1.36
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "V",
+          "value": [
+            [
+              0.678625,
+              -1.436125
+            ],
+            [
+              -1.5441875,
+              0.5311875
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "G",
+          "value": [
+            [
+              1.295,
+              -1.436125
+            ],
+            [
+              -1.5441875,
+              0.9425
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "beer_half_compressor_three_client_path",
+      "purpose": "Exercise a different valid biased contractive map on both residual channels with a noncomplete graph, dimension unequal to client count, and client-specific anisotropic quadratic curvature.",
+      "covers": [
+        "paper_initialization",
+        "model_descent_with_compressed_consensus",
+        "residual_model_compression_accumulation",
+        "gradient_tracking_with_old_compressed_gradient_consensus",
+        "residual_gradient_compression_accumulation",
+        "columnwise_biased_contractive_compression"
+      ],
+      "inputs": {
+        "initial_common_point": [
+          -1,
+          2
+        ],
+        "quadratic_centers_by_client": [
+          [
+            2,
+            -1
+          ],
+          [
+            -2,
+            3
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "quadratic_diagonals_by_client": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            3,
+            1
+          ]
+        ],
+        "mixing_matrix_W": [
+          [
+            0.75,
+            0.25,
+            0
+          ],
+          [
+            0.25,
+            0.5,
+            0.25
+          ],
+          [
+            0,
+            0.25,
+            0.75
+          ]
+        ]
+      },
+      "parameters": {
+        "eta": 0.125,
+        "gamma": 0.25,
+        "iterations": 3,
+        "gradient_oracle": "full_deterministic",
+        "minibatch_size": 1,
+        "compressor": {
+          "name": "scale",
+          "factor": 0.5,
+          "rule": "For every residual vector v return C(v)=0.5*v, coordinatewise. This deterministic biased map satisfies Definition 2.2 with alpha=0.75; it is an algebraic compression-map test, not a claim of bit savings.",
+          "contraction_alpha": 0.75
+        },
+        "observation_semantics": {
+          "state_layout": "All observed X,H,V,G matrices have shape [dimension][number_of_clients]; columns index clients in the same order as W rows/columns. Objectives below use [client][dimension] arrays.",
+          "step_semantics": "Step 0 is immediately after Algorithm 1 initialization. Step t>=1 is after completing lines 3-8 for iteration t-1. Report exactly X,H,V,G at every requested step. Q_h,Q_g and averages are not requested observations.",
+          "initialization": "X^0 has every column equal to initial_common_point; H^0=G^0=zero matrices; V^0=the exact local gradient at each corresponding column of X^0.",
+          "objective": "Client i has f_i(x)=0.5*sum_j quadratic_diagonals_by_client[i][j]*(x[j]-quadratic_centers_by_client[i][j])^2. Gradient coordinate j is diagonal[i][j]*(x[j]-center[i][j]). Global f is (1/n)*sum_i f_i. No extra regularization, momentum, projection, clipping, or stochastic noise.",
+          "update_order": "Execute Algorithm 1: Xnew=X+gamma*H*(W-I)-eta*V; Qh=C(Xnew-H); Hnew=H+Qh; Vnew=V+gamma*G*(W-I)+gradF(Xnew)-gradF(X); Qg=C(Vnew-G); Gnew=G+Qg. Unsubscripted X,H,V,G on right sides denote pre-round values, except the explicitly named Xnew/Vnew.",
+          "compression_scope": "Invoke the same deterministic compressor independently on each client column of each residual matrix, for both the H and G channels. Do not compress globally across the matrix or compress the raw X/V in place of residuals."
+        }
+      },
+      "derivation": "Initial gradients are columns (-3,6),(2,-1),(-6,2). Use the exact Algorithm 1 initialization, not H0=X0 or G0=V0. The path mixing matrix is symmetric doubly stochastic and connected; its eigenvalues are 1,0.75,0.25. The compressor obeys ||C(v)-v||^2=0.25||v||^2, so alpha=0.75 is valid, although this scaling map alone is not a sparse encoding. Both Hnew=0.5*H+0.5*Xnew and Gnew=0.5*G+0.5*Vnew retain old information. Each client gradient difference uses its own diagonal curvature.\nAll following matrices are coordinate-by-client. Exact rational arithmetic generated the values; an independent client-wise floating-point recurrence checked every state to 1e-12. At each round, sums of V and exact local gradients agree, and sum(Xnew)=sum(Xold)-eta*sum(Vold).\nInitial state: {\"X\":[[-1.0,-1.0,-1.0],[2.0,2.0,2.0]],\"H\":[[0.0,0.0,0.0],[0.0,0.0,0.0]],\"V\":[[-3.0,2.0,-6.0],[6.0,-1.0,2.0]],\"G\":[[0.0,0.0,0.0],[0.0,0.0,0.0]]}\nRound 1 intermediate arithmetic: {\"step\":1,\"gamma_H_W_minus_I\":[[0.0,0.0,0.0],[0.0,0.0,0.0]],\"Q_h\":[[-0.3125,-0.625,-0.125],[0.625,1.0625,0.875]],\"gamma_G_W_minus_I\":[[0.0,0.0,0.0],[0.0,0.0,0.0]],\"gradient_difference\":[[0.375,-0.5,2.25],[-1.5,0.125,-0.25]],\"Q_g\":[[-1.3125,0.75,-1.875],[2.25,-0.4375,0.875]]}\nRound 1 states: {\"X\":[[-0.625,-1.25,-0.25],[1.25,2.125,1.75]],\"H\":[[-0.3125,-0.625,-0.125],[0.625,1.0625,0.875]],\"V\":[[-2.625,1.5,-3.75],[4.5,-0.875,1.75]],\"G\":[[-1.3125,0.75,-1.875],[2.25,-0.4375,0.875]]}\nRound 2 intermediate arithmetic: {\"step\":2,\"gamma_H_W_minus_I\":[[-0.01953125,0.05078125,-0.03125],[0.02734375,-0.0390625,0.01171875]],\"Q_h\":[[-0.001953125,-0.380859375,0.15625],[0.044921875,0.56640625,0.333984375]],\"gamma_G_W_minus_I\":[[0.12890625,-0.29296875,0.1640625],[-0.16796875,0.25,-0.08203125]],\"gradient_difference\":[[0.30859375,-0.2734375,1.3125],[-1.0703125,0.0703125,-0.20703125]],\"Q_g\":[[-0.4375,0.091796875,-0.19921875],[0.505859375,-0.05859375,0.29296875]]}\nRound 2 states: {\"X\":[[-0.31640625,-1.38671875,0.1875],[0.71484375,2.1953125,1.54296875]],\"H\":[[-0.314453125,-1.005859375,0.03125],[0.669921875,1.62890625,1.208984375]],\"V\":[[-2.1875,0.93359375,-2.2734375],[3.26171875,-0.5546875,1.4609375]],\"G\":[[-1.75,0.841796875,-2.07421875],[2.755859375,-0.49609375,1.16796875]]}\nRound 3 intermediate arithmetic: {\"step\":3,\"gamma_H_W_minus_I\":[[-0.043212890625,0.1080322265625,-0.0648193359375],[0.0599365234375,-0.086181640625,0.0262451171875]],\"Q_h\":[[0.1141357421875,-0.19476318359375,0.18780517578125],[-0.15142822265625,0.2747802734375,0.08880615234375]],\"gamma_G_W_minus_I\":[[0.1619873046875,-0.34423828125,0.1822509765625],[-0.2032470703125,0.3072509765625,-0.10400390625]],\"gradient_difference\":[[0.230224609375,-0.017333984375,0.6580810546875],[-0.695556640625,-0.016845703125,-0.1563720703125]],\"Q_g\":[[-0.02264404296875,-0.1348876953125,0.320556640625],[-0.19647216796875,0.11590576171875,0.01629638671875]]}\nRound 3 states: {\"X\":[[-0.086181640625,-1.3953857421875,0.4068603515625],[0.3670654296875,2.178466796875,1.3865966796875]],\"H\":[[-0.2003173828125,-1.20062255859375,0.21905517578125],[0.51849365234375,1.9036865234375,1.29779052734375]],\"V\":[[-1.7952880859375,0.572021484375,-1.43310546875],[2.3629150390625,-0.2642822265625,1.2005615234375]],\"G\":[[-1.77264404296875,0.7069091796875,-1.753662109375],[2.55938720703125,-0.38018798828125,1.18426513671875]]}\n",
+      "atol": 1e-09,
+      "rtol": 1e-07,
+      "expected": [
+        {
+          "step": 0,
+          "name": "X",
+          "value": [
+            [
+              -1.0,
+              -1.0,
+              -1.0
+            ],
+            [
+              2.0,
+              2.0,
+              2.0
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "H",
+          "value": [
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "V",
+          "value": [
+            [
+              -3.0,
+              2.0,
+              -6.0
+            ],
+            [
+              6.0,
+              -1.0,
+              2.0
+            ]
+          ]
+        },
+        {
+          "step": 0,
+          "name": "G",
+          "value": [
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "X",
+          "value": [
+            [
+              -0.625,
+              -1.25,
+              -0.25
+            ],
+            [
+              1.25,
+              2.125,
+              1.75
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "H",
+          "value": [
+            [
+              -0.3125,
+              -0.625,
+              -0.125
+            ],
+            [
+              0.625,
+              1.0625,
+              0.875
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "V",
+          "value": [
+            [
+              -2.625,
+              1.5,
+              -3.75
+            ],
+            [
+              4.5,
+              -0.875,
+              1.75
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "G",
+          "value": [
+            [
+              -1.3125,
+              0.75,
+              -1.875
+            ],
+            [
+              2.25,
+              -0.4375,
+              0.875
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "value": [
+            [
+              -0.31640625,
+              -1.38671875,
+              0.1875
+            ],
+            [
+              0.71484375,
+              2.1953125,
+              1.54296875
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "H",
+          "value": [
+            [
+              -0.314453125,
+              -1.005859375,
+              0.03125
+            ],
+            [
+              0.669921875,
+              1.62890625,
+              1.208984375
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "V",
+          "value": [
+            [
+              -2.1875,
+              0.93359375,
+              -2.2734375
+            ],
+            [
+              3.26171875,
+              -0.5546875,
+              1.4609375
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "G",
+          "value": [
+            [
+              -1.75,
+              0.841796875,
+              -2.07421875
+            ],
+            [
+              2.755859375,
+              -0.49609375,
+              1.16796875
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "value": [
+            [
+              -0.086181640625,
+              -1.3953857421875,
+              0.4068603515625
+            ],
+            [
+              0.3670654296875,
+              2.178466796875,
+              1.3865966796875
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "H",
+          "value": [
+            [
+              -0.2003173828125,
+              -1.20062255859375,
+              0.21905517578125
+            ],
+            [
+              0.51849365234375,
+              1.9036865234375,
+              1.29779052734375
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "V",
+          "value": [
+            [
+              -1.7952880859375,
+              0.572021484375,
+              -1.43310546875
+            ],
+            [
+              2.3629150390625,
+              -0.2642822265625,
+              1.2005615234375
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "G",
+          "value": [
+            [
+              -1.77264404296875,
+              0.7069091796875,
+              -1.753662109375
+            ],
+            [
+              2.55938720703125,
+              -0.38018798828125,
+              1.18426513671875
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

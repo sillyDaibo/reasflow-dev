@@ -1,0 +1,36 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "adapter16_c",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Original LLS objective/minimizer and SGS solver express public data and fixed eta faithfully; source cache ordering is intentionally observed unchanged.",
+  "scope_notes": [
+    "problems.py:40-44 ignores QuadraticProblem.Q; LLSProblem:61-83 instead represents each centered quadratic with one X=sqrt(a/2),Y=X*c record, retaining native squared-loss factor.",
+    "Native lambda=-public lambda and edge-by-node A=public incidence.T are coordinate conventions, not modified update rules; solver:89 becomes the requested sign through this representation.",
+    "solver.py:34-58 performs native incident-edge selection; no max/step/cache update is substituted. Active-node RNG is conditioned on public values and unique native ties only.",
+    "solver.py:82-83 refreshes selected endpoints before line 89 dual update; adapter retains stale theta_after and theta_before caches. It does not correct this source behavior.",
+    "Dual objective and full dual gradient are read-only evaluations through original _theta/LLSProblem.lagrangian at actual dual states; they do not overwrite the primal cache or generate optimizer iterates.",
+    "Independent smoke used only public cases under execution._readonly_tree; checked successful invocation and observation schema coverage. No private expected values, papers, prior verdicts or Judge numeric comparisons were read. Approval is fidelity only."
+  ],
+  "substitutions": [
+    {
+      "symbol": "LLSProblem DataRNG and initial dual/cache state",
+      "role": "problem_input",
+      "reason": "Supply public centered quadratic using native squared loss, and map initial coordinates/sign."
+    },
+    {
+      "symbol": "Active-node RNG",
+      "role": "problem_input",
+      "reason": "Condition native activation draws; retain original incident-edge SGS selection."
+    },
+    {
+      "symbol": "Solver trace and original _theta/lagrangian calls",
+      "role": "observation",
+      "reason": "Copy genuine caches/dual/selection; measure conjugate gradient and negative native dual value without modifying state."
+    }
+  ],
+  "public_digest": "b2cc31b47d87e280332a6a5ea982ed285f1a02cfd1ee4b9da66ba7f25de9c7e9",
+  "adapter_sha256": "c148940e51a7fd0e8712ca5c020f1e0e7e0a6aa88d21adaefe4e25dd690b7878",
+  "workspace_digest": "0f4fe5d9a6d52cbd08a4def29dfb444762e4892e2eded7c67e64b63b53a0a526",
+  "bindings_digest": "4696231d474e8935990cba5a1cc2bd415c35cb73c9c5bf667b51bf3e305e365f"
+}

@@ -1,0 +1,255 @@
+{
+  "paper_id": "2503.07594",
+  "evaluated_at": "2026-09-05T00:04:36.860644+00:00",
+  "summary": {
+    "total_score": 0.8235,
+    "algorithm_impl_score": 0.8333,
+    "exp_setup_score": 0.8182,
+    "exp_results_score": 0.0,
+    "total_rubrics": 20,
+    "passed": 17,
+    "failed": 3,
+    "errors": 0,
+    "pass_threshold": 0.8,
+    "gate_passed": true
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.7857,
+      "passed": 11,
+      "total": 14
+    },
+    "secondary": {
+      "score": 1.0,
+      "passed": 4,
+      "total": 4
+    },
+    "tertiary": {
+      "score": 1.0,
+      "passed": 2,
+      "total": 2
+    }
+  },
+  "results": [
+    {
+      "id": "alg-001",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The global parameter θ_{t+1} is the average of the final local parameters: θ_{t+1} = (1/N) ∑_{c=1}^N θ_H(c).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_reproduction/algorithms.py, line 163: `next_theta = local.mean(axis=0)`. Here `local` is an array of shape (n_clients, d) containing the final local parameters θ_H(c) for each client c after `local_steps` local SGD updates. `.mean(axis=0)` computes the arithmetic mean (1/N) ∑_{c=1}^N θ_H(c), which is then assigned as the new global parameter at line 169: `theta = next_theta`. This applies to both the FedAvg and SCAFFOLD branches (the stacked fast-path at line 148–153 and the per-client path at lines 155–162 both populate `local`, then line 163 averages it).",
+      "note": "The implementation covers both uniform and non-uniform client sizes; for equal-sized clients a vectorized (einsum) path is used, but the final averaging step is identical.",
+      "error": false
+    },
+    {
+      "id": "alg-002",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Each client c performs H local updates per round, starting from θ_0(c) = θ_t.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_reproduction/algorithms.py, the _run() function implements this exactly. In the non-stacked branch (lines ~140-149): `local[c] = theta` initializes each client from the current global model (θ_0(c) = θ_t), then `for _ in range(local_steps):` performs exactly `local_steps` (=H) local gradient steps per client per round. The same logic is mirrored in the stacked branch: `local = np.broadcast_to(theta, (n_clients, d)).copy()` followed by `for _ in range(local_steps):`. The `local_steps` parameter corresponds to H in Algorithm 1.",
+      "note": "The parameter is named `local_steps` rather than `H`, but it is semantically identical and used consistently throughout the fedavg() and scaffold() entry points.",
+      "error": false
+    },
+    {
+      "id": "alg-003",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The local update for client c at step h is θ_{h+1}(c) = θ_h(c) - γ (∇F_c(Z_{t,h+1}(c), θ_h(c)) - ξ_t(c)).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In scaffold_reproduction/algorithms.py, the local SCAFFOLD update (lines ~130-135) is: `grads = _batched_gradients(...); grads = grads + controls; local -= gamma * grads`, which implements θ_{h+1} = θ_h - γ(∇F_c + ξ_t(c)). The rubric claims the update is θ_{h+1} = θ_h - γ(∇F_c − ξ_t(c)) — i.e., the correction should be subtracted. The code explicitly adds the control variate, and the docstring for `scaffold()` even notes it uses \"gradient + xi sign\" convention, confirming the sign difference.",
+      "note": "The sign discrepancy may reflect a sign convention in how ξ_t(c) is defined: if ξ_t(c) = −(c_i − c), adding it is equivalent to subtracting (c_i − c). But as literally written, the code uses + not −, which does not match the rubric's formula θ_h − γ(∇F_c − ξ_t).",
+      "error": false
+    },
+    {
+      "id": "alg-004",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The control variate for client c is updated as ξ_{t+1}(c) = ξ_t(c) - (1/(γH))(θ_{t+1} - θ_H(c)).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scaffold_reproduction/algorithms.py line 165-166: `controls += (local - next_theta) / (gamma * local_steps)` implements ξ_{t+1}(c) = ξ_t(c) + (θ_H(c) − θ_{t+1})/(γH), which is algebraically identical to the rubric's ξ_{t+1}(c) = ξ_t(c) − (1/(γH))(θ_{t+1} − θ_H(c)). The comment on line 165 explicitly references this as \"Eq. (5): xi_{t+1,c} = xi_{t,c} + (theta_{t,H,c}-theta_{t+1})/(gamma H)\".",
+      "note": "The code uses the algebraically equivalent rearrangement of the rubric formula; `local` holds θ_H(c) (client model after H local steps) and `next_theta` is θ_{t+1} (global average).",
+      "error": false
+    },
+    {
+      "id": "alg-005",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The algorithm uses a single step size γ for all local updates and control variate updates, without a separate global step size.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_reproduction/algorithms.py, the `scaffold` function accepts a single `gamma` parameter. In `_run`, local SGD updates use `local -= gamma * grads` (same gamma for all local steps). The control variate update (Eq. 5) uses `controls += (local - next_theta) / (gamma * local_steps)`, which also references the same `gamma`. There is no separate global step size parameter anywhere in the function signatures or algorithm logic.",
+      "note": "The control variate update formula divides by (gamma * local_steps), which is consistent with SCAFFOLD Algorithm 1 Option II where only one step size γ appears. No second/global learning rate exists.",
+      "error": false
+    },
+    {
+      "id": "alg-006",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The local gradient is computed using a freshly sampled Z_{t,h+1}(c) ∼ ν(c) at each local step.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_reproduction/algorithms.py, the inner local-step loop (lines ~140–155) calls either `_batched_gradients(X, y, local, lambda_, batch_size, rng, problem)` (stacked path) or `_batch_gradient(X, y, local[c], lambda_, batch_size, rng, gradient)` (non-stacked path) on **every iteration** of `for _ in range(local_steps)`. Each call invokes `rng.integers(...)` or `rng.choice(...)` to draw a fresh mini-batch from client c's data — equivalent to sampling Z_{t,h+1}(c) ∼ ν(c) anew at each local step h.",
+      "note": "The paper notation Z_{t,h+1}(c) ∼ ν(c) refers to an i.i.d. mini-batch drawn fresh per local step; the code does exactly this by re-calling the batch-gradient helper (which re-samples via the shared RNG) on each iteration of the inner loop.",
+      "error": false
+    },
+    {
+      "id": "alg-007",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The clients perform local updates in parallel, and the server aggregates the final local parameters.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In `scaffold_reproduction/algorithms.py`, the `_run` function (line ~108 onward) implements the federated loop. Local updates: the fast path (when clients are equal-sized) calls `_batched_gradients` which computes all clients' gradient steps simultaneously via NumPy einsum operations (`np.einsum(\"nmd,nd->nm\", ...)`) for `local_steps` iterations — all clients update in parallel. The fallback path loops over clients sequentially but still computes all clients' final parameters. Server aggregation: after local updates, `next_theta = local.mean(axis=0)` (averaging the final local parameters) aggregates across all clients. This directly matches Algorithm 1 lines 3-10: parallel local SGD steps per client followed by server parameter averaging.",
+      "note": "The \"parallel\" execution is achieved via NumPy vectorized batch operations (not multiprocessing), which is the standard way to represent parallelism in NumPy-based federated learning reproductions. A sequential fallback loop also exists for unequal-sized clients.",
+      "error": false
+    },
+    {
+      "id": "alg-008",
+      "dimension": "algorithm_impl",
+      "priority": "tertiary",
+      "description": "The algorithm runs for T rounds, with N clients and H local steps per round.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_reproduction/algorithms.py, the `_run` function (lines 114–171) implements: (1) T rounds via parameter `rounds` and outer loop `for _ in range(rounds)` at line 145; (2) N clients via parameter `clients: Sequence[Client]` with `n_clients = len(clients)` at line 133; (3) H local steps via parameter `local_steps` and inner loop `for _ in range(local_steps)` at lines 149 and 158. Both `fedavg` (line 174) and `scaffold` (line 189) expose these three parameters explicitly.",
+      "note": "The naming differs slightly from the paper (T→rounds, N→len(clients), H→local_steps) but the semantics match exactly.",
+      "error": false
+    },
+    {
+      "id": "setup-001",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For linear regression, datasets are generated using scikit-learn's make_regression function with 100N records and 20 features, using two different seeds and n_informative=2 and n_informative=10 respectively. The first dataset is split evenly among the first N/2 clients, the second among the remaining N/2 clients, resulting in 200 records per client.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scaffold_reproduction/datasets.py: `make_regression` called twice with `n_samples=n_records * n_agents` (= 100N with default n_records=100), `n_features=20`, `n_informative=2` (seed_a=42) and `n_informative=10` (seed_b=123). The first population is split among `first = (n_agents+1)//2 = ceil(N/2)` clients, the second among `n_agents - first = floor(N/2)` clients (lines 47–74). Config file configs/*.json confirms n_records=100, n_features=20, dataset_seeds=[42,123]. Each client thus receives ~200 records (100N / (N/2)).",
+      "note": "The split uses ceil(N/2) for the first half and floor(N/2) for the second — described in the code's docstring as \"first population to ceil(N/2) clients; second to floor(N/2)\" — matching \"split evenly\" for even N (200 records/client).",
+      "error": false
+    },
+    {
+      "id": "setup-002",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "For logistic regression, datasets are generated using scikit-learn's make_classification function with two different seeds, with the same splitting procedure: each dataset split evenly among N/2 clients, resulting in 200 records per client.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "scaffold_reproduction/datasets.py lines 59-69: for problem==\"logistic\", two make_classification calls are made with random_state=seed_a (default 42) and random_state=seed_b (default 123). configs/figure1.json confirms dataset_seeds=[42,123] and n_records=100. The split code (lines 71-76) assigns ceil(N/2) clients to population A and floor(N/2) to population B using numpy array_split. With n_records=100 and N agents, each population has 100*N rows split among N/2 clients = 200 records per client. DatasetProvenance documents: \"population_split: first population to ceil(N/2) clients; second to floor(N/2)\".",
+      "note": "The two seeds (42 and 123) are used as make_classification's random_state arguments, generating two separate datasets. The 200 records per client comes from n_records=100 samples/agent times N agents divided by N/2 clients = 200 per client.",
+      "error": false
+    },
+    {
+      "id": "setup-003",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "Each client has 200 records.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_reproduction/datasets.py, the generate_clients() function uses n_records=100 as the default. The docstring states: \"n_records is the paper's per-client population divisor: each source population has n_records * n_agents rows, hence each client has about 2*n_records rows after the two-way split.\" With n_records=100, each client receives ~200 records (100 from population A split across first clients, 100 from population B split across remaining clients). The configs/figure1.json also sets \"n_records\": 100, and DEFAULTS in run_experiment.py also uses \"n_records\": 100.",
+      "note": "The \"200 records per client\" is achieved via 2 populations × 100 records each = 200 per client, where n_records=100 acts as the per-population-per-client divisor.",
+      "error": false
+    },
+    {
+      "id": "setup-004",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The number of clients N takes values in {10, 100, 1000, 10000}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "configs/figure1.json line 9: \"n_agents\": [10, 100, 1000, 10000]. Confirmed in run logs: results/formal/figure1-linear/run.log and results/formal/figure1-logistic/run.log both show resolved_config with \"n_agents\": [10, 100, 1000, 10000] for both linear and logistic regression experiments.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-005",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The step size γ = 0.05.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "run_experiment.py line 20: `\"gamma\": 0.05` is set as the default step size in the experiment configuration. The parameter is passed as `gamma` throughout the codebase (scaffold_reproduction/algorithms.py lines 117, 153, 162, 166) and used in tests (tests/test_algorithms.py line 46, 63) with the same value 0.05.",
+      "note": "The step size is labeled `gamma` in code, matching the paper's γ = 0.05 claim.",
+      "error": false
+    },
+    {
+      "id": "setup-006",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The number of local steps H = 100.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Multiple files confirm H=100 local steps: run_experiment.py line 23 sets `\"local_steps\": 100`; configs/figure1.json line 8 sets `\"local_steps\": 100`; results/formal/figure1-linear/config.json line 17 and results/formal/figure1-logistic/config.json line 17 both record `\"local_steps\": 100`. README.md and CLAIMS.json also explicitly document `H=100` for these experiments.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-007",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The number of communication rounds T = 100.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In configs/figure1.json (the experiment config for exp1_linear_logistic_regression, covering both linear and logistic problems), \"rounds\" is set to 50, not 100. The same value appears in results/formal/figure1-linear/config.json (line 33: \"rounds\": 50) and results/formal/figure1-logistic/config.json. The default in run_experiment.py (line 24) is also \"rounds\": 50. No configuration or code path sets T=100 for the communication rounds in these experiments.",
+      "note": "The value 100 does appear for other parameters (n_records=100, local_steps=100), but not for the number of communication rounds T.",
+      "error": false
+    },
+    {
+      "id": "setup-008",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The batch size is 10.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "The batch size of 10 is set as the default in run_experiment.py line 22 (`\"batch_size\": 10`), in configs/figure1.json line 3 (`\"batch_size\": 10`), and in the saved experimental result configs results/formal/figure1-linear/config.json line 3 and results/formal/figure1-logistic/config.json line 3 (both `\"batch_size\": 10`). The README.md also explicitly states \"batch size 10\" as an experimental parameter for both linear and logistic regression datasets.",
+      "note": "The batch size of 10 applies uniformly to all methods (FedAvg and SCAFFOLD) on both datasets (linear_regression and logistic_regression), consistent with the verification spec.",
+      "error": false
+    },
+    {
+      "id": "setup-009",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "FEDAVG is run with the same parameters as SCAFFOLD: γ=0.05, H=100, T=100, batch size 10.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In configs/figure1.json: gamma=0.05 (✓), local_steps=100 (H=100 ✓), batch_size=10 (✓), but rounds=50 (T=50, NOT T=100 as claimed). In experiment.py lines 137-149, both fedavg and scaffold are called with the same kwargs dict (gamma, batch_size, local_steps, rounds all from config), confirming shared parameters. The rubric claims T=100 but the implementation uses T=50.",
+      "note": "Three of four parameters match (γ=0.05, H=100, batch_size=10), but T=100 is not implemented; the code uses T=50 rounds in configs/figure1.json. FedAvg and SCAFFOLD do use the same parameter set as each other.",
+      "error": false
+    },
+    {
+      "id": "setup-010",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The evaluation metric is mean squared error E[∥θ^t − θ⋆∥^2] reported as a function of the number of communication rounds.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In scaffold_reproduction/experiment.py: (1) MSE computed as `mse = np.sum((result.thetas - optimum[None, :]) ** 2, axis=1)` — the squared L2 distance to the centralized optimum θ*; (2) stored per communication round in rows with fields {\"round\": ..., \"mse\": ...}; (3) y-axis labeled `r\"MSE $\\|\\theta_t-\\theta^*\\|^2$\"` and x-axis labeled `\"Communication rounds\"` in `_plot()`; (4) results/formal/figure1-linear/metrics.csv and results/formal/figure1-logistic/metrics.csv both have columns `problem, n_agents, run, seed, algorithm, round, mse` covering linear_regression and logistic_regression datasets for fedavg and scaffold algorithms.",
+      "note": "The metric is exactly E[∥θ^t − θ*∥^2] (averaged over runs in the plot) reported as a function of communication rounds, matching the Figure 1 caption claim.",
+      "error": false
+    },
+    {
+      "id": "setup-011",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "Results are averaged over 3 runs, with standard deviation shown.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "1) configs/figure1.json line 15: \"runs\": 3 — experiments are configured for 3 runs; results/formal/figure1-linear/config.json and figure1-logistic/config.json also show \"runs\": 3. 2) scaffold_reproduction/experiment.py lines 62-66: computes \"final_mse_mean\", \"final_mse_std\", \"stationary_tail_mse_mean\", \"stationary_tail_mse_std\" using .mean() and .std() across runs. 3) experiment.py lines 84-86: mean, std = matrix.mean(axis=0), matrix.std(axis=0), then fill_between plots mean±std bands. Both linear and logistic problem results are present in results/formal/.",
+      "note": "The \"runs\": 3 parameter controls the number of random seeds, not multiple re-training passes. The standard deviation is computed across these 3 seeds/runs and displayed as shaded bands in the figure.",
+      "error": false
+    },
+    {
+      "id": "setup-012",
+      "dimension": "exp_setup",
+      "priority": "tertiary",
+      "description": "The code is available at https://github.com/pmangold/scaffold-speed-up.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "SOURCES.md explicitly states: \"Reference implementation: `https://github.com/pmangold/scaffold-speed-up`, commit `962967b6260eea4802dc41231b32ad8b311b9f0d`, supplied read-only under `../runtime/official_code/`.\" README.md also references the repository by noting the official snapshot commit hash and discrepancies observed in the official code.",
+      "note": "The repository acknowledges the code at https://github.com/pmangold/scaffold-speed-up as the reference implementation; the current repo is an independent reproduction that used it for verification of parameter names and plotting protocol.",
+      "error": false
+    }
+  ]
+}

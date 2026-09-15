@@ -1,0 +1,9 @@
+{
+  "experiment": "senate",
+  "seed": 0,
+  "gamma_state": 1.0,
+  "gamma_year": 4.0,
+  "epsilon": 0.00001,
+  "maxiter": 180,
+  "solver": "ADMM"
+}

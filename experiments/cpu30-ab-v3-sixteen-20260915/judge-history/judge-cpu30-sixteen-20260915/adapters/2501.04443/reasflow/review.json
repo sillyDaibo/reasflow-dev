@@ -1,0 +1,35 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "adapter16_c",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Original _oracle, run_localsgd and run_scaffold execute; permitted quadratic gradient inputs replace only an unsupported smoothed-Huber problem family.",
+  "scope_notes": [
+    "losses.py:49-51 rejects all non-Huber losses; losses.py:61-63 applies a saturating Huber derivative, so the supplied public quadratic callback is a justified objective input.",
+    "algorithms.py:18-20 retains original stochastic scaling; 46-62 and 66-101 retain all local updates, frozen control batches, corrected steps and mean broadcasts.",
+    "Trace at line 97 reads corrected before subtraction without flushing pending arrays; the following source line observes post-subtraction state. Lines 86/100 observe completed controls and averaging.",
+    "Bypasses SyntheticProblem.objectives, WorkerObjective.gradient, smoothed_huber_grad and regularizer_grad only for public objective representation.",
+    "Independent smoke used only public cases under execution._readonly_tree; checked successful invocation and observation schema coverage. No private expected values, papers, prior verdicts or Judge numeric comparisons were read. Approval is fidelity only."
+  ],
+  "substitutions": [
+    {
+      "symbol": "Problem/Objectives callbacks",
+      "role": "problem_input",
+      "reason": "Represent a*x+b through existing gradient protocol; original built-in loss only supports smoothed Huber."
+    },
+    {
+      "symbol": "_worker_rngs",
+      "role": "problem_input",
+      "reason": "Inject fixed public per-worker noise into original _oracle with d=sigma=1."
+    },
+    {
+      "symbol": "_oracle and optimizer trace",
+      "role": "observation",
+      "reason": "Read original gradient returns, mutable updated states, source corrected locals, anchors and broadcast."
+    }
+  ],
+  "public_digest": "f2b7b02c09a3853b6d809c371ce67d6cfe41f8d72bd5982cb24e18fe39cdf0ec",
+  "adapter_sha256": "6bfb461b2c55539fd5ec54f5576a41f863358c6f955d520b20ae89bde07371c8",
+  "workspace_digest": "43a950fdcca58feea6d135372f2c3501ac73220b351f07cf0cf86f0149344d6a",
+  "bindings_digest": "e811dc7a80eac29a417040e2df65c2acf6e0db364f8a197fa02bc5dcb34909b3"
+}

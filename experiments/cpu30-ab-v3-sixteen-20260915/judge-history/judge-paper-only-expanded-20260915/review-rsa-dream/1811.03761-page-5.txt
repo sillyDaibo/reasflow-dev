@@ -1,0 +1,126 @@
+Assumption 3. (Bounded variance) For every worker i,
+the data sampling is i.i.d. across time such that ξk
+i ∼Di.
+The variance of ∇F(˜x, ξi) is upper bounded by δ2
+i , namely,
+E[||∇E[F(˜x, ξi)] −∇F(˜x, ξi)||2] ≤δ2
+i .
+Note that Assumptions 1-3 are standard for performance
+analysis of stochastic gradient-based methods (Nemirovski
+et al. 2009), and they are satisﬁed in a wide range of machine
+learning problems such as ℓ2-regularized least squares and
+logistic regression.
+We start with investigating the ℓp-norm regularized prob-
+lem (9), showing the condition under which the optimal so-
+lution of (9) is consensual and identical to that of (3).
+Theorem 1. Suppose that Assumptions 1 and 2 hold. If
+λ ≥λ0 := maxi∈R ∥∇E[F(˜x∗, ξi)]∥b with p ≥1 and b
+satisfying 1
+b + 1
+p = 1, then we have x∗= [˜x∗], where ˜x∗and
+x∗are the optimal solutions of (3) and (9), respectively.
+Theorem 1 asserts that if the penalty constant λ is selected
+to be large enough, the optimal solution of the regularized
+problem (9) is the same as that of (3). Next, we shall check
+the convergence properties of the RSA iterates with respect
+to the optimal solution of (9) under Byzantine attacks.
+Theorem 2. Suppose that Assumptions 1, 2 and 3 hold.
+Set the step size of ℓp-norm RSA (p ≥1) as αk+1 =
+min{α,
+α
+k+1}, where α and α depend on {µ0, µi, L0, Li}.
+Then, for k0 satisfying min{k : α ≥
+α
+k+1}, we have:
+E∥xk+1−x∗∥2 ≤(1−ηα)k∥x0−x∗∥2+α∆0 + ∆2
+η
+, k < k0
+(12)
+and
+E∥xk+1 −x∗∥2 ≤
+∆1
+k + 1 + α∆2, k ≥k0
+(13)
+where η, ∆1 and ∆2 = O(λ2q2) are certain positive con-
+stants.
+Theorem 2 shows that the sequence of local iterates con-
+verge sublinearly to the near-optimal solution of the regu-
+larized problem (9). The asymptotic sub-optimality gap is
+quadratically dependent on the number of Byzantine work-
+ers q. Building upon Theorems 1 and 2, we can arrive at the
+following theorem.
+Theorem 3. Under the same assumptions as those in The-
+orem 2, if we choose λ ≥λ0 according to Theorem 1, then
+for a sufﬁciently large k ≥k0, we have:
+E||xk −[˜x∗]||2 ≤
+∆1
+k + 1 + α∆2
+(14)
+If we choose 0 < λ < λ0, and suppose that the difference
+between the optimizer of (9) and that of (3) is bounded by
+||x∗−[˜x∗]||2 ≤∆3, then for k ≥k0 we have:
+E||xk −[˜x∗]||2 ≤2∆1
+k + 1 + 2α∆2 + 2∆3
+(15)
+Theorem 3 implies that the sequence of local iterates also
+converge sublinearly to the near-optimal solution of the orig-
+inal (3). Under a properly selected λ, the sub-optimality
+gap in the limit is proportional to the number of Byzantine
+workers. Note that since the O(1/k) step size is quite sensi-
+tive to its initial value (Nemirovski et al. 2009), we use the
+O(1/
+√
+k) step size in our numerical tests. Its corresponding
+theoretical claim and convergence analysis are given in the
+supplementary document.
+Regarding the optimal selection of the penalty constant λ
+and the ℓp norm, a remark follows next.
+Remark 2 (Optimal selection of λ and p). Selecting dif-
+ferent penalty constant λ and ℓp norms in RSA generally
+leads to distinct performance. For a ﬁxed λ, if a norm ℓp
+with a small p is used, the dual norm ℓb has a large b and
+thus results in a small λ0 in Theorem 1. Therefore, the lo-
+cal solutions are likely to be consensual. From the numer-
+ical tests, RSA with ℓ∞norm does not provide competitive
+performance, while those with ℓ1 and ℓ2 norms work well.
+On the other hand, for a ﬁxed p, a small λ cannot guar-
+antee consensus among local solutions, but it gives a small
+sub-optimality gap ∆2. We recommend to use a λ that is
+relatively smaller than λ0, slightly sacriﬁcing consensus but
+reducing the sub-optimality gap.
+Numerical Tests
+In this section, we evaluate the robustness of the proposed
+RSA methods to Byzantine attacks and compare them with
+several benchmark algorithms. We conduct experiments on
+the MNIST dataset, which has 60k training samples and
+10k testing samples, and use softmax regression with an ℓ2-
+norm regularization term f0(˜x) = 0.01
+2 ∥˜x∥2. We launch 20
+worker processes and 1 master process on a computer with
+Intel i7-6700 CPU @ 3.40GHz. In the i.i.d. case, the train-
+ing samples are randomly evenly assigned to the workers. In
+the heterogeneous case, every two workers evenly share the
+training samples of one digit. At every iteration, every reg-
+ular worker estimates its local gradient on a mini-batch of
+32 samples. The top-1 accuracy (evaluated with x0 in RSA
+and ˜x in the benchmark algorithms) on the test dataset is
+used as the performance metric. The code is available at
+https://github.com/liepill/rsa-byzantine
+Benchmark algorithms
+We use the SGD iteration (2) without attacks as the oracle,
+which is referred as Ideal SGD. Note that this method is not
+affected by q, the number of Byzantine workers. The other
+benchmark algorithms implement the following stochastic
+gradient aggregation recursion:
+˜xk+1 = ˜xk −αk+1 ˜∇(˜xk)
+(16)
+where ˜∇(˜xk) is an algorithm-dependent aggregated stochas-
+tic gradient that approximates the gradient direction, at the
+point ˜xk sent by the master to the workers. Let the message
+sent by worker i to the master be vk
+i , which is a stochas-
+tic gradient ∇F(˜xk, ξk
+i ) if i is regular, while arbitrary if i is
+Byzantine. The benchmark algorithms use different rules to
+calculate the aggregated stochastic gradient.
+GeoMed (Chen, Su, and Xu 2017). The geometric median

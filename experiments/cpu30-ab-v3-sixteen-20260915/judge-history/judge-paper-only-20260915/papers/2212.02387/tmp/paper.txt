@@ -1,0 +1,2716 @@
+
+=== PAGE 1 ===
+arXiv:2212.02387v4  [cs.LG]  14 May 2024
+An Eﬃcient Stochastic Algorithm for Decentralized
+Nonconvex-Strongly-Concave Minimax Optimization
+Lesi Chen 1 Haishan Y e2 Luo Luo 3,∗
+1Institute for Interdisciplinary Information Sciences, Ts inghua Univerisity
+2School of Management, Xi’an Jiaotong University; SGIT AI La b, State Grid Corporation of China
+3School of Data Science, Fudan University; Shanghai Key Labo ratory for Contemporary Applied Mathematics
+Abstract
+This paper studies the stochastic nonconvex-
+strongly-concave minimax optimization over
+a multi-agent network. We propose an ef-
+ﬁcient algorithm, called Decentralized Re-
+cursive gradient descEnt Ascent Method
+(DREAM), which achieves the best-known
+theoretical guarantee for ﬁnding the ǫ-
+stationary points. Concretely, it re-
+quires O(min(κ 3ǫ− 3, κ 2√
+N ǫ− 2)) stochastic
+ﬁrst-order oracle (SFO) calls and ˜O(κ 2ǫ− 2)
+communication rounds, where κ is the con-
+dition number and N is the total number of
+individual functions. Our numerical experi-
+ments also validate the superiority of DREAM
+over previous methods.
+1 Introduction
+This paper studies the decentralized minimax opti-
+mization problem, where m agents in a network col-
+laborate to solve the problem
+min
+x∈ Rdx
+max
+y∈Y
+f (x, y ) ≜ 1
+m
+m∑
+i=1
+fi(x, y ). (1)
+We suppose that f (x, y ) is µ -strongly-concave in y;
+Y ⊆ Rdy is closed and convex; each local function on
+the i-th agent has the following stochastic form
+fi(x, y ) ≜ E[Fi(x, y ; ξi)]; (2)
+and the stochastic component Fi(x, y ; ξi) in-
+dexed by the random variable ξi is L-average
+Proceedings of the 27 th International Conference on Artiﬁ-
+cial Intelligence and Statistics (AISTATS) 2024, Valencia ,
+Spain. PMLR: Volume 238. Copyright 2024 by the au-
+thor(s). ∗ Corresponding Author
+smooth. The nonconvex-strongly-concave min-
+imax problem (1) plays an important role in
+many machine learning applications, such as
+adversarial training (Farnia and Ozdaglar, 2021;
+Nagarajan and Kolter, 2017), distributional robust
+optimization (Jin et al., 2021; Levy et al., 2020;
+Sinha et al., 2018), AUC maximization (Guo et al.,
+2023; Liu et al., 2019; Yuan et al., 2021), reinforce-
+ment learning (Jin and Sidford, 2020; Qiu et al.,
+2020; Wai et al., 2018; Zhang et al., 2019), learn-
+ing with non-decomposable loss (Fan et al., 2017;
+Raﬁque et al., 2021) and so on. Following existing
+non-asymptotic analysis for nonconvex-strongly-
+concave minimax optimization problems (Lin et al.,
+2020a,b; Luo et al., 2020), we focus on the task of
+ﬁnding an ǫ-stationary point of the primal function
+P (x) ≜ maxy∈Y f (x, y ).
+In this paper, we also consider a popular special case
+of problem (1) when each random variable ξi is ﬁnitely
+sampled from {ξi,1, . . . , ξ i,n}. That is, we can write the
+local function as
+fi(x, y ) ≜ 1
+n
+n∑
+j=1
+Fij(x, y ). (3)
+We refer to the general form (2) as the online (stochas-
+tic) case and refer to the special case (3) as the oﬄine
+(ﬁnite-sum) case. We deﬁne N = mn as the total num-
+ber of individual functions for the oﬄine case.
+Nonconvex-strongly-concave minimax optimiza-
+tion has received increasing attentions in recent
+years (Chen et al., 2023; Lin et al., 2020a,b; Luo et al.,
+2020, 2022; Nagarajan and Kolter, 2017; Xu et al.,
+2020; Zhang et al., 2020, 2021a, 2022). In the sce-
+nario of single machine, Lin et al. (2020a) showed
+the Stochastic Gradient Descent Ascent ( SGDA)
+requires O(κ 3ǫ− 4) SFO complexity to ﬁnd an ǫ-
+stationary point of P (x), where the condition number
+is deﬁned by κ ≜ L/µ . Luo et al. (2020) proposed
+the Stochastic Recursive gradiEnt Descent Ascent
+
+=== PAGE 2 ===
+An Eﬃcient Stochastic Algorithm for Decentralized Nonconv ex-Strongly-Concave Minimax Optimization
+(SREDA), which uses the variance reduction technique
+of Stochastic Path Integrated Diﬀerential Estimator
+(SPIDER) (Fang et al., 2018) to establish a SFO
+complexity of O(min(κ 3ǫ− 3, √ nκ 2ǫ− 2)). It is worth
+noting that the O(min(ǫ− 3, √ nǫ− 2)) dependency
+on ǫ and n matches the lower bound of stochastic
+nonconvex optimization under the average-smooth
+assumption (Arjevani et al., 2023; Fang et al., 2018).
+Distributed optimization is a popular setting for
+training large-scale machine learning models. It al-
+lows all agents on a given network to collabora-
+tively optimize the global objective. In the decen-
+tralized scenario, each agent on the network only
+communicates with its neighbors. The decentral-
+ized training fashion avoids the communication traf-
+ﬁc jam on the central node (Lu and De Sa, 2021).
+There have been a lot of works focusing on the
+complexity of decentralized stochastic minimization
+problems (Chen et al., 2021; Hendrikx et al., 2021;
+Kovalev et al., 2020; Li et al., 2020, 2022a,b; Shi et al.,
+2015; Sun et al., 2020; Uribe et al., 2020; Wang et al.,
+2021; Xin et al., 2022; Yuan et al., 2016).
+However, the understanding of the complexity of
+ﬁrst-order methods decentralized nonconvex-strongly-
+concave minimax problems is still limited. For of-
+ﬂine decentralized nonconvex-strongly-concave min-
+imax problems, Tsaknakis et al. (2020) proposed
+the Gradient-Tracking Descent-Ascent ( GT-DA), which
+combines multi-step gradient descent ascent gra-
+dient (Nouiehed et al., 2019) with gradient track-
+ing (Nedic et al., 2017; Qu and Li, 2019). GT-DA
+can provably ﬁnd an ǫ-stationary point of P (x)
+within ˜O(N ǫ− 2) SFO calls and ˜O(ǫ− 2) communication
+rounds. Zhang et al. (2021b) proposed the Gradient-
+Tracking Gradient Descent Ascent ( GT-GDA) which up-
+dates both variable x and y simultaneously. The
+removal of the inner loop with respect to y also
+leads to the removal of the additional O(log(1/ǫ ))
+factor in the complexity, and GT-DA can provably
+ﬁnd an ǫ-stationary point of P (x) within O(N ǫ− 2)
+SFO calls and O(ǫ− 2) communication rounds. How-
+ever, both GT-DA and GT-GDA access the exact lo-
+cal gradients on each agent, which may be quite
+expensive when n is very large. To reduce the
+computation complexity, Zhang et al. (2021b) further
+proposed the Gradient Tracking-Stochastic Recursive
+Variance Reduction ( GT-SRVR) by combining GT-GDA
+with SPIDER (Fang et al., 2018). GT-SRVR requires
+O(N +
+√
+mN ǫ− 2) SFO complexity to ﬁnd an ǫ-
+stationary point of P (x), outperforming GT-DA and
+GT-GDA when n ≳ m. However, for ﬁxed N (total num-
+ber of individual functions), the SFO upper bound of
+GT-SRVR will increase with the increase of m (number
+of agents). This trend seems somewhat unreasonable
+since involving more agents in the computation intu-
+itively should not result in a higher overall computa-
+tional cost.
+For the online case, Xian et al. (2021) introduced
+the variance reduction technique of STOchastic Re-
+cursive Momentum ( STORM) (Cutkosky and Orabona,
+2019) and proposed the Decentralized Minimax Hy-
+brid Stochastic Gradient Descent ( DM-HSGD) with an
+upper complexity bound of O(κ 3ǫ− 3) for both SFO
+calls and communication rounds. For this online case,
+The SFO complexity of DM-HSGD recovers the result
+of SREDA (Luo et al., 2020) in the scenario of single-
+machine (when m = 1). Although the SFO complex-
+ity of DM-HSGD is better than those for GT-GDA and
+GT-SRVR when N has a higher order of magnitude com-
+pared to ǫ− 1, the communication complexity of O(ǫ− 3)
+in DM-HSGD is worse than the communication complex-
+ity of O(ǫ− 2) in GT-GDA and GT-SRVR. This implies
+DM-HSGD may has no advantage when the bottleneck
+is the cost of communication.
+In many applications, the inner variable y in minimax
+problem (1) is often subject to some constraints, mean-
+ing that Y typically represents a given convex set en-
+dowed with a speciﬁc model. For instance, in adver-
+sarial training (Goodfellow et al., 2014), the variable
+y represents perturbations for the input, which typi-
+cally lie within the box Y = {y ∈ Rdy : ∥y∥∞ ≤ c} for
+some positive constant c. In distributionally robust
+optimization (Yan et al., 2019), the variable y repre-
+sents the probability distribution in the simplex Y =
+{y ∈ Rdy : ∑
+k yk = 1 , y k ≥ 0}. Dealing with
+the constraint on variable y typically requires addi-
+tional steps like projection, which lead to extra con-
+sensus error in the decentralized setting. However,
+existing variance-reduced methods for decentralized
+nonconvex-strongly-concave minimax problems includ-
+ing GT-SRVR and DM-HSGD only successfully deal with
+the unconstrained case.
+In this paper, we propose a novel method called De-
+centralized Recursive-gradient dEscent Ascent Method
+(DREAM) for solving decentralized nonconvex-strongly-
+concave minimax problems. We provide a uniﬁed con-
+vergence analysis for both the online and oﬄine se-
+tups. Our analysis indicates that the proposed DREAM
+achieves the best-known complexity guarantee of both
+cases. We summarize the advantage of DREAM as fol-
+lows.
+• For the oﬄine case, DREAM achieves the SFO com-
+plexity of O(N +
+√
+N κ2ǫ− 2) and the communi-
+cation complexity of ˜O(κ 2ǫ− 2). The SFO com-
+plexity of DREAM is strictly better than existing
+methods, and achieves a linear speed-up with re-
+spect to the number of agents m, which is better
+than GT-SRVR. The communication complexity of
+
+=== PAGE 3 ===
+Lesi Chen 1, Haishan Ye 2, Luo Luo 3,∗
+DREAM remains state-of-the-art, matching those of
+GT-DA/GT-GDA/GT-SRVR in the dependency of ǫ, up
+to logarithmic factors.
+• For the online case, DREAM achieves the O(κ 3ǫ− 3)
+SFO complexity and the ˜O(κ 2ǫ− 2) communica-
+tion complexity. The SFO complexity of DREAM
+is optimal in the dependency of ǫ (Arjevani et al.,
+2023). And the communication complexity of
+DREAM strictly improves that of DM-HSGD in the de-
+pendency of both κ and ǫ.
+• Moreover, DREAM is capable of working in both un-
+constrained and constrained scenarios, which gives
+it a wider range of applicability than previous
+variance-reduced methods GT-SRVR and DM-HSGD.
+We compare our theoretical results with previous work
+in Table 1.
+Notations. Throughout this paper, we denote ∥ · ∥
+as the Frobenius norm of a matrix or the Euclidean
+norm of a vector. We use Im ∈ Rm× m to present a
+m by m identity matrix, Om ∈ Rm× m to present a m
+by m zero matrix, and let 1 = [1 , · · ·, 1]⊤ ∈ Rm. We
+deﬁne aggregated variables x ∈ Rm× dx, y ∈ Rm× dy
+and z ∈ Rm× (dx+dy) for all agents as
+x =
+
+
+
+x(1)
+.
+.
+.
+x(m)
+
+
+ , y =
+
+
+
+y(1)
+.
+.
+.
+y(m)
+
+
+ and z =
+
+
+
+z(1)
+.
+.
+.
+z(m)
+
+
+ ,
+where row vectors x(i) ∈ Rdx and y(i) ∈ Rdy are lo-
+cal variables on the i-th agent; and we also denote
+z(i) = [ x(i); y(i)] ∈ Rd with d = dx + dy. We use the
+lowercase with the bar to represent mean vector, e.g.,
+¯x = 1
+m
+m∑
+i=1
+x(i), ¯y = 1
+m
+m∑
+i=1
+y(i) and ¯z = 1
+m
+m∑
+i=1
+z(i).
+Similarly, we also introduce the aggregated gradient as
+∇ f (z) =
+
+
+
+∇ f1(x(1), y(1))⊤
+.
+.
+.
+∇ fm(x(m), y(m))⊤
+
+
+ ∈ Rm× d.
+We use I[ ·] to represent the indicator function of an
+event and deﬁne n = +∞ for the online case.
+2 Assumptions and Preliminaries
+Throughout this paper, we suppose the stochastic NC-
+SC decentralized optimization problem (1) satisﬁes the
+following standard assumptions.
+Assumption 2.1. We suppose P (x) ≜
+maxy∈Y f (x, y ) is lower bounded. That is, we
+have
+P ∗ = inf
+x∈ Rdx
+P (x) > −∞ .
+Algorithm 1 FastMix(a(0), K )
+1: Initialize: a (− 1) = a(0)
+2: ηa = 1/
+(
+1 +
+√
+1 − λ 2
+2(W )
+)
+3: for k = 0, 1, . . . , K do
+4: a(k+1) = (1 + ηa)W a(k) − ηaa(k− 1)
+5: end for
+6: Output: a (K)Assumption 2.2. We suppose the stochastic compo-
+nent functions F (x, y ; ξi) on each agent is L-average
+smooth for some L > 0. That is, we have
+E ∥∇ Fi(x, y ; ξi) − ∇ Fi(x′, y ′; ξi)∥2
+≤ L2(
+∥x − x′∥2 + ∥y − y′∥2 )
+for any (x, y ), (x′, y ′) ∈ Rdx× dy and random index ξi.
+Assumption 2.3. We suppose each local function
+fi(x, y ) is µ -strongly-concave in y. That is, there exists
+some constant µ > 0 such that we have
+fi(x, y ) ≤ fi(x, y ′) + ∇ yfi(x, y ′)⊤ (y − y′) − µ
+2 ∥y − y′∥2
+for any x ∈ Rdx and y, y ′ ∈ Rdy .
+Based on the smoothness and strong concavity assump-
+tions, we can deﬁne the condition number of our opti-
+mization problem as follows.
+Deﬁnition 2.1. We deﬁne κ ≜ L/µ as the condition
+number of problem (1), where L and µ are deﬁned in
+Assumption 2.2 and 2.3 respectively.
+The diﬀerentiability of the primal function P (x) can
+be proved by Danskin’s theorem (Lin et al., 2020a,
+Lemma 4.3).
+Proposition 2.1. Under Assumptions 2.2 and 2.3,
+the function P (x) is LP -smooth with LP ≜
+(κ + 1) L and its gradient can be written as
+∇ P (x) = ∇ xf (x, y ∗ (x)), where we deﬁne y∗ (x) ≜
+arg maxy∈Y f (x, y ).
+The diﬀerentiability of P (x) allows us to deﬁne the
+ǫ-stationary point.
+Deﬁnition 2.2. We call ˆx an ǫ-stationary point if it
+holds that ∥∇ P (ˆx)∥ ≤ ǫ.
+The goal of algorithms is to ﬁnd an ǫ stationary point
+of P (x). In the setting of stochastic optimization, we
+suppose an algorithm can get access to the stochastic
+ﬁrst-order oracle that satisﬁes the following assump-
+tions. Note that the bounded variance assumption is
+only required for the online case.
+Assumption 2.4. We suppose each stochastic ﬁrst-
+order oracle (SFO) ∇ Fi(x, y ; ξi) is unbiased and has
+
+=== PAGE 4 ===
+An Eﬃcient Stochastic Algorithm for Decentralized Nonconv ex-Strongly-Concave Minimax Optimization
+Table 1: We compare the theoretical results of DREAM with previous methods for decentralized nonconvex-strongly-
+concave minimax optimization for both the oﬄine and online settings. N otations κ p and κ q are used when the
+polynomial dependency on κ is not explicitly provided (Tsaknakis et al., 2020; Zhang et al., 2021b) . The nota-
+tion ˜O( ·) hides logarithmic factors in complexity. Note that GT-GDA and GT-SRVR only consider the unconstrained
+problem, which corresponds to the speciﬁc case in our setting wher e Y = Rdy . The design of DM-HSGD includes
+the general constrained setting, but its convergence analysis fo r the constrained case looks problematic and we
+provide more detailed discussions in Appendix B.
+Setup Algorithm #SFO #Communication Constraint
+GT-DA
+Tsaknakis et al. (2020)
+˜O
+(
+N κpǫ− 2) ˜O
+(
+κ qǫ− 2)
+✓
+GT-GDA
+Zhang et al. (2021b) O
+(
+N κpǫ− 2)
+O
+(
+κ qǫ− 2)
+✗
+Oﬄine
+GT-SRVR
+Zhang et al. (2021b) O
+(
+N +
+√
+mN κpǫ− 2
+)
+O
+(
+κ qǫ− 2)
+✗
+DREAM (Ours)
+Theorem 3.1 O(N +
+√
+N κ2ǫ− 2) ˜O
+(
+κ 2ǫ− 2)
+✓
+DM-HSGD
+Xian et al. (2021) O
+(
+κ 3ǫ− 3)
+O
+(
+κ 3ǫ− 3)
+✗
+Online
+DREAM (Ours)
+Theorem 3.1 O(κ 3ǫ− 3) ˜O
+(
+κ 2ǫ− 2)
+✓
+bounded variance. That is, we have
+E[∇ Fi(x, y ; ξi)] = ∇ fi(x, y )
+and
+E ∥∇ fi(x, y ) − ∇ Fi(x, y ; ξi)∥2 ≤ σ 2
+with σ 2 < +∞ .
+The mixing matrix tells us how the agents in the net-
+work communicate with their neighbors. We assume it
+satisﬁes the following assumption (Song et al., 2023).
+Assumption 2.5. We suppose the matrix W ∈ Rm× m
+have the following properties:
+a. supported on the network: Wi,j ≥ 0 if and only if
+i and j are connected in the network.
+b. irreducible: W cannot be conjugated into block up-
+per triangular form by a permutation matrix.
+c. symmetric: W = W ⊤ .
+d. doubly stochastic: W 1 = W ⊤ 1 = 1.
+e. positive semideﬁnite: W ⪰ Om.
+Note that if a matrix W satisﬁes Assumption 2.5 a-d,
+we can let Assumption 2.5e be automatically satisﬁed
+by choosing ( W + Im)/ 2 to be the new mixing matrix.
+By the Perron–Frobenius theorem, the eigenvalues of
+W can be sorted by
+0 ≤ λ m(W ) ≤ · · · ≤ λ 2(W ) < λ 1(W ) = 1 .
+We then deﬁne the spectral gap of W as follows.
+Deﬁnition 2.3. For a matrix W that satisﬁes As-
+sumption 2.5, we deﬁne the spectral gap as δ ≜ 1 −
+λ 2(W ).
+It is well known that the spectral gap of W is related
+to the mixing rate on the network.
+Proposition 2.2 (Koloskova et al. (2019, Lemma
+16)). Given a matrix W that satisﬁes Assumption 2.5,
+for any vector a ∈ Rm× d, for the standard mixing it-
+erate given by a(k+1) = W a(k), we have
+∥W a − 1¯a∥ ≤ (1 − δ)K ∥a − 1¯a∥,
+where ∥ · ∥is the Frobenius norm.
+This simple mixing strategy is adopted by previous
+works including Tsaknakis et al. (2020); Xian et al.
+(2021); Zhang et al. (2021b), but it would lead to an
+unavoidable communication complexity dependency of
+at least O(1/δ ), which is suboptimal in the dependency
+of δ. To accelerate the mixing rate, we introduce the
+FastMix sub-procedure (Liu and Morse, 2011), which
+can lead to the optimal O(1/
+√
+δ ) dependency.
+
+=== PAGE 5 ===
+Lesi Chen 1, Haishan Ye 2, Luo Luo 3,∗
+Proposition 2.3 (Ye et al. (2020a, Proposition 1)) .
+Given a matrix W that satisﬁes Assumption 2.5, run-
+ning Algorithm 1 ensures 1
+m 1⊤ a(K) = ¯a(0) and
+
+a(K) − 1¯a(0)
+ ≤ c1
+(
+1 − c2
+√
+δ
+) K
+a(0) − 1¯a(0)
+,
+where ¯a(0) = 1
+m 1⊤ a(0), ∥ · ∥ is the Frobenius norm,
+c1 =
+√
+14 and c2 = 1 − 1/
+√
+2.
+To tackle the possible constraint in y, we deﬁne
+the projection and the constrained reduced gradient
+(Nesterov, 2018).
+Deﬁnition 2.4. We deﬁne
+Π(y) ≜ arg min
+y′∈Y
+∥y′ − y∥2 and Π(y) ≜ arg min
+y′(i)∈Y
+∥y′ − y∥2
+for y ∈ Rdy and y ∈ Rm× dy respectively.
+Deﬁnition 2.5. We also deﬁne the constrained re-
+duced gradient of f at (x, y ) with respect to y as
+Gη(x, y ) = Π( y + η∇ yf (x, y )) − y
+η
+with some 0 < η ≤ 1/L .
+3 The Proposed Algorithm
+In this section, we propose a novel stochastic algorithm
+named Decentralized Recursive-gradient dEscent As-
+cent Method ( DREAM) for decentralized nonconvex-
+strongly-concave minimax problems. We provide a uni-
+ﬁed framework for analyzing our DREAM for both online
+and oﬄine cases. It shows the algorithm can ﬁnd an ǫ-
+stationary point of P (x) within at most O(κ 3ǫ− 3) and
+O(N +
+√
+N κ2ǫ− 2) SFO calls for the online and oﬄine
+setting respectively; and both of two settings require
+at most O(κ 2ǫ− 2 log m/
+√
+δ) communication rounds.
+3.1 Method Overview
+DREAM constructs stochastic recursive gradients gt(i)
+(Fang et al., 2018; Li et al., 2021; Luo et al., 2020;
+Nguyen et al., 2017) to estimate the local gradients,
+i.e. gt(i) ≈ ∇ fi(zt(i)). This step (Line 22 in Al-
+gorithm 2) reduces the variance of stochastic gradi-
+ent estimators on each agent, leading to the opti-
+mal O(ǫ− 3) dependency in the SFO upper complex-
+ity bound. DREAM then applies the gradient tracking
+technique (Di Lorenzo and Scutari, 2016; Qu and Li,
+2019) to track the average gradient over the network
+via the gradient tracker st(i), i.e. st(i) ≈ ∇ f (zt(i)).
+The gradient tracker st(i) is also updated in a recur-
+sive way (Line 24 in Algorithm 2). This step is com-
+monly used to achieve convergence when the data dis-
+tribution on each agent does not satisfy the i.i.d as-
+sumption in decentralized optimization (Nedic et al.,
+2017; Song et al., 2023). With the gradient tracker,
+DREAM applies the two-timescale gradient descent as-
+cent (Lin et al., 2020a) to solve the maximization of
+y and minimization of x simultaneously (Line 13-
+14 in Algorithm 2). The random variable ζt ∼
+Bernoulli(p) (Line 12 in Algorithm 2) decides the batch
+size and the number of consensus steps in the iter-
+ation. By appropriately choosing the probability p,
+batch sizes b, b ′, and consensus steps K, K ′, DREAM
+achieves the best-known computation complexity and
+communication complexity trade-oﬀ in decentralized
+nonconvex-strongly-concave minimax optimization.
+3.2 A Novel Lyapunov F unction
+Diﬀerent from previous works (Luo et al., 2020;
+Xian et al., 2021; Zhang et al., 2021b), we propose a
+novel Lyapunov function as follows:
+Φ t ≜ Ψ t + 1
+mη Ct + η
+mp Vt + η
+p Ut, where
+Ψ t = P (¯xt) − P ∗ + α (P (¯xt) − f (¯xt, ¯yt)),
+Ct = ∥zt − 1¯zt∥2 + η2∥st − 1¯st∥2
+Vt = 1
+m ∥gt − ∇ f (zt)∥2 and
+Ut =
+
+
+
+
+
+1
+m
+m∑
+i=1
+(gt(i) − ∇ fi(zt(i)))
+
+
+
+
+
+2
+.
+(4)
+We set α ∈ (0, 1] in later analysis. Below, we illus-
+trate the meaning of each quantity in the Lyapunov
+function.
+• Ψ t measures the optimization error. The
+gradient descent ascent step ensures that Ψ t
+can decrease monotonically at each iteration
+(Chen et al., 2022; Yang et al., 2020).
+• Ct measures the consensus error, which can be
+bounded by the properties of gradient tracking
+and consensus steps (Song et al., 2023).
+• Vt and Ut measure the variance of gt, which
+can be bounded by the property of martin-
+gale (Fang et al., 2018; Luo et al., 2020). We
+provide a detailed discussion for the roles of Vt
+and Ut after Lemma 3.3 and 3.4.
+We can show that Ct, Vt, and Ut are suﬃciently small
+during the iterations, which allows us to analyze DREAM
+by analogizing gradient descent ascent on the mean
+variables ¯xt and ¯yt with some small noise.
+Remark 3.1. Our Lyapunov function Φ t charac-
+terizes the sub-optimality of the maximization prob-
+lem maxy∈Y f (¯xt, y ) by P (¯xt) − f (¯xt, ¯yt), which is
+easy to be analyzed for stochastic variance reduced
+
+=== PAGE 6 ===
+An Eﬃcient Stochastic Algorithm for Decentralized Nonconv ex-Strongly-Concave Minimax Optimization
+Algorithm 2 Decentralized Recursive-gradient dEscent Ascent Method ( DREAM)
+1: Notations: Let zt = [xt, yt] ∈ Rm× d and st = [ut, vt] ∈ Rm× d.
+2: Input: initial parameter ¯z0 ∈ Rd, stepsize η > 0, stepsize ratio γ ∈ (0, 1], probability p ∈ (0, 1], small mini-batch size
+b, large mini-batch size b′ (we set b′ = n for the oﬄine case), initial communication rounds K0, small communication
+rounds K, large communication rounds K ′.
+3: z0 = 1¯z0
+4: parallel for i = 1, . . . , m do
+5: Sample S0(i) =
+
+
+
+{ξi,1, . . . , ξi,b′} i.i.d., online case;
+{ξi,1, . . . , ξi,n}, oﬄine case;
+6: g0(i) = 1
+b′
+∑
+ξi,j ∈S 0(i)
+∇ Fi(z0(i); ξi,j )
+7: end parallel for
+8: s0 = FastMix(g0, K0)
+9: for t = 0, . . . , T − 1 do
+10: Sample ζt ∼ Bernoulli(p)
+11: xt+1 = FastMix
+(
+xt − γηut, K
+)
+12: yt+1 = FastMix
+(
+Π(yt + ηvt), K
+)
+13: parallel for i = 1, . . . , m do
+14: if ζt = 1 do
+15: Sample S ′
+t(i) =
+
+
+
+{ξi,1, . . . , ξi,b′} i.i.d., online case;
+{ξi,1, . . . , ξi,n}, oﬄine case;
+16: gt+1(i) = 1
+b′
+∑
+ξi,j ∈S ′
+t(i)
+∇ Fi(zt+1(i); ξi,j)
+17: else
+18: Sample ωt(i) ∼ Bernoulli(q)
+19: Sample St(i) = {ξi,1, . . . , ξi,b} i.i.d.
+20: gt+1(i) = gt(i) + ωt(i)
+bq
+∑
+ξi,j ∈S t(i)
+(
+∇ Fi(zt+1(i); ξi,j) − ∇ Fi(zt(i); ξi,j )
+)
+21: end if
+22: end parallel for
+23: st+1 =
+
+
+
+FastMix
+(
+st + gt+1 − gt, K′)
+, if ζt = 1;
+FastMix
+(
+st + gt+1 − gt, K
+)
+, if ζt = 0;
+24: end for
+25: Output: xout by uniformly sampling from {x0(1), x0(2), · · ·, xT − 1(m)}
+
+=== PAGE 7 ===
+Lesi Chen 1, Haishan Ye 2, Luo Luo 3,∗
+algorithm in the decentralized setting. In contrast,
+Xian et al. (2021) and Zhang et al. (2021b) measure
+the sub-optimality by ∥¯yt − y∗ (¯xt)∥2, which leads to
+their analysis be more complicated than ours.
+3.3 Convergence Analysis
+Our analysis starts from the following descent lemma.
+Lemma 3.1. For Algorithm 2, we set the parameters
+by η ≤ 1/ (4L) and
+γ = α
+(1 + α )128κ 2 . (5)
+Then for any α > 0 it holds that
+E[Ψ t+1] ≤ Ψ t − γη
+2 ∥∇ P (¯xt)∥2 − 1
+8γη E∥¯xt+1 − ¯xt∥2
+− α
+16η E∥¯zt+1 − ¯zt∥2 + 6αηU t + 3α
+mη Ct.
+If both Ct and Ut are suﬃciently small, the above
+lemma indicates that the optimization error decreases
+by roughly ( γη/ 2)∥∇ P (¯xt)∥2 at each step in expecta-
+tion and the remaining proof can follow the gradient
+descent (Bubeck, 2015; Nesterov, 2018) on the primal
+function P (x).
+Recall Proposition 2.3. We further deﬁne the discount
+factors of consensus error that arises from mixing steps
+(Line 10, 13, 14 and 24 in Algorithm 2) as:
+ρ0 = c1
+(
+1 − c2
+√
+δ
+) K0
+,
+ρ′ = c1
+(
+1 − c2
+√
+δ
+) K ′
+,
+ρ = c1
+(
+1 − c2
+√
+δ
+) K
+.
+(6)
+Then we can bound the consensus error as follows.
+Lemma 3.2. For Algorithm 2, let ρ2 ≤ 1/ 24. Then
+E[Ct+1] ≤ 12cρ2Ct + 6ρ′2η2mVt + 2cρ2mE∥¯zt+1 − ¯zt∥2
++ 6ρ′2mη2σ 2
+b′ I[b′ < n],
+where we deﬁne c = max{1/ (bq), 1}.
+Remark 3.2. For convenience, we deﬁne n = +∞ for
+the online case and b′ = n for the oﬄine case. Then
+I[b′ < n] =
+{
+1, for online case ,
+0, for oﬄine case .
+This notation allows us to present the analysis for both
+cases in one uniﬁed framework.
+Lemma 3.1 and 3.2 mean the decrease of the optimiza-
+tion error Ψ t and consensus error Ct requires the rea-
+sonable upper bounds of Vt and Ut, which can be char-
+acterized by the following recursions.
+Lemma 3.3. For Algorithm 2, we have
+E[Vt+1] ≤ (1 − p)Vt + 4(1 − p)L2
+mbq Ct
++ pσ 2
+b′ I[b′ < n] + 3(1 − p)L2
+bq E∥¯zt+1 − ¯zt∥2.
+Lemma 3.4. For Algorithm 2, we have
+E[Ut+1] ≤ (1 − p)Ut + 4(1 − p)L2
+m2bq Ct
++ pσ 2
+mb′I[b′ < n] + 3(1 − p)L2
+mbq E∥¯zt+1 − ¯zt∥2.
+Note that for any vector sequence a1, · · ·, a m we al-
+ways have ∥ ∑m
+i=1 ai∥2 ≤ m ∑m
+i=1 ∥ai∥2, which directly
+implies Ut ≤ Vt. Therefore one can use the quantity
+Vt only in the analysis as Zhang et al. (2021b), but the
+separation of Ut and Vt makes our bound tighter. As
+a consequence, we show a linear speed-up in the SFO
+complexity with respect to the number of agents m
+which was not shown by Zhang et al. (2021b).
+Putting Lemma 3.1, 3.2 and 3.3 together, we can prove
+the main result for DREAM as follows.
+Theorem 3.1. For Algorithm 2 , we set parameters
+η = 1
+48L , b =
+⌈√
+b′
+m
+⌉
+, q = 1
+b
+√
+b′
+m , p = bq
+bq + b′
+T =
+⌈16Ψ 0
+γηǫ2 + 2
+p
+⌉
+, K 0 =
+⌈
+log
+(
+16c1/ (γmǫ2)
+)
+c2
+√
+δ
+⌉
+,
+K =
+⌈5 log(c1(m/b ′ + 1))
+c2
+√
+δ
+⌉
+, K ′ =
+⌈5 log(c1m)
+c2
+√
+δ
+⌉
+,
+(7)
+where c1, c 2 are deﬁned in Proposition 2.3, γ = Θ( κ − 2)
+follows (5), α = 1/ 8 and
+b′ =
+{⌈
+32σ 2/ (γmǫ2)
+⌉
+, for online case ,
+n, for oﬄine case . (8)
+Then the output satisﬁes E∥∇ P (xout)∥ ≤ ǫ within the
+overall SFO complexity
+{
+O
+(
+κ 2σ 2ǫ− 2 + κ 3Lσǫ− 3)
+, for online case ;
+O
+(
+mn + √ mnκ2Lǫ− 2)
+, for oﬄine case ;
+and communication complexity
+O((κ 2Lǫ− 2 log m)/
+√
+δ ).
+This theorem shows that DREAM achieves the best-
+known complexity guarantee both in computation and
+communication, either for online or oﬄine cases.
+
+=== PAGE 8 ===
+An Eﬃcient Stochastic Algorithm for Decentralized Nonconv ex-Strongly-Concave Minimax Optimization
+0.0 0.5 1.0 1.5 2.0 2.5
+#SFO 1e6
+2.7
+2.8
+2.9
+3.0P( ̄x)
+1e−4
+GT-DA
+GT-GDA
+DM-HSGD
+GT-SRVR
+DREAM
+0.0 0.5 1.0 1.5 2.0 2.5
+#S  
+1 6
+2.22
+2.24
+2.26
+2.28
+2.30P(
+x)
+1
+
+−3
+GT-DA
+GT-GDA
+DM-HSGD
+GT-SRVR
+DREAM
+0 1 2 3
+#S 
+1 6
+8.6
+8.8
+9.0
+9.2
+9.4P( ̄x)
+1
+
+−5
+GT-DA
+GT-GDA
+DM-HSGD
+GT-SRVR
+DREAM
+(a) a9a (b) w8a (c) ijcnn1
+Figure 1: Comparison on the number of SFO calls against P (¯x) ≜ maxy∈ ∆N f (¯x, y ).
+0.0 0.5 1.0 1.5
+# ommun 	 
+ t on 1
+
+4
+2.
+2.8
+2.9
+3.0P( ̄x)
+1
+
+−4
+GT-DA
+GT-GDA
+DM-HSGD
+GT-SRVR
+DREAM
+0.0 0.5 1.0 1.5
+#Commun   t on 1
+
+4
+2.22
+2.24
+2.26
+2.28
+2.30P( ̄x)
+1
+
+−3
+GT-DA
+GT-GDA
+DM-HSGD
+GT-SRVR
+DREAM
+0.0 0.5 1.0 1.5
+#Commun   t on 1
+
+4
+8.6
+8.8
+9.0
+9.2
+9.4P( ̄x)
+1
+
+−5
+GT-DA
+GT-GDA
+DM-HSGD
+GT-SRVR
+DREAM
+(a) a9a (b) w8a (c) ijcnn1
+Figure 2: Comparison on the number of communication rounds agains t P (¯x) ≜ maxy∈ ∆N f (¯x, y ).
+4 Experiments
+We conduct numerical experiments on the model of
+robust logistic regression (Luo et al., 2020; Yan et al.,
+2019). The source codes are available 1. It consid-
+ers training the binary classiﬁer x ∈ Rd on dataset
+{(ak, b k)}N
+k=1, where ak ∈ Rd is the feature of the
+k-th sample and bk ∈ { 1, − 1} is the corresponding
+label. The total N samples are equally distributed
+on m agents, with n = N/m samples on each agent.
+The decentralized minimax optimization problem of
+this model corresponds to formulation (1) with local
+functions
+fi(x) ≜ 1
+n
+n∑
+i=1
+(
+yijlij(x) − V (y) + g(x)
+)
+,
+where lij(x) = log(1 + exp( bija⊤
+ijx)),
+V (y) = 1
+2N 2 ∥N y − 1∥2, g (x) = θ
+d∑
+k=1
+νx 2
+k
+1 + νx 2
+k
+, θ = 10 − 5,
+ν = 10 and ∆ N =
+{
+y ∈ RN : yk ∈ [0, 1],
+N∑
+k=1
+yk = 1
+}
+.
+We set mixing matrix W as the π -lazy random walk
+matrix on a ring graph with 8 nodes ( m = 8) and
+1https://github.com/TrueNobility303/DREAM
+let τ = 0 . 999, which leads to a low consensus rate
+since λ 2(W ) = τ + (1 − τ) cos (2π (m − 1)/m ).
+We compare the performance of our proposed
+method DREAM with DM-HSGD (Xian et al., 2021),
+GT-DA (Tsaknakis et al., 2020), GT-GDA and GT-SRVR
+(Zhang et al., 2021b) on datasets “a9a”, “w8a” and
+“ijcnn1” (Chang and Lin, 2011). All of the algorithms
+are implemented by MPI to simulate the distributed
+training scenario.
+For DREAM, we tune b, b ′ from {64, 128, 256, 512},
+tune p, q from {0. 2, 0. 5, 0. 9} and tune K0, K, K ′ from
+{2, 5, 10}. For DM-HSGD , we set momentum parame-
+ter β = 0. 01 by following Xian et al. (2021), and tune
+b, b 0 from {64, 128, 256, 512}. For GT-SRVR, we let the
+epoch length Q = ⌈√
+n ⌉ as suggested by the authors.
+For GT-DA, we let the number of inner loops R = 4
+by following Tsaknakis et al. (2020). For each algo-
+rithm, we tune η and γ from {1, 0. 1, 0. 01, 0. 001} and
+{0. 1, 0. 01, 0. 001, 0. 0001} respectively.
+We present the empirical results for the comparisons of
+computation complexity and communication complex-
+ity in Figure 1 and 2. It is shown that the proposed
+DREAM performs apparently better than baselines.
+
+=== PAGE 9 ===
+Lesi Chen 1, Haishan Ye 2, Luo Luo 3,∗
+5 Conclusion and Future Work
+In this paper, we have proposed an eﬃcient algorithm
+DREAM for decentralized stochastic nonconvex-strongly-
+concave minimax optimization. The theoretical anal-
+ysis showed DREAM achieves the best-known SFO com-
+plexity of O(min(κ 3ǫ− 3, κ 2√
+N ǫ− 2)) and communica-
+tion complexity of ˜O(κ 2ǫ− 2). The numerical experi-
+ments on robust logistic regression show the empirical
+performance of DREAM is obviously better than state-of-
+the-art methods. We discuss possible future directions
+and some subsequent works in Appendix H.
+Acknowledgements
+Luo has been supported by National Natural Science
+Foundation of China (No. 62206058), Shanghai Sail-
+ing Program (22YF1402900), and Shanghai Basic Re-
+search Program (23JC1401000). Ye has been sup-
+ported by the National Natural Science Foundation
+of China (No. 12101491).
+References
+Yossi Arjevani, Yair Carmon, John C. Duchi, Dylan J.
+Foster, Nathan Srebro, and Blake Woodworth. Lower
+bounds for non-convex stochastic optimization. Math-
+ematical Programming, 199(1-2):165–214, 2023.
+S´ ebastien Bubeck. Convex optimization: Algorithms
+and complexity. Foundations and Trends ® in Ma-
+chine Learning, 8(3-4):231–357, 2015.
+Chih-Chung Chang and Chih-Jen Lin. LIB-
+SVM: A library for support vector ma-
+chines. ACM transactions on intelligent sys-
+tems and technology , 2(3):1–27, 2011. URL
+https://www.csie.ntu.edu.tw/~cjlin/libsvm/.
+Congliang Chen, Jiawei Zhang, Li Shen, Peilin Zhao,
+and Zhiquan Luo. Communication eﬃcient primal-
+dual algorithm for nonconvex nonsmooth distributed
+optimization. In AISTATS, 2021.
+Lesi Chen, Boyuan Yao, and Luo Luo. Faster
+stochastic algorithms for minimax optimization un-
+der Polyak-/suppress Lojasiewicz condition. InNeurIPS, 2022.
+Ziyi Chen, Zhengyang Hu, Qunwei Li, Zhe Wang, and
+Yi Zhou. A cubic regularization approach for ﬁnding
+local minimax points in nonconvex minimax optimiza-
+tion. Transactions on Machine Learning Research ,
+2023. ISSN 2835-8856.
+Ashok Cutkosky and Francesco Orabona.
+Momentum-based variance reduction in non-convex
+SGD. In NeurIPS, 2019.
+Paolo Di Lorenzo and Gesualdo Scutari. NEXT: In-
+network nonconvex optimization. IEEE Transactions
+on Signal and Information Processing over Networks ,
+2(2):120–136, 2016.
+Jelena Diakonikolas, Constantinos Daskalakis, and
+Michael I. Jordan. Eﬃcient methods for structured
+nonconvex-nonconcave min-max optimization. In
+AISTATS, 2021.
+Yanbo Fan, Siwei Lyu, Yiming Ying, and Baogang
+Hu. Learning with average top- k loss. In NeurIPS,
+2017.
+Cong Fang, Chris Junchi Li, Zhouchen Lin, and Tong
+Zhang. SPIDER: Near-optimal non-convex optimiza-
+tion via stochastic path-integrated diﬀerential estima-
+tor. In NeurIPS, 2018.
+Farzan Farnia and Asuman Ozdaglar. Train simulta-
+neously, generalize better: Stability of gradient-based
+minimax learners. In ICML, 2021.
+Ian J. Goodfellow, Jonathon Shlens, and Christian
+Szegedy. Explaining and harnessing adversarial ex-
+amples. arXiv preprint arXiv:1412.6572 , 2014.
+Zhishuai Guo, Yan Yan, Zhuoning Yuan, and Tian-
+bao Yang. Fast objective & duality gap convergence
+for non-convex strongly-concave min-max problems
+with PL condition. Journal of Machine Learning Re-
+search, 24(148):1–63, 2023.
+Hadrien Hendrikx, Francis Bach, and Laurent Mas-
+soulie. An optimal algorithm for decentralized ﬁnite-
+sum optimization. SIAM Journal on Optimization ,
+31(4):2753–2783, 2021.
+Feihu Huang and Songcan Chen. Near-optimal decen-
+tralized momentum method for nonconvex-PL min-
+imax problems. arXiv preprint arXiv:2304.10902 ,
+2023.
+Chi Jin, Praneeth Netrapalli, and Michael I. Jordan.
+What is local optimality in nonconvex-nonconcave
+minimax optimization? In ICML, 2020.
+Jikai Jin, Bohang Zhang, Haiyang Wang, and Liwei
+Wang. Non-convex distributionally robust optimiza-
+tion: Non-asymptotic analysis. In NeurIPS, 2021.
+Yujia Jin and Aaron Sidford. Eﬃciently solving mdps
+with stochastic mirror descent. In ICML, 2020.
+Anastasia Koloskova, Sebastian Stich, and Martin
+Jaggi. Decentralized stochastic optimization and gos-
+sip algorithms with compressed communication. In
+ICML, 2019.
+
+=== PAGE 10 ===
+An Eﬃcient Stochastic Algorithm for Decentralized Nonconv ex-Strongly-Concave Minimax Optimization
+Dmitry Kovalev, Adil Salim, and Peter Richt´ arik.
+Optimal and practical algorithms for smooth and
+strongly convex decentralized optimization. In
+NeurIPS, 2020.
+Daniel Levy, Yair Carmon, John C. Duchi, and Aaron
+Sidford. Large-scale methods for distributionally ro-
+bust optimization. In NeurIPS, 2020.
+Boyue Li, Shicong Cen, Yuxin Chen, and Yuejie Chi.
+Communication-eﬃcient distributed optimization in
+networks with gradient tracking and variance reduc-
+tion. Journal of Machine Learning Research , 21(80):
+1–51, 2020.
+Boyue Li, Zhize Li, and Yuejie Chi. DE-
+STRESS: Computation-optimal and communication-
+eﬃcient decentralized nonconvex ﬁnite-sum optimiza-
+tion. SIAM Journal on Mathematics of Data Science ,
+4(3):1031–1051, 2022a.
+Huan Li, Zhouchen Lin, and Yongchun Fang. Vari-
+ance reduced extra and diging and their optimal ac-
+celeration for strongly convex decentralized optimiza-
+tion. Journal of Machine Learning Research , 23(222):
+1–41, 2022b.
+Jiajin Li, Linglingzhi Zhu, and Anthony Man-Cho
+So. Nonsmooth composite nonconvex-concave mini-
+max optimization. arXiv preprint arXiv:2209.10825 ,
+2022c.
+Zhize Li, Hongyan Bao, Xiangliang Zhang, and Peter
+Richt´ arik. PAGE: A simple and optimal probabilistic
+gradient estimator for nonconvex optimization. In
+ICML, 2021.
+Tianyi Lin, Chi Jin, and Michael I. Jordan. On gra-
+dient descent ascent for nonconvex-concave minimax
+problems. In ICML, 2020a.
+Tianyi Lin, Chi Jin, and Michael I. Jordan. Near-
+optimal algorithms for minimax optimization. In
+COLT, 2020b.
+Ji Liu and A. Stephen Morse. Accelerated linear iter-
+ations for distributed averaging. Annual Reviews in
+Control, 35(2):160–165, 2011.
+Mingrui Liu, Zhuoning Yuan, Yiming Ying, and Tian-
+bao Yang. Stochastic AUC maximization with deep
+neural networks. arXiv preprint arXiv:1908.10831 ,
+2019.
+Yucheng Lu and Christopher De Sa. Optimal com-
+plexity in decentralized training. In ICML, 2021.
+Luo Luo, Haishan Ye, Zhichao Huang, and Tong
+Zhang. Stochastic recursive gradient descent ascent
+for stochastic nonconvex-strongly-concave minimax
+problems. In NeurIPS, 2020.
+Luo Luo, Li Yujun, and Cheng Chen. Finding
+second-order stationary points in nonconvex-strongly-
+concave minimax optimization. In NeurIPS, 2022.
+Gabriel Mancino-Ball and Yangyang Xu. Variance-
+reduced accelerated methods for decentralized
+stochastic double-regularized nonconvex strongly-
+concave minimax problems. arXiv preprint
+arXiv:2307.07113, 2023.
+Vaishnavh Nagarajan and J. Zico Kolter. Gradient
+descent GAN optimization is locally stable. NIPS,
+2017.
+Angelia Nedic, Alex Olshevsky, and Wei Shi. Achiev-
+ing geometric convergence for distributed optimiza-
+tion over time-varying graphs. SIAM Journal on Op-
+timization, 27(4):2597–2633, 2017.
+Yurii Nesterov. Lectures on convex optimization , vol-
+ume 137. Springer, 2018.
+Lam M. Nguyen, Jie Liu, Katya Scheinberg, and Mar-
+tin Tak´ aˇ c. SARAH: A novel method for machine
+learning problems using stochastic recursive gradient.
+In ICML, 2017.
+Maher Nouiehed, Maziar Sanjabi, Tianjian Huang,
+Jason D. Lee, and Meisam Razaviyayn. Solving a
+class of non-convex min-max games using iterative
+ﬁrst order methods. In NeurIPS, 2019.
+Shuang Qiu, Zhuoran Yang, Xiaohan Wei, Jieping
+Ye, and Zhaoran Wang. Single-timescale stochastic
+nonconvex-concave optimization for smooth nonlin-
+ear TD learning. arXiv preprint arXiv:2008.10103 ,
+2020.
+Guannan Qu and Na Li. Accelerated distributed Nes-
+terov gradient descent. IEEE Transactions on Auto-
+matic Control , 65(6):2566–2581, 2019.
+Hassan Raﬁque, Mingrui Liu, Qihang Lin, and Tian-
+bao Yang. Weakly-convex–concave min–max opti-
+mization: provable algorithms and applications in
+machine learning. Optimization Methods and Soft-
+ware, pages 1–35, 2021.
+Wei Shi, Qing Ling, Gang Wu, and Wotao Yin. EX-
+TRA: An exact ﬁrst-order algorithm for decentralized
+consensus optimization. SIAM Journal on Optimiza-
+tion, 25(2):944–966, 2015.
+Aman Sinha, Hongseok Namkoong, and John C.
+Duchi. Certifying some distributional robustness with
+principled adversarial training. In ICLR, 2018.
+Zhuoqing Song, Lei Shi, Shi Pu, and Ming Yan. Opti-
+mal gradient tracking for decentralized optimization.
+Mathematical Programming, pages 1–53, 2023.
+
+=== PAGE 11 ===
+Lesi Chen 1, Haishan Ye 2, Luo Luo 3,∗
+Haoran Sun, Songtao Lu, and Mingyi Hong. Improv-
+ing the sample and communication complexity for de-
+centralized non-convex optimization: Joint gradient
+estimation and tracking. In ICML, 2020.
+Ioannis Tsaknakis, Mingyi Hong, and Sijia Liu. De-
+centralized min-max optimization: Formulations, al-
+gorithms and applications in network poisoning at-
+tack. In ICASSP, 2020.
+C´ esar A Uribe, Soomin Lee, Alexander Gasnikov, and
+Angelia Nedi´ c. A dual approach for optimal algo-
+rithms in distributed optimization over networks. In
+ITA. IEEE, 2020.
+Hoi-To Wai, Zhuoran Yang, Zhaoran Wang, and
+Mingyi Hong. Multi-agent reinforcement learning
+via double averaging primal-dual optimization. In
+NeurIPS, 2018.
+Zhiguo Wang, Jiawei Zhang, Tsung-Hui Chang, Jian
+Li, and Zhi-Quan Luo. Distributed stochastic con-
+sensus optimization with momentum for nonconvex
+nonsmooth problems. IEEE Transactions on Signal
+Processing, 69:4486–4501, 2021.
+Wenhan Xian, Feihu Huang, Yanfu Zhang, and Heng
+Huang. A faster decentralized algorithm for noncon-
+vex minimax problems. In NeurIPS, 2021.
+Ran Xin, Usman A. Khan, and Soummya Kar. Fast
+decentralized nonconvex ﬁnite-sum optimization with
+recursive variance reduction. SIAM Journal on Opti-
+mization, 32(1):1–28, 2022.
+Tengyu Xu, Zhe Wang, Yingbin Liang, and H. Vin-
+cent Poor. Gradient free minimax optimization: Vari-
+ance reduction and faster convergence. arXiv preprint
+arXiv:2006.09361, 2020.
+Yangyang Xu. Decentralized gradient descent
+maximization method for composite nonconvex
+strongly-concave minimax problems. arXiv preprint
+arXiv:2304.02441, 2023.
+Zi Xu, Huiling Zhang, Yang Xu, and Guanghui
+Lan. A uniﬁed single-loop alternating gradient pro-
+jection algorithm for nonconvex–concave and convex–
+nonconcave minimax problems. Mathematical Pro-
+gramming, pages 1–72, 2023.
+Yan Yan, Yi Xu, Qihang Lin, Lijun Zhang, and
+Tianbao Yang. Stochastic primal-dual algorithms
+with faster convergence than O(1/
+√
+T ) for prob-
+lems without bilinear structure. arXiv preprint
+arXiv:1904.10112, 2019.
+Junchi Yang, Negar Kiyavash, and Niao He. Global
+convergence and variance reduction for a class
+of nonconvex-nonconcave minimax problems. In
+NeurIPS, 2020.
+Haishan Ye, Luo Luo, Ziang Zhou, and Tong Zhang.
+Multi-consensus decentralized accelerated gradient
+descent. arXiv preprint arXiv:2005.00797 , 2020a.
+Haishan Ye, Ziang Zhou, Luo Luo, and Tong Zhang.
+Decentralized accelerated proximal gradient descent.
+In NeurIPS, 2020b.
+Kun Yuan, Qing Ling, and Wotao Yin. On the conver-
+gence of decentralized gradient descent. SIAM Jour-
+nal on Optimization , 26(3):1835–1854, 2016.
+Zhuoning Yuan, Zhishuai Guo, Yi Xu, Yiming Ying,
+and Tianbao Yang. Federated deep AUC maximiza-
+tion for heterogeneous data with a constant communi-
+cation complexity. arXiv preprint arXiv:2102.04635 ,
+2021.
+Jiawei Zhang, Peijun Xiao, Ruoyu Sun, and Zhiquan
+Luo. A single-loop smoothed gradient descent-ascent
+algorithm for nonconvex-concave min-max problems.
+In NeurIPS, 2020.
+Kaiqing Zhang, Zhuoran Yang, and Tamer Basar. Pol-
+icy optimization provably converges to nash equilib-
+ria in zero-sum linear quadratic games. In NeurIPS,
+2019.
+Siqi Zhang, Junchi Yang, Crist´ obal Guzm´ an, Negar
+Kiyavash, and Niao He. The complexity of nonconvex-
+strongly-concave minimax optimization. In UAI,
+2021a.
+Xin Zhang, Zhuqing Liu, Jia Liu, Zhengyuan Zhu,
+and Songtao Lu. Taming communication and sam-
+ple complexities in decentralized policy evaluation for
+cooperative multi-agent reinforcement learning. In
+NeurIPS, 2021b.
+Xuan Zhang, Necdet Serhat Aybat, and Mert Gur-
+buzbalaban. SAPD+: An accelerated stochastic
+method for nonconvex-concave minimax problems. In
+NeurIPS, 2022.
+Xuan Zhang, Gabriel Mancino-Ball, Necdet Serhat
+Aybat, and Yangyang Xu. Jointly improving the
+sample and communication complexities in decentral-
+ized stochastic minimax optimization. arXiv preprint
+arXiv:2307.09421, 2023.
+Taoli Zheng, Linglingzhi Zhu, Anthony Man-Cho So,
+Jose Blanchet, and Jiajin Li. Doubly smoothed
+GDA: Global convergent algorithm for constrained
+nonconvex-nonconcave minimax optimization. arXiv
+preprint arXiv:2212.12978, 2022.
+
+=== PAGE 12 ===
+An Eﬃcient Stochastic Algorithm for Decentralized Nonconv ex-Strongly-Concave Minimax Optimization
+Checklist
+The checklist follows the references. For each question,
+choose your answer from the three possible options:
+Yes, No, Not Applicable. You are encouraged to in-
+clude a justiﬁcation to your answer, either by referenc-
+ing the appropriate section of your paper or providing
+a brief inline description (1-2 sentences). Please do not
+modify the questions. Note that the Checklist section
+does not count towards the page limit. Not including
+the checklist in the ﬁrst submission won’t result in desk
+rejection, although in such case we will ask you to up-
+load it during the author response period and include
+it in camera ready (if accepted).
+In your paper, please delete this instructions
+block and only keep the Checklist section head-
+ing above along with the questions/answers be-
+low.
+1. For all models and algorithms presented, check if
+you include:
+(a) A clear description of the mathematical set-
+ting, assumptions, algorithm, and/or model.
+[Yes]
+(b) An analysis of the properties and complexity
+(time, space, sample size) of any algorithm.
+[Yes]
+(c) (Optional) Anonymized source code, with
+speciﬁcation of all dependencies, including ex-
+ternal libraries. [Yes]
+2. For any theoretical claim, check if you include:
+(a) Statements of the full set of assumptions of
+all theoretical results. [Yes]
+(b) Complete proofs of all theoretical results.
+[Yes]
+(c) Clear explanations of any assumptions. [Yes]
+3. For all ﬁgures and tables that present empirical
+results, check if you include:
+(a) The code, data, and instructions needed to
+reproduce the main experimental results (ei-
+ther in the supplemental material or as a
+URL). [Yes]
+(b) All the training details (e.g., data splits, hy-
+perparameters, how they were chosen). [Yes]
+(c) A clear deﬁnition of the speciﬁc measure or
+statistics and error bars (e.g., with respect to
+the random seed after running experiments
+multiple times). [Yes]
+(d) A description of the computing infrastructure
+used. (e.g., type of GPUs, internal cluster, or
+cloud provider). [Yes]
+4. If you are using existing assets (e.g., code, data,
+models) or curating/releasing new assets, check if
+you include:
+(a) Citations of the creator If your work uses ex-
+isting assets. [Yes]
+(b) The license information of the assets, if appli-
+cable. [Not Applicable]
+(c) New assets either in the supplemental mate-
+rial or as a URL, if applicable. [Not Applica-
+ble]
+(d) Information about consent from data
+providers/curators. [Not Applicable]
+(e) Discussion of sensible content if applicable,
+e.g., personally identiﬁable information or of-
+fensive content. [Not Applicable]
+5. If you used crowdsourcing or conducted research
+with human subjects, check if you include:
+(a) The full text of instructions given to partici-
+pants and screenshots. [Not Applicable]
+(b) Descriptions of potential participant risks,
+with links to Institutional Review Board
+(IRB) approvals if applicable. [Not Applica-
+ble]
+(c) The estimated hourly wage paid to partici-
+pants and the total amount spent on partici-
+pant compensation. [Not Applicable]
+
+=== PAGE 13 ===
+Lesi Chen 1, Haishan Ye 2, Luo Luo 3,∗
+Supplementary Material:
+An Eﬃcient Stochastic Algorithm for Decentralized
+Nonconvex-Strongly-Concave Minimax Optimization
+A Some Useful Lemmas
+We ﬁrst provide some useful lemmas.
+Lemma A.1. For any a1, . . . , a m ∈ Rd, we have
+
+
+
+
+
+1
+m
+m∑
+i=1
+ai
+
+
+
+
+
+2
+≤ 1
+m
+m∑
+i=1
+∥ai∥2 .
+Lemma A.2. For any matrix z ∈ Rm× d and ¯z = 1
+m 1⊤ z, we have
+∥z − 1¯z∥ ≤ ∥ z∥ ,
+Lemma A.3. Under Assumption 2.2, we have
+∥∇ f (z) − ∇ f (z′)∥ ≤ L ∥z − z′∥
+for any z, z′ ∈ Rm× d.
+Lemma A.4. For Algorithm 2, we have ¯st = 1
+m 1⊤ gt = ¯gt.
+Proof. We prove this lemma by induction. For t = 0, we have
+¯s0 = 1
+m 1⊤ s0 = 1
+m 1⊤ g0.
+Suppose the statement holds for t ≤ k. Then for t = k + 1, the induction base means that
+¯sk+1
+=¯sk + ¯gk+1 − ¯gk
+= 1
+m 1⊤ g(zk) + ¯gk+1 − 1
+m 1⊤ g(zk)
+=¯gk+1
+= 1
+m 1⊤ gk+1,
+which ﬁnished the proof.
+Lemma A.5. Under Assumption 2.2, for Algorithm 2, it holds that
+∥¯st − ∇ f (¯zt)∥2 ≤ 2
+
+
+
+
+
+1
+m
+m∑
+i=1
+(gt(i) − ∇ fi(zt(i)))
+
+
+
+
+
+2
++ 2L2
+m ∥zt − 1¯zt∥2.
+
+=== PAGE 14 ===
+An Eﬃcient Stochastic Algorithm for Decentralized Nonconv ex-Strongly-Concave Minimax Optimization
+Proof. Using Young’s inequality and Assumption 2.2, we have
+∥¯st − ∇ f (¯zt)∥2
+=
+
+
+
+
+
+1
+m
+m∑
+i=1
+(
+gt(i) − ∇ fi(¯zt)
+)
+
+
+
+
+
+2
+≤ 2
+
+
+
+
+
+1
+m
+m∑
+i=1
+(gt(i) − ∇ fi(zt(i)))
+
+
+
+
+
+2
++ 2
+
+
+
+
+
+1
+m
+m∑
+i=1
+(∇ fi(zt(i)) − ∇ fi(¯zt))
+
+
+
+
+
+2
+≤ 2
+
+
+
+
+
+1
+m
+m∑
+i=1
+(gt(i) − ∇ fi(zt(i)))
+
+
+
+
+
+2
++ 2
+m
+m∑
+i=1
+∥∇ fi(zt(i)) − ∇ fi(¯zt)∥2
+≤ 2
+
+
+
+
+
+1
+m
+m∑
+i=1
+(gt(i) − ∇ fi(zt(i)))
+
+
+
+
+
+2
++ 2L2
+m ∥zt − 1¯zt∥2 .
+Lemma A.6. When f (x, y ) is L-smooth and µ -strongly-concave in y, it holds that
+∥∇ P (x) − ∇ xf (x, y )∥ ≤ 2κ∥Gη(x, y )∥,
+where Gη(x, y ) denotes the constrained reduced gradient
+Gη(x, y ) = Π( y + η∇ yf (x, y )) − y
+η
+with any η ≤ 1/L .
+Proof. Using the Danskin’s theorem, i.e. ∇ P (x) = ∇ xf (x, y ∗ (x)) as well as the L-smoothness, we have
+∥∇ P (x) − ∇ xf (x, y )∥ ≤ L∥y∗(x) − y∥. (9)
+The Corollary 1 of Luo et al. (2020, Appendix A) tells us
+µ ∥y − y∗ (x)∥ ≤ 2∥Gη(x, y )∥. (10)
+We prove this lemma by combing inequalities (9) and (10).
+B Discussions on DM-HSGD
+Decentralized Minimax Hybrid Stochastic Gradient Descent (DM-HSG D) considers the minimax problem (1) in
+both unconstrained and constrained cases (Xian et al., 2021). Ho wever, the theoretical analysis of this method
+only works for unconstrained case, and it is problematic for the gen eral constrained case. 2
+The analysis of DM-HSGD heavily relies on its Lemma 5 (Xian et al., 2021, A ppendix A.2). However, the proof
+of this result is based on the following equation (Xian et al., 2021, Equ ation (29)) 3
+2ηy⟨¯ut, ˆyt − ¯yt⟩ = ∥¯yt − ˆyt∥2 + ∥¯yt+1 − ¯yt∥2 − ∥ ¯yt+1 − ˆyt∥2, (11)
+where ˆyt = arg max y∈Y f (¯xt, y ) corresponds to y∗ (¯xt) in our notations. Note that Equation (11) does not hold
+for general convex and compact set Y. We further illustrate this below.
+We denote yt+1/2 = yt +ηyut by following Xian et al. (2021)’s notation. The procedure of DM-HSGD guarantees
+that ¯yt+1 = ¯Π( yt+1/2), then we have
+2ηy⟨¯ut, ˆyt − ¯yt⟩ = 2⟨¯yt+1/2 − ¯yt, ˆyt − ¯yt⟩ = ∥¯yt − ˆyt∥2 + ∥¯yt+1/2 − ¯yt∥2 − ∥ ¯yt+1/2 − ˆyt∥2. (12)
+2The theoretical issue of DM-HSGD has also been mentioned by Z hang et al. (2023).
+3The analysis of DM-HSGD uses ηy and ¯ut to present the stepsize and gradient estimator with respect to y, which
+play the similar roles of η and ¯vt in our notations.
+
+=== PAGE 15 ===
+Lesi Chen 1, Haishan Ye 2, Luo Luo 3,∗
+The only diﬀerence between equations (11) and (12) is their last ter ms. In the unconstrained case that Y = Rdy ,
+it holds that
+¯yt+1 = ¯Π( yt+1/2) = ¯yt+1/2, (13)
+which leads to
+∥¯yt+1 − ˆyt∥2 = ∥¯yt+1/2 − ˆyt∥2.
+However, the equation (13) may not hold in the constrained case, s ince we can not guarantee ¯Π( y) = ¯y in general.
+For example, consider that
+Y = {y ∈ R2 : ∥y∥2 = 2}, y(1) = (2 , 2) and y(2) = (2 , − 2),
+then we can have ¯y = (2, 0) while ¯Π( y) =
+(√
+2, 0
+)
+.
+For the analysis of projected ﬁrst-order methods for constrain ed problems (even for minimization problems), we
+typically introduce the constrained reduced gradient (Nesterov, 2018, Deﬁnition 2.2.3) and apply the ﬁrst-order
+optimality condition (such as Equation (16) in Appendix C) to establish the convergence results. However, such
+popular techniques are not included in the analysis of DM-HSGD.
+In decentralized setting, the extension from unconstrained case to constrained case is non-trivial, since the
+projection step introduces additional consensus error. As a con sequence, our analysis is essentially diﬀerent from
+the Xian et al. (2021). We design a novel Lyapunov function and pre sent the details in Lemma 3.1 to address
+this issue.
+C The Proof of Lemma 3.1
+Proof. Denote y′
+t+1 = Π(yt + ηvt). By Proposition 2.3, the update rules of xt, yt means
+¯xt+1 = ¯xt − γη ¯ut and ¯ yt+1 = ¯y′
+t+1 = ¯Π( yt + ηvt). (14)
+In the view of inexact gradient descent on P (x), it yields
+E[P (¯xt+1)]
+≤ E
+[
+P (¯xt) + ∇ P (¯xt)⊤ (¯xt+1 − ¯xt) + LP
+2 ∥¯xt+1 − ¯xt∥2
+]
+= E
+[
+P (¯xt) − γη ∇ P (¯xt)⊤ ¯ut + LP γ 2η2
+2 ∥¯ut∥2
+]
+= E
+[
+P (¯xt) − γη
+2 ∥∇ P (¯xt)∥2 −
+( γη
+2 − LP γ 2η2
+2
+)
+∥¯ut∥2 + γη
+2 ∥∇ P (¯xt) − ¯ut∥2
+]
+≤ E
+[
+P (¯xt) − γη
+2 ∥∇ P (¯xt)∥2 −
+( γη
+2 − LP γ 2η2
+2
+)
+∥¯ut∥2
+]
++ E
+[
+γη
+m
+m∑
+i=1
+∥∇ P (¯xt) − ∇ xf (¯xt, yt(i))∥2 + γη
+m
+m∑
+i=1
+∥¯ut − ∇ xf (¯xt, yt(i))∥2
+]
+≤ E
+[
+P (¯xt) − γη
+2 ∥∇ P (¯xt)∥2 −
+( γη
+2 − LP γ 2η2
+2
+)
+∥¯ut∥2
+]
++ E
+[
+4κ 2γη
+m
+m∑
+i=1
+∥Gη(¯xt, yt(i))∥2 + γη
+m
+m∑
+i=1
+∥¯ut − ∇ xf (¯xt, yt(i))∥2
+]
+≤ E
+[
+P (¯xt) − γη
+2 ∥∇ P (¯xt)∥2 −
+( γη
+2 − LP γ 2η2
+2
+)
+∥¯ut∥2
+]
++ E
+[
+8κ 2γη
+m
+m∑
+i=1
+∥v′
+t(i)∥2 + 8κ 2γη
+m
+m∑
+i=1
+∥vt(i) − ∇ yf (¯xt, yt(i))∥2 + γη
+m
+m∑
+i=1
+∥¯ut − ∇ xf (¯xt, yt(i))∥2
+]
+,
+(15)
+
+=== PAGE 16 ===
+An Eﬃcient Stochastic Algorithm for Decentralized Nonconv ex-Strongly-Concave Minimax Optimization
+where v′
+t(i) = ( y′
+t+1(i) − yt(i))/η . Above, the ﬁrst inequality follows from the smoothness of P (x) by Proposition
+2.1; the second one is due to the Young’s inequality; the third inequalit y holds according to Lemma A.6; in the
+last one we use the Young’s inequality along with
+∥v′
+t(i) − Gη(¯xt, yt(i))∥
+= 1
+η ∥Π( yt + ηvt(i)) − Π( yt + η∇ yf (¯xt, yt(i)))∥
+≤ ∥ vt(i) − ∇ yf (¯xt, yt(i))∥.
+Recall that y′
+t+1 = Π(yt + ηvt) and the ﬁrst-order optimality of the projection, we have
+(yt(i) + ηvt(i) − y′
+t+1(i))⊤ (y − y′
+t+1(i)) ≤ 0 (16)
+for any y ∈ Y . Taking y = ¯yt in above inequality, we get
+vt(i)⊤ (¯yt − y′
+t+1(i))
+≤ 1
+η (¯yt − y′
+t+1(i))⊤ (y′
+t+1(i) − yt(i))
+= 1
+2η ∥¯yt − yt(i)∥2 − 1
+2η ∥¯yt − y′
+t+1(i)∥2 − 1
+2η ∥y′
+t+1(i) − yt(i)∥2.
+(17)
+In the view of inexact gradient descent ascent on f (x, y ), it yields
+E[− f (¯xt+1, y′
+t+1(i))]
+≤ E
+[
+− f (¯xt+1, yt(i)) − ∇ yf (¯xt+1, yt(i))⊤ (y′
+t+1(i) − yt(i)) + L
+2 ∥y′
+t+1(i) − yt(i)∥2
+]
+≤ E
+[
+− f (¯xt, yt(i)) − ∇ xf (¯xt, yt(i))⊤ (¯xt+1 − ¯xt) + L
+2 ∥¯xt+1 − ¯xt∥2
+]
++ E
+[
+−∇ yf (¯xt+1, yt(i))⊤ (y′
+t+1(i) − yt(i)) + L
+2 ∥y′
+t+1(i) − yt(i)∥2
+]
+≤ E
+[
+− f (¯xt, ¯yt) + ∇ yf (¯xt, yt(i))⊤ (¯yt − yt(i)) − ∇ xf (¯xt, yt(i))⊤ (¯xt+1 − ¯xt) + L
+2 ∥¯xt+1 − ¯xt∥2
+]
++ E
+[
+−∇ yf (¯xt+1, yt(i))⊤ (y′
+t+1(i) − yt(i)) + L
+2 ∥y′
+t+1(i) − yt(i)∥2
+]
+= E
+[
+− f (¯xt, ¯yt) + ∇ yf (¯xt, yt(i))⊤ (¯yt − y′
+t+1(i)) − ∇ xf (¯xt, yt(i))⊤ (¯xt+1 − ¯xt) + L
+2 ∥¯xt+1 − ¯xt∥2
+]
++ E
+[
+(∇ yf (¯xt, yt(i)) − ∇ yf (¯xt+1, yt(i)))⊤ (y′
+t+1(i) − yt(i)) + L
+2 ∥y′
+t+1(i) − yt(i)∥2
+]
+= E
+[
+− f (¯xt, ¯yt) + vt(i)⊤ (¯yt − y′
+t+1(i)) − ∇ xf (¯xt, yt(i))⊤ (¯xt+1 − ¯xt) + L
+2 ∥¯xt+1 − ¯xt∥2
+]
++ E
+[
+(∇ yf (¯xt, yt(i)) − ∇ yf (¯xt+1, yt(i)))⊤ (y′
+t+1(i) − yt(i)) + L
+2 ∥y′
+t+1(i) − yt(i)∥2
+]
++ E
+[
+(∇ yf (¯xt, yt(i)) − vt(i))⊤ (¯yt − y′
+t+1(i))
+]
+≤ E
+[
+− f (¯xt, ¯yt) − 1
+2η ∥y′
+t+1(i) − yt(i)∥2 − ∇ xf (¯xt, yt(i))⊤ (¯xt+1 − ¯xt) + L
+2 ∥¯xt+1 − ¯xt∥2
+]
++ E
+[
+(∇ yf (¯xt, yt(i)) − ∇ yf (¯xt+1, yt(i)))⊤ (y′
+t+1(i) − yt(i)) + L
+2 ∥y′
+t+1(i) − yt(i)∥2
+]
++ E
+[ η
+2 ∥∇ yf (¯xt, yt(i)) − vt(i))∥2 + 1
+2η ∥¯yt − yt(i)∥2
+]
+≤ E
+[
+− f (¯xt, ¯yt) −
+( η
+4 − η2L
+2
+)
+∥v′
+t(i)∥2 +
+( γ 2η2L
+2 + γ 2η3L2 + 3γ 2η
+2
+)
+∥¯ut∥2
+]
++ E
+[ η
+2 ∥∇ xf (¯xt, yt(i)) − ¯ut∥2 + η
+2 ∥∇ yf (¯xt, yt(i)) − vt(i))∥2 + 1
+2η ∥¯yt − yt(i)∥2
+]
+,
+
+=== PAGE 17 ===
+Lesi Chen 1, Haishan Ye 2, Luo Luo 3,∗
+where v′
+t(i) = ( y′
+t+1(i) − yt(i))/η . Above, the equations rely on rearranging the terms; the ﬁrst tw o inequalities
+are based on the L-smoothness of the objective f (x, y ). The third one follows from the concavity of in the
+direction of y; the second last inequality is a use of (17) and the Young’s inequality; the last inequality follows
+from the Young’s inequality and the L-smoothness that leads to
+(∇ yf (¯xt, yt(i)) − ∇ yf (¯xt+1, yt(i)))⊤ (y′
+t+1(i) − yt(i))
+≤ 1
+4η ∥y′
+t+1(i) − yt(i)∥2 + η∥∇ yf (¯xt+1, yt(i)) − ∇ yf (¯xt, yt(i))∥
+≤ 1
+4η ∥y′
+t+1(i) − yt(i)∥2 + ηL2∥¯xt+1 − ¯xt∥2
+= η
+4 ∥v′
+t(i)∥2 + γ 2η3L2∥¯ut∥2.
+Using the concavity of f (x, y ) in variable y as well as the Jensen’s inequality, we have
+E[− f (¯xt+1, ¯y′
+t+1)]
+≤ E
+[
+− f (¯xt, ¯yt) −
+( η
+4 − η2L
+2
+) 1
+m
+m∑
+i=1
+∥v′
+t(i)∥2 +
+( γ 2η2L
+2 + γ 2η3L2 + 3γ 2η
+2
+)
+∥¯ut∥2
+]
++ 1
+m
+m∑
+i=1
+E
+[ η
+2 ∥∇ xf (¯xt, yt(i)) − ¯ut∥2 + η
+2 ∥∇ yf (¯xt, yt(i)) − vt(i))∥2 + 1
+2η ∥¯yt − yt(i)∥2
+]
+.
+(18)
+Note that ¯y′
+t+1 = ¯yt+1. Adding (15) multiplying (1 + α ) along with (18) multiplying α , we get
+E[Pt+1]
+≤ Pt + (1 + α )E
+[
+− γη
+2 ∥∇ P (¯xt)∥2 −
+( γη
+2 − LP γ 2η2
+2
+)
+∥¯ut∥2
+]
++ (1 + α )×
+E
+[
+8κ 2γη
+m
+m∑
+i=1
+∥v′
+t(i)∥2 + 8κ 2γη
+m
+m∑
+i=1
+∥vt(i) − ∇ yf (¯xt, yt(i))∥2 + γη
+m
+m∑
+i=1
+∥¯ut − ∇ xf (¯xt, yt(i))∥2
+]
++ α
+[
+−
+( η
+4 − η2L
+2
+) 1
+m
+m∑
+i=1
+∥v′
+t(i)∥2 +
+( γ 2η2L
+2 + γ 2η3L2 + 3γ 2η
+2
+)
+∥¯ut∥2
+]
++ α
+m
+m∑
+i=1
+E
+[ η
+2 ∥∇ xf (¯xt, yt(i)) − ¯ut∥2 + η
+2 ∥∇ yf (¯xt, yt(i)) − vt(i))∥2 + 1
+2η ∥¯yt − yt(i)∥2
+]
+.
+Rearranging the above result leads to
+E[Ψ t+1] ≤ E
+[
+Ψ t − (1 + α )γη
+2 ∥∇ P (¯xt)∥2
+]
+−
+(
+(1 + α )
+( γη
+2 − LP γ 2η2
+2
+)
+− α
+( Lγ 2η2
+2 + γ 2η3L + 3γ 2η
+2
+))
+E[∥¯ut∥2]
+−
+(
+α
+( η
+4 − Lη2
+2
+)
+− (1 + α )8κ 2γη
+) 1
+m
+m∑
+i=1
+E[∥v′
+t(i)∥2]
++
+(
+(1 + α )γ + α
+2
+) η
+m
+m∑
+i=1
+E[∥¯ut − ∇ xf (¯xt, yt(i))∥2]
++
+(
+(1 + α )8κ 2γ + α
+2
+) η
+m
+m∑
+i=1
+E[∥vt(i) − ∇ yf (¯xt, yt(i))∥2]
++ α
+2ηm
+m∑
+i=1
+E[∥¯yt − yt(i)∥2].
+
+=== PAGE 18 ===
+An Eﬃcient Stochastic Algorithm for Decentralized Nonconv ex-Strongly-Concave Minimax Optimization
+Since α ∈ (0, 1], taking η ≤ 1/ (4L) and the deﬁnition of γ in (5) mean
+α
+( η
+4 − Lη2
+2
+)
+− (1 + α )8κ 2γη ≥ αη
+16
+as well as
+(1 + α )
+( γη
+2 − LP γ 2η2
+2
+)
+− α
+( Lγ 2η2
+2 + γ 2η3L + 3γ 2η
+2
+)
+≥ γη
+4 .
+Also, the fact α ∈ (0, 1] and our choice of γ means
+8(1 + α )κ 2γ + α
+2 ≤ α and (1 + α )8κ 2γ + α
+2 ≤ α.
+Therefore, we obtain the optimization bound as
+E[Ψt+1] ≤ E
+[
+Ψt − γη
+2 ∥∇ P (¯xt)∥2 − γη
+4 ∥¯ut∥2 − αη
+16m
+m∑
+i=1
+∥v′
+t(i)∥2
+]
++ E
+[
+αη
+m
+m∑
+i=1
+∥¯ut − ∇ xf (¯xt, yt(i)∥2 + αη
+m
+m∑
+i=1
+∥vt(i) − ∇ yf (¯xt, yt(i))∥2 + α
+2ηm
+m∑
+i=1
+∥¯yt − yt(i)∥2
+]
+.
+(19)
+Note that it holds that
+m∑
+i=1
+∥vt(i) − ∇ yf (¯xt, yt(i))∥2 ≤ 3m∥¯vt − ∇ yf (¯xt, ¯yt)∥2 + 3∥vt − 1¯vt∥2 + 3L2∥yt − 1¯yt∥2
+and
+m∑
+i=1
+∥¯uk − ∇ xf (¯xt, yt(i))∥2 ≤ 2m∥¯ut − ∇ xf (¯xt, ¯yt)∥2 + 2L2∥yt − 1¯yt∥2,
+where we use the L-smoothness and Young’s inequality. Then we combine Lemma A.5 to ge t
+αη
+m
+m∑
+i=1
+∥¯ut − ∇ xf (¯xt, yt(i)∥2 + αη
+m
+m∑
+i=1
+∥vt(i) − ∇ yf (¯xt, yt(i))∥2
+≤ 6αηL 2
+m ∥yt − 1¯yt∥2 + 3αη
+m ∥¯st − ∇ f (¯xt, ¯yt)∥2 + 3αη
+m ∥vt − 1¯vt∥2
+≤ α
+2ηm ∥yt − 1¯yt∥2 + 3αη ∥¯st − ∇ f (¯xt, ¯yt)∥2 + 3αη
+m ∥vt − 1¯vt∥2,
+(20)
+where we use η ≤ 1/ (4L). Plugging (20) into (19) and then use the inequality
+1
+m
+m∑
+i=1
+∥v′
+t(i)∥2 ≥ ∥ ¯v′
+t∥2.
+Hence, we have
+E[Ψ t+1] ≤ E
+[
+Ψ t − γη
+2 ∥∇ P (¯xt)∥2 − γη
+4 ∥¯ut∥2 − αη
+16 ∥¯v′
+t∥2
+]
++ E
+[
+3αη ∥¯st − ∇ xf (¯xt, ¯yt)∥2 + 3αη
+m ∥vt − 1¯vt∥2 + α
+ηm ∥yt − ¯yt∥2
+]
+.
+Combining with Lemma A.5 and using ∥yt − 1¯yt∥ ≤ ∥ zt − 1¯zt∥ and η ≤ 1/ (4L), we obtain
+E[Ψ t+1] ≤ E
+[
+Ψ t − γη
+2 ∥∇ P (¯xt)∥2 − γη
+4 ∥¯ut∥2 − αη
+16 ∥¯v′
+t∥2
+]
++ E
+
+ 3αη
+m ∥vt − 1¯vt∥2 + 6αη
+
+
+
+
+
+1
+m
+m∑
+i=1
+(gt(i) − ∇ fi(zt(i)))
+
+
+
+
+
+2
++ 2α
+ηm ∥zt − ¯zt∥2
+
+ .
+
+=== PAGE 19 ===
+Lesi Chen 1, Haishan Ye 2, Luo Luo 3,∗
+Note that
+¯ut = ¯xt − ¯xt+1
+γη , ¯v′
+t = ¯yt+1 − ¯yt
+η and 1
+8γη ≥ α
+16η ,
+then we have
+E[Ψ t+1] ≤ E
+[
+Ψ t − γη
+2 ∥∇ P (¯xt)∥2 − 1
+8γη ∥¯xt+1 − ¯xt∥2 − α
+16η ∥¯zt+1 − ¯zt∥2
+]
++ E
+
+ 3αη
+m ∥vt − 1¯vt∥2 + 6αη
+
+
+
+
+
+1
+m
+m∑
+i=1
+(gt(i) − ∇ fi(zt(i)))
+
+
+
+
+
+2
++ 2α
+ηm ∥zt − 1¯zt∥2
+
+ .
+Recalling the deﬁnition of Ct and Ut, we obtain the result of Lemma 3.1.
+D The Proof of Lemma 3.2
+Proof. The relation of (14) means
+∥xt+1 − 1¯xt+1∥
+=ρ ∥xt − γη ut − 1(¯xt − η¯ut)∥
+≤ ρ (∥xt − 1¯xt∥ + γη ∥ut − 1¯ut∥) ,
+where the last step is due to triangle inequality. Similarly, we deﬁne the notation ¯Π( ·) = 1
+m 11⊤ (·) for convenience.
+Then for variable y, we can verify that
+∥yt+1 − 1¯yt+1∥
+≤ ρ
+
+
+
+Π( yt + ηvt) − 1
+m 11⊤ Π ( yt + ηvt)
+
+
+
+
+≤ ρ ∥Π( yt + ηvt) − Π( 1¯yt + η1¯vt)∥ + ρ
+
+Π( 1¯yt + η1¯vt) − 1 ¯Π ( yt + ηvt)
+
+
+≤ 2ρ ∥yt + ηvt − 1(¯yt + η¯vt)∥
+≤ 2ρ (∥yt − 1¯yt∥ + η ∥vt − 1¯vt∥) ,
+where in the third inequality we use the non-expansiveness of proje ction and Lemma 11 in Ye et al. (2020b), i.e.
+
+1 ¯Π( x) − Π( 1¯x)
+
+ ≤ ∥ x − 1¯x∥.
+Consequently, we use Young’s inequality together with γ ∈ (0, 1] to obtain
+∥zt+1 − 1¯zt+1∥2
+= ∥xt+1 − 1¯xt+1∥2 + ∥yt+1 − 1¯yt+1∥2
+≤ 8ρ2 ∥yt − 1¯yt∥2 + 8ρ2η2 ∥vt − 1¯vt∥2 + 2ρ2 ∥xt − 1¯xt∥2 + 2ρ2η2 ∥yt − 1¯yt∥2
+≤ 8ρ2 ∥zt − 1¯zt∥2 + 8ρ2η2 ∥st − 1¯st∥2 .
+(21)
+Furthermore, if 24 ρ2 ≤ 1, we have
+∥zt+1 − zt∥2
+≤ 3∥zt+1 − 1¯zt+1∥2 + 3∥zt − 1¯zt∥2 + 3∥1¯zt − 1¯zt+1∥2
+≤ (24ρ2 + 3)∥zt − 1¯zk∥2 + 24ρ2η2∥st − 1¯st∥2 + 3∥1¯zt − 1¯zt+1∥2
+≤ 4∥zt − 1¯zt∥2 + η2∥st − 1¯st∥2 + 3m∥¯zt − ¯zt+1∥2.
+(22)
+
+=== PAGE 20 ===
+An Eﬃcient Stochastic Algorithm for Decentralized Nonconv ex-Strongly-Concave Minimax Optimization
+We let ρt = ρ′ for ζt = 1 and ρt = ρ otherwise. The update of gt+1(i) means
+E
+[
+ρ2
+t ∥gt+1(i) − gt(i)∥2 ]
+=ρ′2pE
+
+
+
+
+
+
+1
+b′
+∑
+ξi,j ∈S ′
+t(i)
+∇ Fi(zt+1(i); ξi,j ) − gt(i)
+
+
+
+
+
+
+2
++ ρ2(1 − p)
+bq E ∥∇ Fi(zt+1(i); ξi,1) − ∇ Fi(zt(i); ξi,1)∥2
+≤ 3ρ′2pE
+
+
+
+
+
+
+1
+b′
+∑
+ξi,j ∈S ′
+t(i)
+∇ Fi(zt+1(i); ξi,j ) − ∇ fi(zt+1(i))
+
+
+
+
+
+
+2
++ 3ρ′2pE ∥∇ fi(zt+1(i)) − ∇ fi(zt(i))∥2
++ 3ρ′2pE ∥∇ fi(zt(i)) − gt(i)∥2 + ρ2(1 − p)L2
+bq E ∥zt+1(i) − zt(i)∥2
+≤ 3ρ′2pσ 2
+b′ I[b′ < n] + 3ρ′2pL2E ∥zt+1(i) − zt(i)∥2
++ 3ρ′2pE ∥∇ fi(zt(i)) − gt(i)∥2 + ρ2(1 − p)L2
+bq E ∥zt+1(i) − zt(i)∥2
+≤ 3ρ′2pσ 2
+b′ I[b′ < n] + 3ρ′2pE ∥∇ fi(zt(i)) − gt(i)∥2 +
+( 1 − p
+bq + 3p
+)
+ρ2L2E ∥zt+1(i) − zt(i)∥2 ,
+where the ﬁrst inequality is based on update rules and Assumption 2.4 ; the second inequality is based on triangle
+inequality and the last inequality is due to Assumption 2.2. Summing over above result over i = 1, . . . , m , obtain
+E
+[
+ρ2
+t ∥gt+1 − gt∥2 ]
+≤ 3ρ′2mpσ 2
+b′ I[b′ < n] + 3ρ′2pE ∥∇ f (zt) − gt∥2 +
+( 1 − p
+bq + 3p
+)
+ρ2L2E ∥zt+1 − zt∥2 .
+Let c = max {1/ (bq), 1} and plug it into (22), then
+E[ρ2
+t ∥gt+1 − gt∥2]
+≤ 3ρ′2mσ 2
+b′ I[b′ < n] + 3ρ′2E[∥∇ f (zt) − gt∥2] + cρ2L2E[∥zt+1 − zt∥2]
+≤ 3ρ′2mσ 2
+b′ I[b′ < n] + 3ρ′2E[∥∇ f (zt) − gt∥2]
++ 16cρ2L2E[∥zt − 1¯zt∥2] + 4cρ2L2η2E[∥st − 1¯st∥2] + 12cρ2mL2E[∥¯zt+1 − ¯zt∥2].
+(23)
+Furthermore, we have
+∥st+1 − 1¯st+1∥
+≤ ρt
+
+
+
+st + gt+1 − gt − 1
+m 11⊤ (st + gt+1 − gt)
+
+
+
+
+≤ ρt ∥st − 1¯st∥ + ρt
+
+
+
+gt+1 − gt − 1
+m 11⊤ (gt+1 − gt)
+
+
+
+
+≤ ρt ∥st − 1¯st∥ + ρt ∥gt+1 − gt∥ ,
+(24)
+where the second inequality is based on triangle inequality and the last step uses Lemma A.2. Combining the
+results of (23) and (24) and using η ≤ 1/ (4L), we have
+η2E ∥st+1 − 1¯st+1∥2
+≤ 2ρ2η2 ∥st − 1¯st∥2 + 2η2E[ρ2
+t ∥gt+1 − gt∥2]
+≤ 4cρ2η2E[∥st − 1¯st∥2] + 4cρ2E[∥zt − 1¯zt∥2]
++ 6ρ′2η2E[∥∇ f (zt) − gt∥2] + 2cρ2mE[∥¯zt+1 − ¯zt∥2] + 6ρ′2mη2σ 2
+b′ I[b′ < n].
+(25)
+Combining (25) and (21), we obtain
+E
+[
+∥zt+1 − 1¯zt+1∥2 + η2∥st+1 − 1¯st+1∥2]
+≤ 12cρ2E[∥zt − 1¯zt∥2 + η2∥st − 1¯st∥2] + 6ρ′2η2E[∥∇ f (zt) − gt∥2] + 2cρ2mE[∥¯zt+1 − ¯zt∥2] + 6ρ′2mη2σ 2
+b′ I[b′< n],
+which ﬁnishes our proof.
+
+=== PAGE 21 ===
+Lesi Chen 1, Haishan Ye 2, Luo Luo 3,∗
+E The Proof of Lemma 3.3
+Proof. The update of gt+1(i) means
+E ∥gt+1(i) − ∇ fi(zt+1(i))∥2
+=pE
+
+
+
+
+
+
+1
+b′
+∑
+ξi,j ∈S ′
+t(i)
+∇ Fi(zt+1(i); ξi,j) − ∇ fi(zt+1(i))
+
+
+
+
+
+
+2
++ (1 − p)E
+
+
+
+
+
+
+gt(i) + ω t(i)
+bq
+∑
+ξi,j ∈S t(i)
+(
+∇ Fi(zt+1(i); ξi,j) − ∇ Fi(zt(i); ξi,j )
+)
+− ∇ fi(zt+1(i))
+
+
+
+
+
+
+2
+≤ pσ 2
+b′ I[b′ < n] + (1 − p)E
+
+
+gt(i) − ∇ fi(zt(i))
++ ω t(i)
+bq
+∑
+ξi,j ∈S t(i)
+(
+∇ Fi(zt+1(i); ξi,j ) − ∇ Fi(zt(i); ξi,j) − ∇ fi(zt+1(i)) + ∇ fi(zt(i))
+) 
+
+
+2
+= pσ 2
+b′ I[b′ < n] + (1 − p)E ∥gt(i) − ∇ fi(zt(i))∥2
++ (1 − p)E
+
+
+
+
+
+
+ω t(i)
+bq
+∑
+ξi,j ∈S t(i)
+(
+∇ Fi(zt+1(i); ξi,j ) − ∇ Fi(zt(i); ξi,j ) − ∇ fi(zt+1(i)) + ∇ fi(zt(i))
+)
+
+
+
+
+
+
+2
+≤ pσ 2
+b′ I[b′ < n] + (1 − p)E ∥gt(i) − ∇ fi(zt(i))∥2 + 1 − p
+bq E ∥∇ Fi(zt+1(i); ξi,j ) − ∇ Fi(zt(i); ξi,j)∥2
+≤ pσ 2
+b′ I[b′ < n] + (1 − p)E ∥gt(i) − ∇ fi(zt(i))∥2 + (1 − p)L2
+bq E ∥zt+1(i) − zt(i)∥2 ,
+where the ﬁrst inequality is based on Assumption 2.4; the second ineq uality use the property of variance; the
+last inequality is based on Assumption 2.2; the second equality uses th e property of martingale according to
+Proposition 1 in (Fang et al., 2018). Taking the average over i = 1 , . . . , m for above result and using (22), we
+obtain
+E ∥gt+1 − ∇ f (zt+1)∥2
+≤ mpσ 2
+b′ I[b′ < n] + (1 − p)E ∥gt − ∇ f (zt)∥2 + (1 − p)L2
+bq E ∥zt+1 − zt∥2
+≤ mpσ 2
+b′ I[b′ < n] + (1 − p)E ∥gt − ∇ f (zt)∥2
++ (1 − p)L2
+bq E[4∥zt − 1¯zt∥2 + η2∥st − 1¯st∥2 + 3m∥¯zt+1 − ¯zt∥2],
+(26)
+which is the variance bound as claimed by the deﬁnition of Vt.
+F The Proof of Lemma 3.4
+We omit the detailed proof since it is almost identical to the proof of Le mma 3.3. We leave this as an exercise
+to the reader. Compared with Lemma 3.3, the quantities in Lemma 3.4 c an be scaled with an additional factor
+of 1 /m by using the fact
+E
+
+
+
+m∑
+i=1
+ai
+
+
+
+2
+=
+m∑
+i=1
+E∥ai∥2,
+where each a1, . . . , a m are independent with zero mean.
+
+=== PAGE 22 ===
+An Eﬃcient Stochastic Algorithm for Decentralized Nonconv ex-Strongly-Concave Minimax Optimization
+G The Proof of Theorem 3.1
+Proof. Combing Lemma 3.1, 3.2, 3.3 and 3.4 together, we obtain
+E[Φ t+1]
+≤ E
+[
+Φ t − γη
+2 ∥∇ P (¯xt)∥2 − 1
+8γη ∥¯xt+1 − ¯xt∥2 − α
+16η ∥¯zt+1 − ¯zt∥2 + 6αηU t + 3α
+mη Ct
+]
++ η
+mp E
+[
+− pVt + 4(1 − p)L2
+mbq Ct + 3(1 − p)L2
+bq ∥¯zt+1 − ¯zt∥2 + pσ 2
+b′ I[b′ < n]
+]
++ η
+p E
+[
+− pUt + 4(1 − p)L2
+m2bq Ct + 3(1 − p)L2
+mbq ∥¯zt+1 − ¯zt∥2 + pσ 2
+mb′I[b′ < n]
+]
++ 1
+ηm E
+[
+− (1 − 12cρ2)Ct + 6mρ′2η2Vt + 2cρ2mE[∥¯zt+1 − ¯zt∥2] + 6ρ′2mη2σ 2
+b′ I[b′ < n]
+]
+=Φ t + E
+[
+− γη
+2 ∥∇ P (¯xt)∥2 − 1
+8γη ∥¯xt+1 − ¯xt∥2 −
+( α
+16η − 2cρ2
+η − 6η(1 − p)L2
+mbpq
+)
+∥¯zt+1 − ¯zt∥2
+]
+− (1 − 6α )ηUt − (1 − 6mρ′2)η
+m Vt −
+( 1 − 12cρ2 − 3α
+ηm − 8(1 − p)L2
+m2bpq
+)
+Ct
++
+(
+6ρ′2 2
+m
+) ησ 2
+b′ I[b′ < n].
+Plugging in our setting of parameters in (7), it can be seen that
+E[Φ t+1] ≤ Φ t − γη
+2 E[∥∇ P (¯xt)∥2] − 4α
+ηm Ct + 3ησ 2
+mb′ I[b′ < n].
+Telescoping for t = 0, 1 · · ·, T − 1, we obtain
+1
+T
+T − 1∑
+t=0
+E[∥∇ P (¯xt)∥2] ≤ 2
+γηT Φ 0 − 8α
+γη 2mT
+T − 1∑
+t=0
+Ct + 6σ 2
+γmb ′I[b′ < n]. (27)
+Note that achieving ¯ xt is not simple, so the output xout is sampled from {xt(i)} where t = 0 , . . . , T − 1 and
+i = 1, . . . , m . We also has the following bound:
+E ∥∇ P (xout)∥2 = 1
+mT
+m∑
+i=1
+T − 1∑
+t=0
+∥∇ P (xt(i))∥2
+≤ 2
+mT
+m∑
+i=1
+T − 1∑
+t=0
+(
+∥∇ P (¯xt)∥2 + ∥∇ P (xt(i)) − ∇ P (¯xt)∥2
+)
+≤ 2
+mT
+m∑
+i=1
+T − 1∑
+t=0
+(
+∥∇ P (¯xt)∥2 + L2 ∥xt(i) − ¯xt∥2
+)
+= 2
+T
+T − 1∑
+t=0
+∥∇ P (¯xt)∥2 + 2L2
+mT
+T − 1∑
+t=0
+∥xt − 1¯xt∥2
+≤ 2
+T
+T − 1∑
+t=0
+∥∇ P (¯xt)∥2 + 2L2
+mT
+T − 1∑
+t=0
+Ct,
+where the ﬁrst step use Young’s inequality; the second inequality is d ue to Assumption 2.2. Now we plug in (27)
+to get the following bound as
+E∥∇ P (xout)∥2 ≤ 4
+γηT Φ 0 −
+( 16α
+γη 2 − 2L2
+) 1
+mT
+T − 1∑
+t=0
+Ct + 12σ 2
+γmb ′I[b′ < n].
+
+=== PAGE 23 ===
+Lesi Chen 1, Haishan Ye 2, Luo Luo 3,∗
+Recall the choice of γ in (5); η ≤ 1/ (4L) and pT ≥ 2. Hence, we have
+E∥∇ P (xout)∥2 ≤ 4
+γηT Φ 0 + 12σ 2
+γmb ′I[b′ < n]
+= 4
+γηT
+(
+Ψ 0 + η
+mp V0 + η
+p U0 + η
+m C0
+)
++ 12σ 2
+γmb ′I[b′ < n]
+= 4
+γηT
+(
+Ψ 0 + 2ησ 2
+mb′p I[b′ < n] + η
+m ∥s0 − 1¯s0∥2
+)
++ 12σ 2
+γmb ′I[b′ < n]
+≤ 4
+γηT
+(
+Ψ 0 + 2ησ 2
+mb′p I[b′ < n] + ηρ2
+0
+m ∥g0 − 1¯g0∥2
+)
++ 12σ 2
+γmb ′I[b′ < n]
+≤ 8
+γηT Ψ 0 + 16σ 2
+γmb ′I[b′ < n] + 4ρ2
+0∥g0 − 1¯g0∥2
+γm .
+Therefore the parameters in (7) and (8) guarantee that E∥∇ P (xout)∥2 ≤ ǫ2. The Jensen’s inequality further
+implies that the output is a nearly stationary point satisfying E∥∇ P (xout)∥ ≤ ǫ.
+Recall our choice of γ in (5), we know that 1 /γ = Θ( κ 2). Then the total SFO complexity for all agents in
+expectation is
+mb′ + mT (b′p + bq(1 − p)) = mb′ + 2mT b′bq
+b′ + bq ≤ mb′ + 2mT bq.
+Plug in the choice of b, b ′, q yields the SFO complexity as claimed. Next, recalling the deﬁnition of ρ, ρ ′, ρ 0 in
+(6), we know the total number of communication rounds is
+K0 + T (pK ′ + (1 − p)K) =
+
+
+
+O
+(
+κ 2Lǫ− 2/
+√
+δ
+)
+, b ′ ≥ m;
+O
+(
+κ 2Lǫ− 2 log(m/b ′)/
+√
+δ
+)
+, b ′ < m.
+H Future Directions and Subsequent Works
+A future direction is to establish decentralized stochastic algorithm s with better dependency on the condition
+number κ by devising multiple-looped algorithms such as the single-machine sett ing (Zhang et al., 2022). It is
+also interesting to consider decentralized minimax optimization with th e nonconvex-non-strongly-concave objec-
+tives (Lin et al., 2020a,b; Xu et al., 2023; Zhang et al., 2020), or so me classes of nonconvex-nonconcave objec-
+tives (Chen et al., 2022; Diakonikolas et al., 2021; Guo et al., 2023; J in et al., 2020; Li et al., 2022c; Yang et al.,
+2020; Zheng et al., 2022).
+After we posted our work on arXiv, we also noticed that some subse quent works studying similar problem
+setups (Huang and Chen, 2023; Mancino-Ball and Xu, 2023; Xu, 20 23). Some of the results in these works can
+apply to more general setups than our problem, but the converge nce rates in these works do not surpass the
+results of our paper. (a) Although Xu (2023) considers more gene ral regularizers (we only consider the case that
+regularizer in y is the indicator function of set Y), Xu (2023) only studies the oﬄine case and does not study
+stochastic optimization. Following our notations, the method propo sed by Xu (2023) requires the computation
+complexity of O(N κ2.5ǫ− 2), which is worse than our result of O(N +
+√
+N κ2ǫ− 2). (b) Compared with Xu (2023),
+Mancino-Ball and Xu (2023) additionally considers the stochastic op timization, but only for the oﬄine case. It
+requires the computation complexity of O(N +
+√
+mN κ2ǫ− 2), which is still worse than our O(N +
+√
+N κ2ǫ− 2). (c)
+Huang and Chen (2023) considers the unconstrained online case un der Polyak–/suppress Lojasiewicz (PL) condition. In
+fact, all of the analyses in our paper still hold if we relax the strong c oncavity assumption to the PL condition
+in the unconstrained case. Furthermore, although Huang and Che n (2023)’s computation complexity O(κ 3ǫ− 3)
+matches our result, their communication complexity O(κ 3ǫ− 3) is worse than our ˜O(κ 2ǫ− 2).

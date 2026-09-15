@@ -1,0 +1,52 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "adapter_audit_controls",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Approved as a partial original DREAM trajectory adapter; missing output selection and unavailable states remain blocked rather than synthesized.",
+  "scope_notes": [
+    "Approval means faithful execution/observation within the stated public-input scope, not agreement with the paper or correctness of the algorithm.",
+    "Reviewed the redacted public cases, adapter source, bindings and original CPU30 source only; no private contract, expected-value array, derivation script, prior adapter review or prior verdict was consulted.",
+    "Source and adapter hashes bind this static review. Execution success and numerical agreement require the separate runtime/provenance/comparison stage.",
+    "Synthetic problem callbacks cannot validate the displaced original objective/data/compression primitives. They must not be described as a full original end-to-end application reproduction.",
+    "Input mapping: public coefficients define a one-x/one-y quadratic saddle objective; initial buffers are resized and assigned once before gradient/tracker initialization. Public eta/gamma, batch sizes, probabilities and mixing counts use configuration fields.",
+    "The original run_algorithm, _run_dream/_compute_gradients and fast_mix execute unchanged. Every original FastMix call checks that its actual matrix equals public W; only the ring-representable supplied matrices are supported.",
+    "Synthetic gradient averages precisely the indices the source requests; it does not implement gating, estimator recursion, q scaling, or mixing.",
+    "Random input mapping is based on source generator identity and call order: node 0 first scalar draw is refresh, later/node-specific draws are activity, and supplied sample indices are returned with batch-size checks. This is narrowly bound to the inspected source call structure.",
+    "ReasFlow retains its node-local activity decisions, original projection-before-y-mixing, estimator update ordering and original FastMix recurrence.",
+    "Observation timing: _record is intercepted at entry after state assignment; state arrays are copied. pre_projection and tracker_input are copies of actual FastMix inputs; ReasFlow projected rows are actual projection I/O, not recomputed state.",
+    "Original output only contains metric histories. The adapter never invents output_candidates/x_out and intentionally returns blocked for missing output observations. It does not consume output_draw_index because there is no source output-selection operation.",
+    "Original saddle objective, simplex projection and RNG are outside the verified implementation scope; this approves core-driver observation with the public objective/domain/randomness, not those replaced primitives."
+  ],
+  "substitutions": [
+    {
+      "symbol": "local_gradients",
+      "role": "problem_input",
+      "reason": "Public synthetic component objective at source-requested samples and points."
+    },
+    {
+      "symbol": "project_simplex",
+      "role": "problem_input",
+      "reason": "Public y feasible interval projection, leaving source placement of projection intact."
+    },
+    {
+      "symbol": "numpy.random.default_rng",
+      "role": "problem_input",
+      "reason": "Supply prescribed random realizations through only the source-consumed RNG API."
+    },
+    {
+      "symbol": "_fresh_state",
+      "role": "problem_input",
+      "reason": "Return-event buffer edit only for public dimension and initial state before driver use."
+    },
+    {
+      "symbol": "sys.settrace",
+      "role": "observation",
+      "reason": "Read original FastMix inputs and state at _record; projection I/O copied as observed."
+    }
+  ],
+  "public_digest": "276383cca84eee0892410b3472e4bf1bf4401bd824fcba3918136371c456795a",
+  "adapter_sha256": "4b8c556ef2f30b402bae30c25a2fd867b8dcabaf8b4b8361c203a41d0a5b3abb",
+  "workspace_digest": "b02ac5d778a1bd1cc615c60fb34c32771c059f9a24149e6f290c143b1f049a16",
+  "bindings_digest": "f7762f9f8f9ca6b94b749418e9da5a4048da6f228049b28a3eb62b511ace26ec"
+}

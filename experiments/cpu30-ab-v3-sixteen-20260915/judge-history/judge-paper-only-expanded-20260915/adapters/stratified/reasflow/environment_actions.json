@@ -1,0 +1,20 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "Required by original full ADMM and loss/regularizer modules.",
+    "source": "strat_models/fit.py:15 import numpy as np"
+  },
+  {
+    "kind": "install_package",
+    "package": "scipy",
+    "reason": "Original sparse preconditioned conjugate-gradient solve.",
+    "source": "strat_models/fit.py:16-17 scipy sparse imports"
+  },
+  {
+    "kind": "install_package",
+    "package": "scikit-learn",
+    "reason": "Original loss module imports LabelEncoder on module load.",
+    "source": "strat_models/losses.py:9 from sklearn.preprocessing import LabelEncoder"
+  }
+]

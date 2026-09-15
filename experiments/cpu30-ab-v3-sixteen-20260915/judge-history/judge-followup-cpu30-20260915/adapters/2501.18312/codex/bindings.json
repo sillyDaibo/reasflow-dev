@@ -1,0 +1,14 @@
+[
+  {
+    "path": "src/algorithms.py",
+    "symbol": "run_decentralized"
+  },
+  {
+    "path": "src/wasserstein.py",
+    "symbol": "gradient_from_samples"
+  },
+  {
+    "path": "src/pps_quantization.py",
+    "symbol": "simplex_pps"
+  }
+]

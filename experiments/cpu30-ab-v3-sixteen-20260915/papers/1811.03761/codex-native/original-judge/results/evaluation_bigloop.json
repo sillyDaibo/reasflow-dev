@@ -1,0 +1,277 @@
+{
+  "paper_id": "1811.03761",
+  "evaluated_at": "2026-09-04T12:42:38.173514+00:00",
+  "summary": {
+    "total_score": 0.9722,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.9722,
+    "total_rubrics": 22,
+    "passed": 21,
+    "failed": 1,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": true
+  },
+  "by_priority": {
+    "primary": {
+      "score": 1.0,
+      "passed": 14,
+      "total": 14
+    },
+    "tertiary": {
+      "score": 1.0,
+      "passed": 1,
+      "total": 1
+    },
+    "secondary": {
+      "score": 0.8571,
+      "passed": 6,
+      "total": 7
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RSA and GeoMed achieve top-1 accuracy close to Ideal SGD.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001/metrics.json (experiment_id=exp_001, title=\"Figure 3: no Byzantine attacks\", dataset=MNIST, attack=none, iterations=5000): Ideal SGD final top-1 accuracy=0.9115, GeoMed=0.9144, RSA=0.9212, RSA_l1=0.9195. GeoMed is within 0.0029 of Ideal SGD; RSA is within 0.0097 of Ideal SGD. All three methods cluster between 0.911 and 0.922, supporting the claim that RSA and GeoMed achieve accuracy close to Ideal SGD under no Byzantine attacks. CLAIM_RESULTS.json also records: \"Ideal SGD=0.9115, GeoMed=0.9144, l1-RSA=0.9195 … RSA and GeoMed are close to the oracle\".",
+      "note": "The \"close to\" threshold is informal; the measured differences are &lt;1 percentage point (0.29 pp for GeoMed, 0.97 pp for RSA), which is well within any reasonable interpretation of \"approximately equal\".",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RSA and GeoMed significantly outperform Krum and Median in top-1 accuracy.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001/metrics.json (experiment_id=exp_001, title=\"Figure 3: no Byzantine attacks\", MNIST, 0 Byzantine workers): RSA final top-1 accuracy=0.9212, GeoMed=0.9144, Krum=0.8942, Median=0.8650. All four required pairwise constraints hold: RSA>Krum (0.9212>0.8942), RSA>Median (0.9212>0.8650), GeoMed>Krum (0.9144>0.8942), GeoMed>Median (0.9144>0.8650).",
+      "note": "The margin between RSA/GeoMed and Krum/Median ranges from ~0.027 to ~0.056 in top-1 accuracy — consistent with a \"significant\" outperformance claim.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RSA and GeoMed outperform Krum and Median under same-value attacks with q = 4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002/metrics.json (title: \"Figure 4a: same-value attack q=4\", byzantine=4, MNIST, IID): Final top-1 accuracy at iteration 5000: RSA=0.9194, GeoMed=0.9172, Krum=0.8914, Median=0.8772. All four required ranking constraints hold: RSA > Krum (0.9194 > 0.8914), RSA > Median (0.9194 > 0.8772), GeoMed > Krum (0.9172 > 0.8914), GeoMed > Median (0.9172 > 0.8772).",
+      "note": "Values taken from the last trajectory entry (iteration 5000). Using max values instead would yield the same ranking outcome.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RSA and GeoMed are close to Ideal SGD under same-value attacks with q = 4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002/metrics.json (title: \"Figure 4a: same-value attack q=4\", attack=same_value, byzantine=4, attack_value=100.0, workers=20, 5000 iterations, MNIST IID): final top-1 accuracy — ideal_sgd=0.9184, rsa=0.9194, geomed=0.9172. RSA differs from Ideal SGD by +0.0010; GeoMed differs from Ideal SGD by -0.0012. All three methods are within ~0.001 of each other, confirming they are approximately equal. Cross-verified against results/formal/exp_002/metrics.csv (final row for rsa at iteration 5000: 0.9194).",
+      "note": "The claim uses \"approximately equals\" / \"close to\"; the measured gap between each of RSA/GeoMed and Ideal SGD is less than 0.002 accuracy points, which clearly satisfies this qualitative criterion.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "SGD still works under the same-value attacks (achieves non-zero top-1 accuracy).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002/metrics.json (same-value attack q=4, c=100): SGD final top-1 accuracy = 0.9193 (max = 0.9213) — well above 0. results/formal/exp_003/metrics.json (same-value attack q=8, c=100): SGD final top-1 accuracy = 0.9200 (max = 0.9232) — well above 0. Both configurations satisfy accuracy(SGD, q=4) > 0 AND accuracy(SGD, q=8) > 0.",
+      "note": "The experiments are exp_002 (Figure 4a, same_value attack q=4, attack_value=100) and exp_003 (Figure 4b/7, same_value attack q=8, attack_value=100), both on MNIST with 20 workers. SGD achieves ~92% accuracy under both attack configurations.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "RSA's top-1 accuracy under same-value attacks with q = 8 is almost the same as with q = 4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002/metrics.csv (Figure 4a, same-value attack, q=4, byzantine=4): RSA final top-1 accuracy = 0.9194 at iteration 5000. results/formal/exp_003/metrics.csv (Figure 4b, same-value attack, q=8, byzantine=8): RSA final top-1 accuracy = 0.9189 at iteration 5000. The difference is only 0.0005 (~0.05 percentage points), confirming that RSA's accuracy under q=8 is almost the same as under q=4.",
+      "note": "The configs do not explicitly record a \"c=100\" parameter by that name, but the experiment titles match Figure 4a/4b as described in the paper. The extremely small accuracy difference (0.05%) strongly supports the \"approximately equal\" predicate.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "GeoMed's top-1 accuracy under same-value attacks with q = 8 is almost the same as with q = 4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "exp_002 (same-value attack, q=4, c=100): results/formal/exp_002/metrics.csv and metrics.json both show GeoMed final top-1 accuracy = 0.9172 (max = 0.9192) at iteration 5000. exp_003 (same-value attack, q=8, c=100): results/formal/exp_003/metrics.csv and metrics.json both show GeoMed final top-1 accuracy = 0.9177 (max = 0.9204) at iteration 5000. The difference between q=8 and q=4 is only 0.0005 (final) or 0.0012 (max), confirming that GeoMed's top-1 accuracy under same-value attacks with q=8 is almost the same as with q=4.",
+      "note": "Both exp_002 and exp_003 titles in resolved_config.json explicitly identify them as \"Figure 4a: same-value attack q=4\" and \"Figure 4b and 7: same-value attack q=8\" respectively, matching the paper claim context exactly.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Krum's top-1 accuracy under same-value attacks with q = 8 is lower than with q = 4.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002/metrics.json (Figure 4a, same-value attack q=4): krum final_accuracy = 0.8914. results/formal/exp_003/metrics.json (Figure 4b/7, same-value attack q=8): krum final_accuracy = 0.8976. Both confirmed by metrics.csv files. The claim requires Krum(q=4) > Krum(q=8), but the outputs show 0.8914 < 0.8976, i.e., Krum q=8 achieves HIGHER accuracy than q=4. The required ranking is violated.",
+      "note": "The run outputs show q=8 Krum accuracy (0.8976) exceeds q=4 Krum accuracy (0.8914), which is the opposite of what the claim asserts. The difference is small (~0.006) but unambiguous in the data.",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Median's top-1 accuracy under same-value attacks with q = 8 is lower than with q = 4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002/metrics.json (title: \"Figure 4a: same-value attack q=4\", byzantine=4): Median final top-1 accuracy = 0.8772, max = 0.8778. results/formal/exp_003/metrics.json (title: \"Figure 4b and 7: same-value attack q=8\", byzantine=8): Median final top-1 accuracy = 0.8503, max = 0.858. Both final and max accuracy confirm Median(q=4) > Median(q=8) (0.8772 > 0.8503 and 0.8778 > 0.858), satisfying the required ranking under higher_is_better direction.",
+      "note": "Both experiments use MNIST, IID partition, same-value attack with value=100, c=workers=20. The comparison uses trajectories['median']['accuracy'][-1] (final iteration 5000) and max() across all 501 evaluation points, both consistently confirm the ranking.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Under sign-flipping attacks with q=4, SGD fails; GeoMed, Median and ℓ1-norm RSA show similar performance, and Median is slightly worse than the other Byzantine-robust algorithms.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_004/metrics.json (experiment_id=exp_004, title=\"Figure 5a: sign-flipping attack q=4\", byzantine=4, dataset=MNIST). Final top-1 accuracy (last iteration of 5000): GeoMed=0.9147, ℓ1-norm RSA=0.8968, Median=0.8560, SGD=0.1050. All five required constraints hold: ℓ1-norm RSA(0.8968) > SGD(0.1050) ✓, GeoMed(0.9147) > SGD(0.1050) ✓, Median(0.8560) > SGD(0.1050) ✓, ℓ1-norm RSA(0.8968) > Median(0.8560) ✓, GeoMed(0.9147) > Median(0.8560) ✓. SGD collapses to ~10.5% (near random), while GeoMed and ℓ1-norm RSA converge to ~90%+, and Median lags slightly behind at ~85.6%.",
+      "note": "GeoMed actually outperforms ℓ1-norm RSA here (0.9147 vs 0.8968), but the claim only requires both to beat Median and SGD, which holds. The qualitative description (SGD fails, GeoMed/Median/RSA robust, Median slightly worse) matches the data.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Under sign-flipping attacks with q=8, SGD fails; GeoMed, Median and ℓ1-norm RSA show similar performance, and Median is slightly worse than the other Byzantine-robust algorithms.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_005/metrics.json (experiment_id=exp_005, title=\"Figure 5b: sign-flipping attack q=8\", byzantine=8): Final top-1 accuracies — rsa(ℓ1-norm RSA)=0.8953, geomed=0.8755, median=0.8449, sgd=0.0982. All required pairwise constraints hold: ℓ1-norm RSA > SGD (0.8953 > 0.0982 ✓), GeoMed > SGD (0.8755 > 0.0982 ✓), Median > SGD (0.8449 > 0.0982 ✓), ℓ1-norm RSA > Median (0.8953 > 0.8449 ✓), GeoMed > Median (0.8755 > 0.8449 ✓).",
+      "note": "SGD fails catastrophically (~9.8% ≈ random on MNIST). GeoMed, ℓ1-norm RSA, and Median all perform similarly in the high-80s range, with Median being slightly lower than the other two Byzantine-robust methods, consistent with the paper's claim.",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "SGD fails under Gaussian attacks with q=4 and q=8.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_006/metrics.json (Gaussian attack, q=4, MNIST): SGD final accuracy=0.3886, max=0.3907 — well below meaningful accuracy while other methods (RSA=0.921, GeoMed=0.913, Krum=0.897, Median=0.880) converge normally. results/formal/exp_007/metrics.json (Gaussian attack, q=8, MNIST): SGD final accuracy=0.2120, max=0.2270 — near random/chance level while other methods remain above 0.89. Both experiments confirm SGD fails to converge to meaningful accuracy under Gaussian attacks with q=4 and q=8.",
+      "note": "MNIST has 10 classes; random chance is ~10% accuracy. SGD reaching only ~39% at q=4 and ~21% at q=8 clearly constitutes failure to converge to meaningful accuracy, especially compared to other robust methods achieving ~88–92%.",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "RSA and GeoMed have similar results under Gaussian attacks.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_006/metrics.json (Gaussian attack q=4, g=10000): RSA final top-1 accuracy = 0.9210, GeoMed = 0.9128, |diff| = 0.0082 (~0.82 pp). results/formal/exp_007/metrics.json (Gaussian attack q=8, g=10000): RSA = 0.9196, GeoMed = 0.9081, |diff| = 0.0115 (~1.15 pp). Both methods achieve approximately 91% accuracy under both Gaussian attack configurations, with differences below 1.2 percentage points — consistent with \"similar results.\"",
+      "note": "No explicit tolerance threshold is given for \"approximately equals.\" The differences (0.82 and 1.15 pp) are small relative to overall accuracy levels (~91%), supporting the \"similar\" claim. Both methods remain well above chance, showing robustness under Gaussian attacks.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RSA and GeoMed outperform Median and Krum in terms of top-1 accuracy under Gaussian attacks with q=4 and q=8.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_006/metrics.json (Figure 6a: Gaussian attack q=4, MNIST IID): RSA=0.9210, GeoMed=0.9128, Krum=0.8973, Median=0.8795. All four constraints hold: RSA>Median (+4.15pp), RSA>Krum (+2.37pp), GeoMed>Median (+3.33pp), GeoMed>Krum (+1.55pp). | results/formal/exp_007/metrics.json (Figure 6b: Gaussian attack q=8, MNIST IID): RSA=0.9196, GeoMed=0.9081, Krum=0.8951, Median=0.8934. All four constraints hold: RSA>Median (+2.62pp), RSA>Krum (+2.45pp), GeoMed>Median (+1.47pp), GeoMed>Krum (+1.30pp).",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "GeoMed has the largest per-iteration computational cost due to the difficulty of calculating the geometric median.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_003/metrics.json contains wall_seconds per method: GeoMed=99.742s, Krum=59.119s, Median=39.999s, Ideal SGD=27.812s, RSA=27.619s, SGD=27.940s. All four ranking constraints hold (lower is better): Ideal SGD (27.81s) < GeoMed (99.74s) ✓; Krum (59.12s) < GeoMed (99.74s) ✓; Median (40.00s) < GeoMed (99.74s) ✓; RSA (27.62s) < GeoMed (99.74s) ✓. GeoMed is the slowest method by a large margin, consistent with CLAIM_RESULTS.json C3_RUNTIME observation.",
+      "note": "Experiment exp_003 corresponds to q=8 same-value attack on MNIST, which is the runtime comparison experiment. The CLAIM_RESULTS.json also independently corroborates these numbers.",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "ℓ1-norm RSA and Median are both slightly slower than Ideal SGD, but faster than Krum.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_005/metrics.json (experiment_id=exp_005, MNIST, l1-norm, sign_flip attack): wall_seconds per method — ideal_sgd=6.081s, rsa=9.195s, median=15.291s, krum=29.206s, geomed=22.317s, sgd=6.000s. All four required ranking constraints hold under lower_is_better: (1) Ideal SGD > RSA: 6.081 < 9.195 ✅; (2) Ideal SGD > Median: 6.081 < 15.291 ✅; (3) RSA > Krum: 9.195 < 29.206 ✅; (4) Median > Krum: 15.291 < 29.206 ✅.",
+      "note": "exp_005 is labeled \"Figure 5b\" in the config title, but it is the only experiment containing all four methods (ideal_sgd, rsa, median, krum) with wall_seconds data on MNIST. The runtime values clearly support the claimed ordering.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In both settings (without Byzantine attacks and under same-value attacks with q=8, c=100), ℓ1-norm RSA and ℓ2-norm RSA are close in top-1 accuracy, and both outperform ℓ∞-norm RSA.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Two output files contain direct evidence:\n\n1. results/formal/exp_001/metrics.json (no Byzantine attack, Figures 9):\n   - rsa_l1: final top-1 accuracy = 0.9195\n   - rsa_l2: final top-1 accuracy = 0.9198\n   - rsa_linf: final top-1 accuracy = 0.8759\n   → ℓ1 > ℓ∞ (+0.0436), ℓ2 > ℓ∞ (+0.0439), ℓ1 ≈ ℓ2 (diff = 0.0003)\n\n2. results/formal/exp_008/metrics.json (same-value attack, q=8, c=100, Figure 10):\n   - rsa_l1 (best lambda=0.07): final top-1 accuracy = 0.9183\n   - rsa_l2: final top-1 accuracy = 0.9181\n   - rsa_linf: final top-1 accuracy = 0.8721\n   → ℓ1 > ℓ∞ (+0.0462), ℓ2 > ℓ∞ (+0.0460), ℓ1 ≈ ℓ2 (diff = 0.0002)\n\nBoth required ordering constraints (ℓ1 > ℓ∞ and ℓ2 > ℓ∞) hold in both settings.",
+      "note": "For the attacked setting (exp_008), ℓ1-RSA has multiple lambda variants; the best-performing one (lambda=0.07, acc=0.9183) was used for comparison, as it represents the configured method. ℓ2 and ℓ∞ each appear as single entries with their own paper-specific hyperparameters.",
+      "error": false
+    },
+    {
+      "id": "res-018",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In both settings, regarding the variance of the regular workers' local iterates, ℓ∞-norm RSA has the largest variance, ℓ2-norm RSA has smaller variance than ℓ1-norm RSA.",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "results/formal/exp_008/metrics.json and metrics.csv (title: \"Figure 8 and Figures 9-10: lambda and norm sensitivity\", iid partition). Final variance values at iteration 5000: rsa_l1 (λ=0.07) = 3.063e-05, rsa_l2 = 2.07e-06, rsa_linf = 2.84e-04. Ranking: ℓ∞-norm RSA has largest variance (2.84e-04 > 3.063e-05 > 2.07e-06), ℓ1-norm RSA has larger variance than ℓ2-norm RSA. Both required ordering constraints hold: (1) rsa_l2 < rsa_l1 (2.07e-06 < 3.063e-05, True) and (2) rsa_l1 < rsa_linf (3.063e-05 < 2.84e-04, True).",
+      "note": "The claim says \"in both settings\" (Figures 9 and 10), but only one experiment output (exp_008, iid partition) was found covering norm comparison. No separate second-setting run output exists. The single available output supports the ranking. Confidence is medium rather than high because the \"both settings\" criterion cannot be fully verified from only one run output.",
+      "error": false
+    },
+    {
+      "id": "res-019",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "When q=4, two handwriting numbers' data are not available, so the best possible accuracy is around 0.8.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_009/metrics.json (exp_009 = \"Figure 11a: heterogeneous data q=4\", partition=heterogeneous, byzantine=4): The best-performing method is sgd with final accuracy=0.7575 and max=0.7577. rsa achieves final=0.7312, geomed final=0.7137. The best accuracy (sgd ~0.758) satisfies |0.7575 - 0.8| = 0.0425 ≤ 0.1, consistent with the claim that the best possible accuracy is around 0.8. median (0.3121) and krum (0.0980) are far below 0.8, reflecting that two digit classes are unavailable.",
+      "note": "The claim is qualitative (\"best possible accuracy is around 0.8\") and interpreted as the top method reaching ~0.8 (±0.1). The best method (sgd) reaches 0.7575, satisfying the tolerance. The claim about two digit classes being missing explains why accuracy is capped below full-data levels.",
+      "error": false
+    },
+    {
+      "id": "res-020",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "When q=8, the best possible accuracy is around 0.6.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_010/metrics.json, titled \"Figure 11b: heterogeneous data q=8\". Best method accuracies: sgd max=0.5736 (final=0.5717), rsa max=0.5648 (final=0.5620), median max=0.1947, krum max=0.0980, geomed max=0.0980. The best achievable accuracy is ~0.57, which satisfies |0.57 - 0.6| = 0.03 ≤ 0.1 tolerance.",
+      "note": "The claim is that \"best possible accuracy is around 0.6\" for q=8. The best observed value across all methods is ~0.574 (SGD), which is within 0.03 of 0.6 — well inside the ±0.1 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-021",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "When q=4, Krum fails, while RSA outperforms GeoMed and Median.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_009/metrics.json (experiment \"Figure 11a: heterogeneous data q=4\", partition=heterogeneous): final top-1 accuracy — RSA=0.7312, GeoMed=0.7137, Median=0.3121, Krum=0.098. All three required ranking constraints hold: RSA(0.7312) > GeoMed(0.7137), RSA(0.7312) > Median(0.3121), RSA(0.7312) > Krum(0.098). Krum at 0.098 is essentially chance-level for 10-class MNIST, confirming it fails.",
+      "note": "Final-iteration accuracies used; max accuracies (RSA=0.7338, GeoMed=0.7157, Median=0.466, Krum=0.098) also satisfy all three constraints.",
+      "error": false
+    },
+    {
+      "id": "res-022",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "When q=8, GeoMed, Krum and Median all fail, but RSA still performs well and reaches the near-optimal accuracy.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_010/metrics.json (title: \"Figure 11b: heterogeneous data q=8\", partition=heterogeneous, byzantine=8): RSA final top-1 accuracy = 0.562, GeoMed = 0.098, Krum = 0.098, Median = 0.1518. All three required ranking constraints hold: RSA > GeoMed (0.562 > 0.098), RSA > Krum (0.562 > 0.098), RSA > Median (0.562 > 0.1518).",
+      "note": "RSA at 0.562 is clearly better than the failing baselines (~0.098–0.152). Whether 0.562 qualifies as \"near-optimal\" is a qualitative judgment (the exp_009 q=4 SGD baseline would be needed for comparison), but the ranking claim strictly holds.",
+      "error": false
+    }
+  ]
+}

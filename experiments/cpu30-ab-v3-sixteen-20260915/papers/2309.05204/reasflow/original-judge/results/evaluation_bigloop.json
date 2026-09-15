@@ -1,0 +1,399 @@
+{
+  "paper_id": "2309.05204",
+  "evaluated_at": "2026-09-04T04:59:18.835791+00:00",
+  "summary": {
+    "total_score": 0.3529,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.3529,
+    "total_rubrics": 34,
+    "passed": 12,
+    "failed": 22,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.3529,
+      "passed": 12,
+      "total": 34
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves PSNR 27.39 on Peppers (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: APIRL1-AM/pepper512/BSNR30 psnr_mean = 27.343323734924915 (n=10 seeds). results/formal/pirl1_am_2026-09-04/metrics.csv: individual seed PSNRs range 27.316–27.382. Closest single seed is seed=1 at 27.3821 (|diff|=0.008, within tolerance), but this is not the aggregate result. Mean |27.343 − 27.39| = 0.047, which exceeds the allowed absolute tolerance of 0.01.",
+      "note": "The claim value of 27.39 dB is not reproduced by the run outputs. The aggregate mean is 27.34 dB. One seed (seed=1: 27.382) is marginally within tolerance but the reported result is an average over 10 seeds.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves SSIM 0.759 on Peppers (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: APIRL1-AM/pepper512/BSNR30 ssim_mean = 0.7580026448123285 (mean over 10 seeds). Individual seed values from metrics.csv range from ~0.7571 to ~0.7589. |0.7580 - 0.759| ≈ 0.001, which satisfies the ±0.01 tolerance. The run produced 10 seeds (seed 0–9), all SSIM values in [0.757–0.759] range.",
+      "note": "The paper claims 0.759; the measured mean is 0.7580, a difference of ~0.001, well within tolerance. The image is labeled \"pepper512\" in the output files (corresponding to Peppers).",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires 269 iterations on Peppers (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/metrics.csv and summary.json contain APIRL1-AM on pepper512 at BSNR=30 across 10 seeds (seeds 0–9). Individual iteration counts: 227, 248, 234, 263, 316, 278, 263, 264, 263, 283. The mean (as confirmed in summary.json: \"APIRL1-AM/pepper512/BSNR30\": \"iterations_mean\": 263.9) is 263.9. The claim expects 269 iterations; |263.9 - 269| = 5.1, which exceeds the absolute tolerance of 0.5.",
+      "note": "The run outputs contain 10 repeated seeds; the reported metric appears to be the mean across seeds. No single seed matches 269 either. The closest values are 263 (seeds 3, 6, 8) and 283 (seed 9), none within 0.5 of 269.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM takes CPU time 11.20 seconds on Peppers (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/pirl1_am_2026-09-04/summary.json — APIRL1-AM/pepper512/BSNR30 elapsed_seconds_mean = 6.469 s (std=4.750, n=10). Individual seed times from metrics.csv (seed 0–9): 2.798, 2.857, 13.589, 14.154, 10.383, 3.113, 3.214, 3.001, 2.904, 8.674 seconds. None of these are within ±0.1 of 11.20 s, and the mean (6.47 s) deviates by ~4.73 s from the claimed value.",
+      "note": "The run outputs show high variance across seeds (std≈4.75 s), but neither the mean nor any individual run matches the claimed 11.20 s. The closest individual run is seed 4 at 10.383 s, which still misses the tolerance of ±0.1.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves PSNR 27.39 on Peppers (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: PIRL1-AM/pepper512/BSNR30 psnr_mean = 27.34621294706801 (averaged over 10 seeds). Individual seed values from metrics.csv range from ~27.323 to ~27.383. The expected value is 27.39 with tolerance ±0.01. |27.346 - 27.39| = 0.044 > 0.01. All 10 individual runs are well below 27.39 (max is seed 9 at 27.373), and none is within 0.01 of 27.39.",
+      "note": "The measured mean PSNR is ~27.346, which is 0.044 dB below the claimed 27.39. Even the maximum across 10 seeds (27.373 at seed 9) misses the claim by 0.017 dB. The claim is not supported by these run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves SSIM 0.759 on Peppers (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: PIRL1-AM/pepper512/BSNR30 ssim_mean = 0.7579165501871026 (over 10 seeds). Individual seed SSIMs from metrics.csv range from 0.7571 to 0.7589. The mean value 0.7579 satisfies |0.7579 - 0.759| = 0.0011 ≤ tolerance 0.01.",
+      "note": "The paper value 0.759 rounds to the mean measured value 0.7579 within the given tolerance. Slight discrepancy (~0.001) is within the stated absolute tolerance of 0.01.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM requires 364 iterations on Peppers (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: PIRL1-AM/pepper512/BSNR30 iterations_mean=367.5 (std=81.25, n=10). Individual seeds from metrics.csv (PIRL1-AM, pepper512, bsnr=30): seed0=284, seed1=337, seed2=445, seed3=332, seed4=500, seed5=411, seed6=264, seed7=279, seed8=446, seed9=377. Mean=3675/10=367.5. Expected 364 ± 0.5; measured 367.5; |367.5 - 364| = 3.5 > 0.5 tolerance.",
+      "note": "The run outputs show PIRL1-AM on Peppers (BSNR=30) averaged 367.5 iterations across 10 random seeds, not 364. No single-seed result equals 364 either. The claim fails the numerical verification rule.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM takes CPU time 14.71 seconds on Peppers (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: PIRL1-AM/pepper512/BSNR30 elapsed_seconds_mean = 7.535933623509481 seconds (n=10 seeds). Individual seed values from metrics.csv: [3.043, 3.619, 23.687, 18.530, 5.540, 4.824, 2.822, 3.150, 4.979, 5.166]. The measured mean (7.54s) differs from the claimed 14.71s by ~7.17s, well outside the ±0.1 tolerance.",
+      "note": "The run outputs exist but produce a mean CPU time of ~7.54s, not 14.71s as claimed. The individual seeds show high variance (std ≈ 7.32s), but even the median or any reasonable aggregate does not approach 14.71s.",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves PSNR 26.03 on Cameraman (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: aggregate key \"APIRL1-AM/camera512/BSNR30\" reports psnr_mean=26.03486356525667 (n=10 seeds). |26.03486 - 26.03| = 0.00486 ≤ tolerance 0.01. Individual seed PSNRs from metrics.csv for APIRL1-AM/camera512/bsnr=30 range from ~26.019 to ~26.062, consistent with the mean.",
+      "note": "The dataset is labeled \"camera512\" in the outputs, corresponding to the Cameraman image at BSNR=30.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves SSIM 0.763 on Cameraman (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/metrics.csv: APIRL1-AM on camera512 (BSNR=30), 10 seeds, per-seed SSIM values: [0.7632, 0.7630, 0.7632, 0.7614, 0.7616, 0.7620, 0.7623, 0.7609, 0.7630, 0.7630]. Mean SSIM = 0.7624. |0.7624 - 0.763| = 0.0006 ≤ tolerance 0.01.",
+      "note": "The paper reports a single number (0.763); the run outputs are a 10-seed average (0.7624), which is well within the ±0.01 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires 228 iterations on Cameraman (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/metrics.csv and summary.json contain APIRL1-AM on camera512 (Cameraman) at BSNR=30 across 10 seeds. Individual seed iteration counts are: seed0=299, seed1=221, seed2=283, seed3=310, seed4=220, seed5=270, seed6=272, seed7=261, seed8=262, seed9=279. The mean is 267.7 (confirmed in summary.json: \"APIRL1-AM/camera512/BSNR30\": {\"iterations_mean\": 267.7}). No single seed or aggregate equals 228. The expected value of 228 is ~39.7 away from the mean, well outside the ±0.5 tolerance.",
+      "note": "The paper claims 228 iterations for APIRL1-AM on Cameraman at BSNR=30, but run outputs show a mean of 267.7 iterations across 10 seeds. The discrepancy likely reflects variability across random seeds or different experimental configurations than what the paper reports.",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM takes CPU time 9.50 seconds on Cameraman (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/pirl1_am_2026-09-04/metrics.csv, the 10 individual APIRL1-AM runs on camera512/BSNR30 have elapsed_seconds: [3.47, 2.61, 3.48, 20.69, 12.15, 14.57, 15.94, 12.33, 16.80, 21.69]. The mean (confirmed in summary.json as \"APIRL1-AM/camera512/BSNR30\": elapsed_seconds_mean=12.371995) is 12.37 seconds. No individual run falls within [9.40, 9.60]. The expected value of 9.50 ± 0.1 is not satisfied by any single run or by the mean.",
+      "note": "The paper likely reports a single representative run or a median; the run outputs show high variance (std ~7.0s) across 10 seeds, but the mean (12.37s) and all individual runs are outside the tolerance band of ±0.1 around 9.50.",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves PSNR 26.04 on Cameraman (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: PIRL1-AM/camera512/BSNR30 psnr_mean = 26.037506090000313 (averaged over 10 seeds). |26.037506 - 26.04| = 0.002494 ≤ tolerance 0.01. Individual seed values from metrics.csv range from ~26.019 to ~26.062, all consistent with the mean.",
+      "note": "The image is labeled \"camera512\" in outputs (matching Cameraman). The dataset is BSNR=30 as required. Mean PSNR is very close to the claimed 26.04 dB.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves SSIM 0.762 on Cameraman (BSNR=30).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: aggregate[\"PIRL1-AM/camera512/BSNR30\"][\"ssim_mean\"] = 0.7623508420954705 (10 seeds). |0.7624 - 0.762| = 0.0004 ≤ tolerance 0.01. Individual seed SSIM values from metrics.csv also all cluster around 0.761–0.763.",
+      "note": "The dataset is labelled \"camera512\" in the outputs (512×512 Cameraman image), and BSNR=30 matches. The mean SSIM across 10 seeds is 0.7624, which rounds to 0.762 as claimed.",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM requires 324 iterations on Cameraman (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: PIRL1-AM/camera512/BSNR30 iterations_mean=451.7 (std=171.7, n=10). Individual seed iterations from metrics.csv: seed0=344, seed1=276, seed2=313, seed3=564, seed4=810, seed5=522, seed6=432, seed7=531, seed8=230, seed9=495. The claimed value of 324 is not supported; measured mean (451.7) differs from expected (324) by ~127.7, far exceeding tolerance 0.5. No individual seed run equals 324 within ±0.5.",
+      "note": "The paper claims 324 iterations for PIRL1-AM on Cameraman BSNR=30 (Table I). The run outputs show a mean of 451.7 with high variance across 10 seeds, none of which equal 324. The discrepancy is large and consistent across all seeds.",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM takes CPU time 13.12 seconds on Cameraman (BSNR=30).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/metrics.csv and summary.json contain run outputs for PIRL1-AM on camera512 (BSNR=30). Individual seed elapsed_seconds: seed0=3.663, seed1=2.938, seed2=3.592, seed3=33.687, seed4=43.040, seed5=26.314, seed6=22.630, seed7=26.909, seed8=16.813, seed9=37.095. The aggregate mean from summary.json is 21.668 seconds (std=14.585). No individual run or aggregate value is close to the claimed 13.12 seconds. The absolute difference between the mean (21.668) and the expected value (13.12) is ~8.55 seconds, far exceeding the 0.1 tolerance. No other output file contains a 13.12s value for this method/dataset/BSNR combination.",
+      "note": "The paper claims 13.12s for PIRL1-AM on Cameraman (BSNR=30) in Table I. The run outputs show a mean of 21.67s across 10 seeds with very high variance (std=14.58s), suggesting the paper may report a single run or a different hardware/run configuration. No single seed produced a value near 13.12s either.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves PSNR 25.52 on Peppers (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/metrics.csv and summary.json: APIRL1-AM on pepper512 at BSNR=20 across 10 seeds yields psnr_mean=25.500197 (std=0.0342). Individual seed PSNRs: seed0=25.5020, seed1=25.5147, seed2=25.5001, seed3=25.4353, seed4=25.5372, seed5=25.5013, seed6=25.4935, seed7=25.4677, seed8=25.4905, seed9=25.5595. The mean (25.500) differs from the expected 25.52 by 0.0198, which exceeds the tolerance of 0.01. No individual seed result falls within ±0.01 of 25.52 except seed=1 (diff=0.0053), but the claim refers to a single reported value of 25.52 which is not reproduced by the mean.",
+      "note": "The closest individual run (seed=1, PSNR=25.5147) falls within 0.01 of 25.52. However, the aggregate mean used for Table I comparison is 25.500, which is 0.020 away from the claimed 25.52 — outside tolerance. The claim fails on the mean-based verification.",
+      "error": false
+    },
+    {
+      "id": "res-018",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves SSIM 0.625 on Peppers (BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: APIRL1-AM/pepper512/BSNR20 ssim_mean = 0.6236721135331169 (n=10 seeds). Individual seed SSIMs from metrics.csv range from ~0.6216 to ~0.6266. |0.6237 - 0.625| = 0.0013, within tolerance of 0.01.",
+      "note": "The run uses image name \"pepper512\" for the Peppers image and BSNR=20. The aggregate mean SSIM of 0.6237 matches the claimed 0.625 within the ±0.01 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-019",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires 141 iterations on Peppers (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/metrics.csv: APIRL1-AM on pepper512 at BSNR=20 across 10 seeds shows iterations [192, 169, 130, 156, 142, 209, 170, 163, 193, 164], mean = 168.8. The claim expects 141 ± 0.5; the measured mean deviates by 27.8, far outside tolerance.",
+      "note": "The run uses 10 random seeds; the paper likely reports a single run or specific seed. None of the 10 individual runs produced exactly 141 iterations (seed 4 gave 142, which is within 1 of 141 but outside the 0.5 tolerance). If the paper reports a specific single run result, seed 4 (142 iterations) is closest but still outside the stated tolerance of 0.5.",
+      "error": false
+    },
+    {
+      "id": "res-020",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM takes CPU time 6.03 seconds on Peppers (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/metrics.csv and summary.json were examined. For APIRL1-AM on pepper512 at BSNR=20, the 10 individual elapsed_seconds values are: 2.173, 1.894, 1.412, 1.755, 1.546, 2.255, 1.861, 1.863, 10.672, 2.705 — giving a mean of ~2.81 seconds (confirmed in summary.json: \"elapsed_seconds_mean\": 2.8135065560229124). The expected value is 6.03 s with tolerance ±0.1; the measured mean of 2.81 s is ~3.22 s away from the claimed value, far outside tolerance. No individual seed result approaches 6.03 s either (the closest is seed 8 at 10.67 s). The BSNR=30 condition for APIRL1-AM/pepper512 has a mean of 6.47 s, which also does not match within tolerance.",
+      "note": "The run outputs exist and are complete (10 seeds). The measured mean CPU time for APIRL1-AM on Peppers BSNR=20 is approximately 2.81 seconds, not 6.03 seconds. The claim does not hold.",
+      "error": false
+    },
+    {
+      "id": "res-021",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves PSNR 25.52 on Peppers (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json and metrics.csv contain run outputs for PIRL1-AM on pepper512 at BSNR=20 (10 seeds). The aggregate mean PSNR for PIRL1-AM/pepper512/BSNR20 is 25.500087 dB (std=0.034). The individual seed values range from ~25.435 to ~25.559. The expected value is 25.52 dB; |25.500087 - 25.52| = 0.01991 > tolerance 0.01. No individual seed produced exactly 25.52 dB either.",
+      "note": "The mean PSNR (25.50) is close but falls outside the ±0.01 tolerance of the claimed 25.52. This could reflect differences in random seeds, kernel/noise realization, or slight algorithmic variation relative to the paper's reported value.",
+      "error": false
+    },
+    {
+      "id": "res-022",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves SSIM 0.625 on Peppers (BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: PIRL1-AM/pepper512/BSNR20 ssim_mean = 0.6236715457208941 (n=10 seeds). Also confirmed in results/formal/pirl1_am_2026-09-04/metrics.csv with per-seed rows for method=PIRL1-AM, image=pepper512, bsnr=20. |0.6237 - 0.625| = 0.0013 ≤ tolerance 0.01.",
+      "note": "The run output reports a mean SSIM of ~0.6237 across 10 random seeds, which rounds to 0.624; the paper reports 0.625. The difference of ~0.001 is within the stated tolerance of 0.01.",
+      "error": false
+    },
+    {
+      "id": "res-023",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM requires 186 iterations on Peppers (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: PIRL1-AM/pepper512/BSNR20 iterations_mean = 203.1 (std=49.6, n=10). Individual seed values from metrics.csv: [258, 302, 166, 160, 130, 192, 218, 185, 209, 211]. The measured mean is 203.1, versus the claimed 186. |203.1 - 186| = 17.1 >> tolerance 0.5.",
+      "note": "The runs used 10 random seeds; the mean iterations is 203.1, not 186. No single seed produces exactly 186 (seed 7 gives 185, which is the closest but still 1 iteration off and not the reported aggregate). The claim cannot be verified from these run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-024",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM takes CPU time 7.63 seconds on Peppers (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/metrics.csv and summary.json: For PIRL1-AM on pepper512 at BSNR=20, the 10-seed mean elapsed_seconds = 3.2838 (individual values: 2.891, 3.422, 2.721, 1.800, 1.591, 2.138, 2.329, 2.448, 11.193, 2.304). This is far from the claimed 7.63 ± 0.1 seconds. Note: PIRL1-AM on pepper512 at BSNR=30 has mean 7.536 seconds (close to 7.63), suggesting the paper's reported value likely corresponds to BSNR=30, not BSNR=20.",
+      "note": "The run outputs for BSNR=20 clearly do not support the claim. The closest matching value (7.54s) appears under BSNR=30 for the same image/method combination. Possible mismatch between claimed BSNR=20 and actual BSNR=30 in the paper, or the paper reports single-run rather than multi-seed mean times.",
+      "error": false
+    },
+    {
+      "id": "res-025",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves PSNR 24.49 on Cameraman (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/metrics.csv and summary.json contain 10 seeds of APIRL1-AM on camera512 at BSNR=20. The aggregate psnr_mean from summary.json is 24.501340316788117. The claimed value is 24.49 with tolerance ±0.01. The difference is |24.5013 - 24.49| = 0.01134, which exceeds the tolerance of 0.01.",
+      "note": "The measured mean (24.5013) is close to but slightly above the claimed value (24.49). Individual seed PSNRs range from ~24.46 to ~24.56. The aggregate is 0.011 dB above the claimed value, which is outside the ±0.01 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-026",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM achieves SSIM 0.570 on Cameraman (BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/metrics.csv and summary.json both confirm: APIRL1-AM on camera512 at BSNR=20 (10 seeds) yields individual SSIM values [0.5698, 0.5678, 0.5702, 0.5654, 0.5665, 0.5680, 0.5680, 0.5630, 0.5697, 0.5731], mean SSIM = 0.56815. summary.json \"APIRL1-AM/camera512/BSNR20\": ssim_mean = 0.5681542233759876. |0.5682 - 0.570| = 0.0018 ≤ tolerance 0.01.",
+      "note": "The paper's reported value of 0.570 is presumably rounded from the mean of 0.568; the reproduction uses 10 random seeds (PCG64) since the paper does not specify a random state. The measured mean falls within the stated ±0.01 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-027",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires 225 iterations on Cameraman (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: APIRL1-AM/camera512/BSNR20 iterations_mean = 249.5 (std=49.26, n=10). Per-seed iterations from metrics.csv: [322, 287, 218, 199, 297, 202, 253, 217, 305, 195]. The measured mean of 249.5 differs from the claimed 225 by 24.5, well outside the tolerance of 0.5.",
+      "note": "The run used 10 random seeds; the mean iteration count is 249.5, not 225. No single seed matches 225 either (closest are seed=2: 218 and seed=7: 217).",
+      "error": false
+    },
+    {
+      "id": "res-028",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM takes CPU time 9.64 seconds on Cameraman (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: APIRL1-AM/camera512/BSNR20 elapsed_seconds_mean=12.949021148495376 (std=3.784, n=10). Individual seeds from metrics.csv for APIRL1-AM, camera512, bsnr=20: seed0=19.36s, seed1=14.91s, seed2=10.15s, seed3=11.63s, seed4=17.49s, seed5=7.76s, seed6=11.57s, seed7=10.95s, seed8=16.07s, seed9=9.61s. The mean (12.95s) deviates from the claimed 9.64s by ~3.31s, far outside the ±0.1 tolerance. Only seed 9 (9.61s) is close, but the aggregate metric does not match.",
+      "note": "The closest individual run is seed 9 at 9.606s (~0.034s from 9.64), but the reported aggregate metric (mean over 10 seeds) is 12.95s. It is unclear whether the paper reports a mean, median, or single run; no output file presents a value of exactly or near 9.64 as an aggregate for this condition.",
+      "error": false
+    },
+    {
+      "id": "res-029",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves PSNR 24.49 on Cameraman (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: PIRL1-AM/camera512/BSNR20 psnr_mean = 24.50521713072136. Expected 24.49, tolerance 0.01. |24.505 - 24.49| = 0.01522 > 0.01. Also confirmed by individual seed rows in metrics.csv (10 seeds, PSNR values ranging ~24.47–24.57, mean ~24.505).",
+      "note": "The measured mean PSNR is 24.505, which is 0.015 away from the claimed 24.49 — just outside the ±0.01 tolerance. The claim is close but does not pass the strict numerical check.",
+      "error": false
+    },
+    {
+      "id": "res-030",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM achieves SSIM 0.570 on Cameraman (BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: \"PIRL1-AM/camera512/BSNR20\" → ssim_mean = 0.5681735458501336 (n=10 seeds). Absolute difference |0.5682 - 0.570| = 0.0018, within tolerance 0.01. Individual seed values from metrics.csv range 0.5630–0.5732, all consistent with mean ~0.568.",
+      "note": "The paper reports 0.570; measured mean is 0.5682. The small gap (≈0.002) is well within the 0.01 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-031",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM requires 244 iterations on Cameraman (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: PIRL1-AM/camera512/BSNR20 iterations_mean = 310.5 (std=135.6, n=10). Per-seed values from metrics.csv: [637, 234, 222, 272, 430, 170, 302, 336, 282, 220]. The claimed value of 244 is not supported; |310.5 - 244| = 66.5, which far exceeds the tolerance of 0.5.",
+      "note": "The run used 10 random seeds and reports the mean iteration count. The paper's Table I likely reports a single deterministic run or a different seed, but the run outputs here show a mean of 310.5, not 244.",
+      "error": false
+    },
+    {
+      "id": "res-032",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "PIRL1-AM takes CPU time 10.02 seconds on Cameraman (BSNR=20).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/pirl1_am_2026-09-04/summary.json: PIRL1-AM/camera512/BSNR20 elapsed_seconds_mean = 15.9516 (std=6.495, n=10). The expected value is 10.02 ± 0.1. The measured mean is 15.95, which differs by ~5.93 seconds, far outside tolerance. Individual seed values from metrics.csv (rows 63,65,67,69,71,73,75,77,79,81): 31.32, 14.78, 9.94, 14.72, 21.35, 7.84, 15.39, 15.41, 15.76, 13.00 — none equal 10.02±0.1 (seed 2 gives 9.937, which is 0.083 away, but Table I presumably reports a mean).",
+      "note": "Seed 2 individual run (9.937s) is within tolerance of 10.02±0.1, but the aggregate mean (15.95s) does not match. The paper's Table I value is presumably a mean across seeds, and that mean is 15.95, not 10.02.",
+      "error": false
+    },
+    {
+      "id": "res-033",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires fewer iterations than PIRL1-AM on all four tested configurations (Peppers BSNR=30, Cameraman BSNR=30, Peppers BSNR=20, Cameraman BSNR=20).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/pirl1_am_2026-09-04/summary.json and metrics.csv. Mean iterations over 10 seeds per configuration:\n- Peppers BSNR=30: APIRL1-AM=263.9 vs PIRL1-AM=367.5 → APIRL1-AM requires fewer ✓\n- Cameraman BSNR=30: APIRL1-AM=267.7 vs PIRL1-AM=451.7 → APIRL1-AM requires fewer ✓\n- Peppers BSNR=20: APIRL1-AM=168.8 vs PIRL1-AM=203.1 → APIRL1-AM requires fewer ✓\n- Cameraman BSNR=20: APIRL1-AM=249.5 vs PIRL1-AM=310.5 → APIRL1-AM requires fewer ✓\nAll 4 of 4 cases hold on the mean. Note: at the per-seed level, a small number of seeds show PIRL1-AM winning (Cameraman BSNR=30 seed=8, Peppers BSNR=20 seeds 4 and 5, Cameraman BSNR=20 seeds 1, 5, 8), but the aggregate (mean) metric clearly favors APIRL1-AM in all four configurations.",
+      "note": "The claim is verified at the aggregate/mean level across 10 random seeds per configuration. There are a few individual seed exceptions, but the mean iterations consistently show APIRL1-AM needing fewer iterations than PIRL1-AM on all four tested configurations.",
+      "error": false
+    },
+    {
+      "id": "res-034",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APIRL1-AM requires less CPU time than PIRL1-AM on all four tested configurations.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/pirl1_am_2026-09-04/metrics.csv (80 runs, 10 seeds each) and results/formal/pirl1_am_2026-09-04/summary.json.\n\nMean elapsed_seconds per configuration (lower is better):\n1. Peppers BSNR=30: APIRL1-AM=6.469s vs PIRL1-AM=7.536s → APIRL1-AM faster ✓\n2. Peppers BSNR=20: APIRL1-AM=2.814s vs PIRL1-AM=3.284s → APIRL1-AM faster ✓\n3. Cameraman BSNR=30: APIRL1-AM=12.372s vs PIRL1-AM=21.668s → APIRL1-AM faster ✓\n4. Cameraman BSNR=20: APIRL1-AM=12.949s vs PIRL1-AM=15.952s → APIRL1-AM faster ✓\n\nAll 4 of 4 required cases hold (aggregation threshold 4/4 satisfied).",
+      "note": "CPU time comparison is based on mean elapsed_seconds across 10 random seeds per configuration. The claim holds at the aggregate level for all four configurations.",
+      "error": false
+    }
+  ]
+}

@@ -1,0 +1,327 @@
+{
+  "paper_id": "2207.04555",
+  "evaluated_at": "2026-09-04T05:39:35.414092+00:00",
+  "summary": {
+    "total_score": 0.1961,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.1961,
+    "total_rubrics": 27,
+    "passed": 6,
+    "failed": 21,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.1667,
+      "passed": 4,
+      "total": 24
+    },
+    "secondary": {
+      "score": 0.6667,
+      "passed": 2,
+      "total": 3
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, APDG requires 875.3 iterations on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json, group {regime: \"ring_rank1\", method: \"APDG\", n: 100}: iterations_mean = 855.88. Expected value is 875.3. |855.88 - 875.3| = 19.42, which exceeds the absolute tolerance of 0.5. The raw per-seed data in results/formal/section7/metrics.csv also confirms values consistent with this mean (e.g., seed 0: 682, seed 1: 883, seed 2: 898, seed 3: 740, seed 4: 821).",
+      "note": "The experiment ran 100 seeds over the ring_rank1 regime (5 nodes, dim=40, rank=1, tolerance=0.01) and the measured mean is 855.88, not 875.3. The discrepancy of ~19.4 iterations is well outside the ±0.5 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, Globally Dual requires 502.7 iterations on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/metrics.csv: 100 seeds of Globally Dual on ring_rank1 (5 nodes, dim=40, rank=1, tolerance=0.01) all reached the tolerance. Mean iterations_to_tolerance = 501.66 (min=439, max=549). |501.66 − 502.7| = 1.04, which exceeds the absolute tolerance of 0.5. CLAIM_RESULTS.json corroborates a mean of 501.66 for this condition.",
+      "note": "The measured value is close but falls outside the ±0.5 window around 502.7. The discrepancy is likely due to a different random-seed set or a slightly different stopping-criterion implementation compared to the paper. No other output files contain an alternative measurement for this condition.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, Locally Dual requires 276.7 iterations on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json: For regime=\"ring_rank1\" (ring, 5 nodes, dim=40, rank=1, tolerance=0.01), method=\"Locally Dual\", iterations_mean=277.25 (over 100 seeds). The claim expects 276.7 ± 0.5. |277.25 - 276.7| = 0.55 > 0.5 (tolerance).",
+      "note": "The measured mean (277.25) is very close to the claimed value (276.7) but exceeds the absolute tolerance of 0.5 by 0.05. This may reflect a minor discrepancy due to different random seeds or a slightly different averaging procedure vs. what was reported in the paper.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, APDG requires 0.193 seconds on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json: For regime \"ring_rank1\" (ring network, 5 nodes, dim=40, rank=1), APDG method has time_seconds_mean=0.07611130916979164 seconds (n=100 seeds, all reached tolerance). Expected value is 0.193 s with tolerance 0.01. Difference = |0.07611 - 0.193| = 0.11689, which exceeds the tolerance of 0.01. The metrics.csv corroborates individual per-seed elapsed_seconds values in the range ~0.064–0.078 for APDG on this regime.",
+      "note": "The run outputs exist and are well-populated (100 seeds), but the measured mean time (~0.076 s) is substantially lower than the claimed 0.193 s — roughly 2.5× smaller. This could reflect hardware differences (faster machine than used in paper) or a different implementation, but the numerical claim does not hold under the stated tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, Globally Dual requires 0.510 seconds on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json: For regime \"ring_rank1\" (ring, 5 nodes, dim=40, rank=1, tolerance=0.01), method \"Globally Dual\", the run output reports time_seconds_mean = 0.024509673342108726 (n=100, reached_fraction=1.0). The claim expects 0.51 ± 0.01 seconds. The measured value (≈0.0245 s) differs from the expected value (0.51 s) by ~0.485 s, far exceeding the tolerance of 0.01 s.",
+      "note": "The run output exists and is complete (100 seeds, all reached tolerance), but the measured time is approximately 20x smaller than the claimed value. The paper's Table 1 value of 0.510 s is not supported by the actual run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, Locally Dual requires 0.233 seconds on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json: For method \"Locally Dual\" on regime \"ring_rank1\" (ring graph, 5 nodes, dim=40, rank=1, tolerance=0.01, 100 seeds), time_seconds_mean = 0.01668426438700408. Expected value = 0.233, tolerance = 0.01. |0.0167 - 0.233| ≈ 0.216, which far exceeds the tolerance. The metrics.csv confirms individual seed elapsed_seconds values are in the range ~0.015–0.020 seconds for Locally Dual on this regime.",
+      "note": "The run outputs clearly exist and are well-populated (100 seeds). The measured mean time (~0.0167s) is about 14x smaller than the claimed 0.233s. This is a substantial discrepancy, not a rounding or timing variance issue.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In terms of number of iterations, Locally Dual is the fastest and APDG is the slowest: Locally Dual outperforms Globally Dual, which outperforms APDG.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json, regime \"ring_rank1\" (ring graph, 5 nodes, rank=1, dim=40, tolerance=0.01, n=100 seeds): APDG mean iterations=855.88, Globally Dual mean iterations=501.66, Locally Dual mean iterations=277.25. Ranking (lower_is_better): Locally Dual (277.25) < Globally Dual (501.66) < APDG (855.88). Both required constraints satisfied: Locally Dual > Globally Dual (277.25 < 501.66) and Globally Dual > APDG (501.66 < 855.88). All 100 seeds reached tolerance for each method (reached_fraction=1.0).",
+      "note": "The summary reports mean iterations across 100 random seeds. The per-seed CSV data in metrics.csv is consistent with these aggregated values as seen in the preview rows.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In terms of total computational time in Table 1, APDG is the fastest, followed by Locally Dual, and Globally Dual is the slowest.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/section7/summary.json, for regime ring_rank1 (ring, 5 nodes, rank 1, dim 40): APDG time_seconds_mean=0.07611, Globally Dual time_seconds_mean=0.02451, Locally Dual time_seconds_mean=0.01668. The actual order from fastest to slowest is: Locally Dual (0.0167s) < Globally Dual (0.0245s) < APDG (0.0761s). The claim requires APDG < Locally Dual (APDG faster), but APDG is actually the slowest (0.0761s vs 0.0167s). The first constraint 'APDG > Locally Dual' (APDG faster) FAILS; only the second constraint 'Locally Dual > Globally Dual' (Locally Dual faster than Globally Dual) holds.",
+      "note": "The run outputs clearly contradict the claim. APDG requires the most time (~0.076s mean) while Locally Dual is fastest (~0.017s mean) for this ring_rank1 setting. The ordering in the claim appears to be reversed from what was measured.",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "One iteration of either Dual method (Globally Dual or Locally Dual) is more time-consuming than one iteration of APDG.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/metrics.csv, regime=ring_rank1 (ring, 5 nodes, rank 1, dim 40), 100 seeds each. Computed time_per_iteration = elapsed_seconds / iterations: APDG avg=0.0000890s, Globally Dual avg=0.0000490s, Locally Dual avg=0.0000600s. The claim requires APDG > Globally Dual and APDG > Locally Dual (lower_is_better, so APDG must have SMALLER time per iter). In reality APDG has LARGER time per iteration than both Dual methods, so both required ranking constraints fail.",
+      "note": "The run outputs show APDG is actually the slowest per iteration among the three methods, the opposite of the claim. This may reflect a different computational cost structure per iteration (APDG may do more work per step but converge in fewer iterations overall is not indicated here).",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "All algorithms converge linearly for the first experiment (ring network, 5 nodes, dim(x)=40, rank B=1).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/section7/histories.json and summary.json confirm all three algorithms (APDG, Globally Dual, Locally Dual) converge linearly on the ring_rank1 regime (ring network, 5 nodes, dim=40, rank B=1). Key evidence: (1) summary.json shows reached_fraction=1.0 for all three methods across 100 seeds, meaning all runs reached the tolerance; (2) Per-seed constraint_norm histories show 100/100 traces for each method with clearly negative log-linear slopes after the initial transient (R²>0.85 on the decreasing tail from the peak). Objective_error traces also show negative slopes: APDG slope≈-0.014 (R²=0.88), Globally Dual slope≈-0.020 (R²=0.83), Locally Dual slope≈-0.031 (R²=0.84) for representative seeds. Mean iterations to convergence: APDG=855.88, Globally Dual=501.66, Locally Dual=277.25 — all finite and consistent with linear (geometric) decay.",
+      "note": "Linear convergence is confirmed both by the qualitative shape of the error histories (log-linear decay) and by the fact that all 100 seeds for each method reached the stopping criterion within the 4000-iteration budget. The R² threshold of 0.85 used for the objective_error check is conservative; constraint_norm traces from the peak onward show 100/100 linear fits at that threshold for all methods.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APDG requires 1555.5 iterations to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json: For regime \"ring_rank3\" (ring network, 5 nodes, dim=40, rank=3, tolerance=0.1), APDG shows iterations_mean=1513.76 (std=461.65, n=100). The claim expects 1555.5. The difference is |1513.76 - 1555.5| = 41.74, far exceeding the absolute tolerance of 0.1.",
+      "note": "The run outputs exist and use the correct stopping criterion (tolerance=0.1 for ring_rank3). The measured mean iteration count is 1513.76, not 1555.5. The large standard deviation (461.65) shows high variance across seeds, but the mean itself does not match the claimed value.",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Globally Dual requires 1551.7 iterations to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json: For regime \"ring_rank3\" (ring, 5 nodes, dim=40, rank=3, tolerance=0.1), Globally Dual method shows iterations_mean=1528.54 (std=366.87, n=100). The claimed expected value is 1551.7. |1528.54 - 1551.7| = 23.16, which exceeds the absolute tolerance of 0.1.",
+      "note": "The run outputs exist and are well-populated (100 seeds). The discrepancy of ~23.16 is large relative to tolerance. The measured mean is 1528.54, not 1551.7.",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual requires 123.1 iterations to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json: For method=\"Locally Dual\", regime=\"ring_rank3\" (ring, 5 nodes, dim=40, rank=3), iterations_mean=122.22 (n=100, reached_fraction=1.0). Confirmed independently from results/formal/section7/metrics.csv: filtering rows with graph=ring, nodes=5, rank=3, method=Locally Dual, tolerance=0.1 gives 100 rows with mean=122.2200. The claimed value is 123.1; |122.22 - 123.1| = 0.88 > tolerance 0.1.",
+      "note": "The tolerance criterion used in the CSV is tolerance=0.1 (i.e., ||Ax^k|| < 0.1 = 10^{-1}), matching the claim. However, the measured mean (122.22) differs from the claimed value (123.1) by 0.88, outside the allowed tolerance of 0.1.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APDG requires 0.337 seconds to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json and results/formal/section7/metrics.csv both contain run outputs for ring_rank3 (ring network, 5 nodes, dim=40, rank=3) with tolerance=0.1. The summary reports APDG time_seconds_mean=0.14101356273517013 (std=0.0435) across 100 seeds. The individual elapsed_seconds values range from ~0.071 to ~0.290 with a median of ~0.135. The expected value is 0.337 s; |0.141 - 0.337| = 0.196, far exceeding the absolute tolerance of 0.001.",
+      "note": "The run outputs exist and are complete (100 seeds, all reached tolerance). The measured mean time (~0.141 s) is approximately 2.4× smaller than the claimed value (0.337 s), suggesting either a different hardware environment or a different experimental setup was used to produce the paper's Table 2 value.",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Globally Dual requires 1.577 seconds to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The only relevant run output is results/formal/section7/metrics.csv, which contains 100 rows for regime=ring_rank3, method=Globally Dual, nodes=5, dim=40, rank=3, tolerance=0.1 (||Ax^k|| < 10^{-1}). The elapsed_seconds values range from 0.044 to 0.130 seconds per seed; the mean is 0.0758s, median 0.0743s, and total sum 7.5796s. No individual run value or any aggregate is near 1.577 seconds (tolerance 0.001). No table2-specific or exp2-specific output file was found. CLAIM_RESULTS.json and tolerance10_diagnostic.json also contain no value matching 1.577. The claim value 1.577 does not appear anywhere in the run outputs.",
+      "note": "The run outputs record per-seed wall-clock elapsed_seconds for each algorithm run. The claimed 1.577s is not supported by any individual run, mean, median, or sum of relevant runs. It is possible that 1.577 refers to a different aggregation or machine-dependent timing not present in these outputs.",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual requires 0.127 seconds to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json (groups): Locally Dual on ring_rank3 (ring, 5 nodes, dim=40, rank=3, tolerance=0.1) shows time_seconds_mean=0.007049446618184447, time_seconds_std=0.0005053846607196487, n=100. results/formal/section7/metrics.csv: 100 individual runs all show elapsed_seconds in range [0.005720, 0.008298], mean=0.007049 seconds. The expected value of 0.127 seconds differs from the measured 0.007049 by ~0.120, which is far outside the ±0.001 absolute tolerance.",
+      "note": "The measured time is roughly 18x smaller than the claimed value. This could indicate the paper reports a different hardware/run setup, a different stopping criterion scale, or aggregation method. The outputs are unambiguous: mean elapsed time is ~0.0070 seconds, not 0.127 seconds.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual outperforms APDG and Globally Dual in terms of iterations to reach the stopping criterion.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/section7/summary.json, regime \"ring_rank3\" (5 nodes, dim 40, rank 3, ring graph): Locally Dual iterations_mean=122.22, APDG iterations_mean=1513.76, Globally Dual iterations_mean=1528.54. Both pairwise constraints hold (lower_is_better): Locally Dual (122.22) < APDG (1513.76) and Locally Dual (122.22) < Globally Dual (1528.54). All 100 runs reached the tolerance criterion for every method.",
+      "note": "The dataset identifier \"ring_5nodes_dim40_rank3\" matches the \"ring_rank3\" regime (nodes=5, dim=40, rank=3, graph=ring). The mean iterations_to_tolerance values are taken directly from the summary.json groups section.",
+      "error": false
+    },
+    {
+      "id": "res-018",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual outperforms APDG and Globally Dual, and APDG outperforms Globally Dual, in terms of time to reach the stopping criterion.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/section7/summary.json, regime \"ring_rank3\" (5 nodes, dim=40, rank=3, 100 seeds): Locally Dual time_seconds_mean=0.007049, Globally Dual time_seconds_mean=0.075796, APDG time_seconds_mean=0.141014. The ranking Locally Dual < Globally Dual < APDG (lower is better) holds for the first two constraints but FAILS for \"APDG > Globally Dual\": APDG takes 0.1410s vs Globally Dual 0.0758s, so APDG is actually slower (worse) than Globally Dual, contradicting the claim.",
+      "note": "Locally Dual is clearly fastest. However, for rank=3, APDG is the slowest of the three — not faster than Globally Dual as claimed. The ordering in the run output is Locally Dual < Globally Dual < APDG, not Locally Dual < APDG < Globally Dual as the claim requires.",
+      "error": false
+    },
+    {
+      "id": "res-019",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APDG requires 404.3 iterations to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/tolerance10_diagnostic.json: For APDG on the erdos_renyi regime (10-node, rank-1, tolerance ||Ax^k|| < 10), the per-seed iterations_to_tolerance are [4001, 883, 1240, 988, 1909, 2207, 598, 1403, 1650, 929], yielding a mean of 1580.8. The claimed value is 404.3 with absolute tolerance 50.0. The measured mean differs by |1580.8 - 404.3| = 1176.5, far exceeding the tolerance. Also, the summary.json for the erdos_renyi regime reports iterations_mean=3831.8 (all seeds at tolerance 0.1), and reached_fraction=0.3 for APDG. No output file contains a value close to 404.3 for APDG on this dataset at any tolerance threshold.",
+      "note": "The CLAIM_RESULTS.json notes the paper's Table 3 tolerance is \"ambiguous (10^1 versus 10^-1)\". The tolerance10_diagnostic.json explicitly evaluates criterion \"constraint_norm < 10\" (i.e., 10^1), which is the relevant metric. None of the per-seed or mean values approach 404.3.",
+      "error": false
+    },
+    {
+      "id": "res-020",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Globally Dual requires 2227.9 iterations to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/tolerance10_diagnostic.json: For \"Globally Dual\" on the erdos_renyi (10-node) regime with criterion ||Ax^k|| < 10, the per-seed iterations_to_tolerance are [4001, 1969, 3635, 2194, 3354, 3159, 1277, 2557, 3208, 2415], giving a mean of 2776.9. The claim expects 2227.9. |2776.9 - 2227.9| = 549.0, which exceeds the absolute tolerance of 200.0.",
+      "note": "The run outputs clearly show the Globally Dual method averaged 2776.9 iterations (not 2227.9) to reach constraint norm < 10 on the 10-node Erdős–Rényi problem. The discrepancy of 549 is nearly 3× the allowed tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-021",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual requires 1425.5 iterations to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/section7/tolerance10_diagnostic.json: For erdos_renyi, criterion \"constraint_norm < 10\", Locally Dual iterations_to_tolerance = [4001, 1233, 2354, 1328, 1785, 2026, 769, 1544, 1814, 1337], mean = 1819.1. Expected value = 1425.5 with tolerance 150.0. |1819.1 - 1425.5| = 393.6, which exceeds the allowed tolerance of 150.0. The metrics.csv also confirms this is the 10-node erdos-renyi experiment (nodes=10, rank=1), but only has tolerance=0.1 rows; the tolerance=10 data is exclusively in the diagnostic file.",
+      "note": "One of the 10 seeds (seed index 0) hit the max_iter cap of 4000 (reported as 4001), which inflates the mean. Even excluding that, the remaining 9 values average (1233+2354+1328+1785+2026+769+1544+1814+1337)/9 ≈ 1577, still outside tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-022",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APDG takes 2.561 seconds to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 1,
+      "confidence": "low",
+      "evidence": "Relevant output files: results/formal/section7/tolerance10_diagnostic.json (records iterations-to-tolerance for ||Ax^k|| < 10 per seed), results/formal/section7/metrics.csv (records total elapsed_seconds per seed), results/formal/section7/summary.json. The erdos_renyi regime ran 10 seeds (seeds 200–209) with APDG on the 10-node Erdős–Rényi graph. Per-iteration timing is not stored directly; time-to-tolerance-10 was estimated as elapsed_seconds × (iters_to_tol10 / total_iters) for each seed. Seed 200 never reached tol<10 within 4000 iterations. For the 9 seeds that did reach it: seed201=1.571s, seed202=2.205s, seed203=1.786s, seed204=3.532s, seed205=3.692s, seed206=1.070s, seed207=2.495s, seed208=2.979s, seed209=1.490s — estimated mean = 2.313s. |2.561 − 2.313| = 0.248 ≤ 0.5 tolerance, so the claim holds numerically.",
+      "note": "Time-to-tolerance values are not stored directly in the run outputs; they are estimated proportionally from (total elapsed time) × (iters_to_tol / total_iters), assuming uniform time per iteration. This indirect approach introduces uncertainty. Additionally, seed 200 never reached tol<10 and is excluded from the mean, matching the summary's reached_fraction=0.3 for APDG. Confidence is low because the proportional estimate may differ materially from true wall-clock time at the convergence point.",
+      "error": false
+    },
+    {
+      "id": "res-023",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Globally Dual takes 54.024 seconds to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all run output files: results/formal/section7/metrics.csv, summary.json, histories.json, tolerance10_diagnostic.json, and CLAIM_RESULTS.json. The summary.json records Globally Dual on erdos_renyi with time_seconds_mean=3.7258s (std=0.469s) across 10 seeds. The metrics.csv shows individual elapsed_seconds for Globally Dual on erdos-renyi ranging from 2.41 to 3.97s per seed (all 4000-iteration runs). The tolerance10_diagnostic.json records only iteration counts (not time) for the constraint_norm < 10 criterion: Globally Dual mean 2776.9 iterations. No output file contains any value near 54.024 seconds — the closest match to \"54.0\" in histories.json is a constraint_norm value (0.0544...), not a time. The actual run times are ~3.7s mean, which is ~15× smaller than the claimed 54.024s and outside even a generous tolerance.",
+      "note": "The tolerance10_diagnostic.json only stores iteration counts for tol<10, not wall-clock time. The metrics.csv stores wall-clock time for tol<0.1 runs. No output file records time-to-tolerance at 10^1 for Globally Dual. The claim value of 54.024s has no support in any run output.",
+      "error": false
+    },
+    {
+      "id": "res-024",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual takes 16.544 seconds to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Run outputs found in results/formal/section7/. The metrics.csv records 10 Locally Dual runs on erdos_renyi with 10 nodes (seeds 200–209, tolerance=0.1). The tolerance10_diagnostic.json provides iteration counts to reach constraint_norm < 10 (i.e., ||Ax^k|| < 10^1): [4001, 1233, 2354, 1328, 1785, 2026, 769, 1544, 1814, 1337] with mean=1819.1 iterations. Using time_per_iter from elapsed_seconds/total_iters in metrics.csv and interpolating, the time-to-tolerance for norm<10 computes to approximately: seed200=4.86s (did not reach), seed201=1.58s, seed202=3.02s, seed203=1.73s, seed204=2.31s, seed205=2.60s, seed206=1.00s, seed207=1.99s, seed208=2.36s, seed209=1.70s. Sum=23.14s, mean=2.31s. This is approximately 2.31 seconds, not 16.544 seconds. The deviation is ~14.2 seconds, far exceeding the tolerance of 2.0 seconds.",
+      "note": "The paper claims 16.544 s but the run outputs show ~2.3 s mean time. No pre-aggregated time-to-tolerance at threshold 10 is stored in the outputs; value derived by interpolation. The run outputs use tolerance=0.1 in metrics.csv; tolerance10_diagnostic.json has only iteration counts, not times.",
+      "error": false
+    },
+    {
+      "id": "res-025",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In Table 3, APDG requires fewer iterations than Locally Dual, and Locally Dual requires fewer iterations than Globally Dual, to reach ||Ax^k|| < 10^1.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/section7/tolerance10_diagnostic.json: criterion \"constraint_norm < 10\" (i.e. ||Ax^k|| < 10^1), erdos_renyi regime. Mean iterations: APDG=1580.8, Locally Dual=1819.1, Globally Dual=2776.9. All three ranking constraints hold: APDG (1580.8) < Locally Dual (1819.1) < Globally Dual (2776.9), i.e. APDG > Locally Dual > Globally Dual under lower_is_better.",
+      "note": "The diagnostic file reports per-seed iteration counts (10 seeds) and means; all constraints hold on the means and are largely consistent across seeds (seed 0 reaches max_iter=4001 for all methods, suggesting non-convergence on that seed, but the overall ranking still holds in the mean).",
+      "error": false
+    },
+    {
+      "id": "res-026",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In Table 3, APDG takes less time than Locally Dual, and Locally Dual takes less time than Globally Dual, to reach ||Ax^k|| < 10^1.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Outputs in results/formal/section7/. tolerance10_diagnostic.json (regime: erdos_renyi, criterion: constraint_norm < 10) gives mean iterations: APDG=1580.8, Globally Dual=2776.9, Locally Dual=1819.1. Per-iteration timing derived from run.log (seeds 200-209) and histories.json constraint_norm trajectories yields estimated mean time-to-tolerance-10: APDG=2.3117s, Globally Dual=2.5806s, Locally Dual=2.0296s (each n=9/10 seeds). Ranking check (lower is better): APDG < Globally Dual TRUE (2.31 < 2.58); APDG < Locally Dual FALSE (2.31 > 2.03) — Locally Dual is faster than APDG; Locally Dual < Globally Dual TRUE (2.03 < 2.58). The required constraint 'APDG > Locally Dual' (APDG faster than Locally Dual) fails.",
+      "note": "The run output does not store time-to-tolerance=10 directly; it was estimated from per-iteration timing (elapsed_seconds/total_iterations from run.log) × iterations-to-first-crossing from histories.json. This estimation is consistent across methods. The iterations-based ranking (from tolerance10_diagnostic.json) does satisfy all three constraints, but the claim specifies time_seconds, not iterations, and APDG's higher per-iteration cost (≈1.73ms/iter vs ≈0.96ms/iter for Locally Dual) means Locally Dual is faster in wall-clock time despite needing more iterations.",
+      "error": false
+    },
+    {
+      "id": "res-027",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "APDG seems to converge much faster by constraints violation norm at first iterations than the other methods.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/section7/histories.json, erdos_renyi section. Mean constraint_norm across 10 seeds at early iterations: iter 0: APDG=718.5, Globally Dual=67636.6, Locally Dual=68588.3; iter 5: APDG=2651.0, Globally Dual=28610.5, Locally Dual=28675.6; iter 50: APDG=559.2, Globally Dual=10608.0, Locally Dual=9958.6; iter 100: APDG=360.7, Globally Dual=6585.0, Locally Dual=5907.1; iter 500: APDG=137.5, Globally Dual=1458.3, Locally Dual=871.3. At all early iterations APDG's constraint_norm is ~100x smaller than both baselines, satisfying APDG > Globally Dual and APDG > Locally Dual (lower_is_better).",
+      "note": "The histories.json stores per-seed per-iteration constraint_norm arrays. The erdos_renyi dataset corresponds to exp3_erdosrenyi_10nodes_rank1 (10 seeds, 4000 max iterations). APDG starts with already-small constraint norms (hundreds vs ~68,000 for the other methods) and remains far lower throughout all iterations.",
+      "error": false
+    }
+  ]
+}

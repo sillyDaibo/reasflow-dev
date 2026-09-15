@@ -1,0 +1,32 @@
+{
+  "batch_size": 1,
+  "command": "run_experiment.py --experiment figure1 --data-dir .run-data/datasets --output-dir results/formal/figure1_a1a --seed 42 --epochs 100 --reference-iterations 4000",
+  "dataset": {
+    "bytes": 114818,
+    "features": 120,
+    "name": "a1a",
+    "path": ".run-data/datasets/a1a",
+    "rows": 1605,
+    "sha256": "eb54c45f1bdb51286f803dd092eb8202b44637a858fc6c4e533a2d64a0d94b4e"
+  },
+  "decay_coefficients": {
+    "ProxRR": 0.00013948887566046623,
+    "ProxSGD": 0.0004882110648116318,
+    "RR_heuristic": 0.00013948887566046623
+  },
+  "epochs": 100,
+  "experiment": "figure1",
+  "l1": 0.001,
+  "l2": 0.0009764221296232636,
+  "logistic_smoothness": 1.567157518045338,
+  "methods": [
+    "ProxSGD",
+    "ProxRR",
+    "RR_heuristic"
+  ],
+  "reference_iterations": 4000,
+  "reference_objective": 0.35323900868401276,
+  "reference_solution_norm": 3.8211318586838554,
+  "seed": 42,
+  "step_size": 0.2857142857142857
+}

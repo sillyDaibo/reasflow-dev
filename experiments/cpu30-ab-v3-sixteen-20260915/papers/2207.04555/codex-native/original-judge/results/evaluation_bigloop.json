@@ -1,0 +1,327 @@
+{
+  "paper_id": "2207.04555",
+  "evaluated_at": "2026-09-04T05:16:29.558774+00:00",
+  "summary": {
+    "total_score": 0.1569,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.1569,
+    "total_rubrics": 27,
+    "passed": 5,
+    "failed": 22,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.125,
+      "passed": 3,
+      "total": 24
+    },
+    "secondary": {
+      "score": 0.6667,
+      "passed": 2,
+      "total": 3
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, APDG requires 875.3 iterations on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_rank1_ring/metrics.json: APDG mean_iterations = 867.26 for experiment_id=\"case_rank1_ring\" (ring graph, 5 nodes, dimension=40, constraint_rank=1, tolerance=0.01, 100 repeats). Expected 875.3 ± 0.5. Measured difference = |867.26 - 875.3| = 8.04, which far exceeds the allowed tolerance of 0.5. Config confirmed via results/formal/case_rank1_ring/resolved_config.json (nodes=5, dimension=40, constraint_rank=1, graph=ring).",
+      "note": "The run output clearly exists and corresponds to the correct experimental setup. The APDG mean iterations (867.26) diverges from the claimed value (875.3) by ~8 iterations, well outside the 0.5 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, Globally Dual requires 502.7 iterations on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_rank1_ring/metrics.json: method GDAM (Globally Dual) has mean_iterations=500.6 on the ring, 5 nodes, dim=40, rank(B)=1 experiment (100 repeats, tolerance=0.01). The expected value is 502.7 with absolute tolerance 0.5. |500.6 - 502.7| = 2.1 > 0.5, so the claim does not hold. The config confirms the correct experiment (ring graph, 5 nodes, dimension=40, constraint_rank=1, tolerance=0.01).",
+      "note": "GDAM is the only method matching \"Globally Dual\" in these outputs. The other methods (APDG=867.26, LDAM=275.96) also do not match 502.7. The discrepancy of 2.1 iterations is outside the allowed tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, Locally Dual requires 276.7 iterations on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_rank1_ring/metrics.json: method LDAM (Locally Dual) reports mean_iterations=275.96 for ring graph, 5 nodes, dim=40, rank B=1, tolerance=0.01. The expected value is 276.7. The absolute difference is |275.96 - 276.7| = 0.74, which exceeds the allowed tolerance of 0.5. Config confirmed: graph=ring, nodes=5, dimension=40, constraint_rank=1, tolerance=0.01, repeats=100.",
+      "note": "The experiment and metric are clearly identified. The measured value (275.96) is close to the claimed value (276.7) but falls outside the ±0.5 tolerance window. The difference is 0.74 iterations.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, APDG requires 0.193 seconds on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_rank1_ring/metrics.json and resolved_config.json confirm this is the correct experiment (5 nodes, dim=40, rank(B)=1, ring graph, 100 repeats, tolerance=0.01). The measured mean_time_seconds for APDG is 0.07924 seconds. The expected value is 0.193 seconds. The absolute difference is |0.07924 - 0.193| = 0.1138, which far exceeds the tolerance of 0.01.",
+      "note": "The experiment ran successfully with 100 repeats, all APDG runs converged. The discrepancy (~2.4x factor) likely reflects hardware speed differences between the paper's machine and the reproduction machine. The claim fails under the numerical verification rule.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, Globally Dual requires 0.510 seconds on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The only run output for the ring-5-node, rank-1, dim-40 experiment is results/formal/case_rank1_ring/metrics.json (confirmed by resolved_config.json: nodes=5, dimension=40, constraint_rank=1, graph=ring). That file lists exactly three methods: APDG (mean_time=0.0792s), GDAM (mean_time=0.0213s), LDAM (mean_time=0.0101s). No method named \"Globally Dual\" (or any variant) appears anywhere in metrics.json, history.json, or run.log. No measured time is anywhere near 0.510s. Case (a): the specific method/metric combination required by the claim does not exist in the run outputs.",
+      "note": "The paper's \"Globally Dual\" method may correspond to one of APDG/GDAM/LDAM under a different name, but the outputs provide no mapping and no value close to 0.510s for any method. Without an explicit match, the claim cannot be verified.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the ring network with 5 nodes, dim(x)=40, rank B=1, Locally Dual requires 0.233 seconds on average to achieve ∥Ax^k∥ < 10^{-2}.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_rank1_ring/metrics.json: method=LDAM (Locally Dual), mean_time_seconds=0.010081128585152328. Config confirmed: 5 nodes, dim=40, rank(B)=1, ring graph, tolerance=0.01. The measured value (0.01008) differs from the claimed 0.233 by ~0.223, far exceeding the absolute tolerance of 0.01.",
+      "note": "The run outputs exist and are unambiguous. The actual mean time is roughly 23x smaller than the paper's claimed 0.233 s, suggesting a hardware/environment difference or that these results don't match the paper's Table 1 values.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In terms of number of iterations, Locally Dual is the fastest and APDG is the slowest: Locally Dual outperforms Globally Dual, which outperforms APDG.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/case_rank1_ring/metrics.json: APDG mean_iterations=867.26, GDAM (Globally Dual) mean_iterations=500.6, LDAM (Locally Dual) mean_iterations=275.96. With lower_is_better, Locally Dual (275.96) < Globally Dual (500.6) < APDG (867.26), satisfying both required constraints: Locally Dual > Globally Dual and Globally Dual > APDG.",
+      "note": "Method names in output file are APDG, GDAM, and LDAM — corresponding to APDG, Globally Dual, and Locally Dual respectively.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In terms of total computational time in Table 1, APDG is the fastest, followed by Locally Dual, and Globally Dual is the slowest.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/case_rank1_ring/metrics.json (experiment_id=case_rank1_ring, paper_case=\"Paper case 1: 5 nodes, dimension 40, rank(B)=1, ring graph\"). Actual mean_time_seconds: APDG=0.079239s, GDAM (Globally Dual)=0.021262s, LDAM (Locally Dual)=0.010081s. The claim requires APDG < Locally Dual < Globally Dual in time (APDG fastest, Globally Dual slowest). The actual ordering is the exact reverse: LDAM (0.010) < GDAM (0.021) < APDG (0.079). APDG is the slowest, not fastest, and Globally Dual is in the middle, not slowest. Both pairwise constraints fail: APDG (0.079) is NOT faster than Locally Dual (0.010), and Locally Dual (0.010) is NOT faster than Globally Dual (0.021).",
+      "note": "GDAM maps to Globally Dual and LDAM maps to Locally Dual based on naming conventions. The experiment matches ring graph, 5 nodes, rank 1, dim 40 as specified.",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "One iteration of either Dual method (Globally Dual or Locally Dual) is more time-consuming than one iteration of APDG.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/case_rank1_ring/metrics.json. Computed time_per_iteration = mean_time_seconds / mean_iterations: APDG = 0.079239s / 867.26 = 9.14e-5 s/iter; GDAM (Globally Dual) = 0.021262s / 500.60 = 4.25e-5 s/iter; LDAM (Locally Dual) = 0.010081s / 275.96 = 3.65e-5 s/iter. The claim requires APDG > Globally Dual and APDG > Locally Dual in the sense that APDG is better (lower time per iteration), but the measured data shows APDG has the HIGHEST time per iteration — it is ~2.15x slower per iteration than GDAM and ~2.5x slower than LDAM. Both dual methods are faster per iteration than APDG, directly contradicting the claim.",
+      "note": "The method names in the output file use 'GDAM' and 'LDAM' (not 'Globally Dual'/'Locally Dual'), which appear to correspond to the paper's 'Globally Dual AM' and 'Locally Dual AM' methods. No explicit time_per_iteration field exists; it was computed from mean_time_seconds / mean_iterations.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "All algorithms converge linearly for the first experiment (ring network, 5 nodes, dim(x)=40, rank B=1).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/case_rank1_ring/history.json (representative seed=42, ring graph, 5 nodes, dim=40, rank B=1). Per-iteration constraint_norm histories are present for all three algorithms. Log-space linear regression over the second half of each trajectory:\n- APDG: 939 iters, converged=True, log-slope=-0.00779, R²=0.99939\n- GDAM: 496 iters, converged=True, log-slope=-0.01943, R²=0.96918\n- LDAM: 277 iters, converged=True, log-slope=-0.03718, R²=0.99488\nAll slopes are negative and R²>0.96, demonstrating geometric (linear) decay in the error norm. Contraction ratios in the final 20 iterations are approximately constant (mean ~0.962–0.992 with very small std), confirming linear convergence for all algorithms. Config confirmed via resolved_config.json: graph=ring, nodes=5, dimension=40, constraint_rank=1.",
+      "note": "Only the representative run (seed=42) has per-iteration history stored; the metrics.json shows 100 repeats all converged. The claim is about the convergence plot (Figure 1), which corresponds to the representative trajectory, and all three algorithms show clear linear convergence there.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APDG requires 1555.5 iterations to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_rank3_ring/metrics.json: APDG mean_iterations = 1510.7 (100 runs, ring, 5 nodes, dim=40, rank(B)=3, tolerance ||Ax||<1e-1). Expected value is 1555.5. |1510.7 - 1555.5| = 44.8 >> tolerance of 0.1. The resolved_config.json confirms the correct experiment parameters (graph=ring, nodes=5, dimension=40, constraint_rank=3, tolerance=0.1, repeats=100). CLAIM_RESULTS.json also reports \"mean iterations were 1510.70 APDG\" for this case.",
+      "note": "The run outputs are complete and unambiguous. The measured value (1510.7) differs from the claimed value (1555.5) by 44.8, well outside the 0.1 absolute tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Globally Dual requires 1551.7 iterations to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The run output at results/formal/case_rank3_ring/metrics.json covers the correct experiment (ring graph, 5 nodes, dim=40, rank B=3) and reports mean_iterations for three methods: APDG=1510.7, GDAM=1529.71, LDAM=121.44. No method named \"Globally Dual\" exists in the outputs. The closest candidate by name is GDAM, but its mean_iterations=1529.71 differs from the claimed 1551.7 by 21.99 — far exceeding the absolute tolerance of 0.1. A grep for \"1551\" in all result files shows only a single-run record (seed=1119, GDAM, iterations=1551), not a mean value. No run output supports the claim of 1551.7 iterations for \"Globally Dual\".",
+      "note": "It is possible that \"Globally Dual\" maps to \"GDAM\" in the codebase, but even so, the measured mean_iterations (1529.71) does not match the claimed value (1551.7) within tolerance. Verdict is 0 under both interpretations.",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual requires 123.1 iterations to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_rank3_ring/metrics.json: LDAM (Locally Dual) mean_iterations = 121.44. The expected value is 123.1 with tolerance 0.1. |121.44 - 123.1| = 1.66, which exceeds the tolerance of 0.1. The config (resolved_config.json) confirms the experiment matches: ring graph, 5 nodes, dimension=40, constraint_rank=3, tolerance=0.1, 100 repeats. CLAIM_RESULTS.json (C2_rank3_local_dual_iterations) also reports 121.44 for LDAM.",
+      "note": "LDAM is the implementation of \"Locally Dual\" as confirmed by the config and claim results. The measured value (121.44) is close to the claimed value (123.1) but clearly outside the ±0.1 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APDG requires 0.337 seconds to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_rank3_ring/metrics.json: APDG mean_time_seconds = 0.1396656109346077 (across 100 runs, ring graph, 5 nodes, dim=40, rank B=3, tolerance=0.1). This is |0.1397 - 0.337| ≈ 0.197 seconds away from the claimed 0.337s, far exceeding the absolute tolerance of 0.001. The resolved_config.json confirms the experiment matches the dataset spec: graph=ring, nodes=5, dimension=40, constraint_rank=3, paper_reference=\"Section 7, Figure 2 and Table 2\". CLAIM_RESULTS.json also explicitly notes timing values are not numerically compared to the paper (claim C2_rank3_local_dual_iterations), acknowledging the discrepancy.",
+      "note": "The experiment ran successfully and all 100 seeds converged, but the measured mean wall-clock time (0.1397s) is substantially lower than the paper's reported 0.337s. The CLAIM_RESULTS.json notes that \"wall-clock values use structured operators and are therefore not compared numerically to the notebook,\" suggesting different hardware/implementation contexts between the reproduction and the original paper.",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Globally Dual requires 1.577 seconds to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched results/formal/case_rank3_ring/metrics.json and results/formal/case_rank3_ring/run.log, which are the sole run outputs for the ring_5nodes_dim40_rank3 experiment. The experiment recorded only three methods: APDG (mean_time_seconds=0.1397), GDAM (mean_time_seconds=0.0655), and LDAM (mean_time_seconds=0.0045). No method named \"Globally Dual\" exists in any output file. No individual timing record exceeds 1.0 seconds in any method. The claimed value of 1.577 seconds for \"Globally Dual\" is absent from all run outputs.",
+      "note": "GDAM (Globally Dual Ascent Method) is the most likely candidate for \"Globally Dual\", but its mean_time_seconds of 0.0655 is more than 20× smaller than the claimed 1.577. Even if naming is disregarded, no recorded timing value is anywhere near 1.577 seconds.",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual requires 0.127 seconds to achieve ||Ax^k|| < 10^{-1} for the ring network with 5 nodes, dim(x)=40, and rank B=3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_rank3_ring/metrics.json contains timing results for three methods: APDG mean_time_seconds=0.1397, GDAM mean_time_seconds=0.0655, LDAM (Locally Dual) mean_time_seconds=0.00448. The claim expects LDAM (Locally Dual) = 0.127s ± 0.001s. The measured value for LDAM is 0.00448s, which differs from 0.127 by ~0.122s — far outside the 0.001 tolerance. No other method in the outputs matches 0.127s within tolerance. CLAIM_RESULTS.json also explicitly flags claim C4 (iteration/time tradeoff) as 'partially_reproduced', noting 'the paper's dense-notebook absolute timing ordering is not reproduced exactly' and that timings are 'implementation-dependent'.",
+      "note": "The repository's own CLAIM_RESULTS.json acknowledges that absolute timing values are not numerically comparable to the paper due to different implementations (structured operators vs. dense notebook). The LDAM/Locally Dual method converges in far fewer iterations (mean 121.44 vs ~1510+ for others), which also explains why its wall-clock time is much smaller than 0.127s in this implementation.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual outperforms APDG and Globally Dual in terms of iterations to reach the stopping criterion.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/case_rank3_ring/metrics.json and run.log confirm: LDAM (Locally Dual) mean_iterations=121.44, APDG mean_iterations=1510.7, GDAM (Globally Dual) mean_iterations=1529.71. With lower_is_better, Locally Dual (121.44) outperforms both APDG (1510.7) and Globally Dual (1529.71). Both required ranking constraints hold: Locally Dual > APDG and Locally Dual > Globally Dual.",
+      "note": "Method name mapping confirmed from run.log: LDAM=Locally Dual, GDAM=Globally Dual. Experiment ID case_rank3_ring corresponds to the ring_5nodes_dim40_rank3 dataset per config and log files.",
+      "error": false
+    },
+    {
+      "id": "res-018",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual outperforms APDG and Globally Dual, and APDG outperforms Globally Dual, in terms of time to reach the stopping criterion.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/case_rank3_ring/metrics.json (experiment_id=case_rank3_ring, matching ring_5nodes_dim40_rank3 per config): LDAM (Locally Dual) mean_time_seconds=0.004478, GDAM (Globally Dual) mean_time_seconds=0.06550, APDG mean_time_seconds=0.13967. With lower_is_better: (1) Locally Dual > APDG: PASS (0.004478 < 0.13967); (2) Locally Dual > Globally Dual: PASS (0.004478 < 0.06550); (3) APDG > Globally Dual: FAIL — APDG (0.13967s) is actually slower than Globally Dual (0.06550s), so Globally Dual outperforms APDG in time, contradicting the required ranking.",
+      "note": "The method abbreviations LDAM=Locally Dual, GDAM=Globally Dual, APDG=APDG are confirmed by the config and log files. The third ranking constraint (APDG > Globally Dual) is violated: run outputs show GDAM is faster than APDG.",
+      "error": false
+    },
+    {
+      "id": "res-019",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APDG requires 404.3 iterations to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_er_rank1_highdim/metrics.json: APDG mean_iterations = 1334.9 (individual runs: 1161, 1544, 2275, 1815, 1249, 286, 344, 2599, 1238, 838) at tolerance 10.0 (||Ax^k|| < 10^1). Expected value = 404.3 with tolerance ±50.0. Measured - expected = |1334.9 - 404.3| = 930.6, which far exceeds the allowed tolerance of 50.0.",
+      "note": "The experiment ID case_er_rank1_highdim matches the claim (10-node Erdős–Rényi, rank-1, tolerance 10^1). The run outputs definitively show APDG required ~1335 mean iterations, not 404.3. This is a substantial discrepancy (>3× the claimed value), well outside the ±50 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-020",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Globally Dual requires 2227.9 iterations to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The only run output file for the 10-node Erdős–Rényi experiment is results/formal/case_er_rank1_highdim/metrics.json (paper_case: \"Paper case 3: 10 nodes, dimension 100, rank(B)=1, Erdos-Renyi p=0.3\", paper_reference: \"Section 7, Figure 3 and Table 3\"). That file contains results for three methods only: APDG (mean_iterations=1334.9), GDAM (mean_iterations=2706), and LDAM (mean_iterations=1640.8). There is no \"Globally Dual\" method anywhere in the results/ directory. A broad grep for \"Globally Dual\", \"globally_dual\", \"GloballyDual\", and \"global.*dual\" across all results/ files returned no relevant matches. The value 2227.9 does not appear in any output file.",
+      "note": "It is possible \"Globally Dual\" corresponds to one of the present methods under a different name (e.g. GDAM), but GDAM's mean_iterations is 2706, which is outside the ±200 tolerance of 2227.9. No mapping from any present method to the claimed value of 2227.9 within tolerance was found.",
+      "error": false
+    },
+    {
+      "id": "res-021",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual requires 1425.5 iterations to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_er_rank1_highdim/metrics.json identifies LDAM as the \"locally dual accelerated method\" (confirmed by src/reproduction/algorithms.py grep and README.md). The run outputs show LDAM mean_iterations = 1640.8 across 10 seeds at tolerance 10.0 (||Ax^k|| < 10^1) on the 10-node Erdős–Rényi problem (dimension=100, rank=1, edge_probability=0.3). Individual LDAM iteration counts: [1362, 1726, 2732, 2174, 1563, 651, 632, 2533, 1907, 1128]. |1640.8 - 1425.5| = 215.3 > tolerance 150.0. CLAIM_RESULTS.json also confirms \"LDAM 1640.80\" for this experiment.",
+      "note": "The APDG mean (1334.9) is within 150 of 1425.5 (difference=90.6), but APDG is the primal-dual method, not the locally dual method. LDAM is unambiguously the locally dual method and its measured mean of 1640.8 fails the tolerance check.",
+      "error": false
+    },
+    {
+      "id": "res-022",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "APDG takes 2.561 seconds to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_er_rank1_highdim/metrics.json: APDG mean_time_seconds = 0.3799 (std=0.2039) across 10 seeds on the 10-node Erdős–Rényi rank-1 problem at tolerance ||Ax^k|| < 10^1. Individual run times: 0.332s, 0.438s, 0.648s, 0.518s, 0.355s, 0.082s, 0.098s, 0.739s, 0.353s, 0.238s. The expected value of 2.561s with tolerance ±0.5 requires a measured value in [2.061, 3.061]. The actual mean of 0.380s is far outside this range (difference ≈ 2.18s).",
+      "note": "The CLAIM_RESULTS.json notes that \"timing is reported with an implementation caveat\" and that the paper's dense-notebook absolute timing ordering is not reproduced exactly. The run timings are implementation-dependent (structured operators, precomputed solves), explaining the large discrepancy from the paper's 2.561s figure.",
+      "error": false
+    },
+    {
+      "id": "res-023",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Globally Dual takes 54.024 seconds to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The only run output for the 10-node Erdős–Rényi experiment is results/formal/case_er_rank1_highdim/metrics.json. It contains three methods: APDG, GDAM (described in CLAIMS.json as \"the globally dual accelerated method\"), and LDAM. No method named \"Globally Dual\" exists in any output file. GDAM's mean_time_seconds is ~0.366 s (individual records range from ~0.128 s to ~0.543 s), nowhere near 54.024 s. The value 54.024 does not appear in any run output for this experiment (case_er_rank1_highdim). Searched: results/formal/case_er_rank1_highdim/metrics.json, history.json, run.log, resolved_config.json, diagnostic.json, and all other .json/.csv/.txt/.log files in the repository.",
+      "note": "GDAM is described as the \"globally dual accelerated method\" in CLAIMS.json, but even that mapping does not produce times near 54 s. The claim's expected value of 54.024 s is orders of magnitude larger than any recorded timing in the output files.",
+      "error": false
+    },
+    {
+      "id": "res-024",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Locally Dual takes 16.544 seconds to reach ||Ax^k|| < 10^1 on the 10-node Erdős–Rényi problem.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/case_er_rank1_highdim/metrics.json: LDAM (the \"locally dual\" method per algorithms.py docstring \"Accelerated locally dual method from Section 6.1\") mean_time_seconds = 0.1797 seconds (individual runs: 0.149, 0.189, 0.298, 0.238, 0.171, 0.071, 0.069, 0.277, 0.209, 0.125 seconds). The claim asserts 16.544 seconds. |0.1797 - 16.544| = 16.364 >> tolerance 2.0. The measured value is ~92× smaller than the claimed value.",
+      "note": "The paper's Table 3 timing of 16.544 s appears to come from a different (likely slower/unoptimized) implementation. The reproduction here uses structured operators and precomputed local solves, as noted in CLAIM_RESULTS.json which explicitly flags that \"the paper's dense-notebook absolute timing ordering is not reproduced exactly\" and that timings are \"implementation-dependent.\" No run output contains a value near 16.544 s for this method/dataset combination.",
+      "error": false
+    },
+    {
+      "id": "res-025",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In Table 3, APDG requires fewer iterations than Locally Dual, and Locally Dual requires fewer iterations than Globally Dual, to reach ||Ax^k|| < 10^1.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/case_er_rank1_highdim/metrics.json — experiment \"Paper case 3: 10 nodes, dimension 100, rank(B)=1, Erdos-Renyi p=0.3\", tolerance=10.0. Mean iterations: APDG=1334.9, LDAM (Locally Dual)=1640.8, GDAM (Globally Dual)=2706.0. All three required orderings hold: APDG < Locally Dual (1334.9 < 1640.8 ✓), APDG < Globally Dual (1334.9 < 2706 ✓), Locally Dual < Globally Dual (1640.8 < 2706 ✓).",
+      "note": "Method names in outputs are APDG, LDAM, GDAM mapping to paper's APDG, Locally Dual, Globally Dual respectively, as confirmed by the paper_case description. GDAM had success_rate=0.7 (3 non-converged runs hit the 4000-iteration cap), so its mean_iterations=2706 includes those capped values, which only strengthens the ranking.",
+      "error": false
+    },
+    {
+      "id": "res-026",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In Table 3, APDG takes less time than Locally Dual, and Locally Dual takes less time than Globally Dual, to reach ||Ax^k|| < 10^1.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/case_er_rank1_highdim/metrics.json (experiment \"case_er_rank1_highdim\", paper_reference: \"Section 7, Figure 3 and Table 3\", tolerance=10.0, 10 repeats). Mean time_seconds: APDG=0.3799, GDAM (Globally Dual)=0.3665, LDAM (Locally Dual)=0.1797. Required ranking (lower_is_better): APDG < Locally Dual < Globally Dual. Actual ordering: LDAM (0.1797) < GDAM (0.3665) < APDG (0.3799). The constraint 'APDG > Globally Dual' (APDG faster) fails: 0.3799 > 0.3665 (APDG is actually slower). The constraint 'APDG > Locally Dual' also fails: 0.3799 > 0.1797. Only 'Locally Dual > Globally Dual' holds.",
+      "note": "The method names in the output use 'LDAM' for Locally Dual and 'GDAM' for Globally Dual, confirmed by paper_case description and config. The outputs contradict the claim that APDG is the fastest; it is in fact the slowest of the three methods in mean time to convergence.",
+      "error": false
+    },
+    {
+      "id": "res-027",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "APDG seems to converge much faster by constraints violation norm at first iterations than the other methods.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/case_er_rank1_highdim/history.json (experiment: erdos_renyi, 10 nodes, rank=1, methods APDG/GDAM/LDAM matching 'Globally Dual'/'Locally Dual'): At iteration 1, APDG constraint_norm=1029.50 vs GDAM=59776.13 and LDAM=59427.01. APDG remains lower than both GDAM and LDAM for all first 20+ iterations (True in every row of APDG<GDAM and APDG<LDAM comparisons). At iteration 16, APDG reaches ~912.32 while GDAM is ~17459.44 and LDAM ~16885.81 — a ~18x gap. The required ordering APDG > Globally Dual (GDAM) and APDG > Locally Dual (LDAM) under lower_is_better holds throughout the early iterations, confirming the claim that APDG converges much faster by constraints violation norm at first iterations.",
+      "note": "GDAM maps to 'Globally Dual' and LDAM to 'Locally Dual' based on the config file and naming conventions. The config explicitly references 'Paper case 3: 10 nodes, dimension 100, rank(B)=1, Erdos-Renyi p=0.3' and 'Section 7, Figure 3', matching experiment exp3_erdosrenyi_10nodes_rank1.",
+      "error": false
+    }
+  ]
+}

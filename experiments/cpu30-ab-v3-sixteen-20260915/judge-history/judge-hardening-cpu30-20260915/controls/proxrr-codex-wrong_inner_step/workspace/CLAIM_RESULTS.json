@@ -1,0 +1,37 @@
+{
+  "schema_version": "optirepro.claim_results.v1",
+  "paper_id": "2102.06704",
+  "summary": "All three declared claims have real-data formal runs with saved configurations, histories, logs, metrics, and figures; observations are reported without substituting smoke data for formal evidence.",
+  "claims": [
+    {
+      "claim_id": "proxrr_sparse_prox_advantage",
+      "status": "reproduced",
+      "observation": "On a1a, ProxRR finished at objective gap 0.00557, close to proximal SGD at 0.00459 and better than the heuristic at 0.01423. ProxRR used 100 proximal evaluations for 100 epochs, versus 160500 for each per-iteration baseline.",
+      "code_paths": ["rr_prox_fed/objectives.py", "rr_prox_fed/algorithms.py", "run_experiment.py"],
+      "test_paths": ["tests/test_core.py"],
+      "config_paths": ["configs/figure1.json", "results/formal/figure1_a1a/config.json", "results/formal/figure1_a1a/resolved_config.json"],
+      "formal_result_paths": ["results/formal/figure1_a1a/metrics.json", "results/formal/figure1_a1a/history.csv", "results/formal/figure1_a1a/figure1.png", "results/formal/figure1_a1a/run.log", "results/formal/figure1_a1a/machine.json"],
+      "notes": "The paper reports similar optimization behavior and emphasizes the proximal-evaluation advantage; the saved run uses the paper's stated O(1/t) schedule and records the exact real-data checksum."
+    },
+    {
+      "claim_id": "importance_resampling_variant",
+      "status": "partially_reproduced",
+      "observation": "The importance-resampled ProxRR run on a1a completed 100 epochs with 100 proximal evaluations and final gap 0.00752, the same order as standard ProxRR at 0.00557 under the same objective and seed. It did not improve this single-seed measurement.",
+      "code_paths": ["rr_prox_fed/algorithms.py", "rr_prox_fed/objectives.py", "run_experiment.py"],
+      "test_paths": ["tests/test_core.py"],
+      "config_paths": ["configs/importance.json", "results/formal/importance_a1a/config.json", "results/formal/importance_a1a/resolved_config.json"],
+      "formal_result_paths": ["results/formal/importance_a1a/metrics.json", "results/formal/importance_a1a/history.csv", "results/formal/importance_a1a/importance.png", "results/formal/importance_a1a/run.log", "results/formal/importance_a1a/machine.json"],
+      "notes": "This is a supporting empirical check of the Section 6 construction; it does not claim to replace the theorem's worst-case complexity proof, and the single measured seed does not establish an empirical speedup."
+    },
+    {
+      "claim_id": "fedrr_federated_advantage",
+      "status": "reproduced",
+      "observation": "On eight mushrooms client shards over 140 rounds, FedRR ended at gap 0.00855, versus 0.21267 for full-pass LocalSGD and 0.42480 for the partial-pass baseline. The history records both communication-round and data-pass axes.",
+      "code_paths": ["rr_prox_fed/federated.py", "rr_prox_fed/objectives.py", "run_experiment.py"],
+      "test_paths": ["tests/test_core.py"],
+      "config_paths": ["configs/figure2.json", "results/formal/figure2_mushrooms/config.json", "results/formal/figure2_mushrooms/resolved_config.json"],
+      "formal_result_paths": ["results/formal/figure2_mushrooms/metrics.json", "results/formal/figure2_mushrooms/history.csv", "results/formal/figure2_mushrooms/communication_rounds.png", "results/formal/figure2_mushrooms/data_passes.png", "results/formal/figure2_mushrooms/run.log", "results/formal/figure2_mushrooms/machine.json"],
+      "notes": "The implementation simulates the same local updates sequentially instead of requiring Ray; minibatch 8 follows the official federated notebook, and the choice is recorded in the resolved configuration."
+    }
+  ]
+}

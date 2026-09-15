@@ -1,0 +1,85 @@
+{
+  "paper_id": "2501.18312",
+  "evaluated_at": "2026-09-04T17:22:15.967769+00:00",
+  "summary": {
+    "total_score": 0.7143,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.7143,
+    "total_rubrics": 5,
+    "passed": 4,
+    "failed": 1,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.5,
+      "passed": 1,
+      "total": 2
+    },
+    "secondary": {
+      "score": 1.0,
+      "passed": 3,
+      "total": 3
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The non-quantized accelerated gradient method (AGM) [17] demonstrates the best performance (lower dual function value) compared to Algorithm 3.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/gaussian_constant/summary.csv (bi_path topology, 5000 iterations): Seed 0: AGM=-5.8596, PPS-M1=-5.6376, PPS-M10=-5.8515, PPS-M100=-6.0550; Seed 1: AGM=-5.4306, PPS-M1=-5.5437, PPS-M10=-5.7328, PPS-M100=-5.5886; Seed 2: AGM=-4.2205, PPS-M1=-3.9717, PPS-M10=-4.0881, PPS-M100=-4.0582. Under lower_is_better, AGM is outperformed by PPS-M100 in seed 0 (-6.055 vs -5.860) and by PPS-M10 in seed 1 (-5.733 vs -5.431). AGM does not have the best (lowest) dual function value across all seeds; it is only best in seed 2.",
+      "note": "The claim that AGM demonstrates \"best performance\" (lowest dual function value) compared to Algorithm 3 (PPS variants) is not supported. In 2 of 3 seeds, at least one PPS variant achieves a lower dual value than AGM. Algorithm 3 with M=100 is particularly competitive or better than AGM in some runs.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The non-quantized accelerated gradient method (AGM) [17] demonstrates the best performance (lower consensus gap) compared to Algorithm 3.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "From results/formal/gaussian_constant/summary.csv at iteration 5000 (final), the consensus_gap values are:\nAGM: seed0=0.030652, seed1=0.027235, seed2=0.022656\nPPS-M1 (Algorithm 3, M=1): seed0=0.049421, seed1=0.050961, seed2=0.048951\nPPS-M10 (Algorithm 3, M=10): seed0=0.033844, seed1=0.029745, seed2=0.025792\nPPS-M100 (Algorithm 3, M=100): seed0=0.030895, seed1=0.027522, seed2=0.023168\nAGM achieves a strictly lower consensus_gap than all Algorithm 3 variants (PPS-M1, PPS-M10, PPS-M100) across all 3 seeds, confirming AGM > Algorithm 3 under lower_is_better direction.",
+      "note": "Algorithm 3 corresponds to PPS-based methods (M=1,10,100). AGM beats all PPS variants. The margin over PPS-M100 is small (e.g., seed0: 0.030652 vs 0.030895) but consistent.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Algorithm 3 with M_t = 1 and r_t = 10 converges to the barycenter with significantly less communication overhead than AGM.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/gaussian_constant/summary.csv and config.json: The config confirms r=10 (constant r_t=10) and PPS-M1 (M_t=1). Communication bits across 3 seeds: PPS-M1 = 630,126 bits (all seeds), AGM = 581,876,352 bits (all seeds). PPS-M1 avg = 630,126; AGM avg = 581,876,352. PPS-M1 has ~923x less communication overhead than AGM. The ranking constraint PPS-M1 < AGM (lower_is_better) is satisfied with very large margin.",
+      "note": "The experiment id 'exp1_gaussian_wb' maps to results/formal/gaussian_constant/ (Gaussian dataset, constant scheduling). The method named 'PPS-M1' corresponds to 'Algorithm 3 (M_t=1, r_t=10)' per the config file which shows r=10 and M=1.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Algorithm 3 with M_t = 1 and r_t = 10 can rapidly converge to the Gaussian Wasserstein barycenter.",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "results/formal/gaussian_constant/config.json confirms M_t=1 (method \"PPS-M1\": {\"M\": 1}) with r_t=10 (\"r\": 10, constant schedule) on Gaussian barycenter experiment. The consensus-gap trajectory in plot_PPS-M1_consensus_gap.csv shows monotonic decrease: seed 0 from 0.587 (iter 1) → 0.0494 (iter 5000); seed 1 from 0.717 (iter 1) → 0.0510 (iter 5000); seed 2 from 0.610 (iter 1) → 0.0490 (iter 5000). The summary.csv (gaussian_constant) confirms final_consensus_gap values of ~0.049–0.051 after 5000 iterations, and barycenter images (barycenter_PPS-M1_bi_path_seed*.png) are present showing converged solutions. The run outputs demonstrate clear convergence to the Gaussian Wasserstein barycenter.",
+      "note": "\"Rapidly\" is qualitative; the outputs show steady convergence over 5000 iterations but no direct comparison to a ground-truth barycenter metric is available. The consensus gap reaching ~0.049 is consistent with convergence in behavior, but how quickly this is relative to other methods is not assessed here (the boolean claim is about convergence ability, not rate comparison). The gaussian_timevarying experiment (PPS-linear-Mt-rt) uses a linear schedule capped at 100 with M=1 initial, which could also partially map to the claim but the gaussian_constant experiment with r=10, M=1 is the most direct match.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Algorithm 3 with constant batch size r_t and M_t ≪ n achieves similar visual quality of the approximate barycentre to AGM on the MNIST experiment.",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "results/formal/mnist/summary.csv and config.json confirm: sampling_schedule='constant' (constant r_t=1), M=10 ≪ n=10000 (PPS-M10-r1). After 5000 iterations on 40 MNIST-twos images (erdos_renyi graph): PPS-M10-r1 final_dual_value≈1.687 (seed0), ≈1.692 (seed1); AGM final_dual_value≈1.548 (seed0), ≈1.539 (seed1) — a ~9% gap. PPS-M10-r1 consensus_gap≈0.058 vs AGM≈0.0014. Barycenter PNG images were generated for both methods: barycenter_PPS-M10-r1_erdos_renyi_seed{0,1}.png (~48KB) and barycenter_AGM-r1_erdos_renyi_seed{0,1}.png (~24KB), enabling visual comparison. The dual objective values being within ~9% for M=10 supports the claim of similar visual quality. PPS-M1-r1 (M=1) has a much larger gap (~83%), so the claim is most applicable to the M=10 variant.",
+      "note": "The claim is inherently qualitative (\"similar visual quality\") and cannot be fully verified without rendering and visually comparing the PNG images. The quantitative proxies (dual_value gap ~9% for M=10) are consistent with the claim, and the barycenter PNG files do exist in the outputs. However, the consensus gap is 44× larger for PPS-M10 vs AGM, which could indicate some visual divergence. Confidence is medium rather than high because true visual quality assessment requires image inspection.",
+      "error": false
+    }
+  ]
+}

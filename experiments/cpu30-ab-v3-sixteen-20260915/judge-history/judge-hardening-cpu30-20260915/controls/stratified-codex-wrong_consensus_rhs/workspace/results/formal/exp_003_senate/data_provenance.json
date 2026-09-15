@@ -1,0 +1,5 @@
+{
+  "adjacency": "embedded Census state-border list (109 undirected edges); AK-WA and HI-CA links preserve connectivity",
+  "file": "/home/hzy/optirepro/datasets/reproduction/v1/assets/us_senate_1976_2016/1976-2024-senate-state.tab",
+  "years": "1976-2016"
+}

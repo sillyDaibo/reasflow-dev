@@ -1,0 +1,6 @@
+{
+  "file": "/home/hzy/optirepro/datasets/reproduction/v1/assets/chicago_crimes_2017_2018/chicago_crimes_2017_2018.parquet",
+  "preprocessing": "20x20 bins, all 52x7x24 zero-count cells retained",
+  "records": 538425,
+  "split": "2017 train / 2018 test"
+}

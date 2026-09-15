@@ -1,0 +1,36 @@
+{
+  "schema_version": "optirepro.paper_review.v1",
+  "contract_digest": "6f9da1df9fea8b1ff8e2372a53f15743b82be8b710ae4c8d1f821f2d41ce831c",
+  "reviewer_id": "paper16_c-independent-cross-review",
+  "basis": "original_paper_only",
+  "decision": "approved",
+  "summary": "Approved: independent exact-rational recomputation matches all 128 numeric leaves. The conjugate-gradient dual state, incidence orientation, incident-set GS selection and single-coordinate update follow the original Algorithm 2.",
+  "cases": [
+    {
+      "case_id": "triangle_cycle",
+      "decision": "approved",
+      "reason": "Derived the quadratic Fenchel conjugate, reconstructed theta=c+diag(1/a)A lambda and gradient=A^T theta, selected the unique largest absolute derivative only among incident edges, and updated one lambda by -eta*g. All primal caches, selected edges and before/after dual objectives agree; unchanged nonendpoint caches are verified exactly.",
+      "citations": [
+        "PDF p.4 Eq. (3) and Fenchel conjugate definition",
+        "PDF p.5 Eq. (4), p.6 Eq. (6)",
+        "PDF p.8 Algorithm 2 and Section 4.2"
+      ]
+    },
+    {
+      "case_id": "path_restricted",
+      "decision": "approved",
+      "reason": "Derived the quadratic Fenchel conjugate, reconstructed theta=c+diag(1/a)A lambda and gradient=A^T theta, selected the unique largest absolute derivative only among incident edges, and updated one lambda by -eta*g. All primal caches, selected edges and before/after dual objectives agree; unchanged nonendpoint caches are verified exactly.",
+      "citations": [
+        "PDF p.4 Eq. (3) and Fenchel conjugate definition",
+        "PDF p.5 Eq. (4), p.6 Eq. (6)",
+        "PDF p.8 Algorithm 2 and Section 4.2"
+      ]
+    }
+  ],
+  "scope_notes": [
+    "Unweighted SGS-CD only: neither SU-CD nor coordinate-Lipschitz scaled selection/steps is assessed. The max notation in Algorithm 2 is disambiguated as argmax by Section 4.2; both cases have strict unique maxima.",
+    "The triangle includes redundant dual coordinates, while the path contains one- and two-neighbor accessible sets; serial events are a permitted finite asynchronous schedule with no overlapping updates.",
+    "Uniform active-node sampling is conditioned on the listed activation paths, not distributionally tested. All incident neighbors provide current conjugate gradients; stale communications and latency are outside scope.",
+    "The fixed conservative eta=1/8 and nonidentity incidence matrices yield finite exact-rational checks; the 1e-12 tolerances comfortably cover binary64 rounding. No convergence-rate, asynchronous scheduling implementation or generic graph guarantee follows."
+  ]
+}

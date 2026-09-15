@@ -1,0 +1,16 @@
+{
+  "report": "/Users/zanehuang/work/OptiRepro/reports/cpu30/CPU30_COMPLETED_AB_DEEP_ANALYSIS_2026-09-06.md",
+  "report_sha256": "33c32454e836b3d21f7c6d0663bb0000ad64fa6e2cfd489204fd47d3a8141306",
+  "report_bytes": 5269859,
+  "report_lines": 78699,
+  "papers": 16,
+  "evaluations": 32,
+  "loop_result_files": 64,
+  "unique_rubrics": 1631,
+  "AB_rubric_judgments": 3262,
+  "local_links_checked": 5366,
+  "missing_links": [],
+  "out_of_range_line_links": [],
+  "snapshot_files_hash_verified": 1977,
+  "status": "passed"
+}

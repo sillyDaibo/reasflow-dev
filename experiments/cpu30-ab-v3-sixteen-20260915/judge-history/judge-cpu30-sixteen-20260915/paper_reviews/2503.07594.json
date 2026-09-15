@@ -1,0 +1,36 @@
+{
+  "schema_version": "optirepro.paper_review.v1",
+  "contract_digest": "b54b4c178f2d9fbd15191a7a96ed13f5cfaf03c91d8f3cf8393dfde4dc2fbddd",
+  "reviewer_id": "paper16_c-independent-cross-review",
+  "basis": "original_paper_only",
+  "decision": "approved",
+  "summary": "Approved: independent exact-rational recomputation matches all 138 numeric leaves. The plus-xi gradient correction, fixed controls during each round, equal endpoint averaging and persistent post-aggregation Eq. (5) control update have correct signs and timing.",
+  "cases": [
+    {
+      "case_id": "zero_control_H2",
+      "decision": "approved",
+      "reason": "Reset each local theta from the current global theta; apply H=2 or H=3 gradients plus unchanged xi; aggregate endpoints then add (local endpoint-global mean)/(gamma H) to each persistent xi. Recomputed all local states and gradients, global parameters and controls; zero-sum xi is verified exactly after every round.",
+      "citations": [
+        "PDF p.3 Algorithm 1 lines 3-10",
+        "PDF p.3 Eqs. (4)-(5)",
+        "PDF p.3 Remark 2.1"
+      ]
+    },
+    {
+      "case_id": "nonzero_centered_control_H3",
+      "decision": "approved",
+      "reason": "Reset each local theta from the current global theta; apply H=2 or H=3 gradients plus unchanged xi; aggregate endpoints then add (local endpoint-global mean)/(gamma H) to each persistent xi. Recomputed all local states and gradients, global parameters and controls; zero-sum xi is verified exactly after every round.",
+      "citations": [
+        "PDF p.3 Algorithm 1 lines 3-10",
+        "PDF p.3 Eqs. (4)-(5)",
+        "PDF p.3 Remark 2.1"
+      ]
+    }
+  ],
+  "scope_notes": [
+    "This paper SCAFFOLD uses persistent centered controls and one step size without an extra global step, distinct from 2501.04443 frozen-anchor/recomputed-batch simplified SCAFFOLD.",
+    "Finite deterministic conditional paths of the stated independent Rademacher law are checked, with full participation of two clients and equal server weights; sampling distributions and partial participation are outside scope.",
+    "One case starts with zero controls and H=2; the other has nonzero zero-sum controls and H=3. These exercise memory across rounds without asserting optimal control initialization.",
+    "Strongly convex scalar quadratics and three rounds only. 1e-12 absolute/relative tolerances are justified by exact rational arithmetic. The analysis paper linear-speedup, stationary-bias and asymptotic claims are not numerically certified."
+  ]
+}

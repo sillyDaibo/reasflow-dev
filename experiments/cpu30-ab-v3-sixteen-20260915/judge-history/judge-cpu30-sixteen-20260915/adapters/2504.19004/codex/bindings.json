@@ -1,0 +1,26 @@
+[
+  {
+    "path": "src/setwise_cd/solver.py",
+    "symbol": "SetwiseCDSolver.solve"
+  },
+  {
+    "path": "src/setwise_cd/solver.py",
+    "symbol": "SetwiseCDSolver._choice"
+  },
+  {
+    "path": "src/setwise_cd/solver.py",
+    "symbol": "SetwiseCDSolver._theta"
+  },
+  {
+    "path": "src/setwise_cd/problems.py",
+    "symbol": "LLSProblem.argmin_lagrangian"
+  },
+  {
+    "path": "src/setwise_cd/problems.py",
+    "symbol": "LLSProblem.objective"
+  },
+  {
+    "path": "src/setwise_cd/problems.py",
+    "symbol": "LLSProblem.lagrangian"
+  }
+]

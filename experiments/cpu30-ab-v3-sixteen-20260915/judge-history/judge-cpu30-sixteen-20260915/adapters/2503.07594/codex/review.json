@@ -1,0 +1,30 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "adapter16_c",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Uses original regression batch gradients and SCAFFOLD state/control updates, with exact public samples encoded as regression data and native sampler draws conditioned on public noise.",
+  "scope_notes": [
+    "algorithms.py:74-102 retains mean batch normalization and source duplicate-rejection branch; batch_size=1 on two records means one index draw per local step and no duplicate retries.",
+    "X=sqrt(a), y=-(b+z)/sqrt(a), z in {-0.25,+0.25} gives the public affine sample gradient through original _batched_gradients.",
+    "algorithms.py:135-139 accepts public centered controls; 148-170 preserves local reset, gradient correction, in-place step, arithmetic aggregation, persistent controls and native recentering.",
+    "Trace lines 148,153,163,170 are before reset/update/aggregation and after completed control update respectively. local_theta stacks actual pre-gradient states and actual final local endpoint.",
+    "Independent smoke used only public cases under execution._readonly_tree; checked successful invocation and observation schema coverage. No private expected values, papers, prior verdicts or Judge numeric comparisons were read. Approval is fidelity only."
+  ],
+  "substitutions": [
+    {
+      "symbol": "Regression arrays and default_rng",
+      "role": "problem_input",
+      "reason": "Public objective/noise encoded into two records; condition original batch-size-one sampler on the given realization."
+    },
+    {
+      "symbol": "_batched_gradients wrapper and _run trace",
+      "role": "observation",
+      "reason": "Original gradient returned unchanged; copies actual pre-update local states, corrected gradient, mean and controls."
+    }
+  ],
+  "public_digest": "58452f0efd8442b7273f261d2ebed0b4fca97bb9fe0b57158edc55ea3136894b",
+  "adapter_sha256": "813f61c7aff08abcfb7d0106acfac00d899dc9f46f4e5bef33c0e7279d79458a",
+  "workspace_digest": "dcf3b56f45f797067b134645c5642be7cc0d29d8a6e0c0f940f96df7ece1e4d5",
+  "bindings_digest": "63d89e1b5282dedc2f62ccb7c59c4ee04117a62baa1a302f51778b13f2c2de11"
+}
