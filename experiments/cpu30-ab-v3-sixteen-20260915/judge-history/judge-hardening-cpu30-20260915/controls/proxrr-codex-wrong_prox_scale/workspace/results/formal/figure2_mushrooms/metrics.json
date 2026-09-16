@@ -1,0 +1,27 @@
+{
+  "elapsed_seconds": {
+    "FedRR": 9.829494208097458,
+    "LocalSGD_full_pass": 10.121958951931447,
+    "LocalSGD_partial_pass": 2.126972684636712
+  },
+  "experiment": "figure2",
+  "f_star": 0.02675930748576507,
+  "final_gap": {
+    "FedRR": 0.008531547260787649,
+    "LocalSGD_full_pass": 0.21267405970656864,
+    "LocalSGD_partial_pass": 0.4248007212833861
+  },
+  "final_objective": {
+    "FedRR": 0.03529085474655272,
+    "LocalSGD_full_pass": 0.2394333671923337,
+    "LocalSGD_partial_pass": 0.45156002876915113
+  },
+  "provenance": {
+    "bytes": 879712,
+    "features": 113,
+    "name": "mushrooms",
+    "path": ".run-data/datasets/mushrooms",
+    "rows": 8124,
+    "sha256": "f39a4eb628dc61a7d43760815b061c9e497aa728ce1ad8bde57a09ef6043b538"
+  }
+}

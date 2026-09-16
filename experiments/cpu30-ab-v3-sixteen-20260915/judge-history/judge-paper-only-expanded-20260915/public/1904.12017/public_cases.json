@@ -1,0 +1,651 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "1904.12017",
+    "title": "A Distributed Method for Fitting Laplacian Regularized Stratified Models",
+    "sha256": "c8df517a9d0fde3ae1359ce97c14513289590549b17364241ca857d2d755a811"
+  },
+  "algorithm": {
+    "name": "Algorithm 4.1: Distributed ADMM for Laplacian regularized stratified models",
+    "citations": [
+      "PDF p.16, Algorithm 4.1, steps 1-4 and zero initialization",
+      "PDF p.16, Eq. (5), regularized Laplacian systems",
+      "PDF p.15, Eq. (4) and proximal splitting",
+      "PDF p.36, Appendix A: proximal definition, sum of squares, l1 norm",
+      "PDF p.37, Appendix A: general Quadratic formula and Poisson negative log likelihood",
+      "PDF p.7, graph Laplacian definition"
+    ],
+    "core_mechanisms": [
+      "local_loss_proximal_update",
+      "local_regularizer_proximal_update",
+      "regularized_laplacian_consensus",
+      "two_scaled_dual_updates"
+    ],
+    "assumptions": [
+      "All tests are synthetic paper-grounded finite convex problems; graph Laplacians are supplied directly. L is K by K, symmetric positive semidefinite, with zero row sums and nonpositive off-diagonal entries; do not rescale L.",
+      "Arrays use node-major K by n layout; rows correspond to the given L order. Apply Eq. (5) independently to each of n columns. No Kronecker flattening convention is needed.",
+      "A quadratic loss input means ell_k(x)=0.5*x^T*Q[k]*x+b[k]^T*x, with constants omitted; Q[k] is n by n and b[k] has n entries. Do not negate b or interpret it as regression targets. The zero Q,b stratum has no local loss.",
+      "Poisson counts[k] is the number N_k of nonnegative integer observations, sums[k] is their sum S_k, and ell_k(x)=N_k*x-S_k*log(x) for scalar x>0. These are sufficient statistics of the explicitly feasible observations in this contract.",
+      "The same local regularizer is used at every node on all n coordinates. ridge means r(x)=coefficient*||x||_2^2/2. l1 means r(x)=coefficient*||x||_1. No unpenalized intercept, normalization by sample count, or extra constraints are added.",
+      "Use the positive lambda as the proximal scale in Algorithm 4.1, equivalently augmented-Lagrangian coefficient 1/(2*lambda); it is the reciprocal of an ADMM rho convention. Start theta, theta_tilde, theta_hat, u and u_tilde at zero and perform exactly four complete iterations. Disable optional penalty adaptation and early stopping.",
+      "Algorithm 4.1 and Eq. (5) are authoritative: use newly computed theta and theta_tilde with old duals on the Eq. (5) RHS, then update each dual. The p.15 unsimplified consensus argmin has stale i superscripts; Eq. (5) resolves the update timing.",
+      "Graph scaling follows the explicit Eq. (5) matrix L+2/lambda*I. The p.7 double-sum Eq. (2) and its following half-quadratic expression have a factor-of-two inconsistency; this contract tests Algorithm 4.1 using its supplied L and does not infer L from Eq. (2).",
+      "Quadratic proximal computations follow the first general quadratic formula on p.37. Its subsequent least-squares example has a sign inconsistency; that example is not used. The general formula also follows directly from the p.36 proximal minimization definition.",
+      "Observe each requested state at the end of the numbered full iteration. The final requested step is a fixed-budget process result, not a claim of asymptotic convergence. Exact or sufficiently accurate proximal and linear-system solves are allowed; CG implementation details are not tested."
+    ]
+  },
+  "cases": [
+    {
+      "id": "correlated_quadratic_ridge",
+      "purpose": "Exercise non-diagonal local Hessians, unequal graph weights, both parameter columns, ridge shrinkage and scaled dual feedback for four full ADMM iterations.",
+      "covers": [
+        "local_loss_proximal_update",
+        "local_regularizer_proximal_update",
+        "regularized_laplacian_consensus",
+        "two_scaled_dual_updates"
+      ],
+      "inputs": {
+        "L": [
+          [
+            1.5,
+            -1,
+            -0.5
+          ],
+          [
+            -1,
+            3,
+            -2
+          ],
+          [
+            -0.5,
+            -2,
+            2.5
+          ]
+        ],
+        "loss": {
+          "type": "quadratic",
+          "Q": [
+            [
+              [
+                2,
+                1
+              ],
+              [
+                1,
+                3
+              ]
+            ],
+            [
+              [
+                1,
+                -0.5
+              ],
+              [
+                -0.5,
+                2
+              ]
+            ],
+            [
+              [
+                3,
+                0.5
+              ],
+              [
+                0.5,
+                1
+              ]
+            ]
+          ],
+          "b": [
+            [
+              -3,
+              1
+            ],
+            [
+              1,
+              -2
+            ],
+            [
+              -1,
+              -4
+            ]
+          ]
+        },
+        "regularizer": {
+          "type": "ridge",
+          "coefficient": 0.75
+        }
+      },
+      "parameters": {
+        "lambda": 0.5,
+        "parameter_dimension": 2,
+        "iterations": 4,
+        "initialization": "all five K by n state arrays are zero",
+        "penalty_adaptation": false,
+        "early_stopping": false,
+        "linear_solve": "Solve Eq. (5) to numerical accuracy; solver choice is unrestricted.",
+        "observations": "At end of complete iteration s, theta is loss proximal state, theta_tilde regularizer proximal state, theta_hat graph consensus, u and u_tilde the newly updated scaled dual states. Shapes are K by n, including n=1."
+      },
+      "atol": 1e-09,
+      "rtol": 1e-08,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "theta",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_hat",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_hat",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_hat",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "empty_node_l1_path",
+      "purpose": "Exercise a no-data middle stratum, propagation across unequal edges, positive and negative soft-threshold branches, zero coordinates and dual feedback for four full iterations.",
+      "covers": [
+        "local_loss_proximal_update",
+        "local_regularizer_proximal_update",
+        "regularized_laplacian_consensus",
+        "two_scaled_dual_updates"
+      ],
+      "inputs": {
+        "L": [
+          [
+            1,
+            -1,
+            0
+          ],
+          [
+            -1,
+            3,
+            -2
+          ],
+          [
+            0,
+            -2,
+            2
+          ]
+        ],
+        "loss": {
+          "type": "quadratic",
+          "Q": [
+            [
+              [
+                2,
+                0
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                3
+              ]
+            ]
+          ],
+          "b": [
+            [
+              -4,
+              1
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              -3
+            ]
+          ]
+        },
+        "regularizer": {
+          "type": "l1",
+          "coefficient": 0.2
+        }
+      },
+      "parameters": {
+        "lambda": 1.0,
+        "parameter_dimension": 2,
+        "iterations": 4,
+        "initialization": "all five K by n state arrays are zero",
+        "penalty_adaptation": false,
+        "early_stopping": false,
+        "linear_solve": "Solve Eq. (5) to numerical accuracy; solver choice is unrestricted.",
+        "observations": "At end of complete iteration s, theta is loss proximal state, theta_tilde regularizer proximal state, theta_hat graph consensus, u and u_tilde the newly updated scaled dual states. Shapes are K by n, including n=1."
+      },
+      "atol": 1e-09,
+      "rtol": 1e-08,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "theta",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_hat",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_hat",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_hat",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u",
+          "shape": [
+            3,
+            2
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u_tilde",
+          "shape": [
+            3,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "poisson_ridge_graph",
+      "purpose": "Exercise strictly positive nonlinear Poisson proximal minimizers with unequal sample counts, a coupled three-node graph, ridge shrinkage and dual feedback for four full iterations.",
+      "covers": [
+        "local_loss_proximal_update",
+        "local_regularizer_proximal_update",
+        "regularized_laplacian_consensus",
+        "two_scaled_dual_updates"
+      ],
+      "inputs": {
+        "L": [
+          [
+            2,
+            -1.5,
+            -0.5
+          ],
+          [
+            -1.5,
+            2.5,
+            -1
+          ],
+          [
+            -0.5,
+            -1,
+            1.5
+          ]
+        ],
+        "loss": {
+          "type": "poisson",
+          "counts": [
+            2,
+            1,
+            3
+          ],
+          "sums": [
+            4,
+            3,
+            2
+          ]
+        },
+        "regularizer": {
+          "type": "ridge",
+          "coefficient": 0.5
+        }
+      },
+      "parameters": {
+        "lambda": 2.0,
+        "parameter_dimension": 1,
+        "iterations": 4,
+        "initialization": "all five K by n state arrays are zero",
+        "penalty_adaptation": false,
+        "early_stopping": false,
+        "linear_solve": "Solve Eq. (5) to numerical accuracy; solver choice is unrestricted.",
+        "observations": "At end of complete iteration s, theta is loss proximal state, theta_tilde regularizer proximal state, theta_hat graph consensus, u and u_tilde the newly updated scaled dual states. Shapes are K by n, including n=1."
+      },
+      "atol": 1e-09,
+      "rtol": 1e-08,
+      "observation_schema": [
+        {
+          "step": 1,
+          "name": "theta",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_tilde",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "theta_hat",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u_tilde",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_tilde",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "theta_hat",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u_tilde",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_tilde",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 4,
+          "name": "theta_hat",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u",
+          "shape": [
+            3,
+            1
+          ]
+        },
+        {
+          "step": 4,
+          "name": "u_tilde",
+          "shape": [
+            3,
+            1
+          ]
+        }
+      ]
+    }
+  ]
+}

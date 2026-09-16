@@ -1,0 +1,398 @@
+{
+  "paper_id": "1904.12017",
+  "evaluated_at": "2026-09-04T12:12:29.672495+00:00",
+  "summary": {
+    "total_score": 0.4407,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.4407,
+    "total_rubrics": 33,
+    "passed": 14,
+    "failed": 19,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.4615,
+      "passed": 12,
+      "total": 26
+    },
+    "tertiary": {
+      "score": 1.0,
+      "passed": 1,
+      "total": 1
+    },
+    "secondary": {
+      "score": 0.1667,
+      "passed": 1,
+      "total": 6
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Separate model test ANLL = 1.31.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_mesothelioma/metrics.json: \"separate\": {\"anll_test\": 0.7493322364930329, ...}. The measured Separate model test ANLL is 0.7493, not 1.31. The absolute difference |0.7493 - 1.31| = 0.5607 far exceeds the tolerance of 0.1. CLAIM_RESULTS.json also corroborates this value (0.749) for the separate method.",
+      "note": "The paper claims Separate test ANLL = 1.31, but the run output shows 0.749. This is a substantial discrepancy. The mesothelioma experiment is flagged as \"partially_reproduced\" in CLAIM_RESULTS.json with a note that the paper's original random split is not fully recoverable.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Separate model test error = 0.45.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_mesothelioma/metrics.json: separate.error_test = 0.3939393939393939 (~0.394). Expected 0.45 ± 0.01. Difference = |0.394 - 0.45| ≈ 0.056, which exceeds the tolerance of 0.01.",
+      "note": "The run output file exists and contains a well-formed result. The measured value (≈0.394) is definitively below the claimed 0.45, failing the numerical check.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Stratified model test ANLL = 0.76.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_mesothelioma/metrics.json: stratified.anll_test = 0.6295386189599523. Expected 0.76 ± 0.10, but |0.6295 - 0.76| = 0.1305 > 0.10. CLAIM_RESULTS.json also confirms the paper reference value of 0.76 and notes the run produced 0.630, marking this claim as \"partially_reproduced\".",
+      "note": "The run output exists and is unambiguous; the stratified model's test ANLL (0.630) is lower than the paper's 0.76, but the gap of ~0.13 exceeds the allowed tolerance of 0.10.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Stratified model test error = 0.27.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_mesothelioma/metrics.json: stratified.error_test = 0.30303030303030304. Expected 0.27, tolerance 0.01. Absolute difference = 0.0303, which exceeds the allowed tolerance. CLAIM_RESULTS.json also explicitly reports \"test error is 0.303 for both stratified and common rather than the paper's 0.27 and 0.30\" and marks mesothelioma_stratification as \"partially_reproduced\".",
+      "note": "The paper_reference field in metrics.json records the paper's claimed value of 0.27, confirming the expected value is correct, but the actual run produced 0.303 — a discrepancy attributed to differences in train/test split and feature-processing stack.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Common model test ANLL = 0.73.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_mesothelioma/metrics.json: common.anll_test = 0.7299508366659534. Expected value = 0.73, tolerance = 0.1. |0.7300 - 0.73| ≈ 0.00005, well within tolerance.",
+      "note": "The measured value essentially matches the claimed value exactly (0.7300 vs 0.73).",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Common model test error = 0.30.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_mesothelioma/metrics.json: common.error_test = 0.30303030303030304. |0.30303 - 0.30| = 0.00303 ≤ tolerance 0.01.",
+      "note": "The run output's common test error of ~0.3030 rounds to 0.30 and is within the 0.01 absolute tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The stratified model outperforms the common model and the separate model in terms of test error (Stratified > Common, Stratified > Separate).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_mesothelioma/metrics.json: Stratified error_test=0.30303030303030304, Common error_test=0.30303030303030304, Separate error_test=0.3939393939393939. Constraint 'Stratified > Common' (lower_is_better) requires Stratified error < Common error, but they are identical (0.30303 == 0.30303). Constraint 'Stratified > Separate' holds (0.30303 < 0.39393).",
+      "note": "Stratified ties with Common on test error; it does not strictly outperform it. Only the Stratified > Separate constraint is satisfied.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "Figure 1 displays the stratified model glucose parameter as a function of age and sex.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_mesothelioma/figure_glucose.png: The PNG image (840x560, generated 2026-09-03) shows a line chart titled with y-axis \"glucose coefficient\" and x-axis \"Age\", with two separate lines for \"Male\" (blue) and \"Female\" (orange), spanning ages ~20–85. This is the stratified model glucose parameter plotted as a function of age and sex (two sex strata).",
+      "note": "The figure file is named figure_glucose.png and is the only figure output in the exp_001_mesothelioma results directory, consistent with the paper's Figure 1 reference. The resolved_config.json shows gamma_age=500.0 and gamma_sex=10.0, confirming stratification over both age and sex dimensions.",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Separate model has 22500 parameters.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_houses/metrics.json: \"separate\": {\"parameter_count\": 25000, ...}. The actual measured parameter count for the Separate model on King County house sales is 25000, not 22500. |25000 - 22500| = 2500 > tolerance of 0.",
+      "note": "The run log (run.log) also confirms parameter_count=25000 for the separate model. The claim of 22500 parameters does not match the run output.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Stratified model has 22500 parameters.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_houses/metrics.json: stratified.parameter_count = 25000. The claim expects 22500 with tolerance 0, but the actual value is 25000 (|25000 - 22500| = 2500 > 0). Same value confirmed in run.log.",
+      "note": "The bins are [50, 50] (50×50 = 2500 bins). With 10 parameters per model the expected count would be 25000, not 22500. The run output clearly contradicts the claim.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Common model has 10 parameters.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "./CLAIM_RESULTS.json: common.parameter_count = 10 for the King County house sales experiment (dataset field: \"King County house sales\"). The measured value exactly equals the expected value of 10, satisfying the zero-tolerance requirement.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Random forest model has 985888 parameters.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_houses/metrics.json: random_forest.parameter_count = 1000014. The claim expects 985888 with absolute tolerance 0. The measured value differs by 14126. The same figure appears in run.log: \"random_forest\": {\"parameter_count\": 1000014, ...}.",
+      "note": "The run output file exists and is unambiguous; the measured parameter count (1,000,014) does not match the claimed value (985,888).",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Separate model achieves test RMSE of 1.514.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_houses/metrics.json: separate.rmse_test = 1.5378504437986242. Expected 1.514 ± 0.001. Difference = |1.5379 - 1.514| ≈ 0.0239, which exceeds the allowed tolerance of 0.001.",
+      "note": "The run output exists and is unambiguous; the measured value is ~1.538, not ~1.514.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Stratified model achieves test RMSE of 0.181.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_houses/metrics.json: stratified.rmse_test = 0.18126695097 on King County house sales dataset. |0.18127 - 0.181| = 0.00027 ≤ tolerance 0.001. CLAIM_RESULTS.json also confirms \"Stratified test RMSE is 0.1813 ... matching the paper's ... reported values.\"",
+      "note": "The measured value 0.18127 rounds to 0.181 and is well within the ±0.001 absolute tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Common model achieves test RMSE of 0.316.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_houses/metrics.json: common.rmse_test = 0.31564785377190935. Expected 0.316, |0.31564785 - 0.316| = 0.00035 ≤ tolerance 0.001. Dataset confirmed as \"King County house sales\".",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Random forest model achieves test RMSE of 0.184.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_houses/metrics.json: random_forest.rmse_test = 0.1831515290974022 on dataset \"King County house sales\". |0.1832 - 0.184| ≈ 0.0008 ≤ tolerance of 0.001.",
+      "note": "The metrics.json file also contains a paper_reference field with random_forest_rmse: 0.184, confirming that the paper's Table 2 value is the target. The measured value is within tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The stratified model outperforms the separate, common, and random forest models in terms of test RMSE.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_houses/metrics.json: stratified.rmse_test=0.1813, separate.rmse_test=1.5379, common.rmse_test=0.3156, random_forest.rmse_test=0.1832. All three pairwise constraints hold (lower_is_better): Stratified(0.1813) < Separate(1.5379), Stratified(0.1813) < Common(0.3156), Stratified(0.1813) < Random Forest(0.1832).",
+      "note": "The margin over Random Forest is small (~0.0018) but the ordering is clear and unambiguous in the run output.",
+      "error": false
+    },
+    {
+      "id": "res-018",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Separate model achieves Train ANLL of 0.69 on Senate elections.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_003_senate/metrics.json: separate.anll_train = 1.0000050000287823e-05 (≈ 0.00001). Expected 0.69 ± 0.01. The separate.anll_test is 0.6931 (≈ ln(2)), which is close to 0.69, but the claim is specifically about train_ANLL. The actual train ANLL for Separate is essentially 0 (the model perfectly memorizes training data), not 0.69.",
+      "note": "The Separate model overfits perfectly to training data, giving near-zero train ANLL. The value 0.693 appears as the test ANLL (≈ ln(2), indicating random-chance performance at test time). The paper's Table 3 value of 0.69 for Separate train ANLL is not reproduced in the run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-019",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Separate model achieves Test ANLL of 1.00 on Senate elections.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_003_senate/metrics.json: separate.anll_test = 0.6931471805599454. Expected value is 1.0 with tolerance 0.01. Measured value differs from expected by ~0.307, far exceeding the tolerance.",
+      "note": "The measured test ANLL of ~0.693 (≈ ln(2)) is consistent with a model predicting 50/50 probability for each binary election outcome, which is a plausible degenerate-but-valid result for a separately-fit model. The paper apparently reports 1.0 for this cell in Table 3, but the run output contradicts that.",
+      "error": false
+    },
+    {
+      "id": "res-020",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Stratified model achieves Train ANLL of 0.48 on Senate elections.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_003_senate/metrics.json: stratified.anll_train = 0.32999849797630726. The expected value is 0.48 with tolerance ±0.01. The measured value differs by |0.330 - 0.48| ≈ 0.150, which far exceeds the allowed tolerance. The run.log confirms this same value: {\"anll_train\": 0.32999849797630726}. No other output files for this experiment were found containing a different train ANLL for the Stratified model.",
+      "note": "The run outputs do exist and are well-formed, but the actual Train ANLL for the Stratified model on Senate elections is ~0.330, not 0.48. The CLAIM_RESULTS.json notes this experiment as \"reproduced\" but only in terms of test ANLL direction/magnitude, not this specific train ANLL figure.",
+      "error": false
+    },
+    {
+      "id": "res-021",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Stratified model achieves Test ANLL of 0.61 on Senate elections.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_003_senate/metrics.json: stratified.anll_test = 0.5375 (≈ 0.54). Expected 0.61 ± 0.01. Absolute difference = 0.0725, which exceeds the tolerance of 0.01. The file also records paper_reference.stratified_test_anll = 0.61, confirming the paper's claimed value, but the actual run output does not match it.",
+      "note": "The run output is lower than the paper's claimed value (0.54 vs 0.61), which could indicate a different dataset split, implementation, or the paper reports a different metric variant. The claim does not hold based on run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-022",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Common model achieves Train ANLL of 0.69 on Senate elections.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_003_senate/metrics.json: common.anll_train = 0.6926070670013583. Expected value = 0.69, |0.6926 - 0.69| = 0.0026, which is within the absolute tolerance of 0.01.",
+      "note": "The metrics file clearly labels the dataset as \"U.S. Senate elections\" and the Common model's train ANLL matches the claimed value of 0.69 within tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-023",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Common model achieves Test ANLL of 0.70 on Senate elections.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_003_senate/metrics.json: common.anll_test = 0.7033568089282198. |0.7034 − 0.70| = 0.0034 ≤ 0.01 (absolute tolerance). The file also cross-references the paper value via paper_reference.common_test_anll = 0.7.",
+      "note": "The measured value 0.7034 is within the allowed tolerance of ±0.01 of the claimed 0.70.",
+      "error": false
+    },
+    {
+      "id": "res-024",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The stratified model outperforms the separate and common models on train ANLL.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/exp_003_senate/metrics.json. Extracted train ANLL values: Stratified=0.32999849797630726, Separate=1.0000050000287823e-05 (~0.00001), Common=0.6926070670013583. Since lower_is_better, Stratified does NOT beat Separate on train ANLL (0.330 > 0.00001), so the required constraint 'Stratified > Separate' (i.e. Stratified ANLL < Separate ANLL) fails. Stratified does beat Common (0.330 < 0.693), but that is only 1 of 2 required constraints.",
+      "note": "The Separate model appears to massively overfit the training data (train ANLL ≈ 0), achieving near-zero training loss but worse test performance (0.693). The claim that Stratified outperforms Separate on train ANLL is not supported by the run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-025",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The stratified model outperforms the separate and common models on test ANLL.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_003_senate/metrics.json: stratified.anll_test=0.5375, separate.anll_test=0.6931, common.anll_test=0.7034. With lower_is_better, Stratified (0.5375) < Separate (0.6931) and Stratified (0.5375) < Common (0.7034), so both required ordering constraints ('Stratified > Separate' and 'Stratified > Common') are satisfied.",
+      "note": "The paper reference values embedded in the JSON (stratified=0.61, common=0.70) are close to but not identical to the run output values; however, the ordering still holds clearly in both the run outputs and the paper reference.",
+      "error": false
+    },
+    {
+      "id": "res-026",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The Separate model achieves a train ANLL of 0.068.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_004_chicago/metrics.json: separate.anll_train = 0.06751761193074735. |0.06752 - 0.068| ≈ 0.00048, which is within the absolute tolerance of 0.001.",
+      "note": "The measured value rounds to 0.068 and is within tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-027",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The Separate model achieves a test ANLL of 0.740.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_004_chicago/metrics.json: separate.anll_test = 0.7388921404156688. Expected value = 0.74, absolute tolerance = 0.001. |0.7388921404156688 - 0.74| = 0.001108 > 0.001 — the measured value falls outside the allowed tolerance.",
+      "note": "The value is very close (rounds to 0.739 vs expected 0.740), but strictly exceeds the ±0.001 tolerance by ~0.0001.",
+      "error": false
+    },
+    {
+      "id": "res-028",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The Stratified model achieves a train ANLL of 0.221.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_004_chicago/metrics.json: stratified.anll_train = 0.23050928060173914. The expected value is 0.221 with tolerance 0.001. The absolute difference |0.2305 - 0.221| ≈ 0.0095 exceeds the tolerance of 0.001.",
+      "note": "The run output exists but the measured train ANLL for the Stratified model is ~0.231, not 0.221. The test ANLL (0.245) also does not match the paper's referenced stratified_test_anll of 0.234, suggesting there may be a discrepancy between the paper's reported results and what this reproduction actually produced.",
+      "error": false
+    },
+    {
+      "id": "res-029",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The Stratified model achieves a test ANLL of 0.234.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_004_chicago/metrics.json: stratified.anll_test = 0.2445224683762124. Expected 0.234 ± 0.001. Absolute difference = |0.2445 - 0.234| ≈ 0.0105, which exceeds the tolerance of 0.001. The file also separately records the paper reference value (paper_reference.stratified_test_anll = 0.234), confirming the run output differs from the claimed value.",
+      "note": "The run did execute and produced output for the Stratified model on Chicago crime data, but the measured test ANLL (0.2445) is ~1% above the claimed 0.234, well outside the ±0.001 tolerance.",
+      "error": false
+    },
+    {
+      "id": "res-030",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The Common model achieves a train ANLL of 0.279.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_004_chicago/metrics.json: common.anll_train = 0.2792624014205714. |0.2792624 - 0.279| = 0.0002624, which is within the absolute tolerance of 0.001.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "res-031",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "The Common model achieves a test ANLL of 0.278.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_004_chicago/metrics.json: common.anll_test = 0.2782979849974284. |0.2782979849974284 - 0.278| = 0.000298 ≤ 0.001 (tolerance). The file also cross-references the paper value: paper_reference.common_test_anll = 0.278.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "res-032",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The ADMM fitting method for the stratified model converged in 464 iterations.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_004_chicago/metrics.json: stratified.iterations = 80. The run.log confirms the experiment was started with maxiter=80 and the recorded iterations value is 80, not 464. Expected value was 464 with tolerance 0.",
+      "note": "The run was capped at maxiter=80, far below the claimed 464 iterations. Either the experiment was not run to the settings that produce 464 iterations, or the paper's reported number reflects a different run configuration.",
+      "error": false
+    },
+    {
+      "id": "res-033",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The fitting took about 434 seconds.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_004_chicago/metrics.json and run.log both record wall_time_seconds = 186.595 seconds for the Stratified method on the Chicago crimes dataset. The expected value is 434 seconds with tolerance ±5. The measured value differs by ~247 seconds (|186.6 - 434| >> 5), so the claim does not hold.",
+      "note": "The metrics file does not have a separate \"convergence_time_seconds\" field; wall_time_seconds is the only timing metric present and it records the total run time. The Stratified fit completed in ~187s, roughly 2.3× faster than the claimed 434s.",
+      "error": false
+    }
+  ]
+}

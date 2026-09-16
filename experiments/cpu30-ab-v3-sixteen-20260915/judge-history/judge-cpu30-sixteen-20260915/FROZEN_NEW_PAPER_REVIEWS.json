@@ -1,0 +1,79 @@
+[
+  {
+    "paper_id": "2111.03820",
+    "contract_digest": "59b1104693f3a20548e73efd4d1c086d1697967c88c40c0b519e25dbf50c016b",
+    "review_sha256": "c018f1ce8614e3ac03f8e578548a69afec59dfc36acfd2aa03d61205574120eb",
+    "reviewer_id": "paper16_c-independent-cross-review",
+    "decision": "approved"
+  },
+  {
+    "paper_id": "2207.04555",
+    "contract_digest": "77de8bac952fb337c8fcff7d9a8428078054eb555d519346b7f7bec311e1c3b8",
+    "review_sha256": "646d7fa5b59152e7befb89cd8a91b33741f6c1dcab8a7b69c522afdea5506700",
+    "reviewer_id": "paper16_a",
+    "decision": "approved"
+  },
+  {
+    "paper_id": "2306.04961",
+    "contract_digest": "4d76e1598814ca778b9ff211bf1fe382f2491e0e92684df339561e0648b1696a",
+    "review_sha256": "16fe921ff7bb462b6c60f4ed7597b72ef89dd247a5fb9ea2253f961f91ff85b2",
+    "reviewer_id": "/root/paper16_b",
+    "decision": "approved"
+  },
+  {
+    "paper_id": "2306.05100",
+    "contract_digest": "71dfa9f5142eb315427a13cbd8b11619669182ac1d3787999bec05c7120edd09",
+    "review_sha256": "456d6d1d044ce110b1a43078baf77b0655720333275a479f7b70f34f77b6fdc9",
+    "reviewer_id": "paper16_a",
+    "decision": "approved"
+  },
+  {
+    "paper_id": "2309.05204",
+    "contract_digest": "79672c9fb80be2db961eefac7f2f2cb5efb52911bbc06f31173f648e788047a2",
+    "review_sha256": "c2e7219d0c337bd189639f20d9ec8a252b304521e435dcff4489f91044e18179",
+    "reviewer_id": "/root/paper16_b",
+    "decision": "approved"
+  },
+  {
+    "paper_id": "2310.09804",
+    "contract_digest": "6e6be10262dccd3869f00a16c45ab5759c95781e3c8cf2e1716718496a3d5bb9",
+    "review_sha256": "5b447bc1ddc0ceb2f7f5222a404e5ee19f0db7db72a895fc7b2d6ea3ae41de5b",
+    "reviewer_id": "paper16_a",
+    "decision": "approved"
+  },
+  {
+    "paper_id": "2501.04443",
+    "contract_digest": "3558d3d9b1c1d602abbafac8032062a018e05d2cf8535428dfbcbf665e52d900",
+    "review_sha256": "146e3c17aa76fa3ebc78c50e95d016f59fc5c09aacc793928786361d2ab8d09a",
+    "reviewer_id": "paper16_c-independent-cross-review",
+    "decision": "approved"
+  },
+  {
+    "paper_id": "2501.09516",
+    "contract_digest": "4eea6b9e967d71cc362e51c693ca5f34d5fc6b2225a782d44d456af6f7eca06d",
+    "review_sha256": "5df0eb25755c3c97dba87243c8eead404653267e57b9cfec8e9e3975ece8543c",
+    "reviewer_id": "/root/paper16_b",
+    "decision": "approved"
+  },
+  {
+    "paper_id": "2501.18312",
+    "contract_digest": "0592dff933d6b75c881e5696d51ef6e73bb3f74a0e52aca5d7bfd032929b0c31",
+    "review_sha256": "d238c71064a0cd9dc0334f9bfec97248e3d34169933af12fbdc1dfe7d9ed759e",
+    "reviewer_id": "paper16_a",
+    "decision": "approved"
+  },
+  {
+    "paper_id": "2503.07594",
+    "contract_digest": "b54b4c178f2d9fbd15191a7a96ed13f5cfaf03c91d8f3cf8393dfde4dc2fbddd",
+    "review_sha256": "608ec394e826360fd993097d6b092f436e9747d1686b29e3b072364ec418611f",
+    "reviewer_id": "paper16_c-independent-cross-review",
+    "decision": "approved"
+  },
+  {
+    "paper_id": "2504.19004",
+    "contract_digest": "6f9da1df9fea8b1ff8e2372a53f15743b82be8b710ae4c8d1f821f2d41ce831c",
+    "review_sha256": "8cc2cb6226dab6e1783dbc8d956430344f40fb9d0ec5192c8542cc266950c715",
+    "reviewer_id": "paper16_c-independent-cross-review",
+    "decision": "approved"
+  }
+]

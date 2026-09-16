@@ -1,0 +1,798 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2306.04961",
+    "title": "Recovering Simultaneously Structured Data via Non-Convex Iteratively Reweighted Least Squares",
+    "sha256": "6486027b50634a90a4ebd40cf40c6b1cca4c32cdbd133dfbfea499fb523aaf48"
+  },
+  "algorithm": {
+    "name": "Algorithm 2.1: IRLS for simultaneously low-rank and row-sparse matrices",
+    "citations": [
+      "PDF p.5 Definition 2.1, Eqs. (2.2)-(2.6)",
+      "PDF p.6 Algorithm 2.1, Eqs. (2.7)-(2.8)",
+      "PDF p.8 Eq. (3.1)"
+    ],
+    "core_mechanisms": [
+      "equality-constrained-weighted-least-squares",
+      "two-sided-spectral-reweighting",
+      "row-sparsity-reweighting",
+      "monotone-smoothing-update"
+    ],
+    "assumptions": [
+      "Use the row-sparsity variant, no optional additional column-sparsity term.",
+      "Both rank and sparsity estimates are 1, so the printed inconsistent rank/sparsity subscript in Eq. (2.8) coincides and requires no inferred correction.",
+      "Initial weight is identity because Algorithm 2.1 explicitly requires it; subsequent operators are nonidentity and both structural penalties are active.",
+      "All three iterates are full rank with positive second row norm and smoothing, so zero-smoothing termination is outside scope.",
+      "Finite deterministic operator tests do not certify RIP, asymptotic recovery rate or sample complexity."
+    ]
+  },
+  "cases": [
+    {
+      "id": "row_one_recovery",
+      "purpose": "Recover a row-sparse rank-one feasible matrix through three nontrivial constrained weighted solves, with distinct spectral and row weights, left/right spectral factors and updated smoothing.",
+      "covers": [
+        "equality-constrained-weighted-least-squares",
+        "two-sided-spectral-reweighting",
+        "row-sparsity-reweighting",
+        "monotone-smoothing-update"
+      ],
+      "inputs": {
+        "matrix_shape": [
+          2,
+          2
+        ],
+        "vectorization": "row-major: [X11,X12,X21,X22]",
+        "measurement_matrix": [
+          [
+            1,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            -1
+          ]
+        ],
+        "measurements": [
+          2,
+          1,
+          2
+        ],
+        "feasible_structured_example": [
+          [
+            2,
+            1
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "objective": "At each iteration minimize <X,W_previous(X)> subject to A vec(X)=y",
+        "randomness": "none"
+      },
+      "parameters": {
+        "rank_estimate": 1,
+        "row_sparsity_estimate": 1,
+        "iterations": 3,
+        "initial_weight_operator": "identity on R^(2x2), as mandated by Algorithm 2.1",
+        "initial_epsilon": "positive infinity",
+        "initial_delta": "positive infinity",
+        "observation_timing": "step k records X^(k) after weighted minimization and all singular values, row norms, smoothing and weights computed FROM that X after steps 5-6 of Algorithm 2.1",
+        "spectral_weight_convention": "left/right factors have eigenvalues min(epsilon/sigma_i,1); W_lr(Z)=L Z R; W_sp is left row scaling; W=W_lr+W_sp. Operator matrix uses row-major coordinates."
+      },
+      "derivation": "70-digit Decimal evaluation of paper Eqs. (2.4)-(2.8), (3.1). For each 2x2 Gram matrix, compute eigenvalues (trace +/- sqrt((a-c)^2+4b^2))/2 and spectral filter by degree-one interpolation, independent of singular-vector signs. Weighted equality solution uses direct Gaussian elimination. Initial W=I; then epsilon=min(old epsilon,sigma_2), delta=min(old delta,second largest row norm). Distinct nontrivial L,R and row weights are recomputed at every iteration. k=1: X=[[2.0, 0.5], [0.5, 0.0]], epsilon=0.11803398874989485, delta=0.5, row weights=[0.058823529411764705, 1.0]; k=2: X=[[2.0, 0.9021160338924272], [0.09788396610757273, -8e-71]], epsilon=0.04021336141277818, delta=0.09788396610757273, row weights=[0.0019903702422585864, 1.0]; k=3: X=[[2.0, 0.9966084569515801], [0.00339154304841994, -1.36e-70]], epsilon=0.0015126232956419552, delta=0.00339154304841994, row weights=[2.30363269810585e-06, 1.0]",
+      "expected": [
+        {
+          "step": 1,
+          "name": "X",
+          "value": [
+            [
+              2.0,
+              0.5
+            ],
+            [
+              0.5,
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "singular_values",
+          "value": [
+            2.118033988749895,
+            0.11803398874989485
+          ]
+        },
+        {
+          "step": 1,
+          "name": "row_norms",
+          "value": [
+            2.0615528128088303,
+            0.5
+          ]
+        },
+        {
+          "step": 1,
+          "name": "epsilon",
+          "value": 0.11803398874989485
+        },
+        {
+          "step": 1,
+          "name": "delta",
+          "value": 0.5
+        },
+        {
+          "step": 1,
+          "name": "low_rank_left",
+          "value": [
+            [
+              0.10557280900008412,
+              -0.21114561800016823
+            ],
+            [
+              -0.21114561800016823,
+              0.9501552810007571
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "low_rank_right",
+          "value": [
+            [
+              0.10557280900008412,
+              -0.21114561800016823
+            ],
+            [
+              -0.21114561800016823,
+              0.9501552810007571
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "row_weight_diagonal",
+          "value": [
+            0.058823529411764705,
+            1.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "weight_operator",
+          "value": [
+            [
+              0.06996914741193296,
+              -0.022291236000336487,
+              -0.022291236000336487,
+              0.044582472000672974
+            ],
+            [
+              -0.022291236000336487,
+              0.1591340914132789,
+              0.044582472000672974,
+              -0.20062112400302837
+            ],
+            [
+              -0.022291236000336487,
+              0.044582472000672974,
+              1.1003105620015141,
+              -0.20062112400302837
+            ],
+            [
+              0.044582472000672974,
+              -0.20062112400302837,
+              -0.20062112400302837,
+              1.9027950580136277
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "value": [
+            [
+              2.0,
+              0.9021160338924272
+            ],
+            [
+              0.09788396610757273,
+              -8e-71
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "singular_values",
+          "value": [
+            2.1958546160870114,
+            0.04021336141277818
+          ]
+        },
+        {
+          "step": 2,
+          "name": "row_norms",
+          "value": [
+            2.194040414077599,
+            0.09788396610757273
+          ]
+        },
+        {
+          "step": 2,
+          "name": "epsilon",
+          "value": 0.04021336141277818
+        },
+        {
+          "step": 2,
+          "name": "delta",
+          "value": 0.09788396610757273
+        },
+        {
+          "step": 2,
+          "name": "low_rank_left",
+          "value": [
+            [
+              0.019935309061020742,
+              -0.039870618122041485
+            ],
+            [
+              -0.039870618122041485,
+              0.9983779987136251
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "low_rank_right",
+          "value": [
+            [
+              0.18372735249390842,
+              -0.36745470498781685
+            ],
+            [
+              -0.36745470498781685,
+              0.8345859552807374
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "row_weight_diagonal",
+          "value": [
+            0.0019903702422585864,
+            1.0
+          ]
+        },
+        {
+          "step": 2,
+          "name": "weight_operator",
+          "value": [
+            [
+              0.005653031797187751,
+              -0.007325323109858329,
+              -0.007325323109858329,
+              0.014650646219716658
+            ],
+            [
+              -0.007325323109858329,
+              0.01862809919876732,
+              0.014650646219716658,
+              -0.03327545791301747
+            ],
+            [
+              -0.007325323109858329,
+              0.014650646219716658,
+              1.183429346491821,
+              -0.3668586929836421
+            ],
+            [
+              0.014650646219716658,
+              -0.03327545791301747,
+              -0.3668586929836421,
+              1.8332322557876817
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "value": [
+            [
+              2.0,
+              0.9966084569515801
+            ],
+            [
+              0.00339154304841994,
+              -1.36e-70
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "singular_values",
+          "value": [
+            2.2345553542041476,
+            0.0015126232956419552
+          ]
+        },
+        {
+          "step": 3,
+          "name": "row_norms",
+          "value": [
+            2.2345532923757734,
+            0.00339154304841994
+          ]
+        },
+        {
+          "step": 3,
+          "name": "epsilon",
+          "value": 0.0015126232956419552
+        },
+        {
+          "step": 3,
+          "name": "delta",
+          "value": 0.00339154304841994
+        },
+        {
+          "step": 3,
+          "name": "low_rank_left",
+          "value": [
+            [
+              0.000678767772802374,
+              -0.001357535545604748
+            ],
+            [
+              -0.001357535545604748,
+              0.9999981558454898
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "low_rank_right",
+          "value": [
+            [
+              0.19945661695085606,
+              -0.3989132339017121
+            ],
+            [
+              -0.3989132339017121,
+              0.801220306667436
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "row_weight_diagonal",
+          "value": [
+            2.30363269810585e-06,
+            1.0
+          ]
+        },
+        {
+          "step": 3,
+          "name": "weight_operator",
+          "value": [
+            [
+              0.00013768835635653465,
+              -0.0002707694473168576,
+              -0.0002707694473168576,
+              0.0005415388946337152
+            ],
+            [
+              -0.0002707694473168576,
+              0.0005461461557787965,
+              0.0005415388946337152,
+              -0.0010876850461613813
+            ],
+            [
+              -0.0002707694473168576,
+              0.0005415388946337152,
+              1.1994562491220364,
+              -0.3989124982440726
+            ],
+            [
+              0.0005415388946337152,
+              -0.0010876850461613813,
+              -0.3989124982440726,
+              1.801218829093394
+            ]
+          ]
+        }
+      ],
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    {
+      "id": "row_two_recovery",
+      "purpose": "Recover a row-sparse rank-one feasible matrix through three nontrivial constrained weighted solves, with distinct spectral and row weights, left/right spectral factors and updated smoothing.",
+      "covers": [
+        "equality-constrained-weighted-least-squares",
+        "two-sided-spectral-reweighting",
+        "row-sparsity-reweighting",
+        "monotone-smoothing-update"
+      ],
+      "inputs": {
+        "matrix_shape": [
+          2,
+          2
+        ],
+        "vectorization": "row-major: [X11,X12,X21,X22]",
+        "measurement_matrix": [
+          [
+            1,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            2,
+            -1
+          ]
+        ],
+        "measurements": [
+          2,
+          0
+        ],
+        "feasible_structured_example": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "objective": "At each iteration minimize <X,W_previous(X)> subject to A vec(X)=y",
+        "randomness": "none"
+      },
+      "parameters": {
+        "rank_estimate": 1,
+        "row_sparsity_estimate": 1,
+        "iterations": 3,
+        "initial_weight_operator": "identity on R^(2x2), as mandated by Algorithm 2.1",
+        "initial_epsilon": "positive infinity",
+        "initial_delta": "positive infinity",
+        "observation_timing": "step k records X^(k) after weighted minimization and all singular values, row norms, smoothing and weights computed FROM that X after steps 5-6 of Algorithm 2.1",
+        "spectral_weight_convention": "left/right factors have eigenvalues min(epsilon/sigma_i,1); W_lr(Z)=L Z R; W_sp is left row scaling; W=W_lr+W_sp. Operator matrix uses row-major coordinates."
+      },
+      "derivation": "70-digit Decimal evaluation of paper Eqs. (2.4)-(2.8), (3.1). For each 2x2 Gram matrix, compute eigenvalues (trace +/- sqrt((a-c)^2+4b^2))/2 and spectral filter by degree-one interpolation, independent of singular-vector signs. Weighted equality solution uses direct Gaussian elimination. Initial W=I; then epsilon=min(old epsilon,sigma_2), delta=min(old delta,second largest row norm). Distinct nontrivial L,R and row weights are recomputed at every iteration. k=1: X=[[0.6666666666666666, 0.6666666666666666], [0.0, 0.6666666666666666]], epsilon=0.4120226591665966, delta=0.6666666666666666, row weights=[0.5, 1.0]; k=2: X=[[0.6776061102281505, 0.7518737738544232], [-0.0906768289684985, 0.5705201159174262]], epsilon=0.4120226591665966, delta=0.5776811317484896, row weights=[0.3257463617856427, 1.0]; k=3: X=[[0.7605808308061657, 0.7524325962681987], [-0.13272301167128148, 0.4869865729256357]], epsilon=0.4120226591665966, delta=0.504748769227772, row weights=[0.22257807039434221, 1.0]",
+      "expected": [
+        {
+          "step": 1,
+          "name": "X",
+          "value": [
+            [
+              0.6666666666666666,
+              0.6666666666666666
+            ],
+            [
+              0.0,
+              0.6666666666666666
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "singular_values",
+          "value": [
+            1.0786893258332633,
+            0.4120226591665966
+          ]
+        },
+        {
+          "step": 1,
+          "name": "row_norms",
+          "value": [
+            0.9428090415820634,
+            0.6666666666666666
+          ]
+        },
+        {
+          "step": 1,
+          "name": "epsilon",
+          "value": 0.4120226591665966
+        },
+        {
+          "step": 1,
+          "name": "delta",
+          "value": 0.6666666666666666
+        },
+        {
+          "step": 1,
+          "name": "low_rank_left",
+          "value": [
+            [
+              0.552786404500042,
+              -0.276393202250021
+            ],
+            [
+              -0.276393202250021,
+              0.8291796067500631
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "low_rank_right",
+          "value": [
+            [
+              0.8291796067500631,
+              -0.276393202250021
+            ],
+            [
+              -0.276393202250021,
+              0.552786404500042
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "row_weight_diagonal",
+          "value": [
+            0.5,
+            1.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "weight_operator",
+          "value": [
+            [
+              0.9583592135001262,
+              -0.15278640450004205,
+              -0.2291796067500631,
+              0.07639320225002103
+            ],
+            [
+              -0.15278640450004205,
+              0.8055728090000841,
+              0.07639320225002103,
+              -0.15278640450004205
+            ],
+            [
+              -0.2291796067500631,
+              0.07639320225002103,
+              1.6875388202501893,
+              -0.2291796067500631
+            ],
+            [
+              0.07639320225002103,
+              -0.15278640450004205,
+              -0.2291796067500631,
+              1.4583592135001262
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "value": [
+            [
+              0.6776061102281505,
+              0.7518737738544232
+            ],
+            [
+              -0.0906768289684985,
+              0.5705201159174262
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "singular_values",
+          "value": [
+            1.087852239231286,
+            0.41803972060835287
+          ]
+        },
+        {
+          "step": 2,
+          "name": "row_norms",
+          "value": [
+            1.0121581953571372,
+            0.5776811317484896
+          ]
+        },
+        {
+          "step": 2,
+          "name": "epsilon",
+          "value": 0.4120226591665966
+        },
+        {
+          "step": 2,
+          "name": "delta",
+          "value": 0.5776811317484896
+        },
+        {
+          "step": 2,
+          "name": "low_rank_left",
+          "value": [
+            [
+              0.4743850835776319,
+              -0.22111388058764267
+            ],
+            [
+              -0.22111388058764267,
+              0.8899701350555312
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "low_rank_right",
+          "value": [
+            [
+              0.8095562564982944,
+              -0.27539746219537875
+            ],
+            [
+              -0.27539746219537875,
+              0.5547989621348687
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "row_weight_diagonal",
+          "value": [
+            0.3257463617856427,
+            1.0
+          ]
+        },
+        {
+          "step": 2,
+          "name": "weight_operator",
+          "value": [
+            [
+              0.709787774185381,
+              -0.13064444812062248,
+              -0.1790041254283429,
+              0.06089420157000882
+            ],
+            [
+              -0.13064444812062248,
+              0.5889347138067759,
+              0.06089420157000882,
+              -0.12267375146363745
+            ],
+            [
+              -0.1790041254283429,
+              0.06089420157000882,
+              1.7204808909308373,
+              -0.24509551662397178
+            ],
+            [
+              0.06089420157000882,
+              -0.12267375146363745,
+              -0.24509551662397178,
+              1.4937545072598377
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "value": [
+            [
+              0.7605808308061657,
+              0.7524325962681987
+            ],
+            [
+              -0.13272301167128148,
+              0.4869865729256357
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "singular_values",
+          "value": [
+            1.103549147864315,
+            0.4261321513352334
+          ]
+        },
+        {
+          "step": 3,
+          "name": "row_norms",
+          "value": [
+            1.0698775687510693,
+            0.504748769227772
+          ]
+        },
+        {
+          "step": 3,
+          "name": "epsilon",
+          "value": 0.4120226591665966
+        },
+        {
+          "step": 3,
+          "name": "delta",
+          "value": 0.504748769227772
+        },
+        {
+          "step": 3,
+          "name": "low_rank_left",
+          "value": [
+            [
+              0.4152786407815148,
+              -0.1520591948637072
+            ],
+            [
+              -0.1520591948637072,
+              0.9249721609117492
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "low_rank_right",
+          "value": [
+            [
+              0.7294683811001137,
+              -0.2907701507254848
+            ],
+            [
+              -0.2907701507254848,
+              0.6107824205931501
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "row_weight_diagonal",
+          "value": [
+            0.22257807039434221,
+            1.0
+          ]
+        },
+        {
+          "step": 3,
+          "name": "weight_operator",
+          "value": [
+            [
+              0.5255107081906895,
+              -0.12075063297311552,
+              -0.11092237470861523,
+              0.04421427500971601
+            ],
+            [
+              -0.12075063297311552,
+              0.4762229638315091,
+              0.04421427500971601,
+              -0.0928750831123006
+            ],
+            [
+              -0.11092237470861523,
+              0.04421427500971601,
+              1.6747379447829676,
+              -0.26895429464518666
+            ],
+            [
+              0.04421427500971601,
+              -0.0928750831123006,
+              -0.26895429464518666,
+              1.564956735422955
+            ]
+          ]
+        }
+      ],
+      "atol": 1e-10,
+      "rtol": 1e-08
+    }
+  ]
+}

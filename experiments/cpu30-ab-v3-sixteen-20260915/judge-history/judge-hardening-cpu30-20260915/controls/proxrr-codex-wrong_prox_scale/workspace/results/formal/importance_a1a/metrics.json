@@ -1,0 +1,28 @@
+{
+  "elapsed_seconds": {
+    "ProxRR": 11.468680441845208,
+    "ProxRR_importance": 22.459041653200984
+  },
+  "experiment": "importance",
+  "f_star": 0.35323900868401276,
+  "final_gap": {
+    "ProxRR": 0.005570644423612214,
+    "ProxRR_importance": 0.007518350693809239
+  },
+  "final_objective": {
+    "ProxRR": 0.35880965310762497,
+    "ProxRR_importance": 0.360757359377822
+  },
+  "provenance": {
+    "bytes": 114818,
+    "features": 120,
+    "name": "a1a",
+    "path": ".run-data/datasets/a1a",
+    "rows": 1605,
+    "sha256": "eb54c45f1bdb51286f803dd092eb8202b44637a858fc6c4e533a2d64a0d94b4e"
+  },
+  "prox_evaluations": {
+    "ProxRR": 100,
+    "ProxRR_importance": 100
+  }
+}

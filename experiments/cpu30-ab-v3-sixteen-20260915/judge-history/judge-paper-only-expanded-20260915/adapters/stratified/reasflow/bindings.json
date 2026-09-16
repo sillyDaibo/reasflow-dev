@@ -1,0 +1,26 @@
+[
+  {
+    "path": "strat_models/fit.py",
+    "symbol": "fit_stratified_model"
+  },
+  {
+    "path": "strat_models/fit.py",
+    "symbol": "_call_prox"
+  },
+  {
+    "path": "strat_models/losses.py",
+    "symbol": "sum_squares_loss.prox"
+  },
+  {
+    "path": "strat_models/losses.py",
+    "symbol": "poisson_loss.prox"
+  },
+  {
+    "path": "strat_models/regularizers.py",
+    "symbol": "sum_squares_reg.prox"
+  },
+  {
+    "path": "strat_models/regularizers.py",
+    "symbol": "L1_reg.prox"
+  }
+]

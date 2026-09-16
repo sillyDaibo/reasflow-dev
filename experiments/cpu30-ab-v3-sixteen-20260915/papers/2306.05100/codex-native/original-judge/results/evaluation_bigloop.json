@@ -1,0 +1,239 @@
+{
+  "paper_id": "2306.05100",
+  "evaluated_at": "2026-09-04T10:09:43.175683+00:00",
+  "summary": {
+    "total_score": 0.6667,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.6667,
+    "total_rubrics": 19,
+    "passed": 12,
+    "failed": 7,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.7143,
+      "passed": 10,
+      "total": 14
+    },
+    "secondary": {
+      "score": 0.4,
+      "passed": 2,
+      "total": 5
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "ProxSkip-GDA-FL is faster than Local GDA in terms of communication rounds on the deterministic quadratic game.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/quadratic/metrics.json: ProxSkip-GDA-FL achieves relative_error=5.33e-06 by round 15 and 2.69e-31 by round 400. Local GDA never converges—its relative_error remains ~0.48 (essentially starting level) after all 400 communication rounds. ProxSkip-GDA-FL clearly has a far lower relative error at every comparable round, establishing it as strictly faster in terms of communication rounds to convergence on the deterministic quadratic game.",
+      "note": "Local GDA appears to not converge at all (diverges or oscillates near initial error), while ProxSkip-GDA-FL converges to machine precision within ~40 rounds. The ranking claim is trivially satisfied.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "ProxSkip-SGDA-FL is faster than Local SGDA in terms of communication rounds on the stochastic quadratic game.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/quadratic/metrics.json: ProxSkip-SGDA-FL achieves lower relative error than Local SGDA at every communication round. ProxSkip-SGDA-FL reaches relative_error < 0.5 at round 11; Local SGDA does not reach that threshold until round 366. At round 100: ProxSkip-SGDA-FL=1.916e-1 vs Local SGDA=7.779e-1. At round 200: ProxSkip-SGDA-FL=2.135e-1 vs Local SGDA=6.335e-1. Final values (round ~400): ProxSkip-SGDA-FL=1.791e-1 vs Local SGDA=4.782e-1. ProxSkip-SGDA-FL strictly dominates Local SGDA on relative_error (lower is better) at all measured communication rounds.",
+      "note": "The stochastic variants (ProxSkip-SGDA-FL and Local SGDA) are the keys used in the output file, matching the required methods. Neither method converges fully to near-zero error within the 400 rounds recorded (stochastic noise floor), but ProxSkip-SGDA-FL's curve is consistently and substantially below Local SGDA's across all rounds, supporting the ranking claim.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "ProxSkip-L-SVRGDA-FL is faster than Local SGDA in terms of communication rounds on the stochastic quadratic game.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/quadratic/metrics.json: ProxSkip-L-SVRGDA-FL achieves relative error of ~6.8e-02 at round 50, ~8.5e-03 at round 100, ~8.2e-04 at round 150, ~9.3e-05 at round 200, ~6.7e-07 at round 300, and ~8.1e-09 at round 400 (final). Local SGDA shows essentially no convergence across the same 400 rounds (relative error stays above 0.478 throughout, starting at 1.0 and ending at ~0.478). ProxSkip-L-SVRGDA-FL reaches 1e-2 at round 98, 1e-4 at round 198, 1e-6 at round 294; Local SGDA never crosses any of these thresholds. The ranking ProxSkip-L-SVRGDA-FL > Local SGDA (lower relative error = better convergence per communication round) is strongly confirmed.",
+      "note": "The stochastic quadratic game outputs are stored in results/formal/quadratic/metrics.json. The dataset has keys for both ProxSkip-L-SVRGDA-FL (stochastic variant) and Local SGDA. The claim is confirmed with very high margin.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "ProxSkip-L-SVRGDA-FL converges linearly to the exact solution on the quadratic game.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/quadratic/metrics.json and results/formal/quadratic/run.log confirm ProxSkip-L-SVRGDA-FL runs for 401 iterations on the quadratic game. The error sequence decreases monotonically (400/400 steps decreasing) from 1.0 to 8.09e-09. A log-linear regression of the error sequence yields slope = -0.020112 log10-units per iteration with R² = 0.9995, indicating near-perfect linear (geometric) convergence. The run.log also reports: ProxSkip-L-SVRGDA-FL: final=8.09258894e-09. The method converges to a near-zero residual (~1e-8), consistent with convergence to the exact solution.",
+      "note": "The final error is ~8e-9 (not exactly 0), but this is consistent with floating-point precision limits and the run was terminated at 401 iterations. The R²=0.9995 of the log-linear fit strongly supports linear (geometric) convergence.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Local EG converges to a neighborhood (not to the exact solution) in the deterministic quadratic game.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/quadratic/metrics.json and results/formal/quadratic/run.log confirm Local EG plateaus at a neighborhood. Local EG final value = 1.6613e-06, best = 1.5352e-06, with the last 20 iterates ranging from 1.6613e-06 to 1.6637e-06 (max/min ratio ~1.0004, essentially flat). This contrasts sharply with methods that reach the exact solution: ProxSkip-GDA-FL reaches 2.69e-31 and FedGDA-GT reaches 7.52e-30. The run.log also explicitly states: \"Local EG: final=1.66128390e-06 best=1.53522182e-06\", confirming convergence to a non-zero neighborhood rather than to the exact solution.",
+      "note": "The metric appears to be a normalized distance/error. Local EG's iterate sequence is still very slowly decreasing at iteration 400 but clearly asymptotes far above zero, consistent with the \"neighborhood convergence\" (not exact convergence) claim.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the deterministic scenario, ProxSkip-GDA-FL outperforms Local GDA and Local EG in terms of communication rounds (lower relative error for the same number of communication rounds).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/rls_california/metrics.json contains 'mean' arrays for all three methods. At round 399 (final): ProxSkip-GDA-FL=0.000141, Local GDA=0.999637, Local EG=0.529409. At round 200: ProxSkip-GDA-FL=0.010193, Local GDA=0.999818, Local EG=0.727133. ProxSkip-GDA-FL has strictly lower relative error than both Local GDA and Local EG at every sampled communication round, satisfying both required pairwise constraints (lower_is_better).",
+      "note": "The metrics file covers 400 communication rounds. ProxSkip-GDA-FL achieves near-zero relative error (~0.0001) by round 400, while Local GDA barely moves (~0.9996) and Local EG only reaches ~0.529 — a very large margin in favor of ProxSkip-GDA-FL.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the stochastic scenario, ProxSkip-SGDA-FL outperforms Local SGDA and Local SEG in terms of communication rounds (lower relative error for the same number of communication rounds).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/rls_california/metrics.json contains per-round relative_error arrays for all three stochastic methods. At round 399 (final): ProxSkip-SGDA-FL=0.215995, Local SGDA=0.999636, Local SEG=0.529399. At round 200 (midpoint): ProxSkip-SGDA-FL=0.459934, Local SGDA=0.999818, Local SEG=0.727449. ProxSkip-SGDA-FL strictly outperforms (lower relative error) both Local SGDA and Local SEG at every sampled communication round across 400 rounds.",
+      "note": "Arrays have 400-401 entries (communication rounds). The comparison holds consistently throughout the entire run, not just at the final point.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the deterministic setting, ProxSkip outperforms Local GDA and Local EG in terms of relative error on the synthetic robust least square problem.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/rls_synthetic/run.log (experiment_id=rls_synthetic, deterministic setting): ProxSkip-GDA-FL final relative_error=6.77526282e-12, Local GDA final relative_error=9.94565566e-01, Local EG final relative_error=2.05465977e-01. With lower_is_better, ProxSkip (6.78e-12) is far better than both Local GDA (9.95e-1) and Local EG (2.05e-1), satisfying both ranking constraints 'ProxSkip > Local GDA' and 'ProxSkip > Local EG'.",
+      "note": "ProxSkip is labeled \"ProxSkip-GDA-FL\" in the log file, which is the deterministic variant. The margin is enormous (~11 orders of magnitude better than Local GDA, ~10 orders better than Local EG).",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the stochastic setting, SProxSkip outperforms Local SGDA and Local SEG in terms of relative error on the synthetic robust least square problem.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/rls_synthetic/metrics.json contains final relative_error (mean, last step) for all methods in the stochastic setting: ProxSkip-SGDA-FL (SProxSkip)=0.062821, Local SGDA=0.994574, Local SEG=0.2044. Both required ordering constraints hold under lower_is_better: SProxSkip (0.062821) < Local SGDA (0.994574) and SProxSkip (0.062821) < Local SEG (0.2044).",
+      "note": "SProxSkip is labeled 'ProxSkip-SGDA-FL' in the output file (the stochastic variant, as confirmed by run_metadata.json which lists both ProxSkip-SGDA-FL and Local SGDA/Local SEG as methods). The experiment corresponds to Appendix G.1 synthetic RLS data.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the deterministic setting, ProxSkip outperforms the other two methods (Local GDA and Local EG).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/quadratic/metrics.json (experiment_id: quadratic, deterministic methods): ProxSkip-GDA-FL final relative_error = 2.689e-31; Local GDA final relative_error = 0.4798; Local EG final relative_error = 1.661e-06. With lower_is_better: ProxSkip (2.689e-31) < Local GDA (0.4798) — constraint ProxSkip > Local GDA satisfied; ProxSkip (2.689e-31) < Local EG (1.661e-06) — constraint ProxSkip > Local EG satisfied. Both required ordering constraints hold.",
+      "note": "The experiment is labeled \"quadratic\" (quadratic game, 20 clients, 100 samples/client) corresponding to Figure 4a and the quadratic_game_heterogeneous dataset. The method in the outputs is named \"ProxSkip-GDA-FL\" which maps to \"ProxSkip\" in the rubric.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In the stochastic setting, SProxSkip has comparable performance to Local SGDA and Local SEG.",
+      "verdict": 0,
+      "confidence": "medium",
+      "evidence": "The closest matching run output is results/formal/quadratic/metrics.json (experiment_id=quadratic, stochastic strongly-monotone quadratic game, 20 clients, 100 samples/client, heterogeneous data). No file with experiment_id \"exp_tuned_stepsize\" exists anywhere in the repository. Final relative squared error (mean over 3 trials): ProxSkip-SGDA-FL=0.1791, Local SGDA=0.4782, Local SEG=0.1616. ProxSkip-SGDA-FL is comparable to Local SEG (ratio ~1.11), but Local SGDA achieves ~0.49 versus ~0.17 for ProxSkip-SGDA-FL (ratio ~2.8×), which is not comparable. The claim that SProxSkip has comparable performance to BOTH Local SGDA and Local SEG is not supported; Local SGDA is stuck at ~48% relative error while the other two are at ~16-18%.",
+      "note": "Confidence is medium (not high) because: (1) no output file specifically labeled \"exp_tuned_stepsize\" was found — the mapping to the \"quadratic\" experiment is inferred from paper context and README; (2) the paper may show Figure 4b with tuned/optimized stepsizes that differ from the theoretical stepsizes used in the found run outputs; (3) \"comparable\" is qualitative — if the paper's figure 4b uses different stepsizes that bring Local SGDA performance closer to SProxSkip, the outputs here would not be the right evidence. The found outputs for the stochastic setting clearly show Local SGDA substantially underperforms.",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "ProxSkip-L-SVRGDA-FL performs better than ProxSkip-VIP-FL in the tuned stepsize configuration.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all files under results/ (results/formal/quadratic/metrics.json, results/formal/rls_california/metrics.json, results/formal/rls_synthetic/metrics.json, results/formal/heterogeneity/metrics.json, results/formal/heterogeneity_low/metrics.json, results/formal/matrix/metrics.json) and the CLAIM_RESULTS.json. The only run output containing ProxSkip-L-SVRGDA-FL is results/formal/quadratic/metrics.json, where its final relative error is 8.09e-9. However, ProxSkip-VIP-FL is completely absent from all run outputs — no metrics.json, log, or any other result file contains this method name. grep for \"VIP\", \"tuned_stepsize\", \"figure5\", \"appendix_h\", and \"exp_proxskip\" across results/ returned zero matches. Without run output for ProxSkip-VIP-FL, the required ranking cannot be verified.",
+      "note": "The repository covers only a subset of experiments from the paper; the tuned-stepsize comparison (Appendix H.2, Figure 5a) between ProxSkip-L-SVRGDA-FL and ProxSkip-VIP-FL was not run and saved.",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "ProxSkip-L-SVRGDA-FL performs better than ProxSkip-VIP-FL in the theoretical stepsize configuration.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all output files under results/ and proxskip_vip/. The only metrics file relevant to the quadratic game is results/formal/quadratic/metrics.json, which contains: ProxSkip-GDA-FL, Local GDA, Local EG, FedGDA-GT, ProxSkip-SGDA-FL, Local SGDA, Local SEG, ProxSkip-L-SVRGDA-FL. ProxSkip-VIP-FL is entirely absent from all run outputs. No files matching exp_proxskip_vs_svrgda, theoretical_stepsize, or VIP were found anywhere in results/ or proxskip_vip/. The claim requires comparing ProxSkip-L-SVRGDA-FL vs ProxSkip-VIP-FL, but no run output for ProxSkip-VIP-FL exists.",
+      "note": "ProxSkip-L-SVRGDA-FL does appear in the quadratic run with a final relative error of 8.09e-9, but there is no corresponding ProxSkip-VIP-FL output to compare against, so the ranking cannot be verified.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Local EG performs better than ProxSkip-VIP-FL in homogeneous data.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The relevant output file is results/formal/heterogeneity_low/metrics.json (experiment_id=heterogeneity_low, corresponding to the homogeneous/low-heterogeneity setting). It contains results for three methods: ProxSkip-GDA-FL (final relative_error ≈ 2.34e-24), Local GDA (final ≈ 1.865), and Local EG (final ≈ 0.852). ProxSkip-VIP-FL is completely absent from this file and from all other result files searched (grep across results/ for \"ProxSkip-VIP\" returned no matches). Without any run output for ProxSkip-VIP-FL, the ranking claim cannot be verified.",
+      "note": "The run outputs do include Local EG data but entirely lack ProxSkip-VIP-FL data, making it impossible to assess the claimed ranking from run outputs alone.",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "ProxSkip-VIP-FL outperforms both Local GDA and Local EG in heterogeneous data.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/heterogeneity/metrics.json (high heterogeneity run, corresponding to Figure 6d): ProxSkip-GDA-FL (the repository's name for ProxSkip-VIP-FL) final relative_error = 1.172e-24; Local GDA final = 0.9324; Local EG final = 0.4261. Both required rankings hold: 1.172e-24 < 0.9324 (ProxSkip > Local GDA) and 1.172e-24 < 0.4261 (ProxSkip > Local EG), satisfying lower_is_better ordering. CLAIM_RESULTS.json also confirms claim_id 'heterogeneity-robustness' status = 'reproduced'.",
+      "note": "The repository names the method 'ProxSkip-GDA-FL' rather than 'ProxSkip-VIP-FL'; based on context this is the same algorithm (confirmed by CLAIM_RESULTS.json). The run covers the high-heterogeneity (delta=10^6) case matching Figure 6d.",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "ProxSkip-VIP-FL has a comparable performance with Local SGDA and Local SEG in homogeneous data.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run output exists for the claimed experiment configuration. The `exp_low_high_heterogeneity` experiment ID does not appear in any output file. The closest outputs are `results/formal/heterogeneity_low/` (delta=0, homogeneous) and `results/formal/heterogeneity/` (delta=10^6), but both contain ONLY deterministic methods (ProxSkip-GDA-FL, Local GDA, Local EG) — not the stochastic methods (ProxSkip-VIP-FL / ProxSkip-SGDA-FL, Local SGDA, Local SEG) needed to verify Figure 6c. Furthermore, the method name \"ProxSkip-VIP-FL\" does not appear anywhere in the run outputs across all result files. The stochastic methods Local SGDA and Local SEG only appear in `results/formal/quadratic/`, `results/formal/rls_synthetic/`, and `results/formal/rls_california/`, none of which represent the homogeneous data condition. No output file supports or contradicts the specific claim about ProxSkip-VIP-FL being comparable to Local SGDA and Local SEG on homogeneous data.",
+      "note": "The heterogeneity_low experiment (delta=0) does show ProxSkip-GDA-FL converging well (2.3e-24) while Local GDA (1.86) and Local EG (0.85) do not, but this is the deterministic setting and the claim specifically refers to the stochastic Figure 6c comparison. There are no stochastic homogeneous-data outputs at all.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "ProxSkip-VIP-FL is faster than Local SGDA and Local SEG on heterogeneous data.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all result directories under results/formal/. The heterogeneity experiment outputs (results/formal/heterogeneity/metrics.json, run.log, timings.json and results/formal/heterogeneity_low/ equivalents) contain only deterministic methods: ProxSkip-GDA-FL (final≈1.17e-24), Local GDA (final≈0.932), and Local EG (final≈0.426). No entries for ProxSkip-VIP-FL, Local SGDA, or Local SEG appear in any heterogeneity-related output file. Those stochastic method names do appear in results/formal/quadratic/, rls_synthetic/, and rls_california/, but never in a heterogeneity experiment directory. This is verdict=0 case (a): no run outputs for the required methods on the heterogeneous dataset exist.",
+      "note": "The claim refers to Appendix H.3, Figure 6d (stochastic), but the repository's formal heterogeneity runs only cover deterministic baselines. The stochastic heterogeneity experiment was not executed and no outputs were saved.",
+      "error": false
+    },
+    {
+      "id": "res-018",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "ProxSkip-VIP-FL outperforms Local GDA and Local EG in terms of relative error for both δ=0 and δ=10^6.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Two output files cover both δ settings:\n- results/formal/heterogeneity/metrics.json (δ=1e6, confirmed via resolved_config.json): ProxSkip-GDA-FL final relative error = 1.17e-24 vs Local GDA = 0.9324 vs Local EG = 0.4261. ProxSkip beats both (lower is better).\n- results/formal/heterogeneity_low/metrics.json (δ=0, confirmed via resolved_config.json): ProxSkip-GDA-FL final relative error = 2.34e-24 vs Local GDA = 1.8647 vs Local EG = 0.8523. ProxSkip beats both.\n\nAll four required pairwise constraints hold:\nδ=1e6: ProxSkip-VIP-FL (1.17e-24) < Local GDA (0.9324) ✓; ProxSkip-VIP-FL (1.17e-24) < Local EG (0.4261) ✓\nδ=0: ProxSkip-VIP-FL (2.34e-24) < Local GDA (1.8647) ✓; ProxSkip-VIP-FL (2.34e-24) < Local EG (0.8523) ✓\n\nThe method is labeled \"ProxSkip-GDA-FL\" in the outputs, which corresponds to \"ProxSkip-VIP-FL\" in the paper.",
+      "note": "The method name in the output files is \"ProxSkip-GDA-FL\" rather than \"ProxSkip-VIP-FL\"; the resolved_config.json files confirm the experiment_id and delta values, establishing these are the correct output files for the claim.",
+      "error": false
+    },
+    {
+      "id": "res-019",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "ProxSkip-GDA-FL clearly outperforms Local EG and Local GDA in this experiment.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Run output found at ./results/formal/matrix/metrics.json (confirmed as \"Policemen-Burglar matrix game, Appendix H.5\" via ./results/formal/matrix/run_metadata.json). Final duality gap values (at communication round 500): ProxSkip-GDA-FL=0.008883, Local EG=0.007861, Local GDA=0.194524. Minimum values across all rounds: ProxSkip-GDA-FL=0.008869, Local EG=0.004615 (at round 383), Local GDA=0.185562. The constraint 'ProxSkip-GDA-FL > Local EG' (lower_is_better, so ProxSkip-GDA-FL must have lower duality gap) FAILS: Local EG achieves a lower duality gap (0.00786 final, 0.00462 min) than ProxSkip-GDA-FL (0.00888 final, 0.00887 min). The constraint 'ProxSkip-GDA-FL > Local GDA' holds (0.00888 << 0.1945). One of the two required ranking constraints is not satisfied.",
+      "note": "The claim says ProxSkip-GDA-FL 'clearly outperforms' both methods. While it clearly beats Local GDA, Local EG actually achieves a lower (better) duality gap than ProxSkip-GDA-FL in the run outputs, contradicting the required ranking.",
+      "error": false
+    }
+  ]
+}

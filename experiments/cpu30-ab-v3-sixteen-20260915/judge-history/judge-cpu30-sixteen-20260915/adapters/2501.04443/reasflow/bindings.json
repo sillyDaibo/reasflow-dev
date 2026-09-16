@@ -1,0 +1,14 @@
+[
+  {
+    "path": "src/reproduction/algorithms.py",
+    "symbol": "run_localsgd"
+  },
+  {
+    "path": "src/reproduction/algorithms.py",
+    "symbol": "run_scaffold"
+  },
+  {
+    "path": "src/reproduction/algorithms.py",
+    "symbol": "_oracle"
+  }
+]

@@ -1,0 +1,332 @@
+{
+  "paper_id": "2111.03820",
+  "evaluated_at": "2026-09-04T17:30:20.962590+00:00",
+  "summary": {
+    "total_score": 0.9773,
+    "algorithm_impl_score": 0.9333,
+    "exp_setup_score": 1.0,
+    "exp_results_score": 0.0,
+    "total_rubrics": 27,
+    "passed": 26,
+    "failed": 1,
+    "errors": 0,
+    "pass_threshold": 0.8,
+    "gate_passed": true
+  },
+  "by_priority": {
+    "primary": {
+      "score": 1.0,
+      "passed": 17,
+      "total": 17
+    },
+    "secondary": {
+      "score": 1.0,
+      "passed": 9,
+      "total": 9
+    },
+    "tertiary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "id": "alg-001",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "At each outer iteration t, agent j generates a random permutation π_t = (π_t^0, …, π_t^{n-1}) of {1,…,n} uniformly without replacement.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/algorithms.py line 100: `order = rng.permutation(n_local)` is called inside the outer epoch loop (line 93: `for epoch in range(epochs)`) and the per-agent loop (line 96: `for j in range(agents)`), specifically under the `dpg_rr` branch (random reshuffling). `rng.permutation(n_local)` produces a uniform random permutation of {0, ..., n_local-1} (the local dataset indices) without replacement — exactly matching π_t for each agent j at each outer iteration t.",
+      "note": "The permutation is zero-indexed in code vs. 1-indexed in the paper, but this is equivalent. The method is named `dpg_rr` (distributed proximal gradient with random reshuffling), consistent with Algorithm 1 in the paper.",
+      "error": false
+    },
+    {
+      "id": "alg-002",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "For i = 0,…,n-1, agent j updates x_{j,t}^{i+1} = x_{j,t}^i - γ ∇ f_{j,π_t^i}(x_{j,t}^i), where γ is a constant step-size.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/algorithms.py lines 94–109: for the dpg_rr/dpg_sg/dpg_ig methods, each agent j initializes w = x_agents[:, j].copy() then loops over indices with `w -= step_size * _sample_gradient(local_x[j][idx], local_y[j][idx], w)`. This is exactly x_{j,t}^{i+1} = x_{j,t}^i - γ ∇f_{j,π_t^i}(x_{j,t}^i), where step_size (γ) is the constant step-size passed in or defaulted at lines 80–81. The iteration variable idx plays the role of π_t^i, the local sample index in inner loop iteration i.",
+      "note": "The update is implemented as in-place subtraction `w -= step_size * grad` which is equivalent to the stated formula. All three variants (RR, SG, IG) share this same update rule, differing only in how the order array is constructed.",
+      "error": false
+    },
+    {
+      "id": "alg-003",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "After the inner loop, agent j computes v_{j,t} via a multi-step consensus mapping: v_{j,t} = ∑_{l=1}^m λ_{jl,t} x_{l,t}^n, where λ_{jl,t} is the (j,l)-th entry of the transition matrix Φ(T(t)+t, T(t)), Φ(k,τ) = A(k)⋯A(τ), and A(t) is the doubly stochastic adjacency matrix at time t. The number of communication steps performed at iteration t is exactly t.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/algorithms.py, function `_mix` (lines ~37–44): builds transition matrix `p = A(steps) @ ... @ A(1)` where `steps = epoch + 1` (i.e., exactly t communication steps at 0-indexed epoch t-1), then returns `q @ p.T`, which computes for each agent j the weighted sum `∑_l p[l,j] * q[:,l]` — matching v_{j,t} = ∑_l λ_{jl,t} x_{l,t}^n. The transition matrix is the product of t doubly-stochastic adjacency matrices A(t)⋯A(1) = Φ(T(t)+t, T(t)). Called after the inner loop for DPG-RR/SG/IG: `mixed = _mix(q, networks, epoch, time_varying)` where `q[:,j]` holds the post-inner-loop iterate x_{j,t}^n.",
+      "note": "The epoch variable is 0-indexed, so at epoch=0 we get 1 communication step, at epoch=1 we get 2, etc. — this matches \"exactly t communication steps at iteration t\" for t=1,2,3,...",
+      "error": false
+    },
+    {
+      "id": "alg-004",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The consensus mapping is implemented by performing t communication rounds: at each round, agent j sends its current estimate to neighbors, receives their estimates, and updates as a weighted average using the entries of the adjacency matrix A at that communication time step.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/algorithms.py, function `_mix` (lines ~35-43): performs `steps = epoch + 1` communication rounds in a loop. At each round `s`, it selects the adjacency matrix `a = networks[s % len(networks)]` (time-varying) or `networks[0]` (fixed), and accumulates the product `p = a @ p`. The final return `q @ p.T` gives the weighted-average consensus update. This exactly matches t rounds of consensus with the adjacency matrix A at each communication time step.",
+      "note": "The `steps` count is `epoch + 1`, so t grows with each epoch (matching the paper's Section III description of t-step consensus maps). The time-varying path selects a different A at each round using modular indexing over the `networks` list.",
+      "error": false
+    },
+    {
+      "id": "alg-005",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "Agent j then applies the proximal operator: x_{j,t+1} = prox_{γ,φ}(v_{j,t}), where prox_{α,h}(x) = argmin_y { h(y) + (1/(2α))‖y - x‖^2 }.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py, the proximal operator is implemented as `_soft_threshold(v, threshold)` (line ~30): `np.sign(v) * np.maximum(np.abs(v) - threshold, 0.0)`, which is the closed-form prox for the L1 regularizer φ = λ‖·‖₁. This is applied after the consensus mixing step for the main DPG methods: `x_agents = _soft_threshold(mixed, step_size * lam)` (line ~82), directly implementing x_{j,t+1} = prox_{γ,φ}(v_{j,t}) where v_{j,t} = mixed is the result of the consensus mixing step and γ = step_size, φ = lam‖·‖₁. The same pattern appears in prox_g/prox_g_rr and `next` methods as well.",
+      "note": "The proximal operator is specialized to the L1 norm (soft thresholding), consistent with the paper's use of φ as the L1 regularizer. The general form prox_{α,h}(x) = argmin_y { h(y) + (1/(2α))‖y-x‖² } is implemented implicitly via its closed-form solution for h = λ‖·‖₁.",
+      "error": false
+    },
+    {
+      "id": "alg-006",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The proximal operator is evaluated exactly once per outer iteration (epoch), not after each inner gradient step.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py, the `dpg_rr`/`dpg_sg`/`dpg_ig` branch (lines ~75-86) implements an inner loop (`for idx in order: w -= step_size * _sample_gradient(...)`) with no proximal call inside it. The soft-thresholding proximal operator (`_soft_threshold(mixed, step_size * lam)`) is called exactly once per epoch, outside the inner loop, after all n local gradient steps and after the consensus mixing step (`_mix`). This confirms the proximal operator is applied once per outer iteration (epoch), not after each inner gradient step.",
+      "note": "The same once-per-epoch proximal pattern also holds for the `prox_g`/`prox_g_rr` and `next` baseline methods, but the key claim concerns the main DPG-RR/SG/IG algorithms from Algorithm 1 (Remark III.2).",
+      "error": false
+    },
+    {
+      "id": "alg-007",
+      "dimension": "algorithm_impl",
+      "priority": "primary",
+      "description": "The step-size γ is held constant across all outer iterations; the algorithm does not use a diminishing step-size sequence.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py, step_size is set once before the epoch loop (lines 80-81) and used as a constant in the DPG methods (dpg_rr, dpg_sg, dpg_ig) throughout all outer iterations. Line 106: `w -= step_size * _sample_gradient(...)` and line 109: `x_agents = _soft_threshold(mixed, step_size * lam)` both use the same unchanged step_size at every epoch. The epoch loop (lines 93-165) has no update to step_size for these methods. By contrast, baseline methods like DGM (line 120: `step_size / np.sqrt(epoch + 1.0)`) and NEXT (line 155: `step_size / (epoch + 1.0) ** 0.6`) explicitly use diminishing step-sizes, confirming the DPG methods intentionally use constant γ.",
+      "note": "The constant step-size is the paper's Algorithm 1 design. The code correctly distinguishes DPG methods (constant step) from baseline methods that may use diminishing steps.",
+      "error": false
+    },
+    {
+      "id": "alg-008",
+      "dimension": "algorithm_impl",
+      "priority": "secondary",
+      "description": "The gradient ∇ f_{j,π_t^i}(x_{j,t}^i) is computed at the current inner iterate x_{j,t}^i, not at the start-of-epoch point x_{j,t}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py lines 96–107, the DPG-RR/SG/IG inner loop initializes `w = x_agents[:, j].copy()` (the start-of-epoch point) and then iterates: `w -= step_size * _sample_gradient(local_x[j][idx], local_y[j][idx], w)`. The gradient `_sample_gradient(...)` receives `w` as its third argument — the *current* (mutated) inner iterate — not the original `x_agents[:, j]`. Because `w` is updated in-place before the next call, each gradient is evaluated at the running inner iterate `x_{j,t}^i`, matching Eq. (7) / Algorithm 1 line 8.",
+      "note": "All three variants (dpg_rr, dpg_sg, dpg_ig) share this same inner loop structure.",
+      "error": false
+    },
+    {
+      "id": "alg-009",
+      "dimension": "algorithm_impl",
+      "priority": "tertiary",
+      "description": "Each agent j initializes its local variable x_{j,0} arbitrarily before the first iteration.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py, the initial state of all agents is set at line: `x_agents = np.ones((d, agents), dtype=np.float64) if init == \"ones\" else np.zeros((d, agents), dtype=np.float64)`. The `init` parameter defaults to \"ones\", and run_experiment.py calls `run_method` without specifying `init`, so all experiments use all-ones initialization. No random or arbitrary per-agent initialization is implemented. There is no code path where x_{j,0} is set to an arbitrary (e.g., random) value per agent.",
+      "note": "The paper's Algorithm 1 line 2 states agents initialize x_{j,0} arbitrarily, but the code enforces a fixed deterministic initialization (all-ones by default, or all-zeros). Equivalent-but-different does not apply here since fixed initialization is a strict subset of \"arbitrary.\"",
+      "error": false
+    },
+    {
+      "id": "setup-001",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The experiment uses m = 10 agents.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Both time_invariant experiment configs confirm \"agents\": 10: results/formal/time_invariant_a9a_seed0/config.json (line 2) and results/formal/time_invariant_w8a_seed0/config.json. In run_experiment.py (line 38), the CLI argument `--agents` defaults to 10. Additionally, src/data.py (line 135) uses `m = 10` for the fallback 10-agent ring network, with a comment saying \"10-agent doubly stochastic network\" (line 120).",
+      "note": "The default of 10 agents is set in the CLI, and the formal experiment configs for both a9a and w8a datasets confirm agents=10 was used.",
+      "error": false
+    },
+    {
+      "id": "setup-002",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The L1 regularization parameter λ_1 is set to 5 × 10^{-4}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "run_experiment.py line 70: `\"lambda_l1\": 5e-4`; src/algorithms.py line 68: default `lam: float = 5e-4`; results/formal/time_invariant_a9a_seed0/config.json and time_invariant_w8a_seed0/config.json both record `\"lambda_l1\": 0.0005`; CLAIMS.json lines 15, 27, 39 all state `lambda1=5e-4` for the time-invariant experiments on a9a and w8a.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-003",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "All comparative algorithms are initialized with the same initial value.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py, `run_method()` initializes `x_agents = np.ones((d, agents), dtype=np.float64) if init == \"ones\" else np.zeros(...)` (default `init=\"ones\"`) before the per-method dispatch block. All methods — dpg_rr, gt_saga, dsgd, prox_g, etc. — receive exactly the same `x_agents` initialization (all-ones vector, shape d×agents) each time `run_method` is called. The run_experiment.py script loops over `PROFILES[\"time_invariant\"] = [\"dpg_rr\", \"gt_saga\", \"dsgd\"]` calling `run_method(method, ...)` with the same `seed` and `agents` arguments, and no `init` override is passed, so all three methods use the default `init=\"ones\"` path.",
+      "note": "The initialization is shared implicitly via the same default parameter rather than an explicit shared variable, but the effect is identical: all methods start from the same all-ones initial point.",
+      "error": false
+    },
+    {
+      "id": "setup-004",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "The problem is logistic regression with L1 regularization (non-smooth).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py: (1) logistic regression loss is computed in `_loss_gradient` (line 22-24) and `_sample_gradient` (line 27-29) using the logistic sigmoid formula; (2) L1 regularization appears in the objective at line 51: `lam * np.abs(xbar).sum()`, and the proximal operator `_soft_threshold` (lines 32-33) handles the non-smooth L1 term; (3) `lambda_l1 = 5e-4` is set in run_experiment.py (line 72); (4) datasets \"a9a\" and \"w8a\" are both supported (line 38, choices=[\"a9a\",\"w8a\"]); (5) PROFILES[\"time_invariant\"] is defined (line 23) and runs the experiment with `time_varying=False`.",
+      "note": "The L1 regularized logistic regression objective matches paper §V eq.(28): cross-entropy loss + λ‖w‖₁. The proximal (soft-thresholding) step is applied for DPG-RR (line 109) and other proximal methods, consistent with treating L1 as non-smooth.",
+      "error": false
+    },
+    {
+      "id": "setup-005",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The datasets used are a9a and w8a.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "run_experiment.py line 32: `p.add_argument(\"--dataset\", choices=[\"a9a\", \"w8a\"], required=True)` restricts datasets to exactly a9a and w8a. Formal results exist at results/formal/time_invariant_a9a_seed0/ and results/formal/time_invariant_w8a_seed0/, both with config.json and metrics.json confirming dataset=\"a9a\" and dataset=\"w8a\". CLAIMS.json line 13 lists `\"datasets\": [\"a9a\", \"w8a\"]`. Execution logs show commands: `run_experiment.py --experiment time_invariant --dataset a9a` and `--dataset w8a`.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-006",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "GT-SAGA and DSGD use subgradients instead of gradients because the cost function is non-smooth.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py: DSGD (lines 118-125) computes `q[:, j] = x_agents[:, j] - alpha * (g + lam * np.sign(x_agents[:, j]))` — the subgradient of the L1 norm (`np.sign(...)`) is added directly to the stochastic gradient. GT-SAGA (lines 127-144) computes `g_est = g_now - g_old + saga_means[j] + lam * np.sign(w)` — again the L1 subgradient is folded into the gradient estimate. Neither method uses a proximal operator; instead both handle the non-smooth L1 regularizer via its subgradient `np.sign`. In contrast, NEXT explicitly uses `_soft_threshold` (a proximal operator) and comments that \"the nonsmooth L1 term is handled by the single prox below; it is not included in the tracked smooth gradient.\" (lines 148-156).",
+      "note": "The non-smooth cost is an L1-regularized logistic regression objective. The sign function (`np.sign`) is a standard subgradient of the L1 norm, confirming the claim that GT-SAGA and DSGD use subgradients rather than gradients (or proximal operators) to handle the non-smooth term.",
+      "error": false
+    },
+    {
+      "id": "setup-007",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The network is a ten-agent connected time-invariant graph.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Multiple sources confirm a 10-agent connected time-invariant graph: (1) src/data.py lines 119-141: `load_network` is documented as \"Load the official 10-agent doubly stochastic network(s)\"; for time_varying=False it returns a single mixing matrix (network_count=1). The fallback also constructs a 10-node ring (m=10). (2) run_experiment.py line 38: `--agents` default is 10. (3) results/formal/time_invariant_a9a_seed0/config.json and time_invariant_w8a_seed0/config.json both show `\"agents\": 10`, `\"network_count\": 1`, `\"time_varying_network\": false`, experiment=\"time_invariant\", for both a9a and w8a datasets.",
+      "note": "The official network matrix is loaded from a MATLAB file; a connected 10-node ring is used as fallback. Both paths yield a 10-agent time-invariant (single, static) network consistent with the claim.",
+      "error": false
+    },
+    {
+      "id": "setup-008",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The number of agents is m = 10.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "1) results/formal/time_varying_w8a_seed0/config.json contains `\"agents\": 10` for the time_varying experiment. 2) src/data.py line 135 contains `m = 10`.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "setup-009",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The regularization parameter λ_1 is set to 5 × 10^{-4}.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "run_experiment.py line 70: `\"lambda_l1\": 5e-4`; src/algorithms.py line 68: default `lam: float = 5e-4`; results/formal/time_varying_a9a_seed0/config.json and time_varying_w8a_seed0/config.json both record `\"lambda_l1\": 0.0005`; CLAIMS.json line ~27 states `lambda1=5e-4` as the time-varying experiment condition.",
+      "note": "Value 5e-4 = 0.0005 = 5×10⁻⁴ matches the claim exactly. Applied consistently across all experiments, not just time-varying.",
+      "error": false
+    },
+    {
+      "id": "setup-010",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "All comparative algorithms are initialized with the same value.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py line 68-79, `run_method` has `init: str = \"ones\"` as default, and line 79 sets `x_agents = np.ones((d, agents), dtype=np.float64) if init == \"ones\" else np.zeros(...)`. In run_experiment.py line 83, all methods (dpg_rr, prox_g, next, dgm for time_varying experiment) call `run_method(...)` without overriding `init`, so all use the default \"ones\" initialization — every algorithm starts from the all-ones vector.",
+      "note": "The initialization is the same value (all-ones) across all methods in all experiment profiles, not just time_varying.",
+      "error": false
+    },
+    {
+      "id": "setup-011",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The datasets used are a9a and w8a.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "run_experiment.py:32 defines `--dataset choices=[\"a9a\", \"w8a\"]`. Results directories exist for both: results/formal/time_varying_a9a_seed0/ and results/formal/time_varying_w8a_seed0/ (and time_invariant variants). CLAIMS.json:13 lists `\"datasets\": [\"a9a\", \"w8a\"]`. README.md:48 explicitly describes both a9a_smote.mat and w8a_smote.mat. Execution logs confirm both were run with `--experiment time_varying --dataset a9a` and `--dataset w8a`.",
+      "note": "Both datasets are used across multiple experiments including the time_varying experiment referenced in the rubric's experiment_id.",
+      "error": false
+    },
+    {
+      "id": "setup-012",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The time-varying communication network is a periodically time-varying ten-agent graph satisfying Assumption III.2, shown in Fig. 3.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "src/data.py lines 119-141: load_network() loads a 10-agent doubly stochastic network (agents=10 default confirmed in run_experiment.py line 38). For time_varying=True it uses 'C_meth1_smote_sw_800' (MATLAB C_store) returning a list of matrices cycled periodically. The fallback creates a 10-node ring and returns 5 matrix powers for the periodic case. src/algorithms.py line 42: '_mix' cycles via 'networks[s % len(networks)]' implementing periodic switching. results/formal/time_varying_w8a_seed0/config.json confirms: \"agents\":10, \"network_count\":5, \"time_varying_network\":true, sourced from official repository. This matches the paper's periodically time-varying 10-agent graph (Fig. 3) satisfying Assumption III.2 (doubly stochastic, periodically connected).",
+      "note": "The explicit check for Assumption III.2 (e.g., doubly stochastic, B-strongly connected joint graph) is not verified in code, but the use of officially provided doubly stochastic weight matrices from the paper's own repository (C_meth1_smote_sw_800) provides strong evidence the assumption is satisfied.",
+      "error": false
+    },
+    {
+      "id": "setup-013",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "DPG-RR and Prox-G adopt a same constant step-size.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py, the `run_method` function uses a single `step_size` parameter for all methods. Both `dpg_rr` (lines using `step_size` in the RR inner loop and soft_threshold call) and `prox_g` (line using `step_size * g` and soft_threshold) use the same constant `step_size` without any epoch-dependent scaling. The config.json files for time_varying experiments confirm a single `step_size` field: `0.3` for w8a and `0.2` for a9a — applied uniformly to all methods including DPG-RR and Prox-G. run_experiment.py also confirms a single `--step-size` argument shared across all methods in a profile.",
+      "note": "The same step_size applies per dataset (w8a: 0.3, a9a: 0.2), but within each experiment, DPG-RR and Prox-G both use the identical constant step-size, consistent with the paper's claim.",
+      "error": false
+    },
+    {
+      "id": "setup-014",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "NEXT uses diminishing step-sizes.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py, lines 146–156, the `next` method computes its step-size as `alpha = step_size / (epoch + 1.0) ** 0.6` (line 155), which is a diminishing schedule (step_size shrinks as epoch increases). The comment on line 147 also explicitly notes \"diminishing relaxation\". This is used in both time-varying and static network configurations.",
+      "note": "The base `step_size` is fixed (0.3 for w8a, 0.2 otherwise) but scaled by the diminishing factor `1/(epoch+1)^0.6`, making the effective per-epoch step-size decrease over time.",
+      "error": false
+    },
+    {
+      "id": "setup-015",
+      "dimension": "exp_setup",
+      "priority": "secondary",
+      "description": "DGM uses diminishing step-sizes.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "In src/algorithms.py, the DGM method is implemented in the `elif method in {\"dsgd\", \"dgm\"}` branch (around line 90). The step-size for DGM is computed as `alpha = step_size / np.sqrt(epoch + 1.0)`, which is a diminishing (1/sqrt(t)) schedule — in contrast to DSGD which uses a constant `step_size`. The time_varying experiment config (results/formal/time_varying_w8a_seed0/config.json) confirms that DGM is one of the methods run in the `experiment: \"time_varying\"` setup.",
+      "note": "The diminishing schedule is 1/sqrt(t), a standard choice for non-smooth stochastic optimization.",
+      "error": false
+    },
+    {
+      "id": "setup-016",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The experiment is conducted on the w8a dataset.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "CLAIMS.json C3 lists \"datasets\": [\"w8a\"] for the sampling experiment. results/formal/sampling_w8a_seed0/config.json has \"dataset\": \"w8a\" and \"experiment\": \"sampling\". execution.log line 1: \"python3 run_experiment.py --experiment sampling --dataset w8a --epochs 200 --seed 0\". metrics.json confirms \"experiment_id\": \"sampling_w8a_seed0\". CLAIM_RESULTS.json C3 references sampling_w8a_seed0 as the formal result. src/data.py includes w8a in DATA_URLS and SHAPES, and src/algorithms.py/run_experiment.py both handle w8a as a valid dataset option.",
+      "note": "The experiment_id in the rubric is \"exp3_ablation_sampling\" which corresponds to the sampling experiment (C3 in the repo). The w8a dataset is the only dataset for this experiment, exactly matching the claim.",
+      "error": false
+    },
+    {
+      "id": "setup-017",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "All algorithms (DPG-RR, DPG-SG, DPG-IG) use a constant step-size of 0.3.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "run_experiment.py line 71: default step_size = 0.3 for w8a dataset. src/algorithms.py lines 80-81: same default, and lines 94-109 show all three methods (dpg_rr, dpg_sg, dpg_ig) use the same step_size variable. results/formal/sampling_w8a_seed0/config.json line 23 logs \"step_size\": 0.3 for the actual sampling experiment on w8a.",
+      "note": "The step-size of 0.3 is specifically the default for w8a dataset; a9a uses 0.2. For the exp3_ablation_sampling experiment on w8a, all three DPG variants use 0.3 as confirmed both in code and in logged results.",
+      "error": false
+    },
+    {
+      "id": "setup-018",
+      "dimension": "exp_setup",
+      "priority": "primary",
+      "description": "The experiment compares DPG-RR, DPG-SG, and DPG-IG algorithms.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "run_experiment.py line 25: \"sampling\": [\"dpg_rr\", \"dpg_sg\", \"dpg_ig\"]. Results directory results/formal/sampling_w8a_seed0/ contains metrics.json with all three methods (lines 8-10: \"dpg_rr\", \"dpg_sg\", \"dpg_ig\"), execution.log line 3: \"methods: dpg_rr, dpg_sg, dpg_ig\", and separate CSV outputs for each. CLAIM_RESULTS.json confirms: \"The w8a fixed-network sampling comparison completed 200 epochs for DPG-RR, DPG-SG and DPG-IG with finite metrics.\" src/algorithms.py implements all three algorithms.",
+      "note": "The experiment is implemented and results are present on the w8a dataset, matching the verification spec {experiment_id: \"exp3_ablation_sampling\", dataset: \"w8a\", method: \"all\"}.",
+      "error": false
+    }
+  ]
+}

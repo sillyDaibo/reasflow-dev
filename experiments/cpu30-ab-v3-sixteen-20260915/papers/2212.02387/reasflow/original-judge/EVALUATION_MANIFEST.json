@@ -1,0 +1,534 @@
+{
+  "schema_version": "optirepro.evaluation_manifest.v1",
+  "evaluation_id": "第001次评测",
+  "batch_id": "cpu30-stream-pair-2212.02387-003-B-f41862d99a22",
+  "status": "completed",
+  "started_at": "2026-09-04T08:19:38.990189+00:00",
+  "finished_at": "2026-09-04T08:50:05.522767+00:00",
+  "subject": {
+    "paper_id": "2212.02387",
+    "paper_slug": "CPU30_2212_02387",
+    "condition": "B",
+    "run_instance": "第003次运行",
+    "run_dir": "/home/hzy/optirepro/agent_reproduction/runs/2212.02387/ReasFlow实验Agent-完整复现-Goal/第003次运行",
+    "workspace": "/home/hzy/optirepro/agent_reproduction/runs/2212.02387/ReasFlow实验Agent-完整复现-Goal/第003次运行/workspace",
+    "run_manifest": "/home/hzy/optirepro/agent_reproduction/runs/2212.02387/ReasFlow实验Agent-完整复现-Goal/第003次运行/RUN_MANIFEST.json",
+    "run_manifest_sha256": "a12c6959610e620bf5e81cb4c76d93901db36bd367c58528007f1cce77957eff",
+    "workspace_git": {
+      "git_head": "e4ee2e3cb7a8196cfa53b133cb9fc02e95d63237",
+      "git_tree": "1deb627c1118ad9bd791b2554c6b864a9a5aec4b"
+    },
+    "terminal_provenance": null
+  },
+  "judge": {
+    "version_id": "RepoJudge-llmmelon-ClaudeSonnet4.6适配-v2",
+    "version_dir": "/home/hzy/optirepro/judge/versions/RepoJudge/llmmelon-ClaudeSonnet4.6适配_v2",
+    "version_manifest_sha256": "e8a25ea7d235c57dafe2a87026d1ddb494c291a5d7236126bef9803dac3ec3d4",
+    "source_commit": "a6e7bf58594d5473fdb6aec6726e4bd7e0e1627c"
+  },
+  "rubrics": {
+    "version_id": "CPU30_2212_02387-CPU30-llm-generated-v2",
+    "version_dir": "/home/hzy/optirepro/judge/rubrics/CPU30_2212_02387/CPU30_llm_generated_v2",
+    "version_manifest_sha256": "fc73acf77f89c4daa1bf971f77cbc19fe4045456730d39f70eb07f50a792674a",
+    "source_commit": "63cd2dc17673a05b08b00e0c56b3a9de6d3b608b",
+    "loops": [
+      "midloop",
+      "bigloop"
+    ],
+    "files": {
+      "midloop": {
+        "path": "/home/hzy/optirepro/judge/rubrics/CPU30_2212_02387/CPU30_llm_generated_v2/files/rubrics_llm_midloop.json",
+        "sha256": "a8743fcf003c4cff9ae9eb04c9bee1fc7582b5c776e08382ddf028465fe4dc66"
+      },
+      "bigloop": {
+        "path": "/home/hzy/optirepro/judge/rubrics/CPU30_2212_02387/CPU30_llm_generated_v2/files/rubrics_llm_bigloop.json",
+        "sha256": "474eb70dd802f9e9cc52e4c01732e2a0e146ebe896488ce09a3eb74fa7a29fc0"
+      }
+    }
+  },
+  "model": {
+    "requested": "claude-sonnet-4-6",
+    "provider_reported": "mcs-5",
+    "provider_reported_scope": "adapter validation"
+  },
+  "provider_runtime": {
+    "provider": "llmmelon Anthropic API",
+    "base_url": "https://llmmelon.cloud",
+    "credential_source": "/home/hzy/.config/optirepro/judge_api_key",
+    "claude_home": "/home/hzy/optirepro/judge/runtime/batches/cpu30-stream-pair-2212.02387-003-B-f41862d99a22/claude-home"
+  },
+  "settings": {
+    "concurrency": 4,
+    "max_turns": 50,
+    "max_attempts": 3
+  },
+  "outputs": {
+    "midloop": "results/evaluation_midloop.json",
+    "bigloop": "results/evaluation_bigloop.json",
+    "report": "results/JUDGE_REPORT.md"
+  },
+  "blocked_reason": null,
+  "progress": {
+    "midloop": {
+      "status": "completed",
+      "total": 27,
+      "already_completed": 0,
+      "completed_now": 27,
+      "failed_now": 0,
+      "remaining": 0,
+      "summary": {
+        "total_score": 0.5652,
+        "algorithm_impl_score": 0.5217,
+        "exp_setup_score": 0.6087,
+        "exp_results_score": 0.0,
+        "total_rubrics": 27,
+        "passed": 13,
+        "failed": 14,
+        "errors": 0,
+        "pass_threshold": 0.8,
+        "gate_passed": false
+      }
+    },
+    "bigloop": {
+      "status": "completed",
+      "total": 6,
+      "already_completed": 0,
+      "completed_now": 6,
+      "failed_now": 0,
+      "remaining": 0,
+      "summary": {
+        "total_score": 0.0,
+        "algorithm_impl_score": 0.0,
+        "exp_setup_score": 0.0,
+        "exp_results_score": 0.0,
+        "total_rubrics": 6,
+        "passed": 0,
+        "failed": 6,
+        "errors": 0,
+        "pass_threshold": 0.85,
+        "gate_passed": false
+      }
+    }
+  },
+  "finalized_artifacts": {
+    "files": {
+      "input/JUDGE_CONFIG.json": {
+        "sha256": "b8ae12eb44d6f078cce78d4cec8646ae24b5065a9ef0ec841bc65dba48873993",
+        "size": 653
+      },
+      "logs/attempts/bigloop/res-001/attempt-001.json": {
+        "sha256": "0d07f307d6e9ddb4cd5b3aff546cc2b1cabed8c38eb5c41bdd9964f8d031a5b0",
+        "size": 1591
+      },
+      "logs/attempts/bigloop/res-002/attempt-001.json": {
+        "sha256": "0fd29ccf5d1767c6d0501f0caa3e31ad47d4e297b4229d6486397d466cbd9734",
+        "size": 1894
+      },
+      "logs/attempts/bigloop/res-003/attempt-001.json": {
+        "sha256": "ebddb9bb0e2a017876676111527f83da236be0f5b478ad36f1da3735a4877d94",
+        "size": 1778
+      },
+      "logs/attempts/bigloop/res-004/attempt-001.json": {
+        "sha256": "6a21d8ec9fc8f1c740049cbc9eab2c6c8dce649bd2f8d702c444bbc294b0c41b",
+        "size": 1480
+      },
+      "logs/attempts/bigloop/res-005/attempt-001.json": {
+        "sha256": "3fe5e1f3c022e554ff0a21918094c137dff628fb0b40c2190fdfbc48ffa1b9f6",
+        "size": 1672
+      },
+      "logs/attempts/bigloop/res-006/attempt-001.json": {
+        "sha256": "7d79762bcdffe1779366f6c5de61e3b02e318c3e95c145aaef89d30574d66955",
+        "size": 1200
+      },
+      "logs/attempts/midloop/alg-001/attempt-001.json": {
+        "sha256": "c4b506f701d968b04c75ffa3d8de6cac5b4bb9a0915c735f189c740811067c9a",
+        "size": 1236
+      },
+      "logs/attempts/midloop/alg-002/attempt-001.json": {
+        "sha256": "447df721186af7e38b38c1c5485b34d70171c0fe46250cf1471ab80c5fc2c226",
+        "size": 1297
+      },
+      "logs/attempts/midloop/alg-003/attempt-001.json": {
+        "sha256": "c48aa5cbe0c99ee282e319563db6fa77de184e39fc2079c95abd292b841c636b",
+        "size": 1525
+      },
+      "logs/attempts/midloop/alg-004/attempt-001.json": {
+        "sha256": "35376b3bdab639d30c0774169672b223d8868104cb464da74cf50953dabf383d",
+        "size": 1108
+      },
+      "logs/attempts/midloop/alg-005/attempt-001.json": {
+        "sha256": "29cc987dd7d81474dcb7a5b8f99811d9a936d12d2508caffe2433e1547714498",
+        "size": 1469
+      },
+      "logs/attempts/midloop/alg-006/attempt-001.json": {
+        "sha256": "53cc6a5d35cd8242e44ba12958b525bb0d64fcbab3d8181b074662b83f3c587c",
+        "size": 1343
+      },
+      "logs/attempts/midloop/alg-007/attempt-001.json": {
+        "sha256": "9f7a145acbe524115e7da67944548d1e2ea95d5dd85747e73897a95f5aae838e",
+        "size": 1348
+      },
+      "logs/attempts/midloop/alg-008/attempt-001.json": {
+        "sha256": "99dfb540121feffb7c58e4559ef7764dd374502d8db9f5581b86d33a04348e28",
+        "size": 1748
+      },
+      "logs/attempts/midloop/alg-009/attempt-001.json": {
+        "sha256": "3e49daac1415c1291e3ad40006cced77b4013bc4b36be2d1dc739b377ab30313",
+        "size": 1350
+      },
+      "logs/attempts/midloop/alg-010/attempt-001.json": {
+        "sha256": "4524febce1e5a1a4c745ef8bac1b2ef611610f7598e769a9bfad98cfac6c0d79",
+        "size": 1272
+      },
+      "logs/attempts/midloop/alg-011/attempt-001.json": {
+        "sha256": "d5e5f8493354ecd6a1657d2e71d19d63b11783930cb3b21b6304ce87c5bd28ac",
+        "size": 1198
+      },
+      "logs/attempts/midloop/alg-012/attempt-001.json": {
+        "sha256": "5372138e5689c3a9b39d3ba7255ee0d21c3ffb93820603777ef0fcf340dd9016",
+        "size": 1331
+      },
+      "logs/attempts/midloop/setup-001/attempt-001.json": {
+        "sha256": "54b310763c6671c3191fb7063477af73e70b59f34403ae01247fae4d5e3c328c",
+        "size": 1082
+      },
+      "logs/attempts/midloop/setup-002/attempt-001.json": {
+        "sha256": "7966fb83819b330b950039ab72450908bd7d6039f56a1eae4439a1f4577ca02b",
+        "size": 1156
+      },
+      "logs/attempts/midloop/setup-003/attempt-001.json": {
+        "sha256": "7abb357cc630a7f81e3a54e37a9e4af2a1e663e8a097822c7aeab1e073f21fb0",
+        "size": 1762
+      },
+      "logs/attempts/midloop/setup-004/attempt-001.json": {
+        "sha256": "57a3adfe86cb23539beee7739c8b19366dff6c10439f489e155041fa4e6dda25",
+        "size": 1010
+      },
+      "logs/attempts/midloop/setup-005/attempt-001.json": {
+        "sha256": "d8aa52be9b01487a510589175d899f2585b5fec441799e07807136190996a3c5",
+        "size": 1456
+      },
+      "logs/attempts/midloop/setup-006/attempt-001.json": {
+        "sha256": "d5ff7c15bd7071c77b51d8c7b32ace5590572cc4446af0c5ee14232e086c78bc",
+        "size": 1056
+      },
+      "logs/attempts/midloop/setup-007/attempt-001.json": {
+        "sha256": "2de202d1b22a012c7a84af0c7efffa1f852d5171c615bf83e600b2a2ad3ed075",
+        "size": 1201
+      },
+      "logs/attempts/midloop/setup-008/attempt-001.json": {
+        "sha256": "8bc828f17170c98b23fb7eeecdc9480f9bcfbde0f6f9d2d307382d6a36d752a4",
+        "size": 1225
+      },
+      "logs/attempts/midloop/setup-009/attempt-001.json": {
+        "sha256": "d82841072ac2c09f024fb19afba69d6bf06f0b1418ab86f22732838d63bc59e4",
+        "size": 1036
+      },
+      "logs/attempts/midloop/setup-010/attempt-001.json": {
+        "sha256": "dd0f716c61c59d12ba240f9cbb504c71e79c92f34854de87e9b021b74abd2493",
+        "size": 983
+      },
+      "logs/attempts/midloop/setup-011/attempt-001.json": {
+        "sha256": "8bfe8959379d7e4289ab5ca3010a7c498a3e4078edc36ada7045e54bd6a88a26",
+        "size": 1002
+      },
+      "logs/attempts/midloop/setup-012/attempt-001.json": {
+        "sha256": "9711eb0eb5503376f84a3e96fe5b6155c44661a49469a898c637db5278e19087",
+        "size": 970
+      },
+      "logs/attempts/midloop/setup-013/attempt-001.json": {
+        "sha256": "344d061562c4ebe535df022506daefccf72d9f849ecab47e2f9f25254e5f4819",
+        "size": 1035
+      },
+      "logs/attempts/midloop/setup-014/attempt-001.json": {
+        "sha256": "4baf19602e5253cb2f5a8ffb7d9da7f11b913024098e689152f043b8595fd18a",
+        "size": 1267
+      },
+      "logs/attempts/midloop/setup-015/attempt-001.json": {
+        "sha256": "e65fc9e2d4172f9f4246954fdffc41997d9da9ccc67e82de0eb46c4df848c766",
+        "size": 1121
+      },
+      "prompt/PROMPT_MANIFEST.json": {
+        "sha256": "103fd7c1c3d8a3d8194f30bb7bbfe2dc07bc844a659b5838cffea7d3579106e8",
+        "size": 220
+      },
+      "prompt/attempts/bigloop/res-001/attempt-001.json": {
+        "sha256": "51d0ad051a2c331b0290fe54a08fcb16f6a38db4c363b3eeadd2e2ce28e55dca",
+        "size": 5257
+      },
+      "prompt/attempts/bigloop/res-002/attempt-001.json": {
+        "sha256": "9482fb61df757f838516b35a34b7e2058d709cfb447b85f7c825085d170619c1",
+        "size": 5257
+      },
+      "prompt/attempts/bigloop/res-003/attempt-001.json": {
+        "sha256": "5144fcf5c824c10546f79d3638b07015ad227759e46904a5f2be38ab95e9b1fb",
+        "size": 5263
+      },
+      "prompt/attempts/bigloop/res-004/attempt-001.json": {
+        "sha256": "bcea6fce47019e03cf9cfb1fd6623ec6c8aa4599dac6ce6c009b9d9e3ca924c9",
+        "size": 5268
+      },
+      "prompt/attempts/bigloop/res-005/attempt-001.json": {
+        "sha256": "9974fcb4aff5e065a2dd5a078d72eda9b17f29820b3a83df598989554967d949",
+        "size": 5268
+      },
+      "prompt/attempts/bigloop/res-006/attempt-001.json": {
+        "sha256": "3428b06f59dc396b0e2533ae64dd385aec3aad4a8b66c7247da4eb67dd4cb643",
+        "size": 5274
+      },
+      "prompt/attempts/midloop/alg-001/attempt-001.json": {
+        "sha256": "ea124fd9844b8e9ff82e04ee801a2a341c97ce8a1c7e3634cdacc5a8a2a080b7",
+        "size": 2609
+      },
+      "prompt/attempts/midloop/alg-002/attempt-001.json": {
+        "sha256": "595954e68f8482b7e600c317f4f3582144d46453b71118023603e01c6c4cbb0f",
+        "size": 2589
+      },
+      "prompt/attempts/midloop/alg-003/attempt-001.json": {
+        "sha256": "734fee0bf9231580263159718ef6fcbd72e6a6d166c4956f774f907fc3989085",
+        "size": 2653
+      },
+      "prompt/attempts/midloop/alg-004/attempt-001.json": {
+        "sha256": "d67e99a5bd22cc8e89d27d05ba054797a0a7b7b651b99683834b312194665f25",
+        "size": 2582
+      },
+      "prompt/attempts/midloop/alg-005/attempt-001.json": {
+        "sha256": "b1e8e366ef01b04f26deb82e60668e2c514cee56f82c6e6398097755f18d1dd7",
+        "size": 2579
+      },
+      "prompt/attempts/midloop/alg-006/attempt-001.json": {
+        "sha256": "bf9a10704454dadb067fc9096773a72b89f5c1a574d3b5986611e2521b636f32",
+        "size": 2624
+      },
+      "prompt/attempts/midloop/alg-007/attempt-001.json": {
+        "sha256": "72859805ebd09bbcfa313f26737179ebd41d2f004ed002f5bbf478b7965fcd28",
+        "size": 2598
+      },
+      "prompt/attempts/midloop/alg-008/attempt-001.json": {
+        "sha256": "b1e3e2a69a6b8060d623eda4e667fe5bfcb9fe53a2ead8311f68b9b0421f371b",
+        "size": 2615
+      },
+      "prompt/attempts/midloop/alg-009/attempt-001.json": {
+        "sha256": "c1ec8fb35a1e7a634edf79664d21631b41e3aed00c8f29843b206ebcdd3d6f31",
+        "size": 2586
+      },
+      "prompt/attempts/midloop/alg-010/attempt-001.json": {
+        "sha256": "a487130b7855e3df1521170081356aa6c27c48d4ef2ec9bc02267762acd7d898",
+        "size": 2586
+      },
+      "prompt/attempts/midloop/alg-011/attempt-001.json": {
+        "sha256": "d502c6335fdd511f30bb7ae5dcc75cf078962cd6553a4cd38878b83b626efd15",
+        "size": 2558
+      },
+      "prompt/attempts/midloop/alg-012/attempt-001.json": {
+        "sha256": "7e0bf03e60cd826d802ca2b138f4226383897987b610980cc85c802d60c19403",
+        "size": 2574
+      },
+      "prompt/attempts/midloop/setup-001/attempt-001.json": {
+        "sha256": "02ad5875376d672f3ab40bbba325a0c069d2e890a3bce7a99ff53122a4626bc2",
+        "size": 2666
+      },
+      "prompt/attempts/midloop/setup-002/attempt-001.json": {
+        "sha256": "ece1d21a652dc650e73d37874418480a27ce8b27c1724ccff705e029d3e3bfc5",
+        "size": 2774
+      },
+      "prompt/attempts/midloop/setup-003/attempt-001.json": {
+        "sha256": "8d9e8acea7122fd82164c487d0d8b247cc7b8c8fee4b35d762da88732cfe18a2",
+        "size": 2865
+      },
+      "prompt/attempts/midloop/setup-004/attempt-001.json": {
+        "sha256": "968b7d6bbdbcb33d38e793051a16bbb99956a0c29f7eb9d158e16cef41117f20",
+        "size": 2715
+      },
+      "prompt/attempts/midloop/setup-005/attempt-001.json": {
+        "sha256": "dd93e08e4b84b5e17610bf33f4c9f9fd5d60c80fc6b3d384704757b2088bf910",
+        "size": 2704
+      },
+      "prompt/attempts/midloop/setup-006/attempt-001.json": {
+        "sha256": "5b1de41809484b1233676c1a67dd74116c2d1ab61bee5c8601ea5667a0793cf3",
+        "size": 2666
+      },
+      "prompt/attempts/midloop/setup-007/attempt-001.json": {
+        "sha256": "1e8beaa4ac046aabc4d3a2abfd0b25347bd218c579570856f555abe6f10f07f3",
+        "size": 2659
+      },
+      "prompt/attempts/midloop/setup-008/attempt-001.json": {
+        "sha256": "c2bb779893e05648e1a27e5d4ac06c8d37d390432a9c18ec8eae66533f4c0e1b",
+        "size": 2658
+      },
+      "prompt/attempts/midloop/setup-009/attempt-001.json": {
+        "sha256": "848b78043e934cd1c77e4e5467c753752bd242c5807156b7c896e8e311c63d33",
+        "size": 2653
+      },
+      "prompt/attempts/midloop/setup-010/attempt-001.json": {
+        "sha256": "255ef82d318071c1654552e4a9beb18b0917669b178d1572a597299ec4d9e650",
+        "size": 2668
+      },
+      "prompt/attempts/midloop/setup-011/attempt-001.json": {
+        "sha256": "e94f6173caa7cf5769fd713667aebd66d6369fa8a947c10e4daf10932958bd47",
+        "size": 2656
+      },
+      "prompt/attempts/midloop/setup-012/attempt-001.json": {
+        "sha256": "795dc0611f9f0c6bded75daef18298c801d2693c1501f9c11478eb9428616e35",
+        "size": 2652
+      },
+      "prompt/attempts/midloop/setup-013/attempt-001.json": {
+        "sha256": "dea5c72c38639764e16ae7d50d57fcd60fa031b36921ba68a6e6df038b42671e",
+        "size": 2666
+      },
+      "prompt/attempts/midloop/setup-014/attempt-001.json": {
+        "sha256": "d861f0248879e76176062bde6d653429fd3cc9832732e4b631ab3ade40f9385a",
+        "size": 2671
+      },
+      "prompt/attempts/midloop/setup-015/attempt-001.json": {
+        "sha256": "f97dd3d1a4e5e5c014e086b6dc65bfd94f938fcb54397888efaa25c29a39171c",
+        "size": 2691
+      },
+      "results/JUDGE_REPORT.md": {
+        "sha256": "1e03eec4c3402ea725b95126a978bf14eafaafdd06a8de44e478cb5fbab4bb35",
+        "size": 434
+      },
+      "results/evaluation_bigloop.json": {
+        "sha256": "1fafa629ccd525b2de153bef602e8052cdd48d292faab0640a345091fc3ea9b7",
+        "size": 9071
+      },
+      "results/evaluation_midloop.json": {
+        "sha256": "1db49952d5eedf48f762342a2e94e8846fa7773d8c05457800938c953773b4c1",
+        "size": 29643
+      },
+      "results/items/bigloop/res-001.json": {
+        "sha256": "fd1f5592e4fea36dfe413bc8fc0c29759eb04254f7e47e342b1a4ef2db24db36",
+        "size": 1541
+      },
+      "results/items/bigloop/res-002.json": {
+        "sha256": "7963ddb27f94e5db56a82c01f32c16bc8e59248034b0572cdcccafeb6ad50cfa",
+        "size": 1844
+      },
+      "results/items/bigloop/res-003.json": {
+        "sha256": "71ea4e5f470ce0fafa6f5c4a34755f74c910c9e7f450bb642c44f1e24b4b4f3f",
+        "size": 1728
+      },
+      "results/items/bigloop/res-004.json": {
+        "sha256": "ce748d960a72d1093af6d910b5a5675b3fbce710c0a5c3e596c106f9b4f657a8",
+        "size": 1430
+      },
+      "results/items/bigloop/res-005.json": {
+        "sha256": "1a0a85bdbb8398a5bb54badc28849ef062f7a2c13f233afca19ce022be1a47a6",
+        "size": 1622
+      },
+      "results/items/bigloop/res-006.json": {
+        "sha256": "2b9c579173a454db11f460ae138f0408db2f1f0284af4ea80b3b394f046dd790",
+        "size": 1150
+      },
+      "results/items/midloop/alg-001.json": {
+        "sha256": "e50b9debfa6c070233c3c81ad19505ecaceeb39cad2e4838477c5e9a42ccf64a",
+        "size": 1186
+      },
+      "results/items/midloop/alg-002.json": {
+        "sha256": "8bb7939113970688bffa338f311ea65f8bc6e4e5fe998339310bcc2ec60bbfa9",
+        "size": 1247
+      },
+      "results/items/midloop/alg-003.json": {
+        "sha256": "95c5c720000b8450ecc95e7f9d12dd0247c0d3862db7beafb83064b5c3710865",
+        "size": 1475
+      },
+      "results/items/midloop/alg-004.json": {
+        "sha256": "76fd31e0025c21f6d45057a2907b1a3ad63e59a6eda3ee982ec3681bcf64ca01",
+        "size": 1058
+      },
+      "results/items/midloop/alg-005.json": {
+        "sha256": "9aa7389ee820bad6981df465db9dd515c82e4a958121c08f159f97fac503dffa",
+        "size": 1419
+      },
+      "results/items/midloop/alg-006.json": {
+        "sha256": "918783281ffd2616c3b1ce2985bae34f2d2cb48091e13da805ec67eec9851273",
+        "size": 1293
+      },
+      "results/items/midloop/alg-007.json": {
+        "sha256": "556a666011e797d19fc066f6ac972390f1b86e163a3e480b157ae85015bd59dd",
+        "size": 1298
+      },
+      "results/items/midloop/alg-008.json": {
+        "sha256": "ff51eba6ad0b13f97f27be8a1afad4fc72336fcb1ea6b4ff8a7416b324b3d4bb",
+        "size": 1698
+      },
+      "results/items/midloop/alg-009.json": {
+        "sha256": "fb0fdd40076e561db81d0ed1ecb76cdad39361f30ac80964eb837fa6e6379ad4",
+        "size": 1300
+      },
+      "results/items/midloop/alg-010.json": {
+        "sha256": "435f346c86a625e6b5131f6ed5cd40d4ee39581c10ebda2410a6787e0fca934b",
+        "size": 1222
+      },
+      "results/items/midloop/alg-011.json": {
+        "sha256": "0dae316518a36276ebbc222a5d98251ad149cb66931d43c4fbce1c97b00087c7",
+        "size": 1148
+      },
+      "results/items/midloop/alg-012.json": {
+        "sha256": "caa61f985354586d6967d08200c07224fc54d8f16e6ba43b3787f2bf6e7a5fb2",
+        "size": 1281
+      },
+      "results/items/midloop/setup-001.json": {
+        "sha256": "1cc5fd7d897c3e8f8359305af7ea7411a1bde93f32826722c124eb0a0f0aecc8",
+        "size": 1032
+      },
+      "results/items/midloop/setup-002.json": {
+        "sha256": "cc3c6c1cebd211f341c6c1b1359e2707f4fc8ff9184bd40f1fa035c6e67b0801",
+        "size": 1106
+      },
+      "results/items/midloop/setup-003.json": {
+        "sha256": "e9a191c2d58324f7c4cd4671b386d45416677cb96b9d1a1cc508ac285b4e101f",
+        "size": 1712
+      },
+      "results/items/midloop/setup-004.json": {
+        "sha256": "98ffdd0da52775a0a01292dea2ad38d55efe717fb3a8609e44ff0f7feac87033",
+        "size": 960
+      },
+      "results/items/midloop/setup-005.json": {
+        "sha256": "eb7571abc7f666d72dd969d70619ebcf47457460c4a6f41850dc010c83ba7255",
+        "size": 1406
+      },
+      "results/items/midloop/setup-006.json": {
+        "sha256": "6b78613099ceba882cae8195b1418fcd20107996bba890c170ac08540c40e69e",
+        "size": 1006
+      },
+      "results/items/midloop/setup-007.json": {
+        "sha256": "eb3c3f9fa2c420a6acaef9ce3a8a18527b0d381b851168271e5ad79f28ffbb23",
+        "size": 1151
+      },
+      "results/items/midloop/setup-008.json": {
+        "sha256": "7b38568a2e94e935e4cbc42f56804d56492bb25a41afa805f549eac0a7c8e42b",
+        "size": 1175
+      },
+      "results/items/midloop/setup-009.json": {
+        "sha256": "be1d348dc3b354d48525c2e6aa9738e85aa7215c6444f30c19bc5a70b6f7be0a",
+        "size": 986
+      },
+      "results/items/midloop/setup-010.json": {
+        "sha256": "e342c450558dd8aec4562f2cec2c2b17d36a2b1973ae76d7e0224ec5b9dd734b",
+        "size": 933
+      },
+      "results/items/midloop/setup-011.json": {
+        "sha256": "758ad60713460bad3066f3a7a9699832d92f29c4b8b8db7d99e5146c7af80259",
+        "size": 952
+      },
+      "results/items/midloop/setup-012.json": {
+        "sha256": "7cf0d0e8a2f4bbae89d8088123d61e25392079af0617269c26e57de3d1c6c669",
+        "size": 920
+      },
+      "results/items/midloop/setup-013.json": {
+        "sha256": "02815257fe4accef50bba0e31d862231a09e6567ae278fd15c4c35aa5f178685",
+        "size": 985
+      },
+      "results/items/midloop/setup-014.json": {
+        "sha256": "fe688374e073a71cf76851c551c0b779e2043cf3a236911d7b975affd41f1b87",
+        "size": 1217
+      },
+      "results/items/midloop/setup-015.json": {
+        "sha256": "e34201955d18b585a67792d76e7752b1debfb4773a33d2516c6dfdcd232d65ca",
+        "size": 1071
+      }
+    },
+    "digest": "2434178cdee16bc7cacff328bf1e30ecc5a360cf355f36b917cdc97cf9575f15"
+  }
+}

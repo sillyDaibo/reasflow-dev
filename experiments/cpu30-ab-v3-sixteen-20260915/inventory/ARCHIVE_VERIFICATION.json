@@ -1,0 +1,27 @@
+{
+  "all_manifest_files_present": true,
+  "all_file_hashes_match": true,
+  "file_count": 43120,
+  "archives": [
+    {
+      "archive": "inventory.tar.gz",
+      "files_verified": 8,
+      "bytes": 4112084
+    },
+    {
+      "archive": "local-evidence.tar.gz",
+      "files_verified": 8926,
+      "bytes": 45947845
+    },
+    {
+      "archive": "remote-cpu.tar.gz",
+      "files_verified": 3250,
+      "bytes": 70235145
+    },
+    {
+      "archive": "remote-cpu2.tar.gz",
+      "files_verified": 30937,
+      "bytes": 675454365
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "Imported by assigned original source",
+    "source": "src/byz_compression/core.py"
+  },
+  {
+    "kind": "install_package",
+    "package": "scipy",
+    "reason": "Imported by assigned original source",
+    "source": "src/byz_compression/core.py"
+  }
+]

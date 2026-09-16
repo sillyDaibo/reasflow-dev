@@ -1,0 +1,67 @@
+{
+  "schema_version": "optirepro.agent_claims.v2",
+  "paper_id": "1904.12017",
+  "summary": "Reproduction scope covers the paper's ADMM/Laplacian method and all four real-data case studies with the published baselines.",
+  "claims": [
+    {
+      "claim_id": "method_admm_laplacian",
+      "priority": "core",
+      "paper_location": "Sections 3-4, Algorithm 4.1",
+      "statement": "Laplacian-regularized stratified fitting can be solved by alternating local proximal updates and Laplacian consensus systems, with parallelizable local work.",
+      "methods": ["three-block ADMM", "weighted graph Laplacian consensus", "closed-form Poisson/Bernoulli proximal updates", "Newton logistic proximal update", "matrix-free Cartesian-product Laplacian"],
+      "required_baselines": [],
+      "datasets": ["synthetic solver checks", "Chicago 2017-2018 product grid"],
+      "metrics": ["ADMM primal/dual residuals", "convergence flag", "product-graph operator equivalence"],
+      "comparison_conditions": "Use the same local objectives and graph weights while varying graph coupling; product-grid matvec must agree with an explicit small Cartesian-product Laplacian.",
+      "planned_evidence": ["tests/test_solver.py", "results/formal/exp_004_chicago/run.log", "results/formal/exp_004_chicago/resolved_config.json"]
+    },
+    {
+      "claim_id": "mesothelioma_stratification",
+      "priority": "core",
+      "paper_location": "Section 5.1, Table 1 and Figure 1",
+      "statement": "Sex-by-age Laplacian regularization improves mesothelioma logistic prediction over separate models and is competitive with the common model.",
+      "methods": ["stratified logistic regression", "sex edge weight 10", "age path edge weight 500", "sum-of-squares local regularization"],
+      "required_baselines": ["separate logistic models", "common logistic model"],
+      "datasets": ["UCI Mesothelioma 324 records"],
+      "metrics": ["test average negative log likelihood", "test classification error"],
+      "comparison_conditions": "90/10 random split with seed 0, diagnosis-method leakage removed, categorical feature engineering and standardization fit on training data.",
+      "planned_evidence": ["results/formal/exp_001_mesothelioma/metrics.json", "results/formal/exp_001_mesothelioma/figure_glucose.png"]
+    },
+    {
+      "claim_id": "house_price_prediction",
+      "priority": "core",
+      "paper_location": "Section 5.2, Table 2 and Figure 2",
+      "statement": "Geographic Laplacian regularization yields accurate and interpretable house-price models, outperforming the common and separate models and matching the random-forest baseline.",
+      "methods": ["stratified ridge regression", "50x50 geographic grid", "geographic edge weight 15"],
+      "required_baselines": ["separate ridge models", "common ridge model", "50-tree random forest"],
+      "datasets": ["King County house sales 2014-2015"],
+      "metrics": ["test RMSE", "parameter count"],
+      "comparison_conditions": "Filter longitude <= -121.6, use the paper's nine house features plus intercept, standardize from training data, and use a 75/25 split with seed 0.",
+      "planned_evidence": ["results/formal/exp_002_houses/metrics.json", "results/formal/exp_002_houses/figure_coefficients.png"]
+    },
+    {
+      "claim_id": "senate_elections",
+      "priority": "core",
+      "paper_location": "Section 5.3, Table 3 and Figure 3",
+      "statement": "State-border and time-path Laplacian regularization improves held-out Senate election probability likelihood over separate and common Bernoulli models.",
+      "methods": ["stratified Bernoulli model", "state-border graph weight 1", "year path weight 4", "probability clipping"],
+      "required_baselines": ["separate Bernoulli models", "common Bernoulli model"],
+      "datasets": ["MEDSL U.S. Senate statewide elections 1976-2016"],
+      "metrics": ["train ANLL", "test ANLL"],
+      "comparison_conditions": "Freeze data through 2016, train on 1976-2012 and test on 2014-2016, with one winner per state-year and epsilon=1e-5 clipping.",
+      "planned_evidence": ["results/formal/exp_003_senate/metrics.json", "results/formal/exp_003_senate/figure_heatmap.png"]
+    },
+    {
+      "claim_id": "chicago_crime_prediction",
+      "priority": "core",
+      "paper_location": "Section 5.4, Table 4 and Figures 4-6",
+      "statement": "A product-graph Poisson stratified model predicts Chicago crime counts better than separate and common models while retaining smooth location and temporal rates.",
+      "methods": ["stratified Poisson model", "20x20 location grid", "52-week cycle", "7-day cycle", "24-hour cycle", "all edge weights 100"],
+      "required_baselines": ["separate Poisson models", "common Poisson model"],
+      "datasets": ["Chicago crimes 2017-2018"],
+      "metrics": ["train ANLL", "test ANLL", "ADMM iterations", "node count"],
+      "comparison_conditions": "Aggregate all 2017 and 2018 records into every 20x20x52x7x24 cell, retain zero-count cells, train on 2017 and test on 2018.",
+      "planned_evidence": ["results/formal/exp_004_chicago/metrics.json", "results/formal/exp_004_chicago/figure_rates.png"]
+    }
+  ]
+}

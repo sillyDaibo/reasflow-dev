@@ -1,0 +1,233 @@
+{
+  "paper_id": "2201.13320",
+  "evaluated_at": "2026-09-04T08:03:28.152972+00:00",
+  "summary": {
+    "total_score": 0.3077,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.3077,
+    "total_rubrics": 18,
+    "passed": 4,
+    "failed": 14,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.5,
+      "passed": 4,
+      "total": 8
+    },
+    "secondary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 9
+    },
+    "tertiary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "BEER achieves a lower training gradient norm than CHOCO-SGD.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_a9a_comparison/metrics.json contains 80-round gradient_norm series for both methods on the a9a dataset. BEER achieves lower gradient norm than CHOCO-SGD across all summary statistics: final round (BEER=0.1866 vs CHOCO-SGD=0.2254), minimum (BEER=0.1209 vs CHOCO-SGD=0.1399), and mean over all rounds (BEER=0.2504 vs CHOCO-SGD=0.2642). BEER > CHOCO-SGD (lower_is_better) is confirmed at every comparison point.",
+      "note": "",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "BEER's training gradient norm is comparable to D2's.",
+      "verdict": 0,
+      "confidence": "medium",
+      "evidence": "results/formal/exp_001_a9a_comparison/metrics.json: BEER and D2 gradient norms over 80 rounds on the a9a dataset. Both start at 0.6586. BEER final gradient norm ≈ 0.187, D2 final ≈ 0.081 (ratio ~2.3×). BEER minimum ≈ 0.121 vs D2 minimum ≈ 0.064 (ratio ~1.88×). Mean BEER/D2 ratio across all rounds: ~1.53×, ranging from 0.875 to 2.45×. D2 consistently converges to roughly half the gradient norm of BEER in the later rounds, which is a meaningful quantitative gap rather than comparable performance.",
+      "note": "The word \"comparable\" is subjective. Both methods are in the same order of magnitude and show convergence, but BEER's gradient norm is consistently ~1.5–2.5× larger than D2's in the run outputs, which is typically considered a noteworthy difference rather than comparable convergence. The verdict 0 reflects that the outputs do not support the claim of comparability by a standard scientific interpretation.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "BEER achieves the best testing accuracy among all compared algorithms (BEER, CHOCO-SGD, DSGD, D2).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_a9a_comparison/metrics.json: Final (round 80) test_accuracy — BEER=0.763774, CHOCO-SGD=0.763774, DSGD=0.764204, D2=0.764511. Peak test_accuracy — BEER=0.763774, CHOCO-SGD=0.763774, DSGD=0.767029, D2=0.770039. BEER's test accuracy is the lowest (or tied for lowest with CHOCO-SGD), failing the required constraints BEER > DSGD and BEER > D2.",
+      "note": "BEER's test_accuracy is flat at 0.763774 across all 80 rounds, suggesting it did not converge properly or the metric was not updating. Regardless, DSGD and D2 both achieve strictly higher test accuracy than BEER at both final round and peak values, so the ranking claim does not hold.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "D2 achieves a lower training gradient norm than CHOCO-SGD.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_a9a_comparison/metrics.json: D2 final gradient_norm = 0.0811, CHOCO-SGD final gradient_norm = 0.2254. D2 minimum gradient_norm = 0.0644, CHOCO-SGD minimum = 0.1399. D2 is lower (better) than CHOCO-SGD at every tracked point in the gradient_norm series.",
+      "note": "The experiment directory is named exp_001_a9a_comparison, matching the rubric's experiment id exp1_logistic_a9a_comparison. Both methods and the a9a dataset are confirmed in the metrics file.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In terms of testing accuracy, BEER and D2 have very similar performance, and outperform CHOCO-SGD and DSGD.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/exp_002_mnist_comparison/metrics.json. Final test_accuracy at round 35: BEER=0.2940, D2=0.6514, CHOCO-SGD=0.1818, DSGD=0.5950. Ranking checks: BEER > CHOCO-SGD: TRUE (0.294 > 0.182); BEER > DSGD: FALSE (0.294 < 0.595); D2 > CHOCO-SGD: TRUE (0.651 > 0.182); D2 > DSGD: TRUE (0.651 > 0.595). The constraint 'BEER > DSGD' fails — BEER (0.294) is substantially below DSGD (0.595). Additionally, BEER and D2 do not have similar performance (0.294 vs 0.651).",
+      "note": "The outputs show DSGD substantially outperforming BEER in testing accuracy, contradicting the claim. D2 does outperform both CHOCO-SGD and DSGD, but BEER does not outperform DSGD. The claim of BEER and D2 having 'very similar performance' is also strongly contradicted (gap of ~0.36).",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In terms of the final training gradient norm, BEER converges to a solution comparable to D2, while CHOCO-SGD and DSGD cannot converge; thus BEER and D2 achieve a lower training gradient norm than CHOCO-SGD and DSGD.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/exp_002_mnist_comparison/metrics.json (final round 35 values): BEER=0.878473, D2=0.554954, CHOCO-SGD=0.919981, DSGD=0.790515. Constraints checked (lower_is_better): (1) BEER > CHOCO-SGD: TRUE (0.878 < 0.920); (2) BEER > DSGD: FALSE (0.878 > 0.791 — DSGD has lower gradient norm than BEER); (3) D2 > CHOCO-SGD: TRUE (0.555 < 0.920); (4) D2 > DSGD: TRUE (0.555 < 0.791). The required constraint BEER > DSGD fails: DSGD converges to a lower gradient norm than BEER in these run outputs.",
+      "note": "The claim states DSGD \"cannot converge\" while BEER does, but the run outputs show DSGD achieves a final gradient norm of ~0.79, which is lower (better) than BEER's ~0.88. Only 3 of 4 required ranking constraints are satisfied.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "BEER converges to a solution comparable to D2 in terms of final training gradient norm, but at a lower communication cost.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_mnist_comparison/metrics.json: At round 35 (final round), BEER communication_bits = 748,274,800 and D2 communication_bits = 570,080,000. Since lower_is_better, BEER > D2 requires BEER's value to be smaller than D2's. Instead BEER uses ~31% MORE bits than D2 (748M vs 570M). The ranking constraint BEER > D2 (BEER beats D2 in communication efficiency) is NOT satisfied.",
+      "note": "The per-round communication cost of BEER is uniformly higher than D2 across all 35 rounds (BEER=21,379,280 bits/round vs D2=16,288,000 bits/round), consistent with the final values. D2 has lower total communication bits at every checkpoint.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "BEER achieves similar training gradient norm and testing accuracy across the ring, star, grid, and Erdős-Rényi network topologies on the unshuffled a9a dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The experiment exp_003_a9a_topology only has a single run output covering one topology: \"er\" (Erdős-Rényi p=0.5). The metrics.json and run.log both confirm topology=er, spectral_gap=0.542, with 35 rounds of BEER on the a9a dataset. No run outputs exist for ring, star, grid, or ER p=0.2 topologies. The resolved_config.json confirms only \"topology\": \"er\" and \"methods\": [\"BEER\"]. Searched all files under ./results/formal/exp_003_a9a_topology/ — only 5 files (metrics.json, resolved_config.json, resource.json, run.log, and figures). No other result directories or subdirectories contain multi-topology outputs for this experiment. The claim requires evidence across at least ring, star, grid, ER p=0.5, and ER p=0.2 — but outputs for 4 of 5 topologies are missing entirely.",
+      "note": "The claim is about BEER showing similar performance across multiple topologies (Figure 3, §5.2). Only the ER p=0.5 topology was actually run; the other four topologies (ring, star, grid, ER p=0.2) have no run outputs in this repository. This is verdict=0 case (a): no relevant run output for most required sub-cases.",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "BEER with gsgd5 and BEER with top10 converge to a lower training gradient norm than BEER without compression on the unshuffled a9a dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The only run output for exp4_compression_a9a is results/formal/exp_004_a9a_compression/metrics.json, which contains exactly one method: \"BEER\" (using top compressor, param=10 per resolved_config.json). No separate entries exist for \"BEER (no compression)\", \"BEER (gsgd5)\", or \"BEER (top10)\" as distinct methods. The single BEER run shows gradient_norm values starting at 0.23599 and ending at 0.09080 (min 0.05884 at round 34). All other experiment metrics files (exp_001, exp_002, exp_003, exp_005) also do not contain a multi-compression-variant comparison on a9a. No CSV, NPY, or other result files containing these three variants were found anywhere in the results/ directory.",
+      "note": "The resolved config shows the experiment ran only a single compressor (top-10) variant of BEER; the no-compression and gsgd5 variants were never run or their outputs were never saved. Without run outputs for all three methods, the required ranking cannot be verified.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "BEER with gsgd5 and BEER with top10 converge to a higher testing accuracy than BEER without compression on the unshuffled a9a dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The only run output for exp4_compression_a9a is results/formal/exp_004_a9a_compression/metrics.json and run.log. This file contains a single method key \"BEER\" (configured with compressor=top, compression_param=10 per resolved_config.json). There are no entries for \"BEER (no compression)\" or \"BEER (gsgd5)\" — only one run variant exists. The CLAIM_RESULTS.json explicitly acknowledges: \"a complete same-bit sweep across all Figure 4 operators is not asserted\" and \"only one formal compressor setting was verified.\" Without run outputs for all three methods required by the ranking claim, the pairwise comparisons BEER(gsgd5) > BEER(no compression) and BEER(top10) > BEER(no compression) cannot be verified from run outputs.",
+      "note": "The single run output that exists (BEER with top-10) records a final test accuracy of ~0.7648 at round 35, but there is no corresponding \"no compression\" run to compare against, and no gsgd5 run at all.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "BEER with gsgd5 converges faster than BEER without compression on a9a in terms of communication rounds.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all results under results/formal/ for run outputs relevant to exp4_compression_a9a. The only relevant output is results/formal/exp_004_a9a_compression/metrics.json, which contains a single method \"BEER\" (using top-10 compression, 35 rounds, 590800 bits). There is no \"BEER (gsgd5)\" method and no \"BEER (no compression)\" method recorded in any run output. Additionally searched for \"gsgd5\", \"gsgd_5\", \"no_compress\", \"identity\" across all results directories — only results/formal/exp_005_mnist_heterogeneity uses identity compressor but on MNIST, not a9a. No output file contains communication_rounds data for both BEER (gsgd5) and BEER (no compression) on a9a. The CLAIM_RESULTS.json confirms exp_004 status as \"partially_reproduced\" with observation limited to a single top-k run.",
+      "note": "The claim requires a head-to-head ranking comparison on communication_rounds between BEER (gsgd5) and BEER (no compression) on a9a. Neither method appears by those names in any run output, and no multi-method compression comparison run was found for a9a.",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "BEER with top10 converges slower than BEER without compression on a9a in terms of communication rounds.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The only relevant output is results/formal/exp_004_a9a_compression/metrics.json and run.log. Both files contain data for a single method labeled \"BEER\" (configured with compressor=top, compression_param=10), running for 35 rounds on a9a. There is no separate \"BEER (no compression)\" run output anywhere in the repository. The resolved_config.json confirms only [\"BEER\"] is listed under methods. No output for a no-compression variant exists across any of the 5 experiment directories. A ranking comparison between \"BEER (no compression)\" and \"BEER (top10)\" is therefore impossible from the available run outputs.",
+      "note": "The exp_004 run appears to be only the compressed (top-10) variant; a matching no-compression run was never executed or its output was never saved.",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "BEER with gsgd5 reaches the highest final testing accuracy among the compression schemes (no compression, gsgd5, top10) on a9a.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all files under ./results/. The only relevant output is results/formal/exp_004_a9a_compression/metrics.json and run.log. Both contain results for a single method labeled \"BEER\" with one compressor configuration (\"top\", param=10). There are no separate entries for 'BEER (no compression)', 'BEER (gsgd5)', or 'BEER (top10)'. The resolved_config.json confirms only one method was run: \"methods\": [\"BEER\"]. A grep across all results/ for \"gsgd5\", \"top10\", or \"no compression\" returned no matches in any exp_004 output. Without per-variant final testing accuracy values, the required ranking comparison cannot be verified.",
+      "note": "The exp_004 run appears to have executed only one compression configuration rather than the three variants needed for the ranking claim. Verdict is 0 case (a): no run outputs with the required per-method breakdown exist.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "BEER with gsgd5 and BEER without compression behave similarly in terms of communication rounds on a9a.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The only compression-related experiment output is results/formal/exp_004_a9a_compression/metrics.json and run.log. It contains a single method \"BEER\" using top-10 compression (compressor=\"top\", compression_param=10) for 35 rounds on a9a. There is no \"BEER with gsgd5\" variant and no \"BEER without compression\" (identity compressor) variant present in any run output. All five experiment metrics.json files were checked (exp_001 through exp_005); none contain a method labeled with gsgd5 or a no-compression BEER variant on a9a. The claim requires a comparison between two BEER variants (gsgd5 vs. no compression) showing similar convergence in communication rounds, but the necessary run outputs for both variants are absent.",
+      "note": "The exp_004_a9a_compression config names \"top\" as the compressor, not \"gsgd\". There are no run outputs with gsgd5 on a9a at all. The CLAIMS.json does reference gsgd compression in descriptions, but those are source-code-level observations, not run output evidence.",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "BEER outperforms CHOCO-SGD in terms of testing gradient norm.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_mnist_comparison/metrics.json contains gradient_norm time series for both methods on MNIST (unshuffled, ring topology, gsgd compression). Final values (round 35): BEER=0.8785, CHOCO-SGD=0.9200. Minimum values: BEER=0.8191, CHOCO-SGD=0.8697. Last-3-round averages: BEER=0.8668, CHOCO-SGD=0.9123. Since lower_is_better, BEER < CHOCO-SGD at every comparison point, confirming BEER > CHOCO-SGD in the required ranking.",
+      "note": "exp_005_mnist_heterogeneity does not include CHOCO-SGD (only BEER and DSGD). The relevant experiment for the BEER vs CHOCO-SGD comparison on MNIST is exp_002_mnist_comparison, which matches the paper's Figure 5 context (CNN on MNIST with compression).",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "BEER outperforms CHOCO-SGD in terms of testing accuracy.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_mnist_comparison/metrics.json contains testing accuracy for both methods on MNIST (CNN, ring topology, unshuffled MNIST). Final round (round 35) test_accuracy: BEER = 0.294, CHOCO-SGD = 0.1818. BEER > CHOCO-SGD holds throughout all 35 rounds. The resolved_config.json confirms this experiment uses MNIST with methods ['BEER', 'CHOCO-SGD', 'DSGD', 'D2']. No exp_005 output includes CHOCO-SGD; exp_002 is the relevant MNIST comparison run.",
+      "note": "The experiment folder is named exp_002_mnist_comparison rather than exp5_cnn_mnist, but it matches the paper's Section 5.3/Figure 5 context: CNN on MNIST, comparing BEER vs CHOCO-SGD. The exp_005 folder (mnist_heterogeneity) only contains BEER and DSGD.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Both BEER and CHOCO-SGD converge fast initially, but their convergence speeds significantly degenerate after a short time due to extreme data heterogeneity.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The experiment exp_005_mnist_heterogeneity (results/formal/exp_005_mnist_heterogeneity/metrics.json and run.log) contains only BEER and DSGD — CHOCO-SGD is entirely absent. For BEER, test accuracy increases nearly linearly from 0.1277 (round 1) to 0.3594 (round 35) with gradient norm declining slowly from ~1.14 to ~0.83, showing no distinct \"fast initial\" phase followed by degeneration. The exp_002_mnist_comparison experiment contains CHOCO-SGD, but its test accuracy is nearly flat (0.102 → ~0.137 over 20 rounds, gradient_norm ~1.15→~1.00), again showing no fast-then-slow pattern. Neither experiment provides data supporting the claim that BEER and CHOCO-SGD both converge fast initially and then significantly degenerate due to data heterogeneity.",
+      "note": "CHOCO-SGD is not run in the exp5 experiment at all. The claim's scope refers to \"Convergence behavior of BEER and CHOCO-SGD on unshuffled MNIST CNN\" but the run outputs for the heterogeneity experiment (exp_005) only include BEER (and DSGD). Furthermore, the actual convergence curves for both BEER (in exp_005) and CHOCO-SGD (in exp_002) show uniformly slow progress throughout, not fast initial convergence followed by degeneration.",
+      "error": false
+    },
+    {
+      "id": "res-018",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "BEER keeps improving the objective when CHOCO-SGD hits its error floor.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Run output file: results/formal/exp_002_mnist_comparison/metrics.json (MNIST CNN comparison with BEER and CHOCO-SGD). The objective values show the opposite pattern from what the claim asserts. BEER objective: starts at 0.792, drops to ~0.20 by round 9, then oscillates/stagnates (round 18: 0.2157, round 35: 0.2292, slope ≈ +0.00079/round in second half). CHOCO-SGD objective: starts at 2.681, drops steadily to 0.148 by round 10, continues decreasing to 0.099 at round 35 (round 18: 0.1223, slope ≈ -0.00135/round in second half). CHOCO-SGD's objective is actively improving in the later rounds while BEER's objective has plateaued and is slightly worsening. The claim that \"BEER continues to improve the objective while CHOCO-SGD plateaus\" is not supported; the data shows the reverse — CHOCO-SGD keeps decreasing while BEER stagnates in terms of training objective.",
+      "note": "No dedicated exp5_cnn_mnist run output directory exists; exp_002_mnist_comparison is the MNIST comparison run that includes BEER and CHOCO-SGD. The exp_005_mnist_heterogeneity run only contains BEER and DSGD (no CHOCO-SGD). The accuracy metric does show BEER improving more than CHOCO in later rounds (BEER: +10.4pp vs CHOCO: +3.5pp in last third), but the training objective — which is the standard measure of \"improving the objective\" — contradicts the claim.",
+      "error": false
+    }
+  ]
+}

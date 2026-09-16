@@ -1,0 +1,658 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "1811.03761",
+    "title": "RSA: Byzantine-Robust Stochastic Aggregation Methods for Distributed Learning from Heterogeneous Datasets",
+    "sha256": "53fc621eff8ec566e876f9c50caeffe95fd55d91a8b1bcaba570716766f1a48b"
+  },
+  "algorithm": {
+    "name": "RSA (l1, l2 and linfinity norm variants)",
+    "citations": [
+      "PDF p.3 Eq.(5): unsquared l1 distance penalty added to each regular local objective.",
+      "PDF p.3 Eqs.(7),(8): local stochastic gradient plus signed penalty; master regularizer plus summed signs of regular and Byzantine model messages.",
+      "PDF p.4 Algorithm 2: master broadcasts x0^k, workers send xi^k, then both update; all right-hand sides use iteration k states.",
+      "PDF p.4 Eqs.(9)-(11) and Proposition 1: general lp norm penalty and subgradient characterized by inner product equality and dual norm bound.",
+      "PDF pp.4-5 Assumptions 1-3: strong convexity, Lipschitz gradients, independent-in-time local sampling and bounded variance; heterogeneous distributions across workers allowed.",
+      "PDF p.5 Theorem 1: consensus optimum requires lambda >= max_i ||gradient E F(x_tilde_star,xi_i)||_b; short trajectories do not assert this condition."
+    ],
+    "core_mechanisms": [
+      "independent_local_states_and_heterogeneous_gradients",
+      "synchronous_old_state_updates",
+      "sum_model_penalties_with_master_regularizer",
+      "l1_signed_penalty_and_bounded_attack",
+      "l2_unit_norm_subgradient",
+      "linf_max_coordinate_subgradient"
+    ],
+    "assumptions": [
+      "All oracle functions are deterministic strongly convex quadratic losses with identity Hessian; stochastic variance is zero and worker centers differ.",
+      "All updates are simultaneous from a shared old-state snapshot. The master receives current local models, not gradients, and does not identify or remove Byzantine senders.",
+      "lambda is positive. Step sizes are explicit finite-probe inputs; no convergence claim is made for these short schedules.",
+      "The p=infinity parameter is JSON string infinity as a configuration value; all expected values are numeric. A variant missing from an implementation should be reported unsupported, not silently replaced by another p.",
+      "No l1 coordinate difference is zero, no l2 difference vector is zero, and every infinity-norm difference has a unique maximum absolute coordinate. Thus no arbitrary subgradient choice affects expected results.",
+      "Paper Algorithm 2 does not define a generic stopping condition or API return shape; here the prescribed final master iterate is the observable output, consistent with p.5 evaluation using x0."
+    ]
+  },
+  "cases": [
+    {
+      "id": "rsa_l1_sign_crossing_byzantine",
+      "purpose": "Nonzero heterogeneous states, active l1 penalty, sign reversal after first step, master regularizer, saturated Byzantine influence and summed old-model aggregation.",
+      "covers": [
+        "independent_local_states_and_heterogeneous_gradients",
+        "synchronous_old_state_updates",
+        "sum_model_penalties_with_master_regularizer",
+        "l1_signed_penalty_and_bounded_attack"
+      ],
+      "inputs": {
+        "initial_master": [
+          1,
+          -1
+        ],
+        "initial_regular_workers": [
+          [
+            1.2,
+            -0.8
+          ],
+          [
+            -2,
+            2
+          ]
+        ],
+        "regular_worker_quadratic_centers": [
+          [
+            -2,
+            -3
+          ],
+          [
+            3,
+            -1
+          ]
+        ],
+        "master_quadratic_center": [
+          0,
+          0
+        ],
+        "byzantine_messages_by_step": [
+          [
+            [
+              100,
+              -100
+            ]
+          ],
+          [
+            [
+              1000000000,
+              -1000000000
+            ]
+          ],
+          [
+            [
+              100,
+              -100
+            ]
+          ]
+        ]
+      },
+      "parameters": {
+        "p": 1,
+        "lambda": 0.5,
+        "step_sizes": [
+          0.25,
+          0.125,
+          0.1
+        ]
+      },
+      "atol": 1e-09,
+      "rtol": 1e-07,
+      "observation_schema": [
+        {
+          "step": 0,
+          "name": "master",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 0,
+          "name": "regular_workers",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "worker_loss_gradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "worker_penalty_subgradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "byzantine_master_subgradients_before_update",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "master_penalty_subgradient_sum_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "master_regularizer_gradient_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "regular_workers",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "master",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "worker_loss_gradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "worker_penalty_subgradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "byzantine_master_subgradients_before_update",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "master_penalty_subgradient_sum_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "master_regularizer_gradient_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "regular_workers",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "master",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "worker_loss_gradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "worker_penalty_subgradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "byzantine_master_subgradients_before_update",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "master_penalty_subgradient_sum_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "master_regularizer_gradient_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "regular_workers",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 3,
+          "name": "master",
+          "shape": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rsa_l2_vector_normalization",
+      "purpose": "Distinguish the unsquared Euclidean norm subgradient from elementwise signs, squared norm gradients, clipping and mean aggregation.",
+      "covers": [
+        "independent_local_states_and_heterogeneous_gradients",
+        "synchronous_old_state_updates",
+        "sum_model_penalties_with_master_regularizer",
+        "l2_unit_norm_subgradient"
+      ],
+      "inputs": {
+        "initial_master": [
+          1,
+          -1
+        ],
+        "initial_regular_workers": [
+          [
+            4,
+            3
+          ],
+          [
+            -3,
+            2
+          ]
+        ],
+        "regular_worker_quadratic_centers": [
+          [
+            -1,
+            1
+          ],
+          [
+            2,
+            -2
+          ]
+        ],
+        "master_quadratic_center": [
+          0,
+          0
+        ],
+        "byzantine_messages_by_step": [
+          [
+            [
+              7,
+              -9
+            ]
+          ],
+          [
+            [
+              7,
+              -9
+            ]
+          ]
+        ]
+      },
+      "parameters": {
+        "p": 2,
+        "lambda": 0.5,
+        "step_sizes": [
+          0.2,
+          0.1
+        ]
+      },
+      "atol": 1e-09,
+      "rtol": 1e-07,
+      "observation_schema": [
+        {
+          "step": 0,
+          "name": "master",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 0,
+          "name": "regular_workers",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "worker_loss_gradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "worker_penalty_subgradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "byzantine_master_subgradients_before_update",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "master_penalty_subgradient_sum_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "master_regularizer_gradient_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "regular_workers",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "master",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "worker_loss_gradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "worker_penalty_subgradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "byzantine_master_subgradients_before_update",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "master_penalty_subgradient_sum_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "master_regularizer_gradient_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "regular_workers",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "master",
+          "shape": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rsa_linf_unique_maximum",
+      "purpose": "Check the general-p variant: infinity-norm subgradient uses the signed uniquely largest absolute coordinate, with all other coordinates zero.",
+      "covers": [
+        "independent_local_states_and_heterogeneous_gradients",
+        "synchronous_old_state_updates",
+        "sum_model_penalties_with_master_regularizer",
+        "linf_max_coordinate_subgradient"
+      ],
+      "inputs": {
+        "initial_master": [
+          1,
+          -1
+        ],
+        "initial_regular_workers": [
+          [
+            4,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "regular_worker_quadratic_centers": [
+          [
+            -1,
+            2
+          ],
+          [
+            3,
+            -1
+          ]
+        ],
+        "master_quadratic_center": [
+          0,
+          0
+        ],
+        "byzantine_messages_by_step": [
+          [
+            [
+              11,
+              1
+            ]
+          ],
+          [
+            [
+              11,
+              1
+            ]
+          ]
+        ]
+      },
+      "parameters": {
+        "p": "infinity",
+        "lambda": 0.5,
+        "step_sizes": [
+          0.2,
+          0.1
+        ]
+      },
+      "atol": 1e-09,
+      "rtol": 1e-07,
+      "observation_schema": [
+        {
+          "step": 0,
+          "name": "master",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 0,
+          "name": "regular_workers",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "worker_loss_gradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "worker_penalty_subgradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "byzantine_master_subgradients_before_update",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "master_penalty_subgradient_sum_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "master_regularizer_gradient_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "regular_workers",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "master",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "worker_loss_gradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "worker_penalty_subgradients_before_update",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "byzantine_master_subgradients_before_update",
+          "shape": [
+            1,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "master_penalty_subgradient_sum_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "master_regularizer_gradient_before_update",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "regular_workers",
+          "shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "step": 2,
+          "name": "master",
+          "shape": [
+            2
+          ]
+        }
+      ]
+    }
+  ]
+}

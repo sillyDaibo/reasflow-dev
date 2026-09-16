@@ -1,0 +1,74 @@
+{
+  "paper_id": "2503.07594",
+  "evaluated_at": "2026-09-05T00:12:20.796207+00:00",
+  "summary": {
+    "total_score": 0.8571,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.8571,
+    "total_rubrics": 4,
+    "passed": 3,
+    "failed": 1,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": true
+  },
+  "by_priority": {
+    "primary": {
+      "score": 1.0,
+      "passed": 3,
+      "total": 3
+    },
+    "secondary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 1
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "SCAFFOLD consistently outperforms FEDAVG in terms of MSE across all numbers of clients N ∈ {10, 100, 1000, 10000} and both linear and logistic regression.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure1/summary.csv, final communication round (50) mean_mse values:\nLINEAR: N=10: SCAFFOLD=104.20 vs FEDAVG=175.99; N=100: SCAFFOLD=2.83 vs FEDAVG=5.03; N=1000: SCAFFOLD=0.611 vs FEDAVG=1.353; N=10000: SCAFFOLD=0.054 vs FEDAVG=0.135.\nLOGISTIC: N=10: SCAFFOLD=0.01793 vs FEDAVG=0.2673; N=100: SCAFFOLD=0.000597 vs FEDAVG=0.06165; N=1000: SCAFFOLD=0.000163 vs FEDAVG=0.02276; N=10000: SCAFFOLD=0.000134 vs FEDAVG=0.01413.\nSCAFFOLD strictly outperforms FEDAVG (lower MSE) in all 8 cases (4 N values × 2 problem types).",
+      "note": "Final MSE taken at round 50 (the last recorded round) for each configuration. All comparisons are consistent across all seeds (3 seeds per config, mean reported).",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In linear regression, as the number of clients increases, the stationary MSE of SCAFFOLD decreases, with N=10000 achieving lower error than N=1000, N=1000 lower than N=100, and N=100 lower than N=10.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/figure1/summary.csv — SCAFFOLD final MSE (communication_round=50) on linear regression: N=10: 104.199, N=100: 2.827, N=1000: 0.611, N=10000: 0.054. All three required ordering constraints hold: 0.054 < 0.611 < 2.827 < 104.199 (lower is better).",
+      "note": "Stationary MSE taken as the value at the last recorded round (round 50) for each N. The monotone decrease with increasing N is clear and unambiguous across all four client counts.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In logistic regression, as the number of clients increases from 10 to 1000, the stationary MSE of SCAFFOLD decreases, with N=1000 lower than N=100 and N=100 lower than N=10.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure1/summary.csv, logistic/scaffold, round 50 (stationary): N=10 MSE=0.017931, N=100 MSE=0.000597, N=1000 MSE=0.000163. Ordering: N=1000 (0.000163) < N=100 (0.000597) < N=10 (0.017931) — both constraints SCAFFOLD(N=1000) > SCAFFOLD(N=100) and SCAFFOLD(N=100) > SCAFFOLD(N=10) are satisfied under lower_is_better.",
+      "note": "The avg of last 5 rounds tells the same story: N=10=0.02166, N=100=0.000561, N=1000=0.000164, confirming monotone decrease in stationary MSE as N increases.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In logistic regression, there is no improvement in stationary MSE from N=1000 to N=10000.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/figure1/plot_data/logistic_N1000_scaffold.csv and logistic_N10000_scaffold.csv (confirmed by summary.csv): SCAFFOLD logistic regression stationary MSE (average of last 10 rounds across 3 seeds) is ~1.570e-4 for N=1000 and ~1.270e-4 for N=10000. summary.csv last-round mean_mse: N=1000 = 1.630e-4, N=10000 = 1.342e-4. The predicate stationary_mse(N=10000) >= stationary_mse(N=1000) is FALSE: N=10000 achieves a clearly lower MSE (~19% lower), meaning there IS improvement from N=1000 to N=10000 in logistic regression, contradicting the claim.",
+      "note": "The claim states no improvement from N=1000 to N=10000 in logistic regression (SCAFFOLD), but both the per-seed CSV files and the aggregate summary.csv show N=10000 consistently achieves lower stationary MSE (~1.27–1.34e-4) compared to N=1000 (~1.57–1.63e-4). This is counter to the paper's claim about logistic regression showing no linear speedup in the stationary regime.",
+      "error": false
+    }
+  ]
+}

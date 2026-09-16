@@ -1,0 +1,91 @@
+{
+  "paper_id": "2212.02387",
+  "evaluated_at": "2026-09-04T08:50:05.522264+00:00",
+  "summary": {
+    "total_score": 0.0,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.0,
+    "total_rubrics": 6,
+    "passed": 0,
+    "failed": 6,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 6
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On a9a, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of SFO calls.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/full_comparison_40epoch/series/a9a_*.csv (seed=0, lower_is_better):\n- DREAM: min primal_value = 14.99829 at SFO=85,987,296 (barely changes from initial 15.00112)\n- DM-HSGD: min primal_value = 14.70781 at SFO=5,208,064\n- GT-DA: min primal_value = 14.92008 at SFO=165,600,160\n- GT-GDA: min primal_value = 14.69865 at SFO=165,600,160\n- GT-SRVR: min primal_value = 14.69852 at SFO=7,730,944\n\nDREAM's primal value (14.998) is far HIGHER (worse) than all four baselines at any comparable SFO count. All four required pairwise rankings (DREAM > DM-HSGD, DREAM > GT-DA, DREAM > GT-GDA, DREAM > GT-SRVR in lower_is_better sense) are violated: DREAM is worse than all baselines, not better.",
+      "note": "The run outputs clearly contradict the claim. DREAM's primal value barely decreases from the initial value (~15.001) throughout the entire run, whereas all baselines converge to substantially lower values. This may indicate a misconfigured or failed DREAM run in the experiment outputs, but the raw run data does not support the claim.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On w8a, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of SFO calls.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Run outputs from results/formal/full_comparison_40epoch/series/w8a_*.csv and results/formal/full_comparison_40epoch/aggregate_metrics.csv show the opposite ranking on w8a. Since lower primal value is better, DREAM (final mean primal_value_normalized=0.002301561 at 200M SFO) is WORSE than all four baselines: DM-HSGD=0.002250122 at 7.9M SFO, GT-DA=0.002286396 at 386M SFO, GT-GDA=0.002240266 at 386M SFO, GT-SRVR=0.002240115 at 14.7M SFO. Comparing the curves at any common SFO point also shows DREAM consistently achieves higher (worse) primal values: e.g. at SFO≈9.5M, DREAM is at pv=114.5016 while DM-HSGD is already at 113.3 and GT-SRVR at 112.6. All four required pairwise constraints (DREAM > DM-HSGD, DREAM > GT-DA, DREAM > GT-GDA, DREAM > GT-SRVR) are violated. The repository's own CLAIM_RESULTS.json (claim C3) acknowledges this discrepancy, noting 'exact-gradient baselines often reach a lower final primal value, so the paper's blanket superiority wording is not reproduced on every metric.'",
+      "note": "The run outputs show DREAM uses far more SFO calls per iteration (due to nested optimization), making it strictly worse in the SFO vs. primal value comparison on w8a. The original paper's Figure 1(b) may use different hyperparameters or a different SFO counting convention. This reproduction uses common defaults and counts SFOs explicitly.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On ijcnn1, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of SFO calls.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Series CSVs found at results/formal/full_comparison_40epoch/series/ijcnn1_*.csv (40-epoch full run, used for Figure 1). Comparing normalized primal_value (col 7, lower=better) at equal SFO budgets across methods:\n\nAt SFO ≤ 8M: DREAM=1.1689e-4, DM-HSGD=1.1500e-4, GT-DA=1.1689e-4, GT-GDA=1.1689e-4, GT-SRVR=1.1514e-4.\nAt SFO ≤ 100M: DREAM=1.1688e-4, DM-HSGD=1.1499e-4, GT-DA=1.1663e-4, GT-GDA=1.1586e-4, GT-SRVR=1.1490e-4.\n\nIn all cases DM-HSGD, GT-GDA, and GT-SRVR have lower (better) primal values than DREAM. GT-DA matches or trails DREAM only at intermediate SFO values but ultimately reaches 1.1663e-4 vs DREAM's 1.1688e-4, still lower than DREAM. DREAM is the worst-performing method on ijcnn1 in terms of primal value at any given SFO budget — the exact opposite of the claimed ranking.",
+      "note": "The run outputs are from the 40-epoch full comparison run (full_comparison_40epoch). There is also a 5-epoch comparison run with matching structure. The primal_value metric (both raw and normalized) consistently shows DREAM performing worse than the other methods on ijcnn1 across all tested SFO thresholds. None of the 4 required ordering constraints (DREAM > DM-HSGD, DREAM > GT-DA, DREAM > GT-GDA, DREAM > GT-SRVR) hold.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On a9a, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of communication rounds.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Checked results/formal/full_comparison_40epoch/series/a9a_*.csv. At ~7200 communication rounds: DREAM=14.9998, DM-HSGD=14.7873, GT-DA=14.9427, GT-GDA=14.7836, GT-SRVR=14.7833. At max shared coverage (~10172 rounds): DREAM=14.9996, DM-HSGD=14.7134, GT-DA=14.9201, GT-GDA=14.6986, GT-SRVR=14.6987. Since lower_is_better, DREAM has a HIGHER (worse) primal value than all four baselines at every comparable communication round. None of the four required rankings (DREAM > DM-HSGD, DREAM > GT-DA, DREAM > GT-GDA, DREAM > GT-SRVR meaning DREAM's metric is smaller) are satisfied.",
+      "note": "The run outputs correspond to exp full_comparison_40epoch which is the primary experiment output. The claim in the paper (Figure 2a) that DREAM outperforms these baselines is contradicted by the actual run outputs, where DREAM converges more slowly to a lower primal value (its primal value is higher/worse at the same communication round counts).",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On w8a, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of communication rounds.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Run outputs in results/formal/full_comparison_40epoch/series/w8a_*.csv and results/formal/full_comparison_40epoch/aggregate_metrics.csv directly contradict the claim. At the final communication budget, the aggregate primal_value_normalized (lower=better) is: DREAM=0.002301561, DM-HSGD=0.002250122, GT-DA=0.002286396, GT-GDA=0.002240266, GT-SRVR=0.002240115. DREAM has the HIGHEST (worst) value; all four baselines achieve lower (better) primal values. At intermediate communication budgets (e.g., comm~14000): DREAM=114.496, DM-HSGD=112.299, GT-DA=113.830, GT-GDA=111.817, GT-SRVR=111.810 — again DREAM is worst. None of the four required ranking constraints (DREAM > DM-HSGD, DREAM > GT-DA, DREAM > GT-GDA, DREAM > GT-SRVR in the lower_is_better sense) hold.",
+      "note": "The run outputs exist and are well-populated (3 seeds, full epoch range). The failure is not missing data — the measured values simply show DREAM performing worst on w8a in terms of communication efficiency, opposite to the paper's claimed Figure 2(b) ranking. This may reflect a hyperparameter mismatch or implementation issue in the reproduction.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "On ijcnn1, DREAM outperforms DM-HSGD, GT-DA, GT-GDA, and GT-SRVR in terms of the primal function value P(¯x) achieved at a given number of communication rounds.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/full_comparison_40epoch/series/ijcnn1_*.csv at the maximum common communication round (~10936): DREAM=4.0910, DM-HSGD=4.0238, GT-DA=4.0737, GT-GDA=4.0214, GT-SRVR=4.0214. Since lower_is_better, DREAM has the HIGHEST (worst) primal value among all five methods — it does NOT outperform any of them. All four required pairwise constraints (DREAM < DM-HSGD, DREAM < GT-DA, DREAM < GT-GDA, DREAM < GT-SRVR) are violated.",
+      "note": "The run outputs are from results/formal/full_comparison_40epoch/, which is the most complete run (40 epochs). The claim from Figure 2(c) is not supported by the actual run outputs in this repository.",
+      "error": false
+    }
+  ]
+}

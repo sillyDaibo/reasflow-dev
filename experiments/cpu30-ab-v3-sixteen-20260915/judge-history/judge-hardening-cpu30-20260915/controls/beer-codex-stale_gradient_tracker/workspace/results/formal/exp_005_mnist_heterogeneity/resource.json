@@ -1,0 +1,6 @@
+{
+  "platform": "Linux-5.15.0-186-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "cpu_count": 16,
+  "elapsed_seconds": 4.878462314605713
+}

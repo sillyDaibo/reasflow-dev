@@ -1,0 +1,10 @@
+{
+  "experiment": "importance",
+  "dataset": "a1a",
+  "epochs": 100,
+  "seed": 42,
+  "batch_size": 1,
+  "reference_iterations": 4000,
+  "regularizer": "elastic_net",
+  "sampling": "ni = ceil(Li / mean(Li))"
+}

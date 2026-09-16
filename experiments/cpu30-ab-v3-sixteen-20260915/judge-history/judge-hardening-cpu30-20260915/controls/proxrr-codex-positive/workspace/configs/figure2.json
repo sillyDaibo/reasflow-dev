@@ -1,0 +1,11 @@
+{
+  "experiment": "figure2",
+  "dataset": "mushrooms",
+  "clients": 8,
+  "rounds": 140,
+  "seed": 42,
+  "local_batch_size": 8,
+  "local_budgets": ["full_pass", "one_fifth_pass"],
+  "reference_iterations": 4000,
+  "step_size": "1 / batch_smoothness(batch_size=1)"
+}

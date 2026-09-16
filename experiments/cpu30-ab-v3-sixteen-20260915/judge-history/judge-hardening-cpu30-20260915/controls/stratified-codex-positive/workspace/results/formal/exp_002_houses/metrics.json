@@ -1,0 +1,36 @@
+{
+  "bins": [
+    50,
+    50
+  ],
+  "common": {
+    "iterations": 35,
+    "parameter_count": 10,
+    "rmse_test": 0.31564785377190935
+  },
+  "dataset": "King County house sales",
+  "paper_reference": {
+    "random_forest_rmse": 0.184,
+    "stratified_rmse": 0.181
+  },
+  "random_forest": {
+    "parameter_count": 1000014,
+    "rmse_test": 0.1831515290974022,
+    "trees": 50
+  },
+  "separate": {
+    "iterations": 180,
+    "parameter_count": 25000,
+    "rmse_test": 1.5378504437986242
+  },
+  "stratified": {
+    "iterations": 180,
+    "parameter_count": 25000,
+    "rmse_test": 0.1812669509719404,
+    "rmse_train": 0.14962706273664972
+  },
+  "test_records": 5399,
+  "train_records": 16197,
+  "wall_time_seconds": 13.697618457954377,
+  "resource": {"cpu_count_visible": 16, "python": "3.10", "platform": "Linux CPU"}
+}

@@ -1,0 +1,752 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2501.09516",
+    "title": "Proximal Quasi-Newton Method for Composite Optimization over the Stiefel Manifold",
+    "sha256": "760d1ac9d4201cf630b174585acf192612eacd60ac39c4a0eb3155c89d62d0cc"
+  },
+  "algorithm": {
+    "name": "ManPQN Algorithm 1 with diagonal damped LBFGS, memory one",
+    "citations": [
+      "PDF p.4 Eqs. (2.1)-(2.2)",
+      "PDF pp.6-7 Eqs. (3.1)-(3.4) and Algorithm 1",
+      "PDF pp.8-9 Eqs. (3.6)-(3.10)",
+      "PDF p.21 SVD retraction choice"
+    ],
+    "core_mechanisms": [
+      "tangent-proximal-subproblem",
+      "diagonal-damped-lbfgs",
+      "polar-retraction",
+      "nonmonotone-armijo"
+    ],
+    "assumptions": [
+      "Use St(2,1), exact tangent subproblem solve and memory p=1; this is the smallest nontrivial curved Stiefel case with nonsmooth h and anisotropic diagonal curvature.",
+      "Algorithm 1 requires identity only on initial k=0; every later curvature is independently updated, and no fixed identity surrogate is substituted.",
+      "Only the prescribed finite iterates are tested, not semismooth-Newton inner iteration details, r>1 matrix-column interactions or global/local convergence rates.",
+      "This is an explicitly requested exact-inner-solve specialization. The paper defines V by argmin but its numerical procedure uses ASSN and a maximum of 100 inner iterations (pp.10-11 and pp.20-21), without a complete uniquely specified inner accuracy policy in the supplied text. A valid implementation using a permitted inexact inner solve can therefore return a different trajectory; mismatch against this exact-direction contract alone must not be labeled a general ManPQN algorithm error.",
+      "Use the practical Euclidean secant and diagonal approximation Eqs. (3.6)-(3.10), not the vector-transported theoretical formula (3.5)."
+    ]
+  },
+  "cases": [
+    {
+      "id": "quadratic_l1",
+      "purpose": "Three complete ManPQN iterations with an active l1 proximal tangent solve, diagonal damped BFGS curvature, polar retraction, and nonmonotone Armijo backtracking.",
+      "covers": [
+        "tangent-proximal-subproblem",
+        "diagonal-damped-lbfgs",
+        "polar-retraction",
+        "nonmonotone-armijo"
+      ],
+      "inputs": {
+        "manifold": "St(2,1), embedded Euclidean metric",
+        "X0": [
+          [
+            0.6
+          ],
+          [
+            0.8
+          ]
+        ],
+        "Q": [
+          [
+            12,
+            1.5
+          ],
+          [
+            1.5,
+            3
+          ]
+        ],
+        "linear_c": [
+          0,
+          0
+        ],
+        "mu": 0.2,
+        "smooth_objective": "f(X)=0.5*X^T Q X + c^T X",
+        "nonsmooth_objective": "h(X)=mu*(abs(X_1)+abs(X_2))",
+        "randomness": "none"
+      },
+      "parameters": {
+        "iterations": 3,
+        "memory_p": 1,
+        "delta": 1.0,
+        "sigma": 0.5,
+        "gamma": 0.5,
+        "nonmonotone_m": 1,
+        "B0": "identity as required by Algorithm 1",
+        "curvature_initialization_each_k_ge_1": "B_k,0=delta*I, retain exactly the most recent pair",
+        "curvature_pairs": "s=X_k-X_(k-1); y=grad f(X_k)-grad f(X_(k-1)) using Riemannian smooth gradients, Eqs. (2.1),(2.2)",
+        "metric": "Use diag(B_k), projected as Eq. (3.7), not full B_k in the subproblem",
+        "retraction": "polar/SVD: R_X(V)=(X+V)/sqrt((X+V)^T(X+V)) for r=1",
+        "inner_solver": "exact minimizer of Eq. (3.6); do not use approximate inner stopping",
+        "stopping": "exactly 3 iterations, no early stopping",
+        "observation_timing": "step j means k=j-1. X_before,g,B,beta,V,norm and reference precede retraction; alpha/backtracks are accepted line search results; X and objective are after retraction. At k=0 damping_beta=1 is a neutral no-pair sentinel."
+      },
+      "derivation": "70-digit Decimal original-paper derivation. On St(2,1), V=z*t with t=(-x2,x1). Minimize a*z+0.5*b*z^2+mu*sum_i|x_i+z*t_i| by all valid sign-region stationary points and knots; a=grad_f dot t and b=t^T diag(B)t. Compute damped memory-one BFGS exactly by Eqs. (3.9)-(3.10). Test alpha=1,1/2,... against max(F(X_k),F(X_(k-1)))-sigma*alpha*norm_B(V)^2/2 using polar retraction. k=0: beta=1.0, diagB=[1.0, 1.0], tangent scalar=4.46, trials(alpha,F,bound)=[(1.0, 2.9386747146329038, -0.8529), (0.5, 2.192297798632278, 1.63355), (0.25, 1.6193683270062962, 2.876775)], Xnew=[-0.19496041168903253, 0.9808111122300985]; k=1: beta=1.0, diagB=[4.543267345635414, 2.994454274945958], tangent scalar=-0.10975228116957714, trials(alpha,F,bound)=[(1.0, 1.62080428080386, 4.106495726181782)], Xnew=[-0.08679298428549592, 0.9962263687931663]; k=2: beta=1.0, diagB=[9.334172313784503, 1.1207993989564935], tangent scalar=0.05579253004071621, trials(alpha,F,bound)=[(1.0, 1.6062690857918553, 1.6135885614710017)], Xnew=[-0.14215389702163264, 0.9898445683851395]",
+      "expected": [
+        {
+          "step": 1,
+          "name": "X_before",
+          "value": [
+            [
+              0.6
+            ],
+            [
+              0.8
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              3.792
+            ],
+            [
+              -2.844
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "B_matrix",
+          "value": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "metric_diagonal",
+          "value": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "damping_beta",
+          "value": 1.0
+        },
+        {
+          "step": 1,
+          "name": "V",
+          "value": [
+            [
+              -3.568
+            ],
+            [
+              2.676
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "tangent_metric_norm_squared",
+          "value": 19.8916
+        },
+        {
+          "step": 1,
+          "name": "line_search_reference",
+          "value": 4.12
+        },
+        {
+          "step": 1,
+          "name": "alpha",
+          "value": 0.25
+        },
+        {
+          "step": 1,
+          "name": "backtracks",
+          "value": 2.0
+        },
+        {
+          "step": 1,
+          "name": "X",
+          "value": [
+            [
+              -0.19496041168903253
+            ],
+            [
+              0.9808111122300985
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "value": 1.6193683270062962
+        },
+        {
+          "step": 2,
+          "name": "X_before",
+          "value": [
+            [
+              -0.19496041168903253
+            ],
+            [
+              0.9808111122300985
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              -0.3285744006467938
+            ],
+            [
+              -0.0653122702442912
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "B_matrix",
+          "value": [
+            [
+              4.543267345635414,
+              -2.8143000442337907
+            ],
+            [
+              -2.8143000442337907,
+              2.994454274945958
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "metric_diagonal",
+          "value": [
+            4.543267345635414,
+            2.994454274945958
+          ]
+        },
+        {
+          "step": 2,
+          "name": "damping_beta",
+          "value": 1.0
+        },
+        {
+          "step": 2,
+          "name": "V",
+          "value": [
+            [
+              0.10764625696372346
+            ],
+            [
+              0.021397349920631213
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "tangent_metric_norm_squared",
+          "value": 0.054017095272872566
+        },
+        {
+          "step": 2,
+          "name": "line_search_reference",
+          "value": 4.12
+        },
+        {
+          "step": 2,
+          "name": "alpha",
+          "value": 1.0
+        },
+        {
+          "step": 2,
+          "name": "backtracks",
+          "value": 0.0
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "value": [
+            [
+              -0.08679298428549592
+            ],
+            [
+              0.9962263687931663
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "value": 1.62080428080386
+        },
+        {
+          "step": 3,
+          "name": "X_before",
+          "value": [
+            [
+              -0.08679298428549592
+            ],
+            [
+              0.9962263687931663
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              0.6965732300340884
+            ],
+            [
+              0.060686678552068954
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "B_matrix",
+          "value": [
+            [
+              9.334172313784503,
+              1.005122716842566
+            ],
+            [
+              1.005122716842566,
+              1.1207993989564935
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "metric_diagonal",
+          "value": [
+            9.334172313784503,
+            1.1207993989564935
+          ]
+        },
+        {
+          "step": 3,
+          "name": "damping_beta",
+          "value": 1.0
+        },
+        {
+          "step": 3,
+          "name": "V",
+          "value": [
+            [
+              -0.05558198960824635
+            ],
+            [
+              -0.004842400183071941
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "tangent_metric_norm_squared",
+          "value": 0.028862877331432984
+        },
+        {
+          "step": 3,
+          "name": "line_search_reference",
+          "value": 1.62080428080386
+        },
+        {
+          "step": 3,
+          "name": "alpha",
+          "value": 1.0
+        },
+        {
+          "step": 3,
+          "name": "backtracks",
+          "value": 0.0
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "value": [
+            [
+              -0.14215389702163264
+            ],
+            [
+              0.9898445683851395
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "value": 1.6062690857918553
+        }
+      ],
+      "atol": 1e-09,
+      "rtol": 1e-08
+    },
+    {
+      "id": "indefinite_l1",
+      "purpose": "Three complete ManPQN iterations with an active l1 proximal tangent solve, diagonal damped BFGS curvature, polar retraction, and nonmonotone Armijo backtracking.",
+      "covers": [
+        "tangent-proximal-subproblem",
+        "diagonal-damped-lbfgs",
+        "polar-retraction",
+        "nonmonotone-armijo"
+      ],
+      "inputs": {
+        "manifold": "St(2,1), embedded Euclidean metric",
+        "X0": [
+          [
+            0.8
+          ],
+          [
+            0.6
+          ]
+        ],
+        "Q": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            -2
+          ]
+        ],
+        "linear_c": [
+          0.5,
+          -0.2
+        ],
+        "mu": 0.3,
+        "smooth_objective": "f(X)=0.5*X^T Q X + c^T X",
+        "nonsmooth_objective": "h(X)=mu*(abs(X_1)+abs(X_2))",
+        "randomness": "none"
+      },
+      "parameters": {
+        "iterations": 3,
+        "memory_p": 1,
+        "delta": 2.0,
+        "sigma": 0.5,
+        "gamma": 0.5,
+        "nonmonotone_m": 1,
+        "B0": "identity as required by Algorithm 1",
+        "curvature_initialization_each_k_ge_1": "B_k,0=delta*I, retain exactly the most recent pair",
+        "curvature_pairs": "s=X_k-X_(k-1); y=grad f(X_k)-grad f(X_(k-1)) using Riemannian smooth gradients, Eqs. (2.1),(2.2)",
+        "metric": "Use diag(B_k), projected as Eq. (3.7), not full B_k in the subproblem",
+        "retraction": "polar/SVD: R_X(V)=(X+V)/sqrt((X+V)^T(X+V)) for r=1",
+        "inner_solver": "exact minimizer of Eq. (3.6); do not use approximate inner stopping",
+        "stopping": "exactly 3 iterations, no early stopping",
+        "observation_timing": "step j means k=j-1. X_before,g,B,beta,V,norm and reference precede retraction; alpha/backtracks are accepted line search results; X and objective are after retraction. At k=0 damping_beta=1 is a neutral no-pair sentinel."
+      },
+      "derivation": "70-digit Decimal original-paper derivation. On St(2,1), V=z*t with t=(-x2,x1). Minimize a*z+0.5*b*z^2+mu*sum_i|x_i+z*t_i| by all valid sign-region stationary points and knots; a=grad_f dot t and b=t^T diag(B)t. Compute damped memory-one BFGS exactly by Eqs. (3.9)-(3.10). Test alpha=1,1/2,... against max(F(X_k),F(X_(k-1)))-sigma*alpha*norm_B(V)^2/2 using polar retraction. k=0: beta=1.0, diagB=[1.0, 1.0], tangent scalar=1.3333333333333333, trials(alpha,F,bound)=[(1.0, -0.9, 0.6955555555555556)], Xnew=[1.2e-70, 1.0]; k=1: beta=0.7978723404255319, diagB=[0.42394748755092804, 5.174513354459031], tangent scalar=2.830539241857982, trials(alpha,F,bound)=[(1.0, -0.13579907467947175, 0.29083822744260546)], Xnew=[-0.9428871903213081, 0.33311221281722686]; k=2: beta=1.0, diagB=[2.082594466983632, 2.215933235215009], tangent scalar=-0.7084623677886691, trials(alpha,F,bound)=[(1.0, -1.0057991765025942, -0.41199721321804855)], Xnew=[-0.5768042117711107, 0.8168824280660636]",
+      "expected": [
+        {
+          "step": 1,
+          "name": "X_before",
+          "value": [
+            [
+              0.8
+            ],
+            [
+              0.6
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              0.972
+            ],
+            [
+              -1.296
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "B_matrix",
+          "value": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "metric_diagonal",
+          "value": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "damping_beta",
+          "value": 1.0
+        },
+        {
+          "step": 1,
+          "name": "V",
+          "value": [
+            [
+              -0.8
+            ],
+            [
+              1.0666666666666667
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "tangent_metric_norm_squared",
+          "value": 1.7777777777777777
+        },
+        {
+          "step": 1,
+          "name": "line_search_reference",
+          "value": 1.14
+        },
+        {
+          "step": 1,
+          "name": "alpha",
+          "value": 1.0
+        },
+        {
+          "step": 1,
+          "name": "backtracks",
+          "value": 0.0
+        },
+        {
+          "step": 1,
+          "name": "X",
+          "value": [
+            [
+              1.2e-70
+            ],
+            [
+              1.0
+            ]
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "value": -0.9
+        },
+        {
+          "step": 2,
+          "name": "X_before",
+          "value": [
+            [
+              1.2e-70
+            ],
+            [
+              1.0
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              1.5
+            ],
+            [
+              0.0
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "B_matrix",
+          "value": [
+            [
+              0.42394748755092804,
+              1.092575826165686
+            ],
+            [
+              1.092575826165686,
+              5.174513354459031
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "metric_diagonal",
+          "value": [
+            0.42394748755092804,
+            5.174513354459031
+          ]
+        },
+        {
+          "step": 2,
+          "name": "damping_beta",
+          "value": 0.7978723404255319
+        },
+        {
+          "step": 2,
+          "name": "V",
+          "value": [
+            [
+              -2.830539241857982
+            ],
+            [
+              3.3966470902295785e-70
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "tangent_metric_norm_squared",
+          "value": 3.3966470902295782
+        },
+        {
+          "step": 2,
+          "name": "line_search_reference",
+          "value": 1.14
+        },
+        {
+          "step": 2,
+          "name": "alpha",
+          "value": 1.0
+        },
+        {
+          "step": 2,
+          "name": "backtracks",
+          "value": 0.0
+        },
+        {
+          "step": 2,
+          "name": "X",
+          "value": [
+            [
+              -0.9428871903213081
+            ],
+            [
+              0.33311221281722686
+            ]
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "value": -0.13579907467947175
+        },
+        {
+          "step": 3,
+          "name": "X_before",
+          "value": [
+            [
+              -0.9428871903213081
+            ],
+            [
+              0.33311221281722686
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "riemannian_gradient",
+          "value": [
+            [
+              -0.5803999141787829
+            ],
+            [
+              -1.6428447330540499
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "B_matrix",
+          "value": [
+            [
+              2.082594466983632,
+              0.17506433746384786
+            ],
+            [
+              0.17506433746384786,
+              2.215933235215009
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "metric_diagonal",
+          "value": [
+            2.082594466983632,
+            2.215933235215009
+          ]
+        },
+        {
+          "step": 3,
+          "name": "damping_beta",
+          "value": 1.0
+        },
+        {
+          "step": 3,
+          "name": "V",
+          "value": [
+            [
+              0.2359974670318156
+            ],
+            [
+              0.6680000914126394
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "tangent_metric_norm_squared",
+          "value": 1.104792554154307
+        },
+        {
+          "step": 3,
+          "name": "line_search_reference",
+          "value": -0.13579907467947175
+        },
+        {
+          "step": 3,
+          "name": "alpha",
+          "value": 1.0
+        },
+        {
+          "step": 3,
+          "name": "backtracks",
+          "value": 0.0
+        },
+        {
+          "step": 3,
+          "name": "X",
+          "value": [
+            [
+              -0.5768042117711107
+            ],
+            [
+              0.8168824280660636
+            ]
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "value": -1.0057991765025942
+        }
+      ],
+      "atol": 1e-09,
+      "rtol": 1e-08
+    }
+  ]
+}

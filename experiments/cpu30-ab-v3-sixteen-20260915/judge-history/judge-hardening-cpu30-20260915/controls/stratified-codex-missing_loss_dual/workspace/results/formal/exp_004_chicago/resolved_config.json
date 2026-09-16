@@ -1,0 +1,11 @@
+{
+  "epsilon": 1e-05,
+  "gamma_day": 100.0,
+  "gamma_hour": 100.0,
+  "gamma_location": 100.0,
+  "gamma_week": 100.0,
+  "maxiter": 80,
+  "seed": 0,
+  "solver": "ADMM",
+  "week_definition": "ISO week modulo 52"
+}

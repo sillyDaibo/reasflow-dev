@@ -33,3 +33,8 @@ The initializer skill teaches Codex how to initialize individual reasflow projec
 
 - Initializer skill installation guide: [docs/install-initializer-skill.md](docs/install-initializer-skill.md)
 - Development notes: [docs/development.md](docs/development.md)
+
+
+## CPU30 16 篇完整执行实验归档
+
+[ReasFlow Experiment Agent 与 Codex Native：结果、Judge、完整 trace 和中间产物](experiments/cpu30-ab-v3-sixteen-20260915/README.md)。

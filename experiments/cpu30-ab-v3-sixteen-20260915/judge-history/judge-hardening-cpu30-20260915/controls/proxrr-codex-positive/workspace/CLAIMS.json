@@ -1,0 +1,43 @@
+{
+  "schema_version": "optirepro.agent_claims.v2",
+  "paper_id": "2102.06704",
+  "summary": "The evaluation covers the paper's empirical proximal finite-sum comparison, importance-resampled ProxRR variant, and federated FedRR comparison on the official real datasets.",
+  "claims": [
+    {
+      "claim_id": "proxrr_sparse_prox_advantage",
+      "priority": "core",
+      "paper_location": "Section 8, Figure 1, and Algorithm 1",
+      "statement": "On elastic-net logistic regression, ProxRR reaches the same order of objective accuracy as proximal SGD and the per-iteration proximal RR heuristic while evaluating the proximal operator once per data epoch instead of once per sample.",
+      "methods": ["ProxRR", "ProxSGD", "RR heuristic"],
+      "required_baselines": ["ProxSGD", "RR heuristic"],
+      "datasets": ["a1a"],
+      "metrics": ["objective gap", "proximal evaluations", "stochastic iterations"],
+      "comparison_conditions": "Minibatch size 1, identical seed 42, 100 complete data epochs, theoretical smoothness-based initial step and O(1/t) decay.",
+      "planned_evidence": ["Formal history and metrics for all three methods", "Objective-gap and proximal-evaluation plot", "Unit tests for one-prox-per-epoch semantics"]
+    },
+    {
+      "claim_id": "importance_resampling_variant",
+      "priority": "supporting",
+      "paper_location": "Section 6, Theorem 6",
+      "statement": "The importance-resampled ProxRR construction using n_i = ceil(L_i / mean(L_i)) is executable on a real sparse logistic problem and preserves one proximal evaluation per epoch while producing a same-order objective gap.",
+      "methods": ["ProxRR", "ProxRR importance resampling"],
+      "required_baselines": ["ProxRR"],
+      "datasets": ["a1a"],
+      "metrics": ["objective gap", "proximal evaluations", "data passes"],
+      "comparison_conditions": "Same elastic-net objective, seed 42, 100 epochs, and decay coefficient; only the finite-sum sampling construction differs.",
+      "planned_evidence": ["Formal importance history and metrics", "Importance-vs-standard objective-gap plot", "Deterministic algorithm tests"]
+    },
+    {
+      "claim_id": "fedrr_federated_advantage",
+      "priority": "core",
+      "paper_location": "Section 7, Algorithm 3, Theorem 8, and Figure 2",
+      "statement": "On homogeneous federated data, FedRR converges faster than Local SGD when measured by communication rounds and processed data passes, including both full-pass and five-times shorter local budgets.",
+      "methods": ["FedRR", "LocalSGD full pass", "LocalSGD partial pass"],
+      "required_baselines": ["LocalSGD full pass", "LocalSGD partial pass"],
+      "datasets": ["mushrooms"],
+      "metrics": ["objective gap", "communication rounds", "data passes"],
+      "comparison_conditions": "Eight deterministic contiguous client shards, 140 rounds, theoretical step sizes, and minibatch size 8 as used by the official federated notebook.",
+      "planned_evidence": ["Formal communication-round and data-pass plots", "Complete per-round history and configuration", "Unit test for client aggregation and round accounting"]
+    }
+  ]
+}

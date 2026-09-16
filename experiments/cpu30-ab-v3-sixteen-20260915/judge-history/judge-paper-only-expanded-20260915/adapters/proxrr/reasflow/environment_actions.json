@@ -1,0 +1,8 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "Original objective and optimization drivers require NumPy. Present in temporary venv; no install was needed.",
+    "source": "rr_prox_fed/methods.py:4 import numpy as np"
+  }
+]

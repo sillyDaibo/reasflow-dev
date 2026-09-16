@@ -1,0 +1,36 @@
+{
+  "schema_version": "optirepro.paper_review.v1",
+  "contract_digest": "3558d3d9b1c1d602abbafac8032062a018e05d2cf8535428dfbcbf665e52d900",
+  "reviewer_id": "paper16_c-independent-cross-review",
+  "basis": "original_paper_only",
+  "decision": "approved",
+  "summary": "Approved: independent exact-rational recomputation matches all 94 numeric leaves. Eq. (4) LocalSGD and this paper specific frozen-anchor simplified SCAFFOLD are both correctly distinguished and unrolled.",
+  "cases": [
+    {
+      "case_id": "local_sgd",
+      "decision": "approved",
+      "reason": "The LocalSGD branch performs both local proposals then averages at tau=2. For simplified SCAFFOLD, the first tau=2 gradients are sampled at unchanged x, local/global anchors are formed, exactly tau-1=1 corrected local move follows, and line 14 uses both training gradients for the broadcast. Recomputed anchors, gradients and all microstep states match.",
+      "citations": [
+        "PDF p.5 Eq. (4)",
+        "PDF p.5 Algorithm 1 lines 3-15 and Eq. (5)",
+        "PDF p.5 SCAFFOLD variant discussion"
+      ]
+    },
+    {
+      "case_id": "simplified_scaffold",
+      "decision": "approved",
+      "reason": "The LocalSGD branch performs both local proposals then averages at tau=2. For simplified SCAFFOLD, the first tau=2 gradients are sampled at unchanged x, local/global anchors are formed, exactly tau-1=1 corrected local move follows, and line 14 uses both training gradients for the broadcast. Recomputed anchors, gradients and all microstep states match.",
+      "citations": [
+        "PDF p.5 Eq. (4)",
+        "PDF p.5 Algorithm 1 lines 3-15 and Eq. (5)",
+        "PDF p.5 SCAFFOLD variant discussion"
+      ]
+    }
+  ],
+  "scope_notes": [
+    "The SCAFFOLD in this paper is the explicitly simplified anchor-batch variant. It must not be conflated with 2503.07594 persistent centered xi, the original partial-participation SCAFFOLD, cached previous controls, or separate local/global step sizes.",
+    "All workers participate synchronously with equal weights, and stated independent Rademacher draws are conditioned on the listed realized sequence. This does not test a sampler, partial participation, client dropout or network scheduling.",
+    "Unequal quadratic Hessians are legal algorithm inputs but do not satisfy a globally bounded gradient-similarity constant over all R. The contract explicitly confines itself to the algorithm recursion, not every theorem hypothesis or speedup rate.",
+    "Four LocalSGD microsteps and eight simplified-SCAFFOLD microsteps only. Exact rational arithmetic rounded once to binary64 validates 1e-12 absolute/relative tolerances; no stochastic convergence conclusion."
+  ]
+}

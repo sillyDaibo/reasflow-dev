@@ -1,0 +1,34 @@
+{
+  "client_rows": 1015,
+  "clients": 8,
+  "command": "run_experiment.py --experiment figure2 --data-dir .run-data/datasets --output-dir results/formal/figure2_mushrooms --seed 42 --rounds 140 --clients 8 --reference-iterations 4000",
+  "dataset": {
+    "bytes": 879712,
+    "features": 113,
+    "name": "mushrooms",
+    "path": ".run-data/datasets/mushrooms",
+    "rows": 8124,
+    "sha256": "f39a4eb628dc61a7d43760815b061c9e497aa728ce1ad8bde57a09ef6043b538"
+  },
+  "decay_coefficients": {
+    "FedRR": 4.5499898555672616e-05,
+    "LocalSGD": 0.00015924964494485415
+  },
+  "experiment": "figure2",
+  "fedrr_step_size": 0.34252471559279724,
+  "l2": 0.0003184992898897083,
+  "local_batch_size": 8,
+  "local_full_steps": 1015,
+  "local_partial_steps": 203,
+  "logistic_smoothness": 2.5862142339044314,
+  "methods": [
+    "LocalSGD_full_pass",
+    "LocalSGD_partial_pass",
+    "FedRR"
+  ],
+  "reference_iterations": 4000,
+  "reference_objective": 0.02675930748576507,
+  "rounds": 140,
+  "seed": 42,
+  "usable_rows": 8120
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "import required by original solver/problem/graph modules",
+    "source": "src/setwise_cd/solvers.py"
+  },
+  {
+    "kind": "install_package",
+    "package": "scipy",
+    "reason": "import required by original solver/problem/graph modules",
+    "source": "src/setwise_cd/problems.py"
+  },
+  {
+    "kind": "install_package",
+    "package": "networkx",
+    "reason": "import required by original solver/problem/graph modules",
+    "source": "src/setwise_cd/graphs.py"
+  }
+]

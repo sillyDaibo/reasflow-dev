@@ -1,0 +1,343 @@
+{
+  "paper_id": "2310.09804",
+  "evaluated_at": "2026-09-04T05:50:15.429149+00:00",
+  "summary": {
+    "total_score": 0.2653,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.2653,
+    "total_rubrics": 28,
+    "passed": 7,
+    "failed": 21,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.2857,
+      "passed": 6,
+      "total": 21
+    },
+    "secondary": {
+      "score": 0.3333,
+      "passed": 1,
+      "total": 3
+    },
+    "tertiary": {
+      "score": 0.0,
+      "passed": 0,
+      "total": 4
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-DASHA-PAGE outperforms Byz-VR-MARINA 2.0, which outperforms Byz-VR-MARINA, in terms of convergence speed on the phishing dataset in the homogeneous non-convex setting.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Relevant output file: results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv. Filtered to phishing, homogeneous=True, setting=NC. Computed AUC of mean gradient_norm_sq over 121 iterations (lower=better): dasha-page=36.051432, vr-marina-2=36.051145, vr-marina=36.047840. Final-iteration mean gradient_norm_sq: dasha-page=0.306342, vr-marina-2=0.306334, vr-marina=0.306244. The actual order (best to worst) is vr-marina < vr-marina-2 < dasha-page, which is the reverse of the required ranking. Neither pairwise constraint is satisfied: dasha-page < vr-marina-2 is False (36.051432 > 36.051145), and vr-marina-2 < vr-marina is False (36.051145 > 36.047840). Note that differences are negligibly small (~0.003 in AUC across all methods), suggesting near-identical convergence rather than a clear ordering.",
+      "note": "The three methods converge at essentially the same rate on this dataset/setting, with differences in the 4th-5th decimal place. The observed ordering happens to be the reverse of the claimed ranking, but the near-zero differences mean no meaningful convergence speed advantage is demonstrable from these run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-DASHA-PAGE outperforms Byz-VR-MARINA 2.0, which outperforms Byz-VR-MARINA, in terms of achieved accuracy on the phishing dataset in the homogeneous non-convex setting.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/paper_core_20260903T174914_120s_3seed/runs.json. Filtered to homogeneous=True, setting='NC' (phishing dataset). Per-attack final gradient_norm_sq means: BF: Byz-VR-MARINA=1.234268, Byz-VR-MARINA 2.0=1.234635, Byz-DASHA-PAGE=1.234682. LF: VR-MARINA=1.234436, VR-MARINA 2.0=1.234669, DASHA-PAGE=1.234700. ALIE: VR-MARINA=1.234286, VR-MARINA 2.0=1.234696, DASHA-PAGE=1.234726. IPM: VR-MARINA=1.234268, VR-MARINA 2.0=1.234635, DASHA-PAGE=1.234682. In all attack scenarios, Byz-VR-MARINA achieves the LOWEST squared gradient norm (best), followed by Byz-VR-MARINA 2.0, then Byz-DASHA-PAGE (worst). This is the reverse of the claimed order. Neither constraint 'Byz-DASHA-PAGE > Byz-VR-MARINA 2.0' nor 'Byz-VR-MARINA 2.0 > Byz-VR-MARINA' holds (lower_is_better).",
+      "note": "The run outputs cover 4 attack types (BF, LF, ALIE, IPM) with 6 runs each per method (3 seeds × 2 aggregator configs, or similar). Across all cases the actual ordering is inverted relative to the claim. The values are extremely close in magnitude but consistently ordered contrary to the claim.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Both Byz-VR-MARINA 2.0 and Byz-DASHA-PAGE converge faster than Byz-VR-MARINA in terms of the number of bits sent.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "From results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv (phishing dataset, homogeneous=False, setting=NC): At every bit-count milestone, vr-marina achieves a LOWER (better) objective gap than vr-marina-2 and dasha-page. At ~5000 bits: vr-marina avg_obj_gap=3.4633 vs vr-marina-2=3.4703 and dasha-page=3.4703. At ~7000 bits: vr-marina=3.3908 vs vr-marina-2=3.4000 and dasha-page=3.4000. At ~9000 bits: vr-marina=3.3179 vs vr-marina-2=3.3291 and dasha-page=3.3290. At ~11000 bits: vr-marina=3.2740 vs vr-marina-2=3.2857 and dasha-page=3.2857. The bits-to-threshold analysis also confirms: to reach obj_gap < 3.26, vr-marina needs [12233, 11440, 11531] bits (seeds 0,1,2), while vr-marina-2 needs [11167, 11713, 11167] and dasha-page needs [11167, 12506, 11167]. These results are mixed/inconsistent rather than showing clear improvement. Overall, the outputs show vr-marina is NOT converging slower than the other two methods — it actually has lower objective gaps at equal bit counts throughout the run.",
+      "note": "The metrics.csv contains iteration-level data for the phishing heterogeneous nonconvex (NC) setting. The method names in the output files are 'vr-marina', 'vr-marina-2', and 'dasha-page' corresponding to Byz-VR-MARINA, Byz-VR-MARINA 2.0, and Byz-DASHA-PAGE respectively. The run outputs contradict the paper claim that vr-marina-2 and dasha-page converge faster in bits than vr-marina.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The radius of the neighborhood to which the algorithms converge is larger in the case of Byz-VR-MARINA compared to the proposed alternatives (Byz-VR-MARINA 2.0 and Byz-DASHA-PAGE).",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "File: results/formal/paper_core_20260903T174914_120s_3seed/runs.json. For exp2_heterogeneous_nonconvex_phishing (homogeneous=False, setting=NC), averaging final gradient_norm_sq across 4 attacks × 3 seeds = 24 runs per method: Byz-VR-MARINA (vr-marina) avg=1.232211, Byz-VR-MARINA 2.0 (vr-marina-2) avg=1.226526, Byz-DASHA-PAGE (dasha-page) avg=1.226527. Both ordering constraints hold (lower_is_better): vr-marina-2 (1.226526) < vr-marina (1.232211), and dasha-page (1.226527) < vr-marina (1.232211).",
+      "note": "The run outputs do not contain an explicit 'neighborhood_size' column; final gradient_norm_sq is used as its proxy (consistent with convergence-neighborhood interpretation). The margin is small (~0.46%) but consistently present across all 24 runs per method. The dataset field is absent from runs.json but the experiment context (phishing LIBSVM, heterogeneous, NC) matches exp2_heterogeneous_nonconvex_phishing per the experiment report.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "Byz-VR-MARINA 2.0 and Byz-DASHA-PAGE consistently exhibit less fluctuations compared to Byz-VR-MARINA.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all run outputs in results/formal/paper_core_20260903T174914_120s_3seed/ (metrics.csv, runs.json, references.json, run.log) and results/logs/. The metrics.csv contains per-iteration data for methods vr-marina, vr-marina-2, dasha-page on phishing/heterogeneous/NC but has NO 'fluctuation_level' column — only objective, objective_gap, gradient_norm_sq, bits, data_passes, time_seconds. All trajectories are perfectly monotone (0 sign flips across all 12 runs per method on phishing hetero NC). No file anywhere in the repository contains the word 'fluctuation'. The run outputs provide no basis to compare fluctuation levels between Byz-VR-MARINA 2.0, Byz-DASHA-PAGE, and Byz-VR-MARINA — case (a): no relevant run output supporting the claim exists.",
+      "note": "The implementation produces smooth deterministic trajectories rather than the stochastic noisy convergence curves shown in the paper's §4 figures. The claim about 'less fluctuations' refers to oscillatory behavior visible in paper's convergence plots, which requires the stochastic gradient noise present in the real experiments but absent from this simplified reproduction.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "The empirical superiority of Byz-VR-MARINA 2.0 and Byz-DASHA-PAGE over Byz-VR-MARINA is especially apparent in the case of BF and LF attacks, i.e., the relative improvement is larger under BF and LF than under IPM and ALIE.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv (phishing, homogeneous=False, setting=NC, final iteration averaged over 3 seeds). Objective_gap values — vr-marina: BF=3.2491, LF=3.2388, IPM=3.2491, ALIE=3.2474; vr-marina-2: BF=3.2607, LF=3.2373, IPM=3.2602, ALIE=3.2496; dasha-page: BF=3.2606, LF=3.2374, IPM=3.2601, ALIE=3.2496. Relative improvement of vr-marina-2 over vr-marina: BF=-0.35%, LF=+0.05%, IPM=-0.34%, ALIE=-0.07%. Relative improvement of dasha-page over vr-marina: BF=-0.35%, LF=+0.04%, IPM=-0.34%, ALIE=-0.07%. Under gradient_norm_sq: vr-marina-2 improvements are BF=+0.15%, LF=-0.02%, IPM=+0.15%, ALIE=+0.03%; dasha-page improvements are BF=+0.15%, LF=-0.02%, IPM=+0.15%, ALIE=+0.03%. Neither metric shows BF/LF improvements larger than IPM/ALIE; the pattern is inconsistent with the claim and all differences are negligibly small.",
+      "note": "The run outputs exist but the numbers do not satisfy the claim. The differences between methods across attack types are extremely small (< 0.4%) and do not show the required ranking where BF/LF relative improvements exceed IPM/ALIE relative improvements consistently for both Byz-VR-MARINA 2.0 and Byz-DASHA-PAGE. Only one metric (gradient_norm_sq) even shows positive improvements in BF direction, but that same metric shows BF ≈ IPM and LF is slightly negative.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-VR-MARINA 2.0 and Byz-DASHA-PAGE converge faster than Byz-VR-MARINA on the w8a dataset under all attacks (BF, LF, IPM, ALIE) in terms of bits sent to the server.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv: For w8a dataset, setting=NC, homogeneous=False, compression_k=30, at the same bits budget (46,800 bits), Byz-VR-MARINA 2.0 and Byz-DASHA-PAGE consistently achieve lower gradient_norm_sq (the convergence metric for nonconvex problems) than Byz-VR-MARINA across all 4 attacks and all 3 seeds. Example values (seed=0): BF: VR-MARINA=2.160814, VR-MARINA 2.0=2.144651, DASHA-PAGE=2.144652; LF: VR-MARINA=2.160923, VR-MARINA 2.0=2.147544, DASHA-PAGE=2.147531; IPM: VR-MARINA=2.160814, VR-MARINA 2.0=2.145550, DASHA-PAGE=2.145551; ALIE: VR-MARINA=2.160845, VR-MARINA 2.0=2.151982, DASHA-PAGE=2.151974. The ranking constraint (2.0 < VR-MARINA and DASHA-PAGE < VR-MARINA for gradient_norm_sq) holds for all 12 combinations (4 attacks × 3 seeds). The same pattern holds at intermediate bits (e.g., at 23,010 bits under BF: VR-MARINA=2.1110, VR-MARINA 2.0=2.0978, DASHA-PAGE=2.0978).",
+      "note": "The convergence metric used for verification is gradient_norm_sq (standard for nonconvex optimization), not objective_gap (which actually increases with bits in this dataset, likely due to the heterogeneous/stochastic nature). The bits metric is bits sent per step × steps. All methods reach the same total bits budget (46,800), so the ranking is determined by which method achieves lower gradient norm at that budget.",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-VR-MARINA 2.0 and Byz-DASHA-PAGE achieve better final accuracy than Byz-VR-MARINA on the w8a dataset under all attacks (BF, LF, IPM, ALIE).",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv — heterogeneous (homogeneous=False), dataset=w8a, final-iteration objective averaged over 3 seeds:\n\nBF:   vr-marina=18.882, vr-marina-2=19.248, dasha-page=19.245\nLF:   vr-marina=18.856, vr-marina-2=19.162, dasha-page=19.164\nIPM:  vr-marina=18.882, vr-marina-2=19.232, dasha-page=19.230\nALIE: vr-marina=18.781, vr-marina-2=19.005, dasha-page=19.004\n\nUnder lower_is_better, vr-marina achieves the LOWEST (best) loss in all four attacks. Both vr-marina-2 and dasha-page have strictly HIGHER (worse) loss than vr-marina across all attacks, directly contradicting the claimed ranking that Byz-VR-MARINA 2.0 > Byz-VR-MARINA and Byz-DASHA-PAGE > Byz-VR-MARINA.",
+      "note": "The result may reflect that these metrics track training loss / objective value, not accuracy per se, and the comparison is at the last recorded iteration (step 120). The paper's Figure 3 may show a different metric or different final step, but based on available run outputs the claim does not hold.",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the heterogeneous strongly convex (Polyak-Łojasiewicz) setting, Byz-DASHA-PAGE outperforms Byz-VR-MARINA in terms of accuracy on the phishing dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The run output file results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv and runs.json do not contain any 'accuracy' column or derived accuracy metric. The only optimization metrics stored are: objective (loss), objective_gap, gradient_norm_sq, bits, data_passes, time_seconds. For phishing / PL / heterogeneous (homogeneous=False), the final-iteration average objective values for the two methods across 4 attacks are: dasha-page avg=13.224 (ALIE:13.150, BF:13.269, IPM:13.267, LF:13.213); vr-marina avg=13.112 (ALIE:13.036, BF:13.155, IPM:13.155, LF:13.101). Since loss is lower-is-better, vr-marina achieves lower loss than dasha-page across all attack types, which would imply vr-marina has higher accuracy — the reverse of the claim. No 'accuracy' output exists to directly verify the claim.",
+      "note": "The claim references 'accuracy' as the metric, but the run outputs track only loss (objective). If accuracy were derived from the objective, the direction of the result would favour vr-marina over dasha-page, contradicting the claim. Verdict is 0 both because (a) accuracy is not a stored output metric, and (b) the available loss metric contradicts the claimed ranking.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the heterogeneous strongly convex (Polyak-Łojasiewicz) setting, Byz-VR-MARINA 2.0 outperforms Byz-VR-MARINA in terms of accuracy on the phishing dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv (58,081 rows) and runs.json. No \"accuracy\" column exists in the outputs — available metrics are: objective, objective_gap, gradient_norm_sq, bits, data_passes, time_seconds. For phishing + PL setting + homogeneous=False (heterogeneous), at final iteration 120: vr-marina seeds {0,1,2} have obj_gap = {4.116318, 4.117077, 4.118487}, avg = 4.117294; vr-marina-2 seeds {0,1,2} have obj_gap = {4.122489, 4.122016, 4.122156}, avg = 4.122220. Lower obj_gap = better convergence/accuracy. Byz-VR-MARINA 2.0 (vr-marina-2) has a WORSE (higher) objective gap than Byz-VR-MARINA (vr-marina) at all seeds. Using objective_gap as proxy for accuracy, the claim is contradicted. No other output file contains an accuracy metric.",
+      "note": "The experiment does not record an \"accuracy\" metric directly. Using objective_gap as a convergence-accuracy proxy (the standard in this codebase), Byz-VR-MARINA 2.0 performs worse than Byz-VR-MARINA on phishing PL heterogeneous in these run outputs at the 120-step budget.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the heterogeneous strongly convex (Polyak-Łojasiewicz) setting, Byz-DASHA-PAGE outperforms Byz-VR-MARINA in terms of accuracy on the w8a dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all run output locations: results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv (58081 rows), runs.json (480 entries), references.json, run.log. The metrics.csv header is: dataset,homogeneous,method,setting,attack,seed,num_workers,num_byzantine,steps,gamma,compression_k,iteration,objective,objective_gap,gradient_norm_sq,bits,data_passes,time_seconds — no accuracy column. The runs.json 'final' dict contains only: iteration, objective, objective_gap, gradient_norm_sq, bits, data_passes, time_seconds. No accuracy field or file exists anywhere in the outputs. For w8a PL heterogeneous at final iteration (step 120), objective values are: dasha-page=21.6606, vr-marina=21.4300 (lower objective may indicate better convergence, but this is not an accuracy metric). No accuracy metric is present in any run output to support or refute the claim.",
+      "note": "The experiment did run for w8a with PL setting and heterogeneous (homogeneous=False) configuration, covering both dasha-page (Byz-DASHA-PAGE) and vr-marina (Byz-VR-MARINA) methods. However, the run outputs track only optimization metrics (objective, gradient norm, bits, data passes, time) — not classification accuracy. The claim about accuracy cannot be verified from these outputs.",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In the heterogeneous strongly convex (Polyak-Łojasiewicz) setting, Byz-VR-MARINA 2.0 outperforms Byz-VR-MARINA in terms of accuracy on the w8a dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all result files in results/formal/paper_core_20260903T174914_120s_3seed/ (metrics.csv, runs.json) and results/formal/quadratic_neighborhood_20260903T175219/ (metrics.csv, runs.json). The only metrics recorded for w8a, PL setting are: objective, objective_gap, gradient_norm_sq, bits, data_passes, time_seconds. No \"accuracy\" metric exists anywhere in the run outputs. A grep for \"accuracy\" across all non-code files returned zero matches. The relevant methods (vr-marina-2 = Byz-VR-MARINA 2.0, vr-marina = Byz-VR-MARINA) do appear in results for w8a/PL, but the claim's required metric (accuracy) is entirely absent from run outputs.",
+      "note": "The run outputs record objective/loss-based metrics, not classification accuracy. Even if Byz-VR-MARINA 2.0 has a lower objective (which it does marginally: e.g., BF/seed0: 21.229 vs 21.288), that is not the same as \"accuracy\", and the claim specifically requires the accuracy metric.",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "The improvement of Byz-DASHA-PAGE and Byz-VR-MARINA 2.0 over Byz-VR-MARINA is more pronounced under BF and LF attacks than under IPM and ALIE attacks on both phishing and w8a datasets.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Run outputs located at results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv (58081 rows) and runs.json (480 runs, 240 PL-setting). Filtered to setting=PL (exp4_pl_condition), computed relative improvement = (baseline - target)/baseline in gradient_norm_sq (averaged over 3 seeds) for dasha-page and vr-marina-2 vs vr-marina:\n\nPHISHING:\n  BF: dasha-page=+0.37%, vr-marina-2=+0.33%\n  LF: dasha-page=-0.25%, vr-marina-2=-0.23%\n  IPM: dasha-page=+0.37%, vr-marina-2=+0.33%\n  ALIE: dasha-page=-0.08%, vr-marina-2=-0.10%\n  BF/LF avg: ~+0.06% / +0.05%; IPM/ALIE avg: ~+0.14% / +0.12%\n  => BF/LF LESS than IPM/ALIE on phishing — claim FAILS.\n\nW8A (all targets worse than baseline):\n  BF: dasha-page=-0.91%, vr-marina-2=-0.93%\n  LF: dasha-page=-0.79%, vr-marina-2=-0.78%\n  IPM: dasha-page=-0.89%, vr-marina-2=-0.91%\n  ALIE: dasha-page=-0.82%, vr-marina-2=-0.82%\n  BF/LF avg: ~-0.85%; IPM/ALIE avg: ~-0.86% (marginally less negative)\n  => On w8a BF/LF is marginally better, but the difference is negligible and the pattern on phishing already contradicts the claim.\n\nThe claim requires BF/LF > IPM/ALIE on BOTH phishing and w8a. On phishing, the data shows the opposite: IPM produces comparable improvement to BF while LF produces negative improvement, making the IPM/ALIE group outperform the BF/LF group.",
+      "note": "The run outputs show no clear advantage of BF/LF over IPM/ALIE attacks in terms of improvement over Byz-VR-MARINA. In fact, on phishing, IPM performs similarly to BF while LF performs worse. All target methods perform very slightly worse than baseline on w8a in the PL setting, making comparisons marginal. No separate per-dataset figure data or additional output files were found for this experiment.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-EF21 converges faster than Byz-VR-MARINA in terms of communication complexity on the phishing dataset.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv: On the phishing dataset at 120 iterations, ef21 (Byz-EF21) sends 10920 bits with gradient_norm_sq≈0.782 and objective_gap≈2.772, while vr-marina (Byz-VR-MARINA) sends ~11977 bits avg (seeds 0&1: 12506 bits, seed 2: 11713 bits) with gradient_norm_sq≈1.078 and objective_gap≈4.15. Byz-EF21 uses fewer bits (lower bits_sent_to_server) and achieves better objective/gradient convergence at the same step count, confirming it converges faster than Byz-VR-MARINA in communication complexity. Results confirmed across all 4 attacks (BF, LF, IPM, ALIE) and 3 seeds.",
+      "note": "The methods are labeled 'ef21' and 'vr-marina' in the CSV (corresponding to Byz-EF21 and Byz-VR-MARINA in the paper). The runs.json final-state summary corroborates the metrics.csv values.",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-EF21 converges faster than Byz-VR-MARINA in terms of communication complexity on the w8a dataset.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv: On w8a dataset, at the final iteration (step 120), ef21 (Byz-EF21) achieves avg objective_gap ≈ 11.18 with ~46,800 bits sent, while vr-marina (Byz-VR-MARINA) achieves avg objective_gap ≈ 15.82 with ~50,310 bits sent (NC/BF setting). This pattern holds across all 8 setting/attack combinations tested (NC and PL settings, BF/ALIE/IPM/LF attacks): ef21 wins every comparison with lower objective_gap at fewer or equal bits. At earlier checkpoints (e.g., 30 iterations / 11,700 bits), ef21 shows obj_gap=17.09 vs vr-marina=17.89; at 60 iterations / 23,400 bits, ef21=15.60 vs vr-marina=17.22; confirming ef21 converges faster per bit communicated throughout training.",
+      "note": "The paper's method names \"Byz-EF21\" and \"Byz-VR-MARINA\" map to internal names \"ef21\" and \"vr-marina\" respectively in the metrics file. The bits_sent_to_server column is labeled \"bits\" in the CSV. The convergence metric used here is objective_gap (lower is better), which decreases faster for ef21 at the same communication cost.",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "Both Byz-EF21 and Byz-VR-MARINA eventually reach a point of stagnation on the phishing dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Checked results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv. Methods ef21 (Byz-EF21) and vr-marina (Byz-VR-MARINA) on the phishing dataset show monotonically INCREASING gradient_norm_sq across all 120 iterations and all 4 attacks (BF, ALIE, IPM, LF), with no flat plateau. Example (BF attack, seed 0): ef21 gradient_norm_sq goes from 0.289188 at iter=0 to 0.322892 at iter=120, increasing by ~0.00033 per step with no slowdown. vr-marina: 0.289188 at iter=0 to 0.305991 at iter=120, rising by ~0.00014 per step uniformly. No stagnation (no region where values level off) is observed; instead both methods diverge continuously throughout the run. This pattern holds across all seeds (0, 1, 2) and all attack types.",
+      "note": "The run uses only 120 iterations; it is possible that stagnation would appear in longer runs not present here. However, the available outputs do not support the stagnation claim — both methods show uninterrupted divergence rather than any plateau behavior. The paper's claim may refer to behavior over longer horizons than what was run.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "Both Byz-EF21 and Byz-VR-MARINA eventually reach a point of stagnation on the w8a dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv for ef21 (Byz-EF21) and vr-marina (Byz-VR-MARINA) on dataset=w8a. In the PL setting, both methods show continuously decreasing gradient_norm_sq throughout all 120 iterations (ef21: 6.56→4.20, vr-marina: 6.56→5.55; both still declining at nearly constant rates in the final quarter). In the NC setting, gradient_norm_sq for both methods oscillates around 2.0–2.2 but does not exhibit a clear plateau; vr-marina actually trends upward (2.05→2.16) and ef21 oscillates (2.05→2.18 peak→2.09). Objective_gap is monotonically decreasing for both methods throughout all runs. No flat stagnation plateau is observed in any combination of attack (BF/LF/IPM/ALIE) or setting (NC/PL). The run outputs do not support the claim that either method \"eventually reaches a point of stagnation\" on w8a.",
+      "note": "The outputs only cover 120 steps (short budget). The 'stagnation' phenomenon described in the paper may require a longer run to manifest. Runs.json omits dataset labels (covers only phishing), and metrics.csv contains both phishing and w8a. No explicit stagnation annotation exists in any output file.",
+      "error": false
+    },
+    {
+      "id": "res-018",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-DASHA-PAGE converges to a smaller neighborhood (lower optimality gap) than Byz-VR-MARINA when using standard averaging.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/quadratic_neighborhood_20260903T175219/metrics.csv (config: d=100, 28 workers including 8 Byzantine, 15 seeds, 500 steps). Under aggregator=mean at the final iteration, averaged across all 15 seeds: dasha-page (Byz-DASHA-PAGE) final objective_gap = 4.082; vr-marina-2 (Byz-VR-MARINA) final objective_gap = 11.055. Since lower_is_better, Byz-DASHA-PAGE < Byz-VR-MARINA holds clearly (ratio ~2.7×), confirming the ranking claim.",
+      "note": "Method name mapping confirmed from config.resolved.json and CSV: 'dasha-page' = Byz-DASHA-PAGE, 'vr-marina-2' = Byz-VR-MARINA. The gap values are highly consistent across seeds for dasha-page (std ≈ 0.00001) but more variable for vr-marina-2 (range ~8.4–14.5), yet all seeds of dasha-page remain far below all seeds of vr-marina-2.",
+      "error": false
+    },
+    {
+      "id": "res-019",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-DASHA-PAGE converges to a smaller neighborhood (lower optimality gap) than Byz-VR-MARINA when using CM aggregator.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/quadratic_neighborhood_20260903T175219/metrics.csv (CM aggregator, 15 seeds each, final iteration ~500): dasha-page mean final objective_gap = 2.388305 (range 0.842–3.948); vr-marina-2 mean final objective_gap = 28.253549 (range 22.873–32.491). Byz-DASHA-PAGE (dasha-page) achieves ~12× smaller optimality gap than Byz-VR-MARINA (vr-marina-2) under the CM aggregator, confirming the ranking claim.",
+      "note": "config.resolved.json confirms d=100, 28 clients (28 workers), aggregators=[mean, CM, GM], matching the experiment spec.",
+      "error": false
+    },
+    {
+      "id": "res-020",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-DASHA-PAGE converges to a smaller neighborhood (lower optimality gap) than Byz-VR-MARINA when using GM aggregator.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/quadratic_neighborhood_20260903T175219/runs.json and metrics.csv. For the GM (geometric median) aggregator at the final iteration, across 15 seeds: Byz-DASHA-PAGE (method='dasha-page') mean optimality_gap = 49.998614 (range 49.998141–49.999090); Byz-VR-MARINA (method='vr-marina-2') mean optimality_gap = 49.999995 (range 49.999991–49.999996). Byz-DASHA-PAGE has a lower (better) final optimality gap than Byz-VR-MARINA in every individual seed and on average, satisfying the required ranking (lower_is_better, Byz-DASHA-PAGE > Byz-VR-MARINA).",
+      "note": "Both methods converge to a neighborhood near ~50 on this synthetic problem, but Byz-DASHA-PAGE consistently reaches a slightly smaller neighborhood than Byz-VR-MARINA under GM aggregation. The relative gap is small (~0.003%) but consistent across all 15 seeds.",
+      "error": false
+    },
+    {
+      "id": "res-021",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-VR-MARINA has a theoretical stepsize of 4e-4 on the phishing dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs for exp7_theoretical_stepsizes exist in the repository. Searched all output files under results/ (results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv, runs.json, results/formal/quadratic_neighborhood_20260903T175219/metrics.csv, runs.json) and all JSON/CSV/log files. None contain a 'theoretical_stepsizes' metric or any Table 3 data for Byz-VR-MARINA on phishing. The only available run outputs are convergence metrics (objective_gap, gradient_norm_sq, bits, data_passes) from the paper_core and quadratic_neighborhood experiments, which use gamma=0.0112 as the experimental stepsize — not a theoretical stepsize computation.",
+      "note": "The expected value 4e-4 does not appear in any run output. Case (a): no relevant run output exists after thorough search.",
+      "error": false
+    },
+    {
+      "id": "res-022",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-VR-MARINA 2.0 has a theoretical stepsize of 2e-2 on the phishing dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run output for experiment exp7_theoretical_stepsizes exists anywhere in the repository. The only result directories are results/formal/paper_core_20260903T174914_120s_3seed/ and results/formal/quadratic_neighborhood_20260903T175219/. Neither contains any \"theoretical_stepsizes\" metric or a per-method theoretical stepsize table. The runs.json and metrics.csv files record only actual experiment gammas (0.0112 for vr-marina-2/phishing), not theoretical stepsizes. CLAIMS.json and CLAIM_RESULTS.json have no exp7 entry. The experiment_report.md explicitly states stepsizes used are \"conservative deterministic proxies\" and do not correspond to paper-published per-dataset tuned values. No value of 0.02 (or any value) for Byz-VR-MARINA 2.0 theoretical stepsize on phishing is present in any output file.",
+      "note": "The repository documents that the paper's per-dataset fine-tuned stepsizes were not published by the original authors, so a theoretical stepsize of 0.02 for Table 3 cannot be verified from any run output.",
+      "error": false
+    },
+    {
+      "id": "res-023",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-DASHA-PAGE has a theoretical stepsize of 1.2e-2 on the phishing dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No exp7 or theoretical stepsize output files exist anywhere in the repository. Searched all results/, docs/, configs/, and root-level output files; no files match \"exp7\", \"theoretical_stepsize\", \"table3\", or \"Table 3\". The only run outputs containing dasha-page (Byz-DASHA-PAGE) on the phishing dataset are in results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv and runs.json, where the actual stepsize (gamma) used is 0.0112, not 0.012. The difference |0.0112 - 0.012| = 0.0008 far exceeds the tolerance of 1e-6. No dedicated theoretical stepsize table output was produced for this experiment.",
+      "note": "The repo's experiment_report.md notes that a \"conservative deterministic stepsize proxy\" was used rather than the paper's per-dataset finetuned stepsizes, which explains the discrepancy. But regardless of reason, no run output supports the claimed theoretical_stepsize of 0.012 for Byz-DASHA-PAGE on phishing.",
+      "error": false
+    },
+    {
+      "id": "res-024",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-VR-MARINA 2.0 and Byz-DASHA-PAGE allow for significantly larger theoretical stepsizes than Byz-VR-MARINA.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs for exp7_theoretical_stepsizes exist anywhere in the repository. Searched: results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv (columns: dataset, method, gamma, objective, gradient_norm_sq, bits, data_passes, time_seconds — no 'theoretical_stepsizes' column), results/formal/quadratic_neighborhood_20260903T175219/metrics.csv, CLAIMS.json, CLAIM_RESULTS.json, and all files under results/, configs/, scripts/. The gamma values present (e.g., vr-marina=0.0112, vr-marina-2=0.0112, dasha-page=0.0112 for phishing) are empirical run stepsizes, not the theoretical stepsize formulas from Appendix I.3 Table 3. No file named exp7, table3, theoretical_stepsizes, or similar was found. The methods 'Byz-VR-MARINA 2.0', 'Byz-DASHA-PAGE', 'Byz-VR-MARINA' do not appear with a theoretical_stepsizes metric in any output file.",
+      "note": "The repository contains only empirical convergence experiment outputs (exp_id paper_core and quadratic_neighborhood). The theoretical stepsize comparison from Table 3 / Appendix I.3 was never produced as a run output.",
+      "error": false
+    },
+    {
+      "id": "res-025",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-VR-MARINA 2.0 and Byz-DASHA-PAGE outperform Byz-VR-MARINA under LMP and ROP attacks on both phishing and w8a datasets.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Searched all run output files in the repository: results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv and results/formal/quadratic_neighborhood_20260903T175219/metrics.csv. The only attacks present in the run outputs are ['ALIE', 'BF', 'IPM', 'LF'] — neither LMP nor ROP appear anywhere. CLAIM_RESULTS.json (claim C3) explicitly confirms: \"LMP and ROP support is implemented for reruns; the primary formal budget follows the paper's main BF/LF/IPM/ALIE comparisons.\" No exp8_additional_attacks directory or separate result file with LMP/ROP data exists. This is a case (a) verdict: no relevant run output exists.",
+      "note": "The claim requires ranking on LMP and ROP attacks specifically (per Appendix I.4, Figure 9). Those attacks were never executed in the formal runs recorded in the repository, so no bits_sent comparison under those attacks can be verified from run outputs.",
+      "error": false
+    },
+    {
+      "id": "res-026",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Under IPM, LMP and ROP attacks on the phishing dataset, Byz-EF21 outperforms Byz-DASHA-PAGE and Byz-VR-MARINA 2.0 in terms of communication complexity.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "The only run-output directory is results/formal/paper_core_20260903T174914_120s_3seed/. Its config.resolved.json shows attacks run: [\"BF\",\"LF\",\"IPM\",\"ALIE\"]. The metrics.csv contains no rows with attack=\"LMP\" or attack=\"ROP\" (confirmed by exhaustive enumeration: all_attacks = {'ALIE','IPM','LF','BF'}). LMP and ROP are completely absent. For the IPM attack on phishing, the final-iteration bits at step 120 averaged across seeds are: ef21=10920, vr-marina-2=11977, dasha-page=12242 — which would satisfy the ranking for IPM alone. However, the claim requires the ranking to hold under IPM AND LMP AND ROP attacks. No LMP or ROP run outputs exist anywhere in the repository.",
+      "note": "The IPM condition is individually satisfied in the available data, but LMP and ROP outputs are entirely missing — the experiment was not run with those attack variants.",
+      "error": false
+    },
+    {
+      "id": "res-027",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Byz-DASHA-PAGE works noticeably better than Byz-EF21 under all attacks for the w8a dataset.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "File: results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv. For w8a dataset, final objective_gap (lower=better, averaged over 3 seeds) at 46800 bits:\n- NC/Heterogeneous: ALIE: dasha-page=16.0893 vs ef21=11.9563 (EF21 wins by 34.6%); BF: 16.3464 vs 12.5936 (EF21 wins 29.8%); IPM: 16.3206 vs 12.5334 (EF21 wins 30.2%); LF: 16.2656 vs 12.3876 (EF21 wins 31.3%).\n- NC/Homogeneous: all attacks ~15.79 (dasha-page) vs ~11.18 (ef21), EF21 wins.\n- PL/Homogeneous: all attacks ~20.81 (dasha-page) vs ~13.88 (ef21), EF21 wins.\n- PL/Heterogeneous: all attacks ~21.1–21.3 (dasha-page) vs ~14.5–15.0 (ef21), EF21 wins.\nAlso confirmed at intermediate communication budget (~10140 bits): dasha-page obj_gap ≈18.0–18.1, ef21 ≈17.2–17.3 across all attacks (EF21 wins).\nByz-EF21 outperforms Byz-DASHA-PAGE under ALL attacks for w8a — the opposite of the claimed ranking.",
+      "note": "The run outputs map 'dasha-page' → Byz-DASHA-PAGE and 'ef21' → Byz-EF21. The communication_complexity metric is measured as total bits transmitted; both methods transmit the same number of bits per step, so the quality comparison at identical communication cost uses objective_gap (lower is better). In every combination tested (4 attacks × 2 settings × 2 homogeneity conditions), ef21 achieves a strictly lower objective_gap than dasha-page, contradicting the claim that Byz-DASHA-PAGE works noticeably better than Byz-EF21 under all attacks.",
+      "error": false
+    },
+    {
+      "id": "res-028",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "In general, the new methods (Byz-EF21, Byz-VR-MARINA 2.0, Byz-DASHA-PAGE) are more robust than Byz-VR-MARINA across the phishing and w8a datasets.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Run outputs are in results/formal/paper_core_20260903T174914_120s_3seed/metrics.csv. The communication_complexity metric (bits column) was extracted as final cumulative bits at step 120, averaged across all seeds/settings/attacks per (dataset, method). Results: phishing: ef21=10920, vr-marina=11977, vr-marina-2=11977, dasha-page=12242; w8a: ef21=46800, vr-marina=49140, vr-marina-2=49140, dasha-page=50310. Ranking checks (lower_is_better): (1) Byz-EF21 > Byz-VR-MARINA: ef21(10920) < vr-marina(11977) on phishing ✓ and ef21(46800) < vr-marina(49140) on w8a ✓ — this constraint HOLDS. (2) Byz-VR-MARINA 2.0 > Byz-VR-MARINA: vr-marina-2(11977) = vr-marina(11977) on phishing ✗ and vr-marina-2(49140) = vr-marina(49140) on w8a ✗ — this constraint FAILS (identical bits). (3) Byz-DASHA-PAGE > Byz-VR-MARINA: dasha-page(12242) > vr-marina(11977) on phishing ✗ and dasha-page(50310) > vr-marina(49140) on w8a ✗ — this constraint FAILS (dasha-page uses more bits than vr-marina, i.e., is worse). Two of the three required pairwise ranking constraints fail on both datasets.",
+      "note": "The claim that Byz-VR-MARINA 2.0 and Byz-DASHA-PAGE are more robust (lower communication complexity) than Byz-VR-MARINA is not supported. Both methods use equal or more bits than vr-marina in the run outputs. Only Byz-EF21 shows lower communication cost than Byz-VR-MARINA. The 'biased vs unbiased' framing may refer to data heterogeneity (homogeneous vs non-homogeneous settings), but even examining obj_gap quality at matched bit budgets, vr-marina-2 and dasha-page do not consistently outperform vr-marina.",
+      "error": false
+    }
+  ]
+}

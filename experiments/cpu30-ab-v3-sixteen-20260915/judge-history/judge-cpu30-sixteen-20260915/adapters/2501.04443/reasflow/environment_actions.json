@@ -1,0 +1,8 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "source algorithms use numpy",
+    "source": "src/reproduction/algorithms.py"
+  }
+]

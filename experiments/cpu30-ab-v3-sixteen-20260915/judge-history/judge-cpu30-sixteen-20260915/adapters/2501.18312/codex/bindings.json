@@ -1,0 +1,6 @@
+[
+  {
+    "path": "src/pps_quantization.py",
+    "symbol": "pps_quantize"
+  }
+]

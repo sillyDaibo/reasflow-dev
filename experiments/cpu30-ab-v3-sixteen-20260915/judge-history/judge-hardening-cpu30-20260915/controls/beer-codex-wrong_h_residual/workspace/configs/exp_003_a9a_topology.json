@@ -1,0 +1,17 @@
+{
+  "experiment_id": "exp_003_a9a_topology",
+  "task": "a9a",
+  "data_root": "${BEER_A9A_ROOT}",
+  "clients": 40,
+  "topology": "er",
+  "edge_probability": 0.5,
+  "lr": 0.5,
+  "gamma": 0.7,
+  "batch_size": 100,
+  "rounds": 35,
+  "compressor": "gsgd",
+  "compression_param": 5,
+  "alpha": 0.05,
+  "seed": 13,
+  "methods": ["BEER"]
+}

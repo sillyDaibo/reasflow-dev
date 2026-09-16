@@ -1,0 +1,10 @@
+[
+  {
+    "path": "proxskip_vip/algorithms.py",
+    "symbol": "proxskip_fl"
+  },
+  {
+    "path": "proxskip_vip/games.py",
+    "symbol": "LinearFiniteSumVIP.operator"
+  }
+]

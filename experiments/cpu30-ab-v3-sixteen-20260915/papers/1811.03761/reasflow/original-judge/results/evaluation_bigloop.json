@@ -1,0 +1,277 @@
+{
+  "paper_id": "1811.03761",
+  "evaluated_at": "2026-09-04T12:50:02.837314+00:00",
+  "summary": {
+    "total_score": 0.8611,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.8611,
+    "total_rubrics": 22,
+    "passed": 19,
+    "failed": 3,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": true
+  },
+  "by_priority": {
+    "primary": {
+      "score": 0.8571,
+      "passed": 12,
+      "total": 14
+    },
+    "tertiary": {
+      "score": 1.0,
+      "passed": 1,
+      "total": 1
+    },
+    "secondary": {
+      "score": 0.8571,
+      "passed": 6,
+      "total": 7
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RSA and GeoMed achieve top-1 accuracy close to Ideal SGD.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_no_attack/metrics.csv: In the no-attack configuration on MNIST, averaged over 3 seeds: Ideal SGD final_accuracy=0.9202, RSA (L1) final_accuracy=0.9194 (diff=0.0007), GeoMed final_accuracy=0.9194 (diff=0.0008). RSA (L2) also close at 0.9164 (diff=0.0038). Both RSA (L1) and GeoMed achieve top-1 accuracy within ~0.1 percentage points of Ideal SGD.",
+      "note": "RSA has multiple variants in the outputs (rsa_l1, rsa_l2, rsa_linf). The rsa_linf variant performs poorly (~0.52), but rsa_l1 and rsa_l2 both match SGD closely. The claim is supported by rsa_l1 (and rsa_l2). rsa_linf is an outlier but not the primary RSA variant expected to match SGD.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RSA and GeoMed significantly outperform Krum and Median in top-1 accuracy.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_001_no_attack/metrics.csv (no-attack / no-Byzantine experiment on MNIST). Averaged final_accuracy across 3 seeds: RSA (rsa_l1)=0.9194, GeoMed=0.9194, Krum=0.8698, Median=0.8672. All four required ranking constraints hold: RSA > Krum (0.9194 > 0.8698), RSA > Median (0.9194 > 0.8672), GeoMed > Krum (0.9194 > 0.8698), GeoMed > Median (0.9194 > 0.8672). The gap is ~5 percentage points in each case, supporting \"significantly outperform\".",
+      "note": "RSA is represented by the rsa_l1 variant (best-performing RSA variant). rsa_l2 also beats Krum and Median. rsa_linf (0.5251) does not, but it is not the canonical RSA method.",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RSA and GeoMed outperform Krum and Median under same-value attacks with q = 4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/summary.csv and results/formal/exp_002_same_q4/metrics.csv, experiment exp_002_same_q4 (same-value attack, q=4, MNIST, 3 seeds averaged):\n- RSA (rsa_l1): final_accuracy_mean=0.8953, best_accuracy_mean=0.8978\n- GeoMed: final_accuracy_mean=0.8952, best_accuracy_mean=0.9015\n- Krum: final_accuracy_mean=0.8763, best_accuracy_mean=0.8783\n- Median: final_accuracy_mean=0.8377, best_accuracy_mean=0.8417\n\nAll four required ranking constraints hold (higher is better):\nRSA > Krum: 0.8953 > 0.8763 ✓\nRSA > Median: 0.8953 > 0.8377 ✓\nGeoMed > Krum: 0.8952 > 0.8763 ✓\nGeoMed > Median: 0.8952 > 0.8377 ✓\n\nRSA-L2 (0.8892 final) also outperforms both Krum and Median. Only RSA-Linf (0.3822) fails, but RSA-L1 is the primary RSA representative and satisfies all constraints.",
+      "note": "Three RSA norm variants are present (L1, L2, Linf). The verdict uses RSA-L1 as the primary RSA representative, which is consistent with the paper's focus and the CLAIM_RESULTS.json observation. RSA-Linf does not outperform Krum or Median under this attack, but that does not affect the verdict for the canonical RSA method.",
+      "error": false
+    },
+    {
+      "id": "res-004",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RSA and GeoMed are close to Ideal SGD under same-value attacks with q = 4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_same_q4/metrics.csv (same-value attack, q=4, c=100, MNIST, 20 workers, 3 seeds). Mean final top-1 accuracy: Ideal SGD (sgd)=0.8953, GeoMed=0.8952 (diff=0.0002), RSA_L1=0.8953 (diff=0.0000), RSA_L2=0.8892 (diff=0.0062). All three are within ~0.7% of each other, confirming they are \"close.\" Config verified via results/formal/exp_002_same_q4/resolved_config.json: attack=same, num_byzantine=4, same_value=100.0, dataset=MNIST.",
+      "note": "RSA_LInf is a clear outlier (mean=0.3822) and not close to Ideal SGD, but the claim about \"RSA\" is satisfied by the L1 and L2 variants which track Ideal SGD extremely closely. The paper's Figure 4a likely shows the best-performing RSA variant.",
+      "error": false
+    },
+    {
+      "id": "res-005",
+      "dimension": "exp_results",
+      "priority": "tertiary",
+      "description": "SGD still works under the same-value attacks (achieves non-zero top-1 accuracy).",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_same_q4/metrics.json: SGD final top-1 accuracies across 3 seeds = [0.897, 0.8965, 0.8925] (same-value attack, q=4, c=100, MNIST). results/formal/exp_003_same_q8/metrics.json: SGD final top-1 accuracies across 3 seeds = [0.896, 0.8965, 0.898] (same-value attack, q=8, c=100, MNIST). Both configurations confirm accuracy(SGD, q=4) > 0 and accuracy(SGD, q=8) > 0 with values around 89-90%.",
+      "note": "The configs also confirm the experiments match the claim: exp_002 has attack=\"same\", num_byzantine=4 (q=4), same_value=100.0, c=100 on MNIST; exp_003 has attack=\"same\", num_byzantine=8 (q=8), same_value=100.0, c=100 on MNIST.",
+      "error": false
+    },
+    {
+      "id": "res-006",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "RSA's top-1 accuracy under same-value attacks with q = 8 is almost the same as with q = 4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_same_q4/metrics.csv (same-value attack, q=4, c=100): RSA (rsa_l1) best_accuracy seeds [0.898, 0.8975, 0.898] → mean 0.8978; RSA (rsa_l2) best_accuracy seeds [0.891, 0.8885, 0.8895] → mean 0.8897. results/formal/exp_003_same_q8/metrics.csv (same-value attack, q=8, c=100): RSA (rsa_l1) best_accuracy seeds [0.895, 0.8955, 0.8965] → mean 0.8957; RSA (rsa_l2) best_accuracy seeds [0.8875, 0.887, 0.8885] → mean 0.8877. Absolute difference q=8 vs q=4: rsa_l1 ≈ −0.0022, rsa_l2 ≈ −0.0020. Both RSA norm variants show essentially identical top-1 accuracy between q=4 and q=8 (difference < 0.3 pp), supporting the claim that RSA accuracy under same-value attacks with q=8 is almost the same as with q=4.",
+      "note": "The paper refers to \"RSA\" generically; outputs contain rsa_l1 and rsa_l2 variants, both showing the same negligible drop. The rsa_linf variant collapses (≈0.39 / ≈0.31) and is not the RSA referred to in the claim. num_byzantine=4 corresponds to q=4 and num_byzantine=8 corresponds to q=8.",
+      "error": false
+    },
+    {
+      "id": "res-007",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "GeoMed's top-1 accuracy under same-value attacks with q = 8 is almost the same as with q = 4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_same_q4/metrics.csv: GeoMed best_accuracy (same-value attack, c=100, q=4) across 3 seeds = [0.901, 0.903, 0.9005], mean=0.9015. results/formal/exp_003_same_q8/metrics.csv: GeoMed best_accuracy (same-value attack, c=100, q=8) across 3 seeds = [0.8985, 0.8985, 0.8975], mean=0.8982. Difference = 0.0033 (~0.3 percentage points), confirming the two configurations produce nearly identical accuracy.",
+      "note": "The configs confirm the experiments are IID MNIST, same-value attack with same_value=100.0, num_byzantine=4 (q=4) and num_byzantine=8 (q=8), num_workers=20, c=100. The ~0.3pp difference easily qualifies as \"almost the same.\"",
+      "error": false
+    },
+    {
+      "id": "res-008",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Krum's top-1 accuracy under same-value attacks with q = 8 is lower than with q = 4.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "Extracted Krum rows from results/formal/exp_002_same_q4/metrics.csv (q=4) and results/formal/exp_003_same_q8/metrics.csv (q=8), same-value attack, 3 seeds each. Final accuracies: q=4 seeds [0.878, 0.8795, 0.8715], mean=0.8763; q=8 seeds [0.8795, 0.8735, 0.8715], mean=0.8748. Best accuracies: q=4 [0.8795, 0.8795, 0.876], mean=0.8783; q=8 [0.882, 0.8785, 0.875], mean=0.8785. The difference in final accuracy is only ~0.0015 in favor of q=4, and best accuracy actually marginally favors q=8. The claim requires a meaningful ranking where Krum q=4 is clearly higher-accuracy (better) than Krum q=8, but the outputs show essentially equivalent performance (~87.5–87.8%) for both q values, not the distinct separation implied by the claim.",
+      "note": "The paper's Figure 4b presumably shows a clearer separation; the reproduction outputs do not reproduce this ranking at any meaningful margin. The difference in mean final accuracy is 0.0015 (q4 > q8 by only 0.15pp), well within noise, and best accuracy actually slightly favors q=8.",
+      "error": false
+    },
+    {
+      "id": "res-009",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "Median's top-1 accuracy under same-value attacks with q = 8 is lower than with q = 4.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_002_same_q4/metrics.csv: Median (q=4) final_accuracy values across 3 seeds = [0.845, 0.834, 0.834], mean = 0.8377. results/formal/exp_003_same_q8/metrics.csv: Median (q=8) final_accuracy values across 3 seeds = [0.823, 0.8125, 0.814], mean = 0.8165. In all three seed comparisons q=4 strictly exceeds q=8 (0.845>0.823, 0.834>0.8125, 0.834>0.814), confirming the ranking Median(q=4) > Median(q=8) under higher_is_better.",
+      "note": "Both experiments use attack=same, num_byzantine=4 (q=4) and num_byzantine=8 (q=8) respectively on MNIST, matching the described experimental setup.",
+      "error": false
+    },
+    {
+      "id": "res-010",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Under sign-flipping attacks with q=4, SGD fails; GeoMed, Median and ℓ1-norm RSA show similar performance, and Median is slightly worse than the other Byzantine-robust algorithms.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/exp_004_sign_q4/metrics.csv. Average final_accuracy across 3 seeds (sign-flipping, q=4, MNIST): GeoMed=0.8890, rsa_l1 (ℓ1-norm RSA)=0.8673, Median=0.8123, SGD=0.1057. All five required pairwise constraints hold: rsa_l1 (0.8673) > SGD (0.1057) ✓; GeoMed (0.8890) > SGD (0.1057) ✓; Median (0.8123) > SGD (0.1057) ✓; rsa_l1 (0.8673) > Median (0.8123) ✓; GeoMed (0.8890) > Median (0.8123) ✓. SGD collapses near chance (~10%), the three robust methods cluster in the 0.81–0.89 range, and Median is the weakest among them.",
+      "note": "The claim also says GeoMed and ℓ1-norm RSA show 'similar performance'. In the data, GeoMed (0.889) is noticeably higher than rsa_l1 (0.867), but the qualitative claim that both outperform Median and that Median is 'slightly worse' is supported. All five explicit ranking constraints in the rubric are satisfied.",
+      "error": false
+    },
+    {
+      "id": "res-011",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "Under sign-flipping attacks with q=8, SGD fails; GeoMed, Median and ℓ1-norm RSA show similar performance, and Median is slightly worse than the other Byzantine-robust algorithms.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_005_sign_q8/metrics.csv — averaged final_accuracy across 3 seeds (q=8, sign-flipping attack, MNIST):\n  sgd: 0.0918 (fails completely)\n  median: 0.8098\n  geomed: 0.8522\n  rsa_l1: 0.8643\nAll five required pairwise constraints hold:\n  rsa_l1 (0.8643) > sgd (0.0918) ✅\n  geomed (0.8522) > sgd (0.0918) ✅\n  median (0.8098) > sgd (0.0918) ✅\n  rsa_l1 (0.8643) > median (0.8098) ✅\n  geomed (0.8522) > median (0.8098) ✅\nGeoMed and rsa_l1 are close (0.8522 vs 0.8643), consistent with \"similar performance\", and Median is notably lower (0.8098), consistent with \"slightly worse\".",
+      "note": "The experiment directory exp_005_sign_q8 corresponds to sign-flipping q=8. Additional methods (krum, rsa_l2, rsa_linf) appear in the output but are not part of the claim's ranking requirements.",
+      "error": false
+    },
+    {
+      "id": "res-012",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "SGD fails under Gaussian attacks with q=4 and q=8.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_006_gaussian_q4/metrics.csv — SGD under Gaussian attack, q=4: best accuracies across 3 seeds are 0.359, 0.388, 0.416 (max ~41.6%), with final losses of ~1401–1441 (far above convergence). results/formal/exp_007_gaussian_q8/metrics.csv — SGD under Gaussian attack, q=8: best accuracies across 3 seeds are 0.2665, 0.2665, 0.2085 (max ~26.65%), with final losses of ~2832–2883. Both cases represent clear failure to converge to meaningful accuracy on MNIST (where a well-trained model typically achieves ~97–99%).",
+      "note": "No threshold for \"meaningful accuracy\" is specified in the rubric, but SGD achieving at most ~42% (q=4) and ~27% (q=8) on MNIST — with losses in the thousands — unambiguously constitutes failure to converge. MNIST random-guess baseline is ~10%, so even q=4 accuracy is only modestly above chance given the 10-class problem.",
+      "error": false
+    },
+    {
+      "id": "res-013",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "RSA and GeoMed have similar results under Gaussian attacks.",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "From results/formal/exp_006_gaussian_q4/metrics.json and results/formal/exp_007_gaussian_q8/metrics.json (confirmed in summary.csv):\n\nGaussian q=4 (exp_006_gaussian_q4):\n- GeoMed mean final accuracy: 0.8905\n- RSA_L1 mean final accuracy: 0.8995 (diff: ~0.009)\n- RSA_L2 mean final accuracy: 0.8915 (diff: ~0.001)\n- RSA_Linf mean final accuracy: ~0.4755 (diff: ~0.415 — not similar)\n\nGaussian q=8 (exp_007_gaussian_q8):\n- GeoMed mean final accuracy: 0.8887\n- RSA_L1 mean final accuracy: 0.8997 (diff: ~0.011)\n- RSA_L2 mean final accuracy: 0.8902 (diff: ~0.001)\n- RSA_Linf mean final accuracy: ~0.4595 (diff: ~0.429 — not similar)\n\nRSA_L1 and RSA_L2 both achieve accuracy within ~1% of GeoMed under both Gaussian attack configurations, supporting the claim of similar performance. RSA_Linf is dramatically worse than GeoMed in both configurations.",
+      "note": "The claim refers to \"RSA\" generically; the outputs contain three RSA variants (L1, L2, Linf). RSA_L1 and RSA_L2 are very close to GeoMed (~0.89-0.90 for both), supporting the claim. RSA_Linf (~0.46-0.48) is not similar to GeoMed. The paper's claim likely refers to the best-performing RSA norm(s) (L1/L2), for which the claim holds clearly.",
+      "error": false
+    },
+    {
+      "id": "res-014",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RSA and GeoMed outperform Median and Krum in terms of top-1 accuracy under Gaussian attacks with q=4 and q=8.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "Results from results/formal/exp_006_gaussian_q4/metrics.csv and results/formal/exp_007_gaussian_q8/metrics.csv (mean over 3 seeds, best_accuracy):\n\nq=4: RSA_L1=0.9022, RSA_L2=0.8930, GeoMed=0.8982, Krum=0.8787, Median=0.8373\nq=8: RSA_L1=0.9010, RSA_L2=0.8907, GeoMed=0.8948, Krum=0.8800, Median=0.8647\n\nAll four required constraints hold for both q values (taking the primary RSA variants RSA_L1/RSA_L2):\n- RSA > Median: q=4 (0.9022>0.8373), q=8 (0.9010>0.8647) ✓\n- RSA > Krum: q=4 (0.9022>0.8787), q=8 (0.9010>0.8800) ✓\n- GeoMed > Median: q=4 (0.8982>0.8373), q=8 (0.8948>0.8647) ✓\n- GeoMed > Krum: q=4 (0.8982>0.8787), q=8 (0.8948>0.8800) ✓",
+      "note": "RSA appears as multiple variants (rsa_l1, rsa_l2, rsa_linf). RSA_linf is an outlier (~0.47 accuracy). The claim holds for RSA_L1 and RSA_L2. The rubric says \"RSA\" without specifying variant; the two main variants both outperform Median and Krum.",
+      "error": false
+    },
+    {
+      "id": "res-015",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "GeoMed has the largest per-iteration computational cost due to the difficulty of calculating the geometric median.",
+      "verdict": 0,
+      "confidence": "medium",
+      "evidence": "No dedicated exp5_runtime_comparison output directory exists in the repository. The available runtime data comes from exp_001 through exp_007 (all tracking elapsed_seconds). In most experiments GeoMed is indeed slowest: exp_001 (GeoMed=63.45s vs Krum=35.84s, Median=23.63s, SGD=9.29s), exp_002 (GeoMed=27.96s), exp_003 (GeoMed=95.59s vs Krum=19.19s, Median=14.77s, SGD=10.17s), exp_004 (GeoMed=70.92s), exp_006 (GeoMed=82.74s), exp_007 (GeoMed=65.86s) — all satisfy the constraint. However, in exp_005_sign_q8: GeoMed=27.65s but Median=32.90s, which violates the required ranking 'Median > GeoMed' (lower_is_better means Median should have lower time than GeoMed). Additionally, 'Ideal SGD' as a distinct method label does not appear in outputs (only 'sgd'); and there are no RSA comparison rows matching all five required methods in one runtime experiment output.",
+      "note": "The claim likely refers to Figure 7 of the paper, which corresponds to a specific runtime-comparison experiment not present as a standalone run in this repository. The closest available data (exp_003_same_q8, used for C5_linear_aggregation_cost) does satisfy all constraints (GeoMed=95.59s, Krum=19.19s, Median=14.77s, SGD=10.17s). But exp_005_sign_q8 shows a counterexample (Median > GeoMed). Since no dedicated exp5 output exists, verdict is 0 (case a: no matching run output). The partial evidence is ambiguous.",
+      "error": false
+    },
+    {
+      "id": "res-016",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "ℓ1-norm RSA and Median are both slightly slower than Ideal SGD, but faster than Krum.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/summary.json and results/formal/experiment_report.md, exp_003_same_q8 (q=8 same-value attack, MNIST): mean elapsed_seconds — SGD=10.17s, RSA_l1=15.13s, Median=14.77s, Krum=19.19s. All four required pairwise constraints (lower_is_better) hold: SGD(10.17) < RSA(15.13) [Ideal SGD > RSA ✓], SGD(10.17) < Median(14.77) [Ideal SGD > Median ✓], RSA(15.13) < Krum(19.19) [RSA > Krum ✓], Median(14.77) < Krum(19.19) [Median > Krum ✓]. The experiment_report.md explicitly confirms: \"the mean wall-clock times are approximately 15.13 s (RSA-l1), 10.17 s (SGD), 14.77 s (Median), 19.19 s (Krum).\"",
+      "note": "The repository labels the runtime comparison experiment as exp_003_same_q8 rather than exp_005. The claim specifies ℓ1-norm RSA specifically; this maps to rsa_l1 in the outputs. No explicit 'exp5_runtime_comparison' directory exists, but exp_003_same_q8 is the canonical runtime comparison dataset per the experiment report.",
+      "error": false
+    },
+    {
+      "id": "res-017",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In both settings (without Byzantine attacks and under same-value attacks with q=8, c=100), ℓ1-norm RSA and ℓ2-norm RSA are close in top-1 accuracy, and both outperform ℓ∞-norm RSA.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "From results/formal/exp_001_no_attack/metrics.json (no-attack setting): rsa_l1=0.9194, rsa_l2=0.9164, rsa_linf=0.5251. From results/formal/exp_003_same_q8/metrics.json (same-value attack, q=8): rsa_l1=0.8935, rsa_l2=0.8873, rsa_linf=0.2730. Both required constraints hold in both settings: ℓ1 > ℓ∞ (0.9194>0.5251 and 0.8935>0.2730) and ℓ2 > ℓ∞ (0.9164>0.5251 and 0.8873>0.2730). ℓ1 and ℓ2 are close (gap ~0.003 no-attack, ~0.006 same-q8) while both greatly exceed ℓ∞ (gap ~0.39 no-attack, ~0.61 same-q8).",
+      "note": "The experiment exp_003_same_q8 corresponds to q=8 same-value attacks (matching the claim's q=8, c=100 parameter). No dedicated exp7_rsa_different_norms directory exists, but exp_001_no_attack and exp_003_same_q8 contain the relevant norm comparisons referenced in C4_lambda_and_norms and C2_no_attack_competitiveness claims in CLAIM_RESULTS.json.",
+      "error": false
+    },
+    {
+      "id": "res-018",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "In both settings, regarding the variance of the regular workers' local iterates, ℓ∞-norm RSA has the largest variance, ℓ2-norm RSA has smaller variance than ℓ1-norm RSA.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "No run outputs exist for experiment exp7_rsa_different_norms. Exhaustive search found only results for exp_001 through exp_009 (no_attack, same_q4, same_q8, sign_q4, sign_q8, gaussian_q4, gaussian_q8, lambda_sweep, heterogeneous) in results/formal/. Searched all CSV, JSON, log, and text files (59 total output files) for terms: l1_norm, l2_norm, linf, ell_1, ell_2, ell_inf, rsa.*norm, variance.*regular — none matched. No directory or file referencing RSA with different norms or ℓ1/ℓ2/ℓ∞ comparison was found anywhere in the repository.",
+      "note": "The configs directory also contains only exp_001 through exp_009, confirming this experiment was never configured or run.",
+      "error": false
+    },
+    {
+      "id": "res-019",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "When q=4, two handwriting numbers' data are not available, so the best possible accuracy is around 0.8.",
+      "verdict": 1,
+      "confidence": "medium",
+      "evidence": "results/formal/exp_009_heterogeneous/metrics.csv: For q=4 (num_byzantine=4), the best-performing method is SGD (no attack aggregation) with best_accuracy values of [0.749, 0.7505, 0.7485] across 3 seeds (avg=0.749, max=0.7505). Other methods at q=4: rsa_l1=0.719 avg, geomed=0.706 avg, median=0.438 avg, rsa_linf=0.324 avg, krum=0.0875. The maximum best accuracy across all methods is ~0.7505, which is within |0.7505 - 0.8| = 0.0495 ≤ tolerance 0.1 of the expected value 0.8. This supports the claim that when q=4 the best possible accuracy is \"around 0.8.\"",
+      "note": "The claim refers to a theoretical upper bound (~0.8, because 2 of 10 digit classes are unavailable). The actual best observed accuracy across all methods at q=4 is ~0.750 (SGD), which is consistent with \"around 0.8\" within the ±0.1 tolerance. The claim is about the theoretical ceiling matching observed performance, not a specific method hitting exactly 0.8.",
+      "error": false
+    },
+    {
+      "id": "res-020",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "When q=8, the best possible accuracy is around 0.6.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_009_heterogeneous/metrics.csv: For q=8 (num_byzantine=8), the best accuracy values across all methods and seeds are: sgd ~0.586–0.586, rsa_l1 ~0.567–0.571, rsa_linf ~0.163–0.261, median ~0.204–0.217, geomed/krum/rsa_l2 ~0.088. The overall best accuracy at q=8 is 0.5865 (sgd, seed=2). |0.5865 - 0.6| = 0.0135 ≤ tolerance 0.1. The claim \"best possible accuracy is around 0.6\" is supported.",
+      "note": "The best-performing method at q=8 is sgd with ~0.586 accuracy, followed by rsa_l1 at ~0.570. Most other methods fail entirely under q=8 heterogeneous attack. The value 0.5865 is within the stated ±0.1 tolerance of 0.6.",
+      "error": false
+    },
+    {
+      "id": "res-021",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "When q=4, Krum fails, while RSA outperforms GeoMed and Median.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "File: results/formal/exp_009_heterogeneous/metrics.csv. For q=4 (num_byzantine=4), averaged over 3 seeds (best_accuracy): rsa_l1=0.7180, geomed=0.7057, median=0.4377, krum=0.0875. All three required ranking constraints hold: RSA(0.7180) > GeoMed(0.7057), RSA(0.7180) > Median(0.4377), RSA(0.7180) > Krum(0.0875). Krum is stuck at ~8.75% (chance level), confirming it fails under q=4 heterogeneous data.",
+      "note": "The experiment uses method name 'rsa_l1' for RSA. There are also rsa_l2 and rsa_linf variants; rsa_l1 is the one that performs well (0.718), while rsa_l2 also fails (avg ~0.088) and rsa_linf partially succeeds (avg ~0.327). The claim refers to RSA generically and the best-performing RSA variant (rsa_l1) satisfies all constraints.",
+      "error": false
+    },
+    {
+      "id": "res-022",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "When q=8, GeoMed, Krum and Median all fail, but RSA still performs well and reaches the near-optimal accuracy.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/exp_009_heterogeneous/metrics.json (rows field, num_byzantine=8, heterogeneous MNIST, transmit attack): GeoMed mean final accuracy=0.0875 (3 seeds: all 0.0875); Krum mean=0.0875 (3 seeds: all 0.0875); Median mean=0.1833 (seeds: 0.173, 0.208, 0.169); rsa_l1 mean=0.5673 (seeds: 0.564, 0.5675, 0.5705); SGD baseline=0.5833. All three ranking constraints hold: rsa_l1 > GeoMed (0.5673 vs 0.0875), rsa_l1 > Krum (0.5673 vs 0.0875), rsa_l1 > Median (0.5673 vs 0.1833). rsa_l1 reaches ~97% of SGD near-optimal accuracy (0.5673/0.5833). GeoMed and Krum collapse to ~8.75% (random), Median reaches only ~18%.",
+      "note": "The experiment includes three RSA variants (rsa_l1, rsa_l2, rsa_linf). Only rsa_l1 performs well at q=8; rsa_l2 and rsa_linf both fail (0.0875 and 0.1262 respectively). The claim about 'RSA' is supported by rsa_l1, which is the primary RSA variant that would be highlighted in the paper. The ranking claim holds for the best RSA variant.",
+      "error": false
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "path": "src/setwise_cd/solvers.py",
+    "symbol": "SxCD.solve"
+  },
+  {
+    "path": "src/setwise_cd/solvers.py",
+    "symbol": "SxCD.choose_neighbor"
+  },
+  {
+    "path": "src/setwise_cd/solvers.py",
+    "symbol": "SxCD._edge_gradient"
+  },
+  {
+    "path": "src/setwise_cd/solvers.py",
+    "symbol": "SxCD._all_local_thetas"
+  },
+  {
+    "path": "src/setwise_cd/problems.py",
+    "symbol": "QuadraticProblem._precompute"
+  },
+  {
+    "path": "src/setwise_cd/problems.py",
+    "symbol": "QuadraticProblem.arg_min_lagrangian"
+  }
+]

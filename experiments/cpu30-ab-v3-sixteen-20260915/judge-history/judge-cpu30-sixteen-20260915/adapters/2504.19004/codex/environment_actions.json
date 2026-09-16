@@ -1,0 +1,8 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "import required by original solver/problem/graph modules",
+    "source": "src/setwise_cd/solver.py"
+  }
+]

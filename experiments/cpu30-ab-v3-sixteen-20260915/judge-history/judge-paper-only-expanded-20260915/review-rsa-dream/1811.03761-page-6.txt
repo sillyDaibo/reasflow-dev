@@ -1,0 +1,182 @@
+of {vk
+i : i ∈[m]} is denoted by:
+GeoMed({vk
+i }) = arg min
+v∈Rd
+m
+X
+i=1
+||v −vk
+i ||2.
+(17)
+We use a fast Weiszfeld’s algorithm (Weiszfeld and Plastria
+2009) to compute the geometric median in the experiments.
+Krum (Blanchard et al. 2017). Krum calculates ˜∇(˜xk) by:
+Krum({vk
+i }) = vk
+i∗, i∗= arg min
+i∈[m]
+X
+i→j
+||vk
+i −vk
+j ||2
+(18)
+where i →j(i ̸= j) selects the indexes j of the m −q −2
+nearest neighbors of vk
+i in {vk
+j : j ∈[m]}, measured by
+Euclidean distances. Note that q, the number of Byzantine
+workers, must be known in advance in Krum.
+0
+1000
+2000
+3000
+4000
+5000
+Number of Iterations
+0.78
+0.80
+0.82
+0.84
+0.86
+0.88
+0.90
+0.92
+0.94
+Top-1 Accuracy
+Ideal SGD
+GeoMed
+Krum
+Median
+RSA
+Figure 3: Top-1 accuracy without Byzantine attacks.
+Median (Xie, Koyejo, and Gupta 2018a). The marginal me-
+dian aggregation rule returns the element-wise median of the
+vectors {vk
+i : i ∈[m]}.
+SGD (Bottou 2010). The classical SGD aggregates {vk
+i :
+i ∈[m]} by returning the mean, and is hence not robust to
+Byzantine attacks.
+In the following experiments, step sizes of the benchmark
+algorithms are all hand-tuned to the best.
+Without Byzantine attacks
+In this test, we consider learning without Byzantine workers,
+and show the performance of all algorithms in Figure 3. ℓ1-
+norm RSA chooses the parameter λ = 0.1 and the step size
+αk = 0.003/
+√
+k. RSA and GeoMed are close to Ideal SGD,
+and signiﬁcantly outperform Krum and Median. Therefore,
+robustifying the cost in RSA, though introduces bias, does
+not sacriﬁce performance in the regular case.
+Same-value attacks
+The same-value attacks set the message sent by a Byzantine
+worker i as vk
+i = c1. Here 1 ∈Rd is an all-one vector
+and c is a constant, which we set as 100. We consider two
+different numbers of Byzantine workers, q = 4 and q = 8,
+and demonstrate the performance in Figure 4. ℓ1-norm RSA
+chooses the regularization parameter λ = 0.07 and the step
+size αk = 0.001/
+√
+k. When q = 4, RSA and GeoMed are
+still close to Ideal SGD and outperform Krum and Median.
+When q to q = 8, Krum and Median perform worse than
+in q = 4, while RSA and GeoMed are almost the same as
+in q = 4. Note that due to the special structure of softmax
+regression, SGD still works under the same-value attacks.
+Sign-ﬂipping attacks
+The sign-ﬂipping attacks ﬂip the signs of messages (gra-
+dients or local iterates) and enlarge the magnitudes. To be
+speciﬁc, a Byzantine worker i ﬁrst calculates the true value
+ˆvk
+i , and then sends vk
+i = σˆvk
+i to the master, where σ is a
+negative constant. We test σ = −4 while set q = 4 and
+q = 8, as shown in Figure 5. The parameters are λ = 0.07
+and α = 0.001/
+√
+k for q = 4, while λ = 0.01 and
+α = 0.0003/
+√
+k for q = 8. Not surprisingly, SGD fails in
+both cases. GeoMed, Median and ℓ1-norm RSA show simi-
+lar performance, and Median is slightly worse than the other
+Byzantine-robust algorithms.
+Gaussian attacks
+The Gaussian attacks set the message sent by a Byzantine
+worker i as vk
+i , where each element follows Gaussian dis-
+tribution ∼N(0, g2). We test g = 10000 while q = 4 and
+q = 8, as shown in Figure 6. In ℓ-norm RSA, the parameters
+are λ = 0.07 and α = 0.002/
+√
+k for both q = 4 and q = 8.
+SGD falis in both cases. RSA and GeoMed have similar re-
+sults and outperform Median and Krum.
+Runtime comparison
+We show in Figure 7 the runtime of the algorithms under
+the same-value attacks with parameter c = 100 and q = 8
+Byzantine workers. The total number of iterations for ev-
+ery algorithm is 5000. Though the algorithms are not im-
+plemented in a federated learning platform, the comparison
+clearly demonstrates the additional per-iteration computa-
+tional costs incurred in handling Byzantine attacks. GeoMed
+has the largest per-iteration computational cost due to the
+difﬁculty of calculating the geometric median. ℓ1-norm RSA
+and Median are both slightly slower than Ideal SGD, but
+faster than Krum. The only computational overhead of RSA
+than Ideal SDG lies in the computation of sign functions,
+which is light-weight. Therefore, RSA is advantageous in
+computational complexity comparing to other complicated
+gradient aggregation approaches.
+0
+1000
+2000
+3000
+4000
+5000
+Number of Iterations
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Top-1 Accuracy
+Ideal SGD
+GeoMed
+Krum
+Median
+RSA
+SGD
+0
+1000
+2000
+3000
+4000
+5000
+Number of Iterations
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Top-1 Accuracy
+Ideal SGD
+GeoMed
+Krum
+Median
+RSA
+SGD
+(a)
+(b)
+Figure 4: Top-1 accuracy under same-value attacks: (a) q =
+4 and c = 100; (b) q = 8 and c = 100.
+Impact of hyper-parameter λ
+We vary the hyper-parameter λ, and show how it affects the
+performance. We use the same value attacks with c = 100,

@@ -1,0 +1,197 @@
+{
+  "official_status": "INCONSISTENT",
+  "numpy_version": "2.0.2",
+  "description": "Post-freeze diagnostic; official tolerance and verdict unchanged.",
+  "cases": [
+    {
+      "id": "beer_top1_two_clients_three_rounds",
+      "numeric_checks": 64,
+      "exact_actual_matches_float32": 64,
+      "max_abs_float32_diagnostic_minus_actual": 0.0,
+      "max_abs_float64_diagnostic_minus_exact_contract": 4.440892098500626e-16,
+      "max_abs_actual_minus_float64_diagnostic": 1.9264221196024778e-07,
+      "same_compressor_supports_float32_float64": true,
+      "supports": [
+        {
+          "step": 1,
+          "H": [
+            0,
+            0
+          ],
+          "G": [
+            1,
+            0
+          ]
+        },
+        {
+          "step": 2,
+          "H": [
+            1,
+            1
+          ],
+          "G": [
+            0,
+            1
+          ]
+        },
+        {
+          "step": 3,
+          "H": [
+            0,
+            0
+          ],
+          "G": [
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "beer_half_compressor_three_client_path",
+      "numeric_checks": 96,
+      "exact_actual_matches_float32": 96,
+      "max_abs_float32_diagnostic_minus_actual": 0.0,
+      "max_abs_float64_diagnostic_minus_exact_contract": 0.0,
+      "max_abs_actual_minus_float64_diagnostic": 0.0,
+      "same_compressor_supports_float32_float64": true,
+      "supports": [
+        {
+          "step": 1,
+          "H": [
+            null,
+            null,
+            null
+          ],
+          "G": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 2,
+          "H": [
+            null,
+            null,
+            null
+          ],
+          "G": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "step": 3,
+          "H": [
+            null,
+            null,
+            null
+          ],
+          "G": [
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "case_id": "beer_top1_two_clients_three_rounds",
+      "step": 3,
+      "name": "V",
+      "path": [
+        0,
+        0
+      ],
+      "expected": 0.678625,
+      "actual": 0.6786251068115234,
+      "passed": false,
+      "difference": 1.068115234e-07,
+      "tolerance": 6.88625e-08,
+      "reason_code": "VALUE_MISMATCH",
+      "reason": "absolute difference exceeds atol + rtol * abs(expected)",
+      "diagnostic_float32": 0.6786251068115234,
+      "diagnostic_float64": 0.6786250000000003,
+      "float32_diagnostic_minus_actual": 0.0,
+      "float32_ulp_at_reference": 5.960464477539063e-08,
+      "absolute_error_in_float32_ulps": 1.7919999993708544,
+      "exceeds_tolerance_by_factor": 1.5510840210564532
+    },
+    {
+      "case_id": "beer_top1_two_clients_three_rounds",
+      "step": 3,
+      "name": "V",
+      "path": [
+        1,
+        0
+      ],
+      "expected": -1.5441875,
+      "actual": -1.544187307357788,
+      "passed": false,
+      "difference": 1.92642212e-07,
+      "tolerance": 1.5541875e-07,
+      "reason_code": "VALUE_MISMATCH",
+      "reason": "absolute difference exceeds atol + rtol * abs(expected)",
+      "diagnostic_float32": -1.544187307357788,
+      "diagnostic_float64": -1.5441875,
+      "float32_diagnostic_minus_actual": 0.0,
+      "float32_ulp_at_reference": 1.1920928955078125e-07,
+      "absolute_error_in_float32_ulps": 1.616000000720896,
+      "exceeds_tolerance_by_factor": 1.239504319781236
+    },
+    {
+      "case_id": "beer_top1_two_clients_three_rounds",
+      "step": 3,
+      "name": "V",
+      "path": [
+        1,
+        1
+      ],
+      "expected": 0.5311875,
+      "actual": 0.5311874151229858,
+      "passed": false,
+      "difference": 8.48770142e-08,
+      "tolerance": 5.411875e-08,
+      "reason_code": "VALUE_MISMATCH",
+      "reason": "absolute difference exceeds atol + rtol * abs(expected)",
+      "diagnostic_float32": 0.5311874151229858,
+      "diagnostic_float64": 0.5311875000000003,
+      "float32_diagnostic_minus_actual": 0.0,
+      "float32_ulp_at_reference": 5.960464477539063e-08,
+      "absolute_error_in_float32_ulps": 1.4240000006684672,
+      "exceeds_tolerance_by_factor": 1.568347646610463
+    },
+    {
+      "case_id": "beer_top1_two_clients_three_rounds",
+      "step": 3,
+      "name": "G",
+      "path": [
+        1,
+        0
+      ],
+      "expected": -1.5441875,
+      "actual": -1.544187307357788,
+      "passed": false,
+      "difference": 1.92642212e-07,
+      "tolerance": 1.5541875e-07,
+      "reason_code": "VALUE_MISMATCH",
+      "reason": "absolute difference exceeds atol + rtol * abs(expected)",
+      "diagnostic_float32": -1.544187307357788,
+      "diagnostic_float64": -1.5441875,
+      "float32_diagnostic_minus_actual": 0.0,
+      "float32_ulp_at_reference": 1.1920928955078125e-07,
+      "absolute_error_in_float32_ulps": 1.616000000720896,
+      "exceeds_tolerance_by_factor": 1.239504319781236
+    }
+  ],
+  "unchanged_protected_sha256": {
+    "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/papers/2201.13320/contract.json": "4b084648c30b42eb25854ad345e52171cf63a9c6e1923c41f012735b2fd706c9",
+    "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/adapters/beer/reasflow/adapter.py": "87926725bc34e23ee02ace3c853235537f5cd94798f3fc12f123cd98799acd1e",
+    "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2201.13320/ReasFlow实验Agent-完整复现-Goal/第003次运行/workspace/beer_repro/core.py": "0df053df58bf143a8a105532e1262ab02e732d8e8d55e6245994432be4ebce1d",
+    "/Users/zanehuang/work/OptiRepro/reports/cpu30/analysis-2026-09-06/evidence/OptiRepro_cpu_2/agent_reproduction/runs/2201.13320/ReasFlow实验Agent-完整复现-Goal/第003次运行/judge/evaluations/paper-expanded-20260914T170432143332Z-1/algorithm/result.json": "b5d310619e8a19468d0e1a5ab85a107942a4bbac9b2b15d5f08475b94495fcb3"
+  }
+}

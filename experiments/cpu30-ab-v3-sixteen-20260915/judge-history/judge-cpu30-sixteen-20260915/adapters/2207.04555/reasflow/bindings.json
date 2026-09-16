@@ -1,0 +1,10 @@
+[
+  {
+    "path": "src/reproduction/algorithms.py",
+    "symbol": "apdg"
+  },
+  {
+    "path": "src/reproduction/model.py",
+    "symbol": "SyntheticProblem.gradient"
+  }
+]

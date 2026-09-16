@@ -1,0 +1,33 @@
+{
+  "schema_version": "optirepro.paper_review.v1",
+  "contract_digest": "71dfa9f5142eb315427a13cbd8b11619669182ac1d3787999bec05c7120edd09",
+  "reviewer_id": "paper16_a",
+  "basis": "original_paper_only",
+  "decision": "approved",
+  "summary": "Independent exact-rational reconstruction of ProxSkip-VIP-FL matches all 152 numeric leaves exactly for both four-update skip/communication schedules.",
+  "cases": [
+    {
+      "case_id": "skip_then_communicate",
+      "decision": "approved",
+      "reason": "Recomputed the full affine saddle operator, x_hat=x-gamma*(g-h), communication mean of x_hat-gamma*h/p, and h_next=h+(p/gamma)*(x_next-x_hat). Both branches and communication counts match; zero-sum controls are checked exactly after every update.",
+      "citations": [
+        "PDF p.7 Section 4, Algorithm 2 lines 1-13",
+        "PDF p.8 Assumption 4.1"
+      ]
+    },
+    {
+      "case_id": "communicate_then_skip",
+      "decision": "approved",
+      "reason": "Recomputed the full affine saddle operator, x_hat=x-gamma*(g-h), communication mean of x_hat-gamma*h/p, and h_next=h+(p/gamma)*(x_next-x_hat). Both branches and communication counts match; zero-sum controls are checked exactly after every update.",
+      "citations": [
+        "PDF p.7 Section 4, Algorithm 2 lines 1-13",
+        "PDF p.8 Assumption 4.1"
+      ]
+    }
+  ],
+  "scope_notes": [
+    "Deterministic local full operators are zero-variance oracle instances; listed Bernoulli outcomes are conditioned realizations.",
+    "The inclusive 0..T pseudocode causes no ambiguity: public input expressly sets T=3 for four updates.",
+    "Only ProxSkip-VIP-FL deterministic GDA is covered, not stochastic sampling or loopless SVRG variants."
+  ]
+}

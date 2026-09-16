@@ -1,0 +1,9 @@
+{
+  "bins": 50,
+  "gamma_geo": 15.0,
+  "gamma_local": 1.0,
+  "maxiter": 180,
+  "seed": 0,
+  "solver": "ADMM",
+  "split": "75/25 random_state=0"
+}

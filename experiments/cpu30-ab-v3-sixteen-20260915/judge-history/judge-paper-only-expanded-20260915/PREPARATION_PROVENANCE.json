@@ -1,0 +1,107 @@
+{
+  "preparation_mode": "application collaboration Agents; assignments rotated across different papers, target private answer never sent to target adapter",
+  "rows": [
+    {
+      "paper_id": "1904.12017",
+      "paper_agent": "paper_stratified",
+      "adapter_agent": "paper_rsa",
+      "separate_target_paper_context": true,
+      "paper_agent_allowed_sources": [
+        "original paper PDF",
+        "contract schema",
+        "AGENTS.md",
+        "PDF skill"
+      ],
+      "adapter_agent_allowed_sources": [
+        "target public_cases.json",
+        "target workspace source"
+      ],
+      "target_expected_values_visible_to_adapter": false,
+      "contract_sha256": "4bab451018b3bcd7195c5904161a58c03d7b0937e57e0a5a86e8588ca199417f",
+      "public_cases_sha256": "6cc895cbd8c4e0b9a70460bc6e86fa3a8d728323e730f76b69aab000823edd49",
+      "freeze_record": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/1904.12017/FROZEN.json",
+      "adapters": {
+        "codex": {
+          "adapter.py": "adcffd417c1f732ac326bbfa7183ebb15d95cffe5ef9ce87b4799d8e3c0d6e91",
+          "bindings.json": "4123b349c9d3c542c3d1bf2fad23112f24a1273826a9d880e890304075605fba",
+          "environment_actions.json": "74a0702ac2be5df23f764fdf933112c799910d9f60c0c450b76757e98a62559c",
+          "ADAPTER_REVIEW.md": "4f51a3bb4fefa22c6434f98da381d003e43382c3fd6148d4546802ab2a95aea0"
+        },
+        "reasflow": {
+          "adapter.py": "05a47df1d8f32906f489bf83e254dd3dd16909991f6ef8f125dfa22702d2aa7f",
+          "bindings.json": "2e836d006ad10c4b1a154f0f0d4bce85e39ece399d261a30cdb5aa844aaa706f",
+          "environment_actions.json": "ecf98217e95ef09eddc53f200dfadcec9ba10ddb86d646e9b78b11e39e3acf39",
+          "ADAPTER_REVIEW.md": "cb42adf0458543cebf0d0177b81a073aae139fbe0e387858857d9b844ab75226"
+        }
+      }
+    },
+    {
+      "paper_id": "2102.06704",
+      "paper_agent": "paper_proxrr",
+      "adapter_agent": "paper_stratified",
+      "separate_target_paper_context": true,
+      "paper_agent_allowed_sources": [
+        "original paper PDF",
+        "contract schema",
+        "AGENTS.md",
+        "PDF skill"
+      ],
+      "adapter_agent_allowed_sources": [
+        "target public_cases.json",
+        "target workspace source"
+      ],
+      "target_expected_values_visible_to_adapter": false,
+      "contract_sha256": "7a2e8e4717eaa57f727f07c1a58bd2401eaa0d65642bda7241ebfb8c00e4e680",
+      "public_cases_sha256": "9b283aad5d3236fd258776b790a812b04b183a910b92b344d7e62af6af190b7c",
+      "freeze_record": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2102.06704/FROZEN.json",
+      "adapters": {
+        "codex": {
+          "adapter.py": "3cf4553402b22b12c83366a01ce2cce39f93dec97ba2f9da759d1aa56f88190d",
+          "bindings.json": "1b154ef962144672cff96db33b3aa8b9ef51becf7e40a1c666b383582f73fbd0",
+          "environment_actions.json": "ff385cd3e540945a0906001ab77dcf61f4e3faf1467d26b18acb7d7011851dc8",
+          "ADAPTER_REVIEW.md": "2171f78d4c19a5f179e34771cdd0fd3ac0cc35c4b593f504c765962db73d195c"
+        },
+        "reasflow": {
+          "adapter.py": "64f2dafabd6eeb7aec1b9ff1f102501c323a629af6690b08d1dd00228ece2b72",
+          "bindings.json": "3fdb73350c77e45c7914db93f6c332a41d745d60b18659f1fae13203f3e6eb75",
+          "environment_actions.json": "f9869cc763237118e75648412a8a2b5a6a024ea861be9a9fc67348b5f54d87c7",
+          "ADAPTER_REVIEW.md": "e6b457acc751c20622011e7fc229a60892e91006d5b737c65cae539983968e3a"
+        }
+      }
+    },
+    {
+      "paper_id": "2201.13320",
+      "paper_agent": "paper_rsa",
+      "adapter_agent": "paper_proxrr",
+      "separate_target_paper_context": true,
+      "paper_agent_allowed_sources": [
+        "original paper PDF",
+        "contract schema",
+        "AGENTS.md",
+        "PDF skill"
+      ],
+      "adapter_agent_allowed_sources": [
+        "target public_cases.json",
+        "target workspace source"
+      ],
+      "target_expected_values_visible_to_adapter": false,
+      "contract_sha256": "4b084648c30b42eb25854ad345e52171cf63a9c6e1923c41f012735b2fd706c9",
+      "public_cases_sha256": "de38d3fb29b64b1d3d96da81b84692fe118c0ebb01dc16322ec39ef3f12717df",
+      "freeze_record": "/Users/zanehuang/work/OptiRepro/reports/judge-paper-only-expanded-20260915/public/2201.13320/FROZEN.json",
+      "adapters": {
+        "codex": {
+          "adapter.py": "7b2935aeae1cc55d60b78ff9bcad8e1b9ec6f26cca15748deeb58e7d402fa5d3",
+          "bindings.json": "c26a3df8ab15589bc301b5e6ce343d069a591161315d3c3cea6473c99a4fa7a1",
+          "environment_actions.json": "fef9823b32ef7e2d658a45f2e69cf7081c90d3c04d49b106811586cb8fc1f588",
+          "ADAPTER_REVIEW.md": "281c6d4ad4e5d3906b85f6c31f4c9af3a4ca83280e1cc18878c77fd0f469af65"
+        },
+        "reasflow": {
+          "adapter.py": "87926725bc34e23ee02ace3c853235537f5cd94798f3fc12f123cd98799acd1e",
+          "bindings.json": "8fe90b1c96f50f046317a099a22d966111940c5482bbfa5c5bd728de4152fe53",
+          "environment_actions.json": "8148803664af6b9bf6427b80aa24d4b21edd62b3e044d087bcf36cda472b90cc",
+          "ADAPTER_REVIEW.md": "a18a8a8aa5294d5eec5cb0ece3fe09668e8461a323eba8a741348c803592c6a0"
+        }
+      }
+    }
+  ]
+}

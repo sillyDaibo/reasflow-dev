@@ -1,0 +1,39 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "/root/adapter16_a",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Original APDG uses supplied native params; public quadratic gradient and rank-deficient constraint embedding retain original core methods and exact source states.",
+  "scope_notes": [
+    "Inspected apdg and model objective/gradient/A operators directly. Public-only readonly smoke completed both cases; no numeric comparison.",
+    "Initial x/fast-x and y/fast-y/previous-y are injected once before the loop; later states are only observed. Native float dtype, update order and stopping branches retained.",
+    "The regenerated problem objective differs only by residual expansion constant; measured public objective at true x has that irrelevant constant removed. Cached constructor optimum is diagnostic-only and is not a stopping criterion.",
+    "B is embedded with a zero redundant row per node; dual indices [0,2,4,5,6,7] preserve A, A^T, ATA and AAT. All public parameters pass through the native params interface."
+  ],
+  "substitutions": [
+    {
+      "symbol": "QuadraticProblem data fields",
+      "role": "problem_input",
+      "reason": "Public quadratic coefficients and constraints replace generated objective/linear-map data; original gradient executes."
+    },
+    {
+      "symbol": "sys.settrace initialization",
+      "role": "problem_input",
+      "reason": "Writes only the initial states required by public inputs."
+    },
+    {
+      "symbol": "sys.settrace snapshots and public objective",
+      "role": "observation",
+      "reason": "Copies source local arrays after updates; evaluates declared objective at actual x without manufacturing a trajectory."
+    },
+    {
+      "symbol": "dual coordinate embedding/projection",
+      "role": "problem_input",
+      "reason": "Redundant zero constraint rows preserve original square-B operator protocol."
+    }
+  ],
+  "public_digest": "8c62d0e4156513c0211d249ba209d8af10877432414fff4ad74fcda460c98128",
+  "adapter_sha256": "782b9eddf550ca1c2a7aae1ac64cc641357a517490fb820cdf1f8aec4c858ebf",
+  "workspace_digest": "c8f546b44d94678ba6d16553c80b73e8ac7a5e263fb91b20e81dc0e88035c2c9",
+  "bindings_digest": "688a5ff77002c863ced44918b9e096a75b774aa9325df337a1710872afe839b9"
+}

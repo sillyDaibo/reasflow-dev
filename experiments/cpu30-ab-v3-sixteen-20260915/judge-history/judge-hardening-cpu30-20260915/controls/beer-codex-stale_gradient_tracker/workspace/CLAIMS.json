@@ -1,0 +1,55 @@
+{
+  "schema_version": "optirepro.agent_claims.v2",
+  "paper_id": "2201.13320",
+  "summary": "Claims cover BEER's compressed decentralized recursion, the real-data baseline comparison, and the topology/compressor robustness studies in Section 5.",
+  "claims": [
+    {
+      "claim_id": "C1_beer_fast_compressed_optimization",
+      "priority": "core",
+      "paper_location": "Algorithm 1; Sections 4.1 and 5.1; Figures 1-2",
+      "statement": "BEER combines model and gradient tracking with compressed communication and obtains a fast practical decrease in gradient norm under heterogeneous decentralized data.",
+      "methods": ["BEER Algorithm 1", "gsgd_b compression", "ring mixing"],
+      "required_baselines": ["CHOCO-SGD", "DSGD", "D2"],
+      "datasets": ["LIBSVM a9a / Adult", "MNIST"],
+      "metrics": ["training gradient norm", "test accuracy", "communication bits", "communication rounds"],
+      "comparison_conditions": "Ten clients use identical initialization, contiguous unshuffled client partitions, batch size 100, ring mixing, and the same seed/configuration budget; compressed methods use the paper's gsgd_b settings.",
+      "planned_evidence": ["beer_repro/algorithms.py", "beer_repro/objectives.py", "results/formal/exp_001_a9a_comparison/metrics.json", "results/formal/exp_002_mnist_comparison/metrics.json"]
+    },
+    {
+      "claim_id": "C2_heterogeneous_real_data",
+      "priority": "core",
+      "paper_location": "Section 5; Figures 1-2 and 5.3",
+      "statement": "BEER remains usable with strong client heterogeneity induced by unshuffled real datasets, including label-skewed MNIST clients and label-skewed a9a clients.",
+      "methods": ["BEER", "deterministic heterogeneous partitioning", "32-hidden-unit sigmoid network", "nonconvex regularized logistic regression"],
+      "required_baselines": ["DSGD", "CHOCO-SGD"],
+      "datasets": ["LIBSVM a9a / Adult", "MNIST"],
+      "metrics": ["test accuracy", "objective", "training gradient norm"],
+      "comparison_conditions": "a9a is split contiguously in source order; MNIST client i receives digit i; all methods share initialization and minibatch schedule.",
+      "planned_evidence": ["beer_repro/data.py", "beer_repro/objectives.py", "results/formal/exp_005_mnist_heterogeneity/metrics.json", "results/formal/exp_001_a9a_comparison/metrics.json"]
+    },
+    {
+      "claim_id": "C3_topology_robustness",
+      "priority": "supporting",
+      "paper_location": "Section 5.2, Impacts of network topology, Figure 3",
+      "statement": "BEER can optimize over sparse and randomly connected decentralized topologies using symmetric doubly-stochastic mixing, with the network spectral gap explicitly measured.",
+      "methods": ["BEER", "Metropolis symmetric mixing", "ring", "star", "grid", "Erdos-Renyi"],
+      "required_baselines": [],
+      "datasets": ["LIBSVM a9a / Adult"],
+      "metrics": ["training gradient norm", "test accuracy", "spectral gap", "communication rounds"],
+      "comparison_conditions": "Forty clients, a9a nonconvex logistic objective, batch size 100, gsgd_5 compression, and the Section 5.2 step-size regime; the formal run uses the p=0.5 Erdos-Renyi member and the same implementation supports the other listed topologies.",
+      "planned_evidence": ["beer_repro/graphs.py", "configs/exp_003_a9a_topology.json", "results/formal/exp_003_a9a_topology/metrics.json"]
+    },
+    {
+      "claim_id": "C4_compression_tradeoff",
+      "priority": "supporting",
+      "paper_location": "Section 5.2, Impacts of compression schemes, Figure 4",
+      "statement": "BEER supports multiple compression schemes and exposes the expected accuracy/communication-bit trade-off.",
+      "methods": ["BEER", "identity", "gsgd_b", "top_k", "random_k"],
+      "required_baselines": [],
+      "datasets": ["LIBSVM a9a / Adult"],
+      "metrics": ["training gradient norm", "test accuracy", "communication bits", "communication rounds"],
+      "comparison_conditions": "Ring topology and shared initialization/batch schedule; compressor payload sizes are counted from parameter dimension and compressor metadata.",
+      "planned_evidence": ["beer_repro/compression.py", "configs/exp_004_a9a_compression.json", "results/formal/exp_004_a9a_compression/metrics.json"]
+    }
+  ]
+}

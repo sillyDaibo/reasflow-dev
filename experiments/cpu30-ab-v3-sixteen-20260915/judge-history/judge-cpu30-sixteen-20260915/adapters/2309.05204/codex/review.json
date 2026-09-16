@@ -1,0 +1,34 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "/root/adapter16_b",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Approved after revision: only the comparable initial gradient is a standard observation; unsupported independent-z0 trajectory remains blocked diagnostics.",
+  "scope_notes": [
+    "Inspected src/pirl1_am/algorithms.py _solve and forward_difference, _shrink, divergence and _prepare_system, plus data.psf2otf/circular_filter. The source has dx/dy=Gx and computes weights from dx/dy each iteration; no independent previous-z state or z0 argument exists. Injecting z0 into weights would replace the original core, which this adapter does not do.",
+    "Public u0 is assigned once to freshly initialized x before y and differences. Step 1 gradient_before is copied from native dx and is independent of missing z0. The other 14 native values per case are explicitly in diagnostics, not comparable observations; all corresponding standard observations are missing/blocked.",
+    "Centered public K impulse response follows original PSF convention. Source float64, FFT normalization, literal vertical symbol on a one-row image, circular_filter used as source adjoint, native shrink and stopping remain untouched. The diagnostic objective is only a public-loss evaluation on actual native u/z; it feeds no algorithm state.",
+    "Readonly public smoke on revised bytes exited 0 with exactly one standard observation per case and blocked status."
+  ],
+  "substitutions": [
+    {
+      "symbol": "kernel and initial x",
+      "role": "problem_input",
+      "reason": "Public circulant matrix encoded via original PSF centering; x buffer alone receives declared u0."
+    },
+    {
+      "symbol": "sys.settrace",
+      "role": "observation",
+      "reason": "Native pre-shrink dx supplies the sole comparable observation; native weights/vx/updated x are diagnostics because z0 is unsupported."
+    },
+    {
+      "symbol": "diagnostic objective",
+      "role": "observation",
+      "reason": "Public loss evaluated on genuine native u/z for diagnostics only; no prox, gradient or iterate update is replaced."
+    }
+  ],
+  "public_digest": "f666debd9dacf51483a127811f09dce89f95ced099a161420b5c775069e59436",
+  "adapter_sha256": "5b3726f443ac17a0a0383d6564e5b78458a2fcd8f986bfb3372234b8f331e14f",
+  "workspace_digest": "b33ebb1f511e8c75687953be4d784e452f8e1bc6a5ab9aec8c3f39c7aeb16aaf",
+  "bindings_digest": "514fa17290cc0f408caee51da6c40cb333e9c080a2f3046389c5a418f3947d55"
+}

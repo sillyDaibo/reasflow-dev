@@ -1,0 +1,63 @@
+{
+  "paper_id": "2102.06704",
+  "evaluated_at": "2026-09-04T05:52:26.906457+00:00",
+  "summary": {
+    "total_score": 0.6,
+    "algorithm_impl_score": 0.0,
+    "exp_setup_score": 0.0,
+    "exp_results_score": 0.6,
+    "total_rubrics": 3,
+    "passed": 2,
+    "failed": 1,
+    "errors": 0,
+    "pass_threshold": 0.85,
+    "gate_passed": false
+  },
+  "by_priority": {
+    "secondary": {
+      "score": 1.0,
+      "passed": 1,
+      "total": 1
+    },
+    "primary": {
+      "score": 0.5,
+      "passed": 1,
+      "total": 2
+    }
+  },
+  "results": [
+    {
+      "id": "res-001",
+      "dimension": "exp_results",
+      "priority": "secondary",
+      "description": "On the a1a dataset, SGD, RR (proposed), and RR (heuristic) exhibit similar convergence behavior in terms of \\|x - x*\\|^2 versus iteration count.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure1_a1a/history.csv and metrics.json: All three methods (ProxSGD, ProxRR, RR_heuristic) start at identical objective_gap ~0.3399 and converge over 100 epochs to final values of ProxSGD=0.004594, ProxRR=0.005571, RR_heuristic=0.014227 — all within ~3× of each other and the same order of magnitude. The convergence trajectories sampled per epoch show all three methods tracking similarly (early-average ~0.15 → late-average ~0.005–0.009, reduction ratio ~18–30× for each). The max/min ratio across methods stays mostly in the 1–5× range throughout training. This is consistent with the paper's qualitative claim that all methods \"behave more or less the same way.\"",
+      "note": "The history.csv tracks objective_gap (f(x)−f*) rather than ||x−x*||^2 directly, but objective_gap is a standard proxy for solution quality and is what the experiment saves. The qualitative similarity claim holds clearly from this data.",
+      "error": false
+    },
+    {
+      "id": "res-002",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "RR (proposed) requires only a small fraction of proximal operator evaluations compared to SGD and RR (heuristic) to achieve the same suboptimality \\|x - x*\\|^2 on the a1a dataset.",
+      "verdict": 1,
+      "confidence": "high",
+      "evidence": "results/formal/figure1_a1a/metrics.json: prox_evaluations: ProxRR (proposed) = 100, ProxSGD (SGD) = 160500, RR_heuristic = 160500. Both ranking constraints hold: RR (proposed) < SGD (100 < 160500, fraction = 0.000623) and RR (proposed) < RR (heuristic) (100 < 160500, fraction = 0.000623). RR (proposed) requires only ~0.062% of the proximal operator evaluations used by SGD and RR (heuristic).",
+      "note": "The final_gap values show all three methods reach similar suboptimality (ProxRR gap=0.00557, ProxSGD gap=0.00459, RR_heuristic gap=0.01423), confirming the proximal evaluation counts are comparable-performance endpoints. The dataset provenance matches a1a (1605 rows, 120 features).",
+      "error": false
+    },
+    {
+      "id": "res-003",
+      "dimension": "exp_results",
+      "priority": "primary",
+      "description": "FedRR achieves lower suboptimality than both Local-SGD (full pass) and Local-SGD (partial pass), and Local-SGD (partial pass) achieves lower suboptimality than Local-SGD (full pass), as shown in the communication rounds and data passes plots.",
+      "verdict": 0,
+      "confidence": "high",
+      "evidence": "results/formal/figure2_mushrooms/metrics.json and history.csv contain the final suboptimality (objective_gap) values: FedRR=0.008532, LocalSGD_full_pass=0.212674, LocalSGD_partial_pass=0.424801. FedRR beats both Local-SGD variants (satisfying 'FedRR > Local-SGD (full pass)' and 'FedRR > Local-SGD (partial pass)'). However, the required ordering 'Local-SGD (partial pass) > Local-SGD (full pass)' FAILS: partial pass has higher suboptimality (0.4248) than full pass (0.2127), meaning full pass is BETTER than partial pass — the opposite of the claimed order.",
+      "note": "The paper claims partial pass beats full pass in terms of suboptimality, but the run outputs show full pass achieves lower suboptimality (0.2127) than partial pass (0.4248). All three pairwise constraints must hold for verdict=1; the third does not.",
+      "error": false
+    }
+  ]
+}

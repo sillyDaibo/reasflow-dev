@@ -1,0 +1,38 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "root_independent_source_audit",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Faithful DPG-RR driver, original logistic/consensus/prox and actual multi-step observations for the declared public cases.",
+  "scope_notes": [
+    "Reviewed only public experiment inputs, adapter and original algorithms.py; private expected arrays, author derivations and numerical Judge outputs were not read for this audit.",
+    "Both public cases are 1D, two agents, two samples, three epochs. Signed features with y=+1 exactly represent the stated logistic sample functions; original gradients and proximal maps are retained.",
+    "Initial state is assigned once via a source-line trace after allocation and before any algorithm update. No later state is overwritten.",
+    "The original RNG is called once per execution; two permutation calls per epoch consume the declared shared order. This checks conditional trajectories, not the random distribution.",
+    "The public mixing matrices are powers of the first A. Original source computes those powers; the adapter does not replace consensus.",
+    "inner_x contains copied actual pre-gradient arguments plus the original local-epoch endpoint, arranged by step and agent; inner_gradient, consensus_v and x_next are copied original inputs/outputs. No update recurrence is reconstructed.",
+    "Only dataset loading and prescribed initialization/random input are supplied. Original objective/gradient, normalization, dtype, consensus and prox are retained; unobserved metrics are allowed to run.",
+    "Codex original _sample_gradient exponential clipping remains unchanged; run_method, _mix and _soft_threshold execute directly."
+  ],
+  "substitutions": [
+    {
+      "symbol": "np.random.default_rng",
+      "role": "problem_input",
+      "reason": "Supply the publicly fixed shared sample permutation per epoch; original RNG call placement retained."
+    },
+    {
+      "symbol": "run_method initialization trace",
+      "role": "problem_input",
+      "reason": "Insert public per-agent x0 immediately after original allocation, once only."
+    },
+    {
+      "symbol": "gradient/mix/prox wrappers and array arrangement",
+      "role": "observation",
+      "reason": "Call originals and copy actual arguments/returns; no algorithm update replacement."
+    }
+  ],
+  "public_digest": "e143c285ea39a4fd788cd96755e537c8104f743219fad61478268ee705d0065e",
+  "adapter_sha256": "06779bd5675e2e46eb1e6e6e3532e430aa2804324dbf12e96b538bca3a82261e",
+  "workspace_digest": "4d1d9077eeae53dfa61d89e6bf28152270f754f4234d320fb306cbf03e6de34d",
+  "bindings_digest": "84dd526e1f16119293340786c21de798a883fabbf6917b736e09e1c5d4a6f110"
+}

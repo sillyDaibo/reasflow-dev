@@ -1,0 +1,444 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2309.05204",
+    "title": "Accelerated Proximal Iterative re-Weighted ℓ1 Alternating Minimization for Image Deblurring",
+    "sha256": "67b486882088b75001d71389caaedb3baea251ddc2296f333addda4678ea22a1"
+  },
+  "algorithm": {
+    "name": "PIRL1-AM (Algorithm 1 only; accelerated Algorithm 2 is outside verified scope)",
+    "citations": [
+      "PDF p.2 Eq. (3), (7), (12), (14)",
+      "PDF p.3 Algorithm 1"
+    ],
+    "core_mechanisms": [
+      "previous-z-reweighting",
+      "signed-soft-threshold",
+      "alternating-blur-solve"
+    ],
+    "assumptions": [
+      "Only the explicitly stated nonaccelerated Algorithm 1 is evaluated. The paper title emphasizes APIRL1-AM, but Algorithm 2 computes y without specifying its feedback into the printed z/u updates; that acceleration mechanism is not uniquely determined and is not claimed covered.",
+      "The Eq. (12)/Algorithm 1 denominator is based on previous z, resolving the conflicting bar-z denominator in Eq. (11) by selecting the final explicit pseudocode.",
+      "A three-pixel periodic 1D image is a deterministic finite-dimensional instance of the stated linear-operator model; K and gradient are explicitly supplied.",
+      "epsilon=0.01 is an explicitly fixed positive smoothing value for numerical separation of threshold branches; no noise generation, clipping, continuation, FFT normalization or early stopping."
+    ]
+  },
+  "cases": [
+    {
+      "id": "mixed_threshold",
+      "purpose": "Exercise changing IRL1 weights, signed/zero soft-threshold branches and a coupled nonidentity blur/gradient linear solve for three complete AM iterations.",
+      "covers": [
+        "previous-z-reweighting",
+        "signed-soft-threshold",
+        "alternating-blur-solve"
+      ],
+      "inputs": {
+        "image_shape": [
+          1,
+          3
+        ],
+        "flatten_order": "row-major",
+        "K": [
+          [
+            0.75,
+            0.25,
+            0.0
+          ],
+          [
+            0.0,
+            0.75,
+            0.25
+          ],
+          [
+            0.25,
+            0.0,
+            0.75
+          ]
+        ],
+        "gradient_matrix": [
+          [
+            -1.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            1.0
+          ],
+          [
+            1.0,
+            0.0,
+            -1.0
+          ]
+        ],
+        "boundary": "periodic forward difference on the three pixels",
+        "u0": [
+          0,
+          1,
+          1.2
+        ],
+        "z0": [
+          1,
+          0,
+          0.5
+        ],
+        "f": [
+          0.5,
+          1.5,
+          -0.25
+        ],
+        "objective": "0.5*||K u-f||_2^2 + mu*sum_i |z_i|^p + beta/2*||z-G u||_2^2",
+        "randomness": "none"
+      },
+      "parameters": {
+        "mu": 0.2,
+        "beta": 1.0,
+        "p": 0.1,
+        "L": 1,
+        "epsilon": 0.01,
+        "iterations": 3,
+        "variant": "Algorithm 1 PIRL1-AM, not accelerated",
+        "weight_base": "previous z_k as printed in Eq. (12) and Algorithm 1, not bar_z_k in Eq. (11)",
+        "bar_z_definition": "G @ u_k",
+        "observation_timing": "step j is full iteration k=j-1; gradient_before and thresholds are computed before z update; z,u,objective are after their respective updates; objective uses updated z and u"
+      },
+      "derivation": "70-digit Decimal arithmetic. Eq. (12): threshold_i=p*mu/(L*beta)*(abs(z_old_i)+epsilon)^(p-1); z_new=sign(G*u_old)*max(abs(G*u_old)-threshold,0). Eq. (14) solved by exact-arithmetic-form Gaussian elimination on the stated 3x3 matrix. iteration 1: bar=[1.0, 0.2, -1.2], thresholds=[0.019821693629603437, 1.2619146889603865, 0.0366620577498155], z=[0.9801783063703966, 0.0, -1.1633379422501844], u=[-0.11902290868962358, 1.0624155073077517, 0.8066074013818718]; iteration 2: bar=[1.1814384159973752, -0.2558081059258799, -0.9256303100714954], thresholds=[0.02017845586110255, 1.2619146889603865, 0.017320052035077537], z=[1.1612599601362728, -0.0, -0.9083102580364179], u=[-0.09751133619569183, 1.1150938065850975, 0.7324175296105943]; iteration 3: bar=[1.2126051427807893, -0.38267627697450324, -0.8299288658062861], thresholds=[0.017347705000348723, 1.2619146889603865, 0.02159431854837046], z=[1.1952574377804406, -0.0, -0.8083345472579156], u=[-0.07831766837479456, 1.1249839818997645, 0.70333368647503]",
+      "expected": [
+        {
+          "step": 1,
+          "name": "gradient_before",
+          "value": [
+            1.0,
+            0.2,
+            -1.2
+          ]
+        },
+        {
+          "step": 1,
+          "name": "thresholds",
+          "value": [
+            0.019821693629603437,
+            1.2619146889603865,
+            0.0366620577498155
+          ]
+        },
+        {
+          "step": 1,
+          "name": "z",
+          "value": [
+            0.9801783063703966,
+            0.0,
+            -1.1633379422501844
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u",
+          "value": [
+            -0.11902290868962358,
+            1.0624155073077517,
+            0.8066074013818718
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "value": 1.002498809425302
+        },
+        {
+          "step": 2,
+          "name": "gradient_before",
+          "value": [
+            1.1814384159973752,
+            -0.2558081059258799,
+            -0.9256303100714954
+          ]
+        },
+        {
+          "step": 2,
+          "name": "thresholds",
+          "value": [
+            0.02017845586110255,
+            1.2619146889603865,
+            0.017320052035077537
+          ]
+        },
+        {
+          "step": 2,
+          "name": "z",
+          "value": [
+            1.1612599601362728,
+            -0.0,
+            -0.9083102580364179
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u",
+          "value": [
+            -0.09751133619569183,
+            1.1150938065850975,
+            0.7324175296105943
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "value": 0.9377715418365983
+        },
+        {
+          "step": 3,
+          "name": "gradient_before",
+          "value": [
+            1.2126051427807893,
+            -0.38267627697450324,
+            -0.8299288658062861
+          ]
+        },
+        {
+          "step": 3,
+          "name": "thresholds",
+          "value": [
+            0.017347705000348723,
+            1.2619146889603865,
+            0.02159431854837046
+          ]
+        },
+        {
+          "step": 3,
+          "name": "z",
+          "value": [
+            1.1952574377804406,
+            -0.0,
+            -0.8083345472579156
+          ]
+        },
+        {
+          "step": 3,
+          "name": "u",
+          "value": [
+            -0.07831766837479456,
+            1.1249839818997645,
+            0.70333368647503
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "value": 0.9298002396239221
+        }
+      ],
+      "atol": 1e-10,
+      "rtol": 1e-09
+    },
+    {
+      "id": "signed_reweight",
+      "purpose": "Exercise changing IRL1 weights, signed/zero soft-threshold branches and a coupled nonidentity blur/gradient linear solve for three complete AM iterations.",
+      "covers": [
+        "previous-z-reweighting",
+        "signed-soft-threshold",
+        "alternating-blur-solve"
+      ],
+      "inputs": {
+        "image_shape": [
+          1,
+          3
+        ],
+        "flatten_order": "row-major",
+        "K": [
+          [
+            0.75,
+            0.25,
+            0.0
+          ],
+          [
+            0.0,
+            0.75,
+            0.25
+          ],
+          [
+            0.25,
+            0.0,
+            0.75
+          ]
+        ],
+        "gradient_matrix": [
+          [
+            -1.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            -1.0,
+            1.0
+          ],
+          [
+            1.0,
+            0.0,
+            -1.0
+          ]
+        ],
+        "boundary": "periodic forward difference on the three pixels",
+        "u0": [
+          2,
+          -1,
+          0.5
+        ],
+        "z0": [
+          -0.01,
+          1,
+          0.2
+        ],
+        "f": [
+          1,
+          -0.5,
+          2
+        ],
+        "objective": "0.5*||K u-f||_2^2 + mu*sum_i |z_i|^p + beta/2*||z-G u||_2^2",
+        "randomness": "none"
+      },
+      "parameters": {
+        "mu": 0.8,
+        "beta": 0.5,
+        "p": 0.1,
+        "L": 1,
+        "epsilon": 0.01,
+        "iterations": 3,
+        "variant": "Algorithm 1 PIRL1-AM, not accelerated",
+        "weight_base": "previous z_k as printed in Eq. (12) and Algorithm 1, not bar_z_k in Eq. (11)",
+        "bar_z_definition": "G @ u_k",
+        "observation_timing": "step j is full iteration k=j-1; gradient_before and thresholds are computed before z update; z,u,objective are after their respective updates; objective uses updated z and u"
+      },
+      "derivation": "70-digit Decimal arithmetic. Eq. (12): threshold_i=p*mu/(L*beta)*(abs(z_old_i)+epsilon)^(p-1); z_new=sign(G*u_old)*max(abs(G*u_old)-threshold,0). Eq. (14) solved by exact-arithmetic-form Gaussian elimination on the stated 3x3 matrix. iteration 1: bar=[-3.0, 1.5, 1.5], thresholds=[5.409946702449932, 0.1585735490368275, 0.6518123988325788], z=[-0.0, 1.3414264509631726, 0.8481876011674212], u=[1.2672742196561086, -0.007464890571141289, 1.2401906709150325]; iteration 2: bar=[-1.27473911022725, 1.247655561486174, 0.027083548741076133], thresholds=[10.095317511683092, 0.12201319770308262, 0.18360984777147252], z=[-0.0, 1.1256423637830912, 0.0], u=[1.0483870967741935, 0.04822132547533129, 1.403391577750475]; iteration 3: bar=[-1.0001657712988623, 1.3551702522751439, -0.3550044809762816], thresholds=[10.095317511683092, 0.1426929630148942, 10.095317511683092], z=[-0.0, 1.2124772892602496, -0.0], u=[1.0483870967741935, 0.02581231244896783, 1.4258005907768385]",
+      "expected": [
+        {
+          "step": 1,
+          "name": "gradient_before",
+          "value": [
+            -3.0,
+            1.5,
+            1.5
+          ]
+        },
+        {
+          "step": 1,
+          "name": "thresholds",
+          "value": [
+            5.409946702449932,
+            0.1585735490368275,
+            0.6518123988325788
+          ]
+        },
+        {
+          "step": 1,
+          "name": "z",
+          "value": [
+            -0.0,
+            1.3414264509631726,
+            0.8481876011674212
+          ]
+        },
+        {
+          "step": 1,
+          "name": "u",
+          "value": [
+            1.2672742196561086,
+            -0.007464890571141289,
+            1.2401906709150325
+          ]
+        },
+        {
+          "step": 1,
+          "name": "objective",
+          "value": 2.79619800963876
+        },
+        {
+          "step": 2,
+          "name": "gradient_before",
+          "value": [
+            -1.27473911022725,
+            1.247655561486174,
+            0.027083548741076133
+          ]
+        },
+        {
+          "step": 2,
+          "name": "thresholds",
+          "value": [
+            10.095317511683092,
+            0.12201319770308262,
+            0.18360984777147252
+          ]
+        },
+        {
+          "step": 2,
+          "name": "z",
+          "value": [
+            -0.0,
+            1.1256423637830912,
+            0.0
+          ]
+        },
+        {
+          "step": 2,
+          "name": "u",
+          "value": [
+            1.0483870967741935,
+            0.04822132547533129,
+            1.403391577750475
+          ]
+        },
+        {
+          "step": 2,
+          "name": "objective",
+          "value": 1.7528731701850593
+        },
+        {
+          "step": 3,
+          "name": "gradient_before",
+          "value": [
+            -1.0001657712988623,
+            1.3551702522751439,
+            -0.3550044809762816
+          ]
+        },
+        {
+          "step": 3,
+          "name": "thresholds",
+          "value": [
+            10.095317511683092,
+            0.1426929630148942,
+            10.095317511683092
+          ]
+        },
+        {
+          "step": 3,
+          "name": "z",
+          "value": [
+            -0.0,
+            1.2124772892602496,
+            -0.0
+          ]
+        },
+        {
+          "step": 3,
+          "name": "u",
+          "value": [
+            1.0483870967741935,
+            0.02581231244896783,
+            1.4258005907768385
+          ]
+        },
+        {
+          "step": 3,
+          "name": "objective",
+          "value": 1.749857911336108
+        }
+      ],
+      "atol": 1e-10,
+      "rtol": 1e-09
+    }
+  ]
+}

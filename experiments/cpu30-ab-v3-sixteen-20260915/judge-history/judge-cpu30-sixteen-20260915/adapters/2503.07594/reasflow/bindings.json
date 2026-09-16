@@ -1,0 +1,14 @@
+[
+  {
+    "path": "scaffold_speedup/algorithms.py",
+    "symbol": "scaffold"
+  },
+  {
+    "path": "scaffold_speedup/algorithms.py",
+    "symbol": "_sample_indices"
+  },
+  {
+    "path": "scaffold_speedup/algorithms.py",
+    "symbol": "_batch_gradient"
+  }
+]

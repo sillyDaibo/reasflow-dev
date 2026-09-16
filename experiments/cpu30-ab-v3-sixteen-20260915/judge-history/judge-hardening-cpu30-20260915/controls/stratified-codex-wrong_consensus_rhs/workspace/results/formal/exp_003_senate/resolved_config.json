@@ -1,0 +1,8 @@
+{
+  "epsilon": 1e-05,
+  "gamma_state": 1.0,
+  "gamma_year": 4.0,
+  "maxiter": 180,
+  "seed": 0,
+  "solver": "ADMM"
+}

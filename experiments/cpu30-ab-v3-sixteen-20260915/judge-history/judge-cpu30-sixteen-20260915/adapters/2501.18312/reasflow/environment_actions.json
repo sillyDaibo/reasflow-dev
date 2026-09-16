@@ -1,0 +1,8 @@
+[
+  {
+    "kind": "install_package",
+    "package": "numpy",
+    "reason": "Imported by assigned original source",
+    "source": "src/pps_barycenter/pps.py"
+  }
+]

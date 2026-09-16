@@ -1,0 +1,62 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "adapter_audit_controls",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Control adapter approved within declared scope: beer-codex-positive. Approved for genuine original BEER control flow, gradient locations, compression residuals and observed X/H/V/G state.",
+  "scope_notes": [
+    "Approval means faithful execution/observation within the stated public-input scope, not agreement with the paper or correctness of the algorithm.",
+    "Reviewed the redacted public cases, adapter source, bindings and original CPU30 source only; no private contract, expected-value array, derivation script, prior adapter review or prior verdict was consulted.",
+    "Source and adapter hashes bind this static review. Execution success and numerical agreement require the separate runtime/provenance/comparison stage.",
+    "Synthetic problem callbacks cannot validate the displaced original objective/data/compression primitives. They must not be described as a full original end-to-end application reproduction.",
+    "Input mapping: client labels encode objective identity, public diagonal quadratics provide pointwise full deterministic gradients, initial_common_point and W enter the original driver, and eta/gamma/iterations map directly to original arguments.",
+    "The public compressor is implemented as an oracle because compression map is an explicit test input. It executes wherever the original driver calls compression; choice of residual/raw state and channel update is not rewritten.",
+    "Original runner.run_experiment, BEER.initialize and BEER.step execute. The runner computes the next-point gradient location and supplies it to the original step; the adapter never predicts that location. Initialization/method-return events copy row-major internal arrays transposed to public [dimension][client].",
+    "State observations are copies only. Compression, tracking and descent state are never assigned by the adapter; public objective/compressor functions do not generate expected trajectories.",
+    "Original dataset loader, initial-point generator, topology constructor, logistic loss and accuracy are replaced at input/logging boundaries; run_experiment output goes into a temporary directory.",
+    "Original data preprocessing, logistic objective, stochastic sampling and compressor implementation are outside this scope. Only driver use of the prescribed compressor, including per-client call placement/residual arguments, is verified.",
+    "Control beer-codex-positive is a byte-identical copied positive baseline. Reuses the source-reviewed beer-codex content after confirming equality of every workspace file hash.",
+    "Base source review: /Users/zanehuang/work/OptiRepro/reports/judge-hardening-cpu30-20260915/adapter_reviews/beer-codex.json"
+  ],
+  "substitutions": [
+    {
+      "symbol": "runner.load_a9a",
+      "role": "problem_input",
+      "reason": "Construct synthetic clients with public objective identities."
+    },
+    {
+      "symbol": "runner._initial_params",
+      "role": "problem_input",
+      "reason": "Public common initial point."
+    },
+    {
+      "symbol": "runner.mixing_matrix",
+      "role": "problem_input",
+      "reason": "Public W."
+    },
+    {
+      "symbol": "runner.logistic_loss_gradient",
+      "role": "problem_input",
+      "reason": "Public deterministic quadratic objective at the original runner-selected point."
+    },
+    {
+      "symbol": "runner.logistic_accuracy",
+      "role": "problem_input",
+      "reason": "Unobserved logging constant."
+    },
+    {
+      "symbol": "algorithms.compress",
+      "role": "problem_input",
+      "reason": "Public specified scale/top1 compressor."
+    },
+    {
+      "symbol": "sys.settrace",
+      "role": "observation",
+      "reason": "Copy original X/H/V/G at initialization and complete-round execution boundary."
+    }
+  ],
+  "public_digest": "57cfd36a2580d2cbb47f1506e7d817fe99073ee7cccad322b4317b866f289bb6",
+  "adapter_sha256": "7b2935aeae1cc55d60b78ff9bcad8e1b9ec6f26cca15748deeb58e7d402fa5d3",
+  "workspace_digest": "95e9c5e61f2cb08899d56de18c5b6ee73e7c7de5c5ecbe7b7097e57759afce11",
+  "bindings_digest": "8b7af0f521ed803b72826aadc3248feda907ebde4dfe92cfaf0b7b33a48388bf"
+}

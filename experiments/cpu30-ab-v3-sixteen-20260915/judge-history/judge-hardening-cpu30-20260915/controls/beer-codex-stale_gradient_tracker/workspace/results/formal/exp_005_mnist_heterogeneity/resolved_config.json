@@ -1,0 +1,19 @@
+{
+  "batch_size": 100,
+  "clients": 10,
+  "compression_param": 0,
+  "compressor": "identity",
+  "data_root": "${BEER_MNIST_ROOT}",
+  "experiment_id": "exp_005_mnist_heterogeneity",
+  "gamma": 0.1,
+  "hidden": 32,
+  "lr": 0.1,
+  "methods": [
+    "BEER",
+    "DSGD"
+  ],
+  "rounds": 35,
+  "seed": 15,
+  "task": "mnist",
+  "topology": "ring"
+}

@@ -1,0 +1,258 @@
+[
+  {
+    "paper_id": "1811.03761",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu/agent_reproduction/runs/1811.03761/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/03/rollout-2026-09-03T20-42-29-01a0674a-c6ff-7440-8767-7fd9c0ac09fe.jsonl",
+    "expected_sha256": "d9fde7373bf64b958b1cae10418ef5cf4156b0191e8cb08571e6c296a896fd0d",
+    "source_sha256": "d9fde7373bf64b958b1cae10418ef5cf4156b0191e8cb08571e6c296a896fd0d",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "1811.03761",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu/agent_reproduction/runs/1811.03761/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/03/rollout-2026-09-03T20-42-29-01a0674a-c826-7ee3-897a-0bb676a22f83.jsonl",
+    "expected_sha256": "50078c35db5c8e1738910f7cceefaddce6e424efa8c3d7b38ea4840c4ae0ad26",
+    "source_sha256": "50078c35db5c8e1738910f7cceefaddce6e424efa8c3d7b38ea4840c4ae0ad26",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "1904.12017",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/1904.12017/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/03/rollout-2026-09-03T20-46-16-01a0674e-40e7-7772-937b-ab9c57353c66.jsonl",
+    "expected_sha256": "2aa5b7437733e0f6c9f3fee0b0b5c47b50ab4d381ec7ad19024728b8e82d094b",
+    "source_sha256": "2aa5b7437733e0f6c9f3fee0b0b5c47b50ab4d381ec7ad19024728b8e82d094b",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "1904.12017",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/1904.12017/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/03/rollout-2026-09-03T20-46-17-01a0674e-426d-7010-9e90-cfc32668275b.jsonl",
+    "expected_sha256": "943da9ae7b6a8b98c3ae0ef632e9ddc4124a2b2cd8e724cd171158e2bf07ddfb",
+    "source_sha256": "943da9ae7b6a8b98c3ae0ef632e9ddc4124a2b2cd8e724cd171158e2bf07ddfb",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2102.06704",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T03-27-50-01a068bd-e2f7-7aa3-8dc1-1de693220c31.jsonl",
+    "expected_sha256": "29f8269aa529bbda3264a86fb5e05b19620ce4badf0da074fad5a7096a85777a",
+    "source_sha256": "29f8269aa529bbda3264a86fb5e05b19620ce4badf0da074fad5a7096a85777a",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2102.06704",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2102.06704/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T03-27-50-01a068bd-e473-7b13-ac91-a01ba376bd4e.jsonl",
+    "expected_sha256": "9332c813e94d8f3aac1f88fa98c80a7d667b7a9c08bad0a74b22b0a2e4bb6a97",
+    "source_sha256": "9332c813e94d8f3aac1f88fa98c80a7d667b7a9c08bad0a74b22b0a2e4bb6a97",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2111.03820",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2111.03820/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/05/rollout-2026-09-05T00-35-56-01a06d46-df07-7851-bf48-1442468e30ff.jsonl",
+    "expected_sha256": "3b750036837f7f0fb432160547033caba4fb9ad6df14589d268104f7293bb247",
+    "source_sha256": "3b750036837f7f0fb432160547033caba4fb9ad6df14589d268104f7293bb247",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2111.03820",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2111.03820/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/05/rollout-2026-09-05T00-35-56-01a06d46-e0a3-75e1-9225-c488008cc1d3.jsonl",
+    "expected_sha256": "b4ceb4b2606aafb04abd987f3c42b953fd4b5584642b130c245f4209fe5685f0",
+    "source_sha256": "b4ceb4b2606aafb04abd987f3c42b953fd4b5584642b130c245f4209fe5685f0",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2201.13320",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2201.13320/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/03/rollout-2026-09-03T22-13-43-01a0679e-4eb2-7da1-8776-1a029f7cc362.jsonl",
+    "expected_sha256": "007b581dd8e2401640710035a52b1013ec94f5e4dc9300fe89caefb5c03d2184",
+    "source_sha256": "007b581dd8e2401640710035a52b1013ec94f5e4dc9300fe89caefb5c03d2184",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2201.13320",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2201.13320/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/03/rollout-2026-09-03T22-13-43-01a0679e-5020-71f1-a1c3-c3bdbbf14e5b.jsonl",
+    "expected_sha256": "2b3e511f0e629d8d8cbc7364022a1ce1a0d8da518f2b60dfe117809d00a7d01f",
+    "source_sha256": "2b3e511f0e629d8d8cbc7364022a1ce1a0d8da518f2b60dfe117809d00a7d01f",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2207.04555",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2207.04555/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T02-49-29-01a0689a-c980-7a43-a810-60eaa657e279.jsonl",
+    "expected_sha256": "08277473065bafee54e60812029de3b5b83c95e7ae1394d25ab7eceac4599c3f",
+    "source_sha256": "08277473065bafee54e60812029de3b5b83c95e7ae1394d25ab7eceac4599c3f",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2207.04555",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2207.04555/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T02-49-30-01a0689a-caf4-71a3-be00-ebe89a7118e6.jsonl",
+    "expected_sha256": "5eac90e89f4d6c7727328323b9a9339dc81a8f781c20d1013580141856002f50",
+    "source_sha256": "5eac90e89f4d6c7727328323b9a9339dc81a8f781c20d1013580141856002f50",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2212.02387",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2212.02387/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T04-07-39-01a068e2-578c-7c12-bd10-3dd31654c800.jsonl",
+    "expected_sha256": "d6a80cf8b8063a73eacd524ab03fd425fc976a4aa3a4a3d6f36a6ff67dd94d1f",
+    "source_sha256": "d6a80cf8b8063a73eacd524ab03fd425fc976a4aa3a4a3d6f36a6ff67dd94d1f",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2212.02387",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2212.02387/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T04-07-39-01a068e2-5924-77a1-8df2-4bbfae976bee.jsonl",
+    "expected_sha256": "b1945ba785eaa78b9a37e151e02dce6135a52e15262b3f078e360838acb81913",
+    "source_sha256": "b1945ba785eaa78b9a37e151e02dce6135a52e15262b3f078e360838acb81913",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2306.04961",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2306.04961/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/05/rollout-2026-09-05T05-50-58-01a06e67-4b3f-73b0-b143-e981a7bfc51e.jsonl",
+    "expected_sha256": "a3983c7abb49d99e74a956c37320ea0d3c9277d3ffc1b5918059d7e64b8f37a5",
+    "source_sha256": "a3983c7abb49d99e74a956c37320ea0d3c9277d3ffc1b5918059d7e64b8f37a5",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2306.04961",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2306.04961/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/05/rollout-2026-09-05T05-50-58-01a06e67-4cd2-7b03-a85e-41eae9794855.jsonl",
+    "expected_sha256": "9e4d0b22a4d257cf9091696aaa3afd626f3ff578bb3938ed7f9c4acef339128c",
+    "source_sha256": "9e4d0b22a4d257cf9091696aaa3afd626f3ff578bb3938ed7f9c4acef339128c",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2306.05100",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2306.05100/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T07-35-45-01a069a0-ddca-7752-a647-98077cf61517.jsonl",
+    "expected_sha256": "b6f03930260fe649f1aa0f05f2f8a362558abb46de8da21c64a63dfb522a762b",
+    "source_sha256": "b6f03930260fe649f1aa0f05f2f8a362558abb46de8da21c64a63dfb522a762b",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2306.05100",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2306.05100/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T07-35-45-01a069a0-df5f-7c51-9065-837f38c5b357.jsonl",
+    "expected_sha256": "8ae3f80b4ee5091ca3ab330dffe5bef9d808038f05b0b1c855c39e0918d3681d",
+    "source_sha256": "8ae3f80b4ee5091ca3ab330dffe5bef9d808038f05b0b1c855c39e0918d3681d",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2309.05204",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2309.05204/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T02-15-27-01a0687b-a0fe-7311-8393-307201b7b7c6.jsonl",
+    "expected_sha256": "c9f61b3f1a2872f38b0c68827cb33cc273a18e6ca2aa0ae8570c8ce9b2fbe83a",
+    "source_sha256": "c9f61b3f1a2872f38b0c68827cb33cc273a18e6ca2aa0ae8570c8ce9b2fbe83a",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2309.05204",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2309.05204/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T02-15-28-01a0687b-a281-75f2-9b19-c231c4c02965.jsonl",
+    "expected_sha256": "933df4fc5c52eff7c731f69088742706155f1a0bcb42edef35454c616e885126",
+    "source_sha256": "933df4fc5c52eff7c731f69088742706155f1a0bcb42edef35454c616e885126",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2310.09804",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu/agent_reproduction/runs/2310.09804/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T01-22-41-01a0684b-5124-7ae1-b5e1-d898aa9a60ae.jsonl",
+    "expected_sha256": "733578aeed4327ceae9141af34b9832c86b3f95a1b05cd5ab666e4ae16207642",
+    "source_sha256": "733578aeed4327ceae9141af34b9832c86b3f95a1b05cd5ab666e4ae16207642",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2310.09804",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu/agent_reproduction/runs/2310.09804/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T01-22-42-01a0684b-5352-7d63-beb4-3e6af1f9eede.jsonl",
+    "expected_sha256": "15948f888df84903eb7ad1e1b3ab407da4724ba5a159bae75bf43299c7dbc5f3",
+    "source_sha256": "15948f888df84903eb7ad1e1b3ab407da4724ba5a159bae75bf43299c7dbc5f3",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2501.04443",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.04443/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/05/rollout-2026-09-05T01-41-42-01a06d83-1752-7c62-b242-7d2dcfad529d.jsonl",
+    "expected_sha256": "e77e78f317a7bb6e1b69121c598062316afb4737e24cbe83fab88a2305841038",
+    "source_sha256": "e77e78f317a7bb6e1b69121c598062316afb4737e24cbe83fab88a2305841038",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2501.04443",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.04443/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/05/rollout-2026-09-05T01-41-43-01a06d83-18f2-75e1-9540-f00cba5f21e1.jsonl",
+    "expected_sha256": "16249790a20a5fcac74b92869c8e6746a5ab724c15fbbab5534611a839fb68b1",
+    "source_sha256": "16249790a20a5fcac74b92869c8e6746a5ab724c15fbbab5534611a839fb68b1",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2501.09516",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.09516/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/05/rollout-2026-09-05T02-39-11-01a06db7-b6fe-7932-8298-5844f79c6f46.jsonl",
+    "expected_sha256": "487091cb588b6af4e111470a41ac4b794bd70d98ca5edca99475d0f0b5665b39",
+    "source_sha256": "487091cb588b6af4e111470a41ac4b794bd70d98ca5edca99475d0f0b5665b39",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2501.09516",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.09516/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/05/rollout-2026-09-05T02-39-11-01a06db7-b86a-7552-acec-379981472ca8.jsonl",
+    "expected_sha256": "fc793cf06b57cb553347e6b6f1f47075f883bc58614e57e403814499e60a142d",
+    "source_sha256": "fc793cf06b57cb553347e6b6f1f47075f883bc58614e57e403814499e60a142d",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2501.18312",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.18312/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T23-16-25-01a06cfe-138d-7431-a0f3-1e382a979566.jsonl",
+    "expected_sha256": "0c82229cec0f597cde5ac0687160ff3b7d6eba30ad1bc760356aac139d02e2b8",
+    "source_sha256": "0c82229cec0f597cde5ac0687160ff3b7d6eba30ad1bc760356aac139d02e2b8",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2501.18312",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2501.18312/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T23-16-25-01a06cfe-14fd-7a71-bba3-2f746fbd2804.jsonl",
+    "expected_sha256": "528b21b7deeecb950a60808f25021f41b13801de76d58cdcd8edeb747ed589eb",
+    "source_sha256": "528b21b7deeecb950a60808f25021f41b13801de76d58cdcd8edeb747ed589eb",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2503.07594",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2503.07594/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/05/rollout-2026-09-05T04-25-37-01a06e19-2774-7a00-95c7-1c635de95ec1.jsonl",
+    "expected_sha256": "e801ce4b1d3db1540eb3f27eb48bec88a06ba81a59b2024d115d76e157a28b4c",
+    "source_sha256": "e801ce4b1d3db1540eb3f27eb48bec88a06ba81a59b2024d115d76e157a28b4c",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2503.07594",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2503.07594/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/05/rollout-2026-09-05T04-25-37-01a06e19-28e2-7d30-b1f3-37bed92714bf.jsonl",
+    "expected_sha256": "0f7c4128df6ff0f31f812f28262a1b6b6b70f5a2b8a48fee6c523dff6d788bc0",
+    "source_sha256": "0f7c4128df6ff0f31f812f28262a1b6b6b70f5a2b8a48fee6c523dff6d788bc0",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2504.19004",
+    "condition": "A",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2504.19004/Codex原生-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T17-36-23-01a06bc6-c52a-7d21-a992-c7654d8efc62.jsonl",
+    "expected_sha256": "2d70eb8c7144eaf699c9a389087a65ed1768e0a36ef42dcb4ccd45308882e67d",
+    "source_sha256": "2d70eb8c7144eaf699c9a389087a65ed1768e0a36ef42dcb4ccd45308882e67d",
+    "original_hash_matches": true
+  },
+  {
+    "paper_id": "2504.19004",
+    "condition": "B",
+    "path": "remote/OptiRepro_cpu_2/agent_reproduction/runs/2504.19004/ReasFlow实验Agent-完整复现-Goal/第003次运行/logs/codex-home/sessions/2026/09/04/rollout-2026-09-04T17-36-24-01a06bc6-c69d-7111-ad8f-ecefff3b3d48.jsonl",
+    "expected_sha256": "a4fc6bbb4ee3863f3d07168c2ad6a45ba9e0ff4dfaf0b3164fda712d82816897",
+    "source_sha256": "a4fc6bbb4ee3863f3d07168c2ad6a45ba9e0ff4dfaf0b3164fda712d82816897",
+    "original_hash_matches": true
+  }
+]

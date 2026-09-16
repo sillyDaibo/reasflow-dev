@@ -1,0 +1,3355 @@
+{
+  "paper_id": "2207.04555",
+  "contract_digest": "77de8bac952fb337c8fcff7d9a8428078054eb555d519346b7f7bec311e1c3b8",
+  "numeric_leaves": 258,
+  "case_leaves": {
+    "apdg_gamma_one": 129,
+    "apdg_scaled_constraints": 129
+  },
+  "max_abs_error": 1.5e-17,
+  "passed": true,
+  "checks": [
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "-1",
+      "contract_value": -1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-2",
+      "contract_value": -2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "-1",
+      "contract_value": -1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "-2",
+      "contract_value": -2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "2",
+      "contract_value": 2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "-1",
+      "contract_value": -1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-2",
+      "contract_value": -2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "27/40",
+      "contract_value": 0.675,
+      "abs_error": 0.0,
+      "tolerance": 1.675e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "6/5",
+      "contract_value": 1.2,
+      "abs_error": 0.0,
+      "tolerance": 2.2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x",
+      "path": [
+        2
+      ],
+      "independent_exact": "-29/40",
+      "contract_value": -0.725,
+      "abs_error": 0.0,
+      "tolerance": 1.725e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x",
+      "path": [
+        3
+      ],
+      "independent_exact": "-1",
+      "contract_value": -1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y",
+      "path": [
+        0
+      ],
+      "independent_exact": "387/400",
+      "contract_value": 0.9675,
+      "abs_error": 0.0,
+      "tolerance": 1.9675e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y",
+      "path": [
+        1
+      ],
+      "independent_exact": "1/400",
+      "contract_value": 0.0025,
+      "abs_error": 0.0,
+      "tolerance": 1.0025e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y",
+      "path": [
+        2
+      ],
+      "independent_exact": "193/200",
+      "contract_value": 0.965,
+      "abs_error": 0.0,
+      "tolerance": 1.965e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y",
+      "path": [
+        3
+      ],
+      "independent_exact": "38/25",
+      "contract_value": 1.52,
+      "abs_error": 0.0,
+      "tolerance": 2.52e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y",
+      "path": [
+        4
+      ],
+      "independent_exact": "-193/200",
+      "contract_value": -0.965,
+      "abs_error": 0.0,
+      "tolerance": 1.965e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y",
+      "path": [
+        5
+      ],
+      "independent_exact": "-38/25",
+      "contract_value": -1.52,
+      "abs_error": 0.0,
+      "tolerance": 2.52e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "37/50",
+      "contract_value": 0.74,
+      "abs_error": 0.0,
+      "tolerance": 1.74e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "34/25",
+      "contract_value": 1.36,
+      "abs_error": 0.0,
+      "tolerance": 2.36e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "-39/50",
+      "contract_value": -0.78,
+      "abs_error": 0.0,
+      "tolerance": 1.78e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "x_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "-6/5",
+      "contract_value": -1.2,
+      "abs_error": 0.0,
+      "tolerance": 2.2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "3883/4000",
+      "contract_value": 0.97075,
+      "abs_error": 0.0,
+      "tolerance": 1.97075e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "9/4000",
+      "contract_value": 0.00225,
+      "abs_error": 0.0,
+      "tolerance": 1.00225e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "1937/2000",
+      "contract_value": 0.9685,
+      "abs_error": 0.0,
+      "tolerance": 1.9685e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "196/125",
+      "contract_value": 1.568,
+      "abs_error": 0.0,
+      "tolerance": 2.568e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        4
+      ],
+      "independent_exact": "-1937/2000",
+      "contract_value": -0.9685,
+      "abs_error": 0.0,
+      "tolerance": 1.9685e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        5
+      ],
+      "independent_exact": "-196/125",
+      "contract_value": -1.568,
+      "abs_error": 0.0,
+      "tolerance": 2.568e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        0
+      ],
+      "independent_exact": "27/40",
+      "contract_value": 0.675,
+      "abs_error": 0.0,
+      "tolerance": 1.675e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        1
+      ],
+      "independent_exact": "-29/40",
+      "contract_value": -0.725,
+      "abs_error": 0.0,
+      "tolerance": 1.725e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        2
+      ],
+      "independent_exact": "7/5",
+      "contract_value": 1.4,
+      "abs_error": 0.0,
+      "tolerance": 2.4e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        3
+      ],
+      "independent_exact": "11/5",
+      "contract_value": 2.2,
+      "abs_error": 0.0,
+      "tolerance": 3.2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        4
+      ],
+      "independent_exact": "-7/5",
+      "contract_value": -1.4,
+      "abs_error": 0.0,
+      "tolerance": 2.4e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        5
+      ],
+      "independent_exact": "-11/5",
+      "contract_value": -2.2,
+      "abs_error": 0.0,
+      "tolerance": 3.2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 1,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "12347/1600",
+      "contract_value": 7.716875,
+      "abs_error": 0.0,
+      "tolerance": 8.716875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "1909/2000",
+      "contract_value": 0.9545,
+      "abs_error": 0.0,
+      "tolerance": 1.9545e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "7/2000",
+      "contract_value": 0.0035,
+      "abs_error": 0.0,
+      "tolerance": 1.0035e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "951/1000",
+      "contract_value": 0.951,
+      "abs_error": 0.0,
+      "tolerance": 1.951e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "166/125",
+      "contract_value": 1.328,
+      "abs_error": 0.0,
+      "tolerance": 2.328e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "-951/1000",
+      "contract_value": -0.951,
+      "abs_error": 0.0,
+      "tolerance": 1.951e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-166/125",
+      "contract_value": -1.328,
+      "abs_error": 0.0,
+      "tolerance": 2.328e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "701/1000",
+      "contract_value": 0.701,
+      "abs_error": 0.0,
+      "tolerance": 1.701e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "158/125",
+      "contract_value": 1.264,
+      "abs_error": 0.0,
+      "tolerance": 2.264e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "-747/1000",
+      "contract_value": -0.747,
+      "abs_error": 0.0,
+      "tolerance": 1.747e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "-27/25",
+      "contract_value": -1.08,
+      "abs_error": 0.0,
+      "tolerance": 2.08e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "38739/40000",
+      "contract_value": 0.968475,
+      "abs_error": 0.0,
+      "tolerance": 1.968475e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "97/40000",
+      "contract_value": 0.002425,
+      "abs_error": 0.0,
+      "tolerance": 1.002425e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "19321/20000",
+      "contract_value": 0.96605,
+      "abs_error": 0.0,
+      "tolerance": 1.96605e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "959/625",
+      "contract_value": 1.5344,
+      "abs_error": 0.0,
+      "tolerance": 2.5344e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "-19321/20000",
+      "contract_value": -0.96605,
+      "abs_error": 0.0,
+      "tolerance": 1.96605e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-959/625",
+      "contract_value": -1.5344,
+      "abs_error": 0.0,
+      "tolerance": 2.5344e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "853/2000",
+      "contract_value": 0.4265,
+      "abs_error": 0.0,
+      "tolerance": 1.4265e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "1677/2500",
+      "contract_value": 0.6708,
+      "abs_error": 0.0,
+      "tolerance": 1.6708e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x",
+      "path": [
+        2
+      ],
+      "independent_exact": "-10873/20000",
+      "contract_value": -0.54365,
+      "abs_error": 0.0,
+      "tolerance": 1.54365e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x",
+      "path": [
+        3
+      ],
+      "independent_exact": "-489/1250",
+      "contract_value": -0.3912,
+      "abs_error": 0.0,
+      "tolerance": 1.3912e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y",
+      "path": [
+        0
+      ],
+      "independent_exact": "74213/80000",
+      "contract_value": 0.9276625,
+      "abs_error": 0.0,
+      "tolerance": 1.9276625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y",
+      "path": [
+        1
+      ],
+      "independent_exact": "-1591/400000",
+      "contract_value": -0.0039775,
+      "abs_error": 0.0,
+      "tolerance": 1.0039775e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y",
+      "path": [
+        2
+      ],
+      "independent_exact": "23291/25000",
+      "contract_value": 0.93164,
+      "abs_error": 0.0,
+      "tolerance": 1.93164e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y",
+      "path": [
+        3
+      ],
+      "independent_exact": "2861/2500",
+      "contract_value": 1.1444,
+      "abs_error": 0.0,
+      "tolerance": 2.1444e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y",
+      "path": [
+        4
+      ],
+      "independent_exact": "-23291/25000",
+      "contract_value": -0.93164,
+      "abs_error": 0.0,
+      "tolerance": 1.93164e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y",
+      "path": [
+        5
+      ],
+      "independent_exact": "-2861/2500",
+      "contract_value": -1.1444,
+      "abs_error": 0.0,
+      "tolerance": 2.1444e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "2511/5000",
+      "contract_value": 0.5022,
+      "abs_error": 0.0,
+      "tolerance": 1.5022e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "2627/3125",
+      "contract_value": 0.84064,
+      "abs_error": 0.0,
+      "tolerance": 1.84064e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "-1881/3125",
+      "contract_value": -0.60192,
+      "abs_error": 0.0,
+      "tolerance": 1.60192e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "x_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "-1853/3125",
+      "contract_value": -0.59296,
+      "abs_error": 0.0,
+      "tolerance": 1.59296e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "746097/800000",
+      "contract_value": 0.93262125,
+      "abs_error": 0.0,
+      "tolerance": 1.93262125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "-13619/4000000",
+      "contract_value": -0.00340475,
+      "abs_error": 0.0,
+      "tolerance": 1.00340475e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "468013/500000",
+      "contract_value": 0.936026,
+      "abs_error": 0.0,
+      "tolerance": 1.936026e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "29909/25000",
+      "contract_value": 1.19636,
+      "abs_error": 0.0,
+      "tolerance": 2.19636e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        4
+      ],
+      "independent_exact": "-468013/500000",
+      "contract_value": -0.936026,
+      "abs_error": 0.0,
+      "tolerance": 1.936026e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        5
+      ],
+      "independent_exact": "-29909/25000",
+      "contract_value": -1.19636,
+      "abs_error": 0.0,
+      "tolerance": 2.19636e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        0
+      ],
+      "independent_exact": "853/2000",
+      "contract_value": 0.4265,
+      "abs_error": 0.0,
+      "tolerance": 1.4265e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        1
+      ],
+      "independent_exact": "-10873/20000",
+      "contract_value": -0.54365,
+      "abs_error": 0.0,
+      "tolerance": 1.54365e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        2
+      ],
+      "independent_exact": "19403/20000",
+      "contract_value": 0.97015,
+      "abs_error": 0.0,
+      "tolerance": 1.97015e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        3
+      ],
+      "independent_exact": "531/500",
+      "contract_value": 1.062,
+      "abs_error": 0.0,
+      "tolerance": 2.062e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        4
+      ],
+      "independent_exact": "-19403/20000",
+      "contract_value": -0.97015,
+      "abs_error": 0.0,
+      "tolerance": 1.97015e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        5
+      ],
+      "independent_exact": "-531/500",
+      "contract_value": -1.062,
+      "abs_error": 0.0,
+      "tolerance": 2.062e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 2,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "379423091/200000000",
+      "contract_value": 1.897115455,
+      "abs_error": 0.0,
+      "tolerance": 2.897115455e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "364691/400000",
+      "contract_value": 0.9117275,
+      "abs_error": 0.0,
+      "tolerance": 1.9117275e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "-13137/2000000",
+      "contract_value": -0.0065685,
+      "abs_error": 0.0,
+      "tolerance": 1.0065685e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "114787/125000",
+      "contract_value": 0.918296,
+      "abs_error": 0.0,
+      "tolerance": 1.918296e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "12427/12500",
+      "contract_value": 0.99416,
+      "abs_error": 0.0,
+      "tolerance": 1.99416e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "-114787/125000",
+      "contract_value": -0.918296,
+      "abs_error": 0.0,
+      "tolerance": 1.918296e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-12427/12500",
+      "contract_value": -0.99416,
+      "abs_error": 0.0,
+      "tolerance": 1.99416e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "22839/50000",
+      "contract_value": 0.45678,
+      "abs_error": 0.0,
+      "tolerance": 1.45678e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "46171/62500",
+      "contract_value": 0.738736,
+      "abs_error": 0.0,
+      "tolerance": 1.738736e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "-283479/500000",
+      "contract_value": -0.566958,
+      "abs_error": 0.0,
+      "tolerance": 1.566958e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "-14747/31250",
+      "contract_value": -0.471904,
+      "abs_error": 0.0,
+      "tolerance": 1.471904e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "7433201/8000000",
+      "contract_value": 0.929150125,
+      "abs_error": 0.0,
+      "tolerance": 1.929150125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "-152227/40000000",
+      "contract_value": -0.003805675,
+      "abs_error": 0.0,
+      "tolerance": 1.003805675e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "4664779/5000000",
+      "contract_value": 0.9329558,
+      "abs_error": 0.0,
+      "tolerance": 1.9329558e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "289997/250000",
+      "contract_value": 1.159988,
+      "abs_error": 0.0,
+      "tolerance": 2.159988e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "-4664779/5000000",
+      "contract_value": -0.9329558,
+      "abs_error": 0.0,
+      "tolerance": 1.9329558e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-289997/250000",
+      "contract_value": -1.159988,
+      "abs_error": 0.0,
+      "tolerance": 2.159988e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "9430001/40000000",
+      "contract_value": 0.235750025,
+      "abs_error": 0.0,
+      "tolerance": 1.235750025e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "97147/312500",
+      "contract_value": 0.3108704,
+      "abs_error": 0.0,
+      "tolerance": 1.3108704e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x",
+      "path": [
+        2
+      ],
+      "independent_exact": "-17086681/40000000",
+      "contract_value": -0.427167025,
+      "abs_error": 0.0,
+      "tolerance": 1.427167025e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x",
+      "path": [
+        3
+      ],
+      "independent_exact": "-30929/1250000",
+      "contract_value": -0.0247432,
+      "abs_error": 0.0,
+      "tolerance": 1.0247432e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y",
+      "path": [
+        0
+      ],
+      "independent_exact": "44181247/50000000",
+      "contract_value": 0.88362494,
+      "abs_error": 0.0,
+      "tolerance": 1.88362494e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y",
+      "path": [
+        1
+      ],
+      "independent_exact": "-3663393/200000000",
+      "contract_value": -0.018316965,
+      "abs_error": 0.0,
+      "tolerance": 1.018316965e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y",
+      "path": [
+        2
+      ],
+      "independent_exact": "180388381/200000000",
+      "contract_value": 0.901941905,
+      "abs_error": 0.0,
+      "tolerance": 1.901941905e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y",
+      "path": [
+        3
+      ],
+      "independent_exact": "5307051/6250000",
+      "contract_value": 0.84912816,
+      "abs_error": 0.0,
+      "tolerance": 1.84912816e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y",
+      "path": [
+        4
+      ],
+      "independent_exact": "-180388381/200000000",
+      "contract_value": -0.901941905,
+      "abs_error": 0.0,
+      "tolerance": 1.901941905e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y",
+      "path": [
+        5
+      ],
+      "independent_exact": "-5307051/6250000",
+      "contract_value": -0.84912816,
+      "abs_error": 0.0,
+      "tolerance": 1.84912816e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "15209001/50000000",
+      "contract_value": 0.30418002,
+      "abs_error": 0.0,
+      "tolerance": 1.30418002e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "704363/1562500",
+      "contract_value": 0.45079232,
+      "abs_error": 0.0,
+      "tolerance": 1.45079232e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "-23688581/50000000",
+      "contract_value": -0.47377162,
+      "abs_error": 0.0,
+      "tolerance": 1.47377162e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "x_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "-279279/1562500",
+      "contract_value": -0.17873856,
+      "abs_error": 0.0,
+      "tolerance": 1.17873856e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "889516321/1000000000",
+      "contract_value": 0.889516321,
+      "abs_error": 0.0,
+      "tolerance": 1.889516321e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "-33422387/2000000000",
+      "contract_value": -0.0167111935,
+      "abs_error": 0.0,
+      "tolerance": 1.0167111935e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "1812455029/2000000000",
+      "contract_value": 0.9062275145,
+      "abs_error": 0.0,
+      "tolerance": 1.9062275145e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "55890209/62500000",
+      "contract_value": 0.894243344,
+      "abs_error": 0.0,
+      "tolerance": 1.894243344e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        4
+      ],
+      "independent_exact": "-1812455029/2000000000",
+      "contract_value": -0.9062275145,
+      "abs_error": 0.0,
+      "tolerance": 1.9062275145e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        5
+      ],
+      "independent_exact": "-55890209/62500000",
+      "contract_value": -0.894243344,
+      "abs_error": 0.0,
+      "tolerance": 1.894243344e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        0
+      ],
+      "independent_exact": "9430001/40000000",
+      "contract_value": 0.235750025,
+      "abs_error": 0.0,
+      "tolerance": 1.235750025e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        1
+      ],
+      "independent_exact": "-17086681/40000000",
+      "contract_value": -0.427167025,
+      "abs_error": 0.0,
+      "tolerance": 1.427167025e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        2
+      ],
+      "independent_exact": "13258341/20000000",
+      "contract_value": 0.66291705,
+      "abs_error": 0.0,
+      "tolerance": 1.66291705e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        3
+      ],
+      "independent_exact": "419517/1250000",
+      "contract_value": 0.3356136,
+      "abs_error": 0.0,
+      "tolerance": 1.3356136e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        4
+      ],
+      "independent_exact": "-13258341/20000000",
+      "contract_value": -0.66291705,
+      "abs_error": 0.0,
+      "tolerance": 1.66291705e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        5
+      ],
+      "independent_exact": "-419517/1250000",
+      "contract_value": -0.3356136,
+      "abs_error": 0.0,
+      "tolerance": 1.3356136e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_gamma_one",
+      "step": 3,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "-446418108732733/1600000000000000",
+      "contract_value": -0.27901131795795814,
+      "abs_error": 1.5e-17,
+      "tolerance": 1.279011317957958e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "-1/2",
+      "contract_value": -0.5,
+      "abs_error": 0.0,
+      "tolerance": 1.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "3/2",
+      "contract_value": 1.5,
+      "abs_error": 0.0,
+      "tolerance": 2.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "1/2",
+      "contract_value": 0.5,
+      "abs_error": 0.0,
+      "tolerance": 1.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_m_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-3/2",
+      "contract_value": -1.5,
+      "abs_error": 0.0,
+      "tolerance": 2.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "-2",
+      "contract_value": -2.0,
+      "abs_error": 0.0,
+      "tolerance": 3e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "3",
+      "contract_value": 3.0,
+      "abs_error": 0.0,
+      "tolerance": 4e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "-1",
+      "contract_value": -1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "0",
+      "contract_value": 0.0,
+      "abs_error": 0.0,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "1",
+      "contract_value": 1.0,
+      "abs_error": 0.0,
+      "tolerance": 2e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "-1/2",
+      "contract_value": -0.5,
+      "abs_error": 0.0,
+      "tolerance": 1.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "3/2",
+      "contract_value": 1.5,
+      "abs_error": 0.0,
+      "tolerance": 2.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "1/2",
+      "contract_value": 0.5,
+      "abs_error": 0.0,
+      "tolerance": 1.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_g_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-3/2",
+      "contract_value": -1.5,
+      "abs_error": 0.0,
+      "tolerance": 2.5e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "-133/80",
+      "contract_value": -1.6625,
+      "abs_error": 0.0,
+      "tolerance": 2.6625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "19/20",
+      "contract_value": 0.95,
+      "abs_error": 0.0,
+      "tolerance": 1.95e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x",
+      "path": [
+        2
+      ],
+      "independent_exact": "167/80",
+      "contract_value": 2.0875,
+      "abs_error": 0.0,
+      "tolerance": 3.0875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x",
+      "path": [
+        3
+      ],
+      "independent_exact": "-3/4",
+      "contract_value": -0.75,
+      "abs_error": 0.0,
+      "tolerance": 1.75e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y",
+      "path": [
+        0
+      ],
+      "independent_exact": "-43/800",
+      "contract_value": -0.05375,
+      "abs_error": 0.0,
+      "tolerance": 1.05375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y",
+      "path": [
+        1
+      ],
+      "independent_exact": "657/800",
+      "contract_value": 0.82125,
+      "abs_error": 0.0,
+      "tolerance": 1.82125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y",
+      "path": [
+        2
+      ],
+      "independent_exact": "-7/16",
+      "contract_value": -0.4375,
+      "abs_error": 0.0,
+      "tolerance": 1.4375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y",
+      "path": [
+        3
+      ],
+      "independent_exact": "609/400",
+      "contract_value": 1.5225,
+      "abs_error": 0.0,
+      "tolerance": 2.5225e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y",
+      "path": [
+        4
+      ],
+      "independent_exact": "7/16",
+      "contract_value": 0.4375,
+      "abs_error": 0.0,
+      "tolerance": 1.4375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y",
+      "path": [
+        5
+      ],
+      "independent_exact": "-609/400",
+      "contract_value": -1.5225,
+      "abs_error": 0.0,
+      "tolerance": 2.5225e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "-173/100",
+      "contract_value": -1.73,
+      "abs_error": 0.0,
+      "tolerance": 2.73e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "24/25",
+      "contract_value": 0.96,
+      "abs_error": 0.0,
+      "tolerance": 1.96e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "227/100",
+      "contract_value": 2.27,
+      "abs_error": 0.0,
+      "tolerance": 3.27e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "x_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "-4/5",
+      "contract_value": -0.8,
+      "abs_error": 0.0,
+      "tolerance": 1.8e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "-387/8000",
+      "contract_value": -0.048375,
+      "abs_error": 0.0,
+      "tolerance": 1.048375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "6713/8000",
+      "contract_value": 0.839125,
+      "abs_error": 0.0,
+      "tolerance": 1.839125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "-71/160",
+      "contract_value": -0.44375,
+      "abs_error": 0.0,
+      "tolerance": 1.44375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "6081/4000",
+      "contract_value": 1.52025,
+      "abs_error": 0.0,
+      "tolerance": 2.52025e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        4
+      ],
+      "independent_exact": "71/160",
+      "contract_value": 0.44375,
+      "abs_error": 0.0,
+      "tolerance": 1.44375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "y_f",
+      "path": [
+        5
+      ],
+      "independent_exact": "-6081/4000",
+      "contract_value": -1.52025,
+      "abs_error": 0.0,
+      "tolerance": 2.52025e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        0
+      ],
+      "independent_exact": "-133/80",
+      "contract_value": -1.6625,
+      "abs_error": 0.0,
+      "tolerance": 2.6625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        1
+      ],
+      "independent_exact": "167/80",
+      "contract_value": 2.0875,
+      "abs_error": 0.0,
+      "tolerance": 3.0875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        2
+      ],
+      "independent_exact": "-15/8",
+      "contract_value": -1.875,
+      "abs_error": 0.0,
+      "tolerance": 2.875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        3
+      ],
+      "independent_exact": "17/20",
+      "contract_value": 0.85,
+      "abs_error": 0.0,
+      "tolerance": 1.85e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        4
+      ],
+      "independent_exact": "15/8",
+      "contract_value": 1.875,
+      "abs_error": 0.0,
+      "tolerance": 2.875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "constraint_Ax",
+      "path": [
+        5
+      ],
+      "independent_exact": "-17/20",
+      "contract_value": -0.85,
+      "abs_error": 0.0,
+      "tolerance": 1.85e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 1,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "1611/200",
+      "contract_value": 8.055,
+      "abs_error": 0.0,
+      "tolerance": 9.055e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "-301/4000",
+      "contract_value": -0.07525,
+      "abs_error": 0.0,
+      "tolerance": 1.07525e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "2999/4000",
+      "contract_value": 0.74975,
+      "abs_error": 0.0,
+      "tolerance": 1.74975e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "-33/80",
+      "contract_value": -0.4125,
+      "abs_error": 0.0,
+      "tolerance": 1.4125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "3063/2000",
+      "contract_value": 1.5315,
+      "abs_error": 0.0,
+      "tolerance": 2.5315e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "33/80",
+      "contract_value": 0.4125,
+      "abs_error": 0.0,
+      "tolerance": 1.4125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_m_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-3063/2000",
+      "contract_value": -1.5315,
+      "abs_error": 0.0,
+      "tolerance": 2.5315e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "-3379/2000",
+      "contract_value": -1.6895,
+      "abs_error": 0.0,
+      "tolerance": 2.6895e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "477/500",
+      "contract_value": 0.954,
+      "abs_error": 0.0,
+      "tolerance": 1.954e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "4321/2000",
+      "contract_value": 2.1605,
+      "abs_error": 0.0,
+      "tolerance": 3.1605e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "-77/100",
+      "contract_value": -0.77,
+      "abs_error": 0.0,
+      "tolerance": 1.77e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "-4171/80000",
+      "contract_value": -0.0521375,
+      "abs_error": 0.0,
+      "tolerance": 1.0521375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "66129/80000",
+      "contract_value": 0.8266125,
+      "abs_error": 0.0,
+      "tolerance": 1.8266125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "-703/1600",
+      "contract_value": -0.439375,
+      "abs_error": 0.0,
+      "tolerance": 1.439375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "60873/40000",
+      "contract_value": 1.521825,
+      "abs_error": 0.0,
+      "tolerance": 2.521825e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "703/1600",
+      "contract_value": 0.439375,
+      "abs_error": 0.0,
+      "tolerance": 1.439375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_g_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-60873/40000",
+      "contract_value": -1.521825,
+      "abs_error": 0.0,
+      "tolerance": 2.521825e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "-1747/1250",
+      "contract_value": -1.3976,
+      "abs_error": 0.0,
+      "tolerance": 2.3976e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "36279/40000",
+      "contract_value": 0.906975,
+      "abs_error": 0.0,
+      "tolerance": 1.906975e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x",
+      "path": [
+        2
+      ],
+      "independent_exact": "28877/20000",
+      "contract_value": 1.44385,
+      "abs_error": 0.0,
+      "tolerance": 2.44385e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x",
+      "path": [
+        3
+      ],
+      "independent_exact": "-21967/40000",
+      "contract_value": -0.549175,
+      "abs_error": 0.0,
+      "tolerance": 1.549175e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y",
+      "path": [
+        0
+      ],
+      "independent_exact": "-83613/800000",
+      "contract_value": -0.10451625,
+      "abs_error": 0.0,
+      "tolerance": 1.10451625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y",
+      "path": [
+        1
+      ],
+      "independent_exact": "551283/800000",
+      "contract_value": 0.68910375,
+      "abs_error": 0.0,
+      "tolerance": 1.68910375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y",
+      "path": [
+        2
+      ],
+      "independent_exact": "-39681/100000",
+      "contract_value": -0.39681,
+      "abs_error": 0.0,
+      "tolerance": 1.39681e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y",
+      "path": [
+        3
+      ],
+      "independent_exact": "308979/200000",
+      "contract_value": 1.544895,
+      "abs_error": 0.0,
+      "tolerance": 2.544895e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y",
+      "path": [
+        4
+      ],
+      "independent_exact": "39681/100000",
+      "contract_value": 0.39681,
+      "abs_error": 0.0,
+      "tolerance": 1.39681e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y",
+      "path": [
+        5
+      ],
+      "independent_exact": "-308979/200000",
+      "contract_value": -1.544895,
+      "abs_error": 0.0,
+      "tolerance": 2.544895e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "-73879/50000",
+      "contract_value": -1.47758,
+      "abs_error": 0.0,
+      "tolerance": 2.47758e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "45979/50000",
+      "contract_value": 0.91958,
+      "abs_error": 0.0,
+      "tolerance": 1.91958e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "82279/50000",
+      "contract_value": 1.64558,
+      "abs_error": 0.0,
+      "tolerance": 2.64558e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "x_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "-30467/50000",
+      "contract_value": -0.60934,
+      "abs_error": 0.0,
+      "tolerance": 1.60934e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "-782617/8000000",
+      "contract_value": -0.097827125,
+      "abs_error": 0.0,
+      "tolerance": 1.097827125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "5661447/8000000",
+      "contract_value": 0.707680875,
+      "abs_error": 0.0,
+      "tolerance": 1.707680875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "-201377/500000",
+      "contract_value": -0.402754,
+      "abs_error": 0.0,
+      "tolerance": 1.402754e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "3083961/2000000",
+      "contract_value": 1.5419805,
+      "abs_error": 0.0,
+      "tolerance": 2.5419805e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        4
+      ],
+      "independent_exact": "201377/500000",
+      "contract_value": 0.402754,
+      "abs_error": 0.0,
+      "tolerance": 1.402754e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "y_f",
+      "path": [
+        5
+      ],
+      "independent_exact": "-3083961/2000000",
+      "contract_value": -1.5419805,
+      "abs_error": 0.0,
+      "tolerance": 2.5419805e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        0
+      ],
+      "independent_exact": "-1747/1250",
+      "contract_value": -1.3976,
+      "abs_error": 0.0,
+      "tolerance": 2.3976e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        1
+      ],
+      "independent_exact": "28877/20000",
+      "contract_value": 1.44385,
+      "abs_error": 0.0,
+      "tolerance": 2.44385e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        2
+      ],
+      "independent_exact": "-56829/40000",
+      "contract_value": -1.420725,
+      "abs_error": 0.0,
+      "tolerance": 2.420725e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        3
+      ],
+      "independent_exact": "29123/40000",
+      "contract_value": 0.728075,
+      "abs_error": 0.0,
+      "tolerance": 1.728075e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        4
+      ],
+      "independent_exact": "56829/40000",
+      "contract_value": 1.420725,
+      "abs_error": 0.0,
+      "tolerance": 2.420725e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "constraint_Ax",
+      "path": [
+        5
+      ],
+      "independent_exact": "-29123/40000",
+      "contract_value": -0.728075,
+      "abs_error": 0.0,
+      "tolerance": 1.728075e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 2,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "3293321133/1600000000",
+      "contract_value": 2.058325708125,
+      "abs_error": 0.0,
+      "tolerance": 3.058325708125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "-499291/4000000",
+      "contract_value": -0.12482275,
+      "abs_error": 0.0,
+      "tolerance": 1.12482275e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "2544981/4000000",
+      "contract_value": 0.63624525,
+      "abs_error": 0.0,
+      "tolerance": 1.63624525e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "-190267/500000",
+      "contract_value": -0.380534,
+      "abs_error": 0.0,
+      "tolerance": 1.380534e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "1553853/1000000",
+      "contract_value": 1.553853,
+      "abs_error": 0.0,
+      "tolerance": 2.553853e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "190267/500000",
+      "contract_value": 0.380534,
+      "abs_error": 0.0,
+      "tolerance": 1.380534e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_m_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-1553853/1000000",
+      "contract_value": -1.553853,
+      "abs_error": 0.0,
+      "tolerance": 2.553853e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "-178699/125000",
+      "contract_value": -1.429592,
+      "abs_error": 0.0,
+      "tolerance": 2.429592e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "912017/1000000",
+      "contract_value": 0.912017,
+      "abs_error": 0.0,
+      "tolerance": 1.912017e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "762271/500000",
+      "contract_value": 1.524542,
+      "abs_error": 0.0,
+      "tolerance": 2.524542e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "-573241/1000000",
+      "contract_value": -0.573241,
+      "abs_error": 0.0,
+      "tolerance": 1.573241e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        0
+      ],
+      "independent_exact": "-8200761/80000000",
+      "contract_value": -0.1025095125,
+      "abs_error": 0.0,
+      "tolerance": 1.1025095125e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        1
+      ],
+      "independent_exact": "55574151/80000000",
+      "contract_value": 0.6946768875,
+      "abs_error": 0.0,
+      "tolerance": 1.6946768875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        2
+      ],
+      "independent_exact": "-996483/2500000",
+      "contract_value": -0.3985932,
+      "abs_error": 0.0,
+      "tolerance": 1.3985932e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        3
+      ],
+      "independent_exact": "30880413/20000000",
+      "contract_value": 1.54402065,
+      "abs_error": 0.0,
+      "tolerance": 2.54402065e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        4
+      ],
+      "independent_exact": "996483/2500000",
+      "contract_value": 0.3985932,
+      "abs_error": 0.0,
+      "tolerance": 1.3985932e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_g_used",
+      "path": [
+        5
+      ],
+      "independent_exact": "-30880413/20000000",
+      "contract_value": -1.54402065,
+      "abs_error": 0.0,
+      "tolerance": 2.54402065e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x",
+      "path": [
+        0
+      ],
+      "independent_exact": "-95122787/80000000",
+      "contract_value": -1.1890348375,
+      "abs_error": 0.0,
+      "tolerance": 2.1890348375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x",
+      "path": [
+        1
+      ],
+      "independent_exact": "6961047/8000000",
+      "contract_value": 0.870130875,
+      "abs_error": 0.0,
+      "tolerance": 1.870130875e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x",
+      "path": [
+        2
+      ],
+      "independent_exact": "79543661/80000000",
+      "contract_value": 0.9942957625,
+      "abs_error": 0.0,
+      "tolerance": 1.9942957625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x",
+      "path": [
+        3
+      ],
+      "independent_exact": "-15593423/40000000",
+      "contract_value": -0.389835575,
+      "abs_error": 0.0,
+      "tolerance": 1.389835575e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y",
+      "path": [
+        0
+      ],
+      "independent_exact": "-61466871/400000000",
+      "contract_value": -0.1536671775,
+      "abs_error": 0.0,
+      "tolerance": 1.1536671775e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y",
+      "path": [
+        1
+      ],
+      "independent_exact": "238327093/400000000",
+      "contract_value": 0.5958177325,
+      "abs_error": 0.0,
+      "tolerance": 1.5958177325e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y",
+      "path": [
+        2
+      ],
+      "independent_exact": "-74948491/200000000",
+      "contract_value": -0.374742455,
+      "abs_error": 0.0,
+      "tolerance": 1.374742455e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y",
+      "path": [
+        3
+      ],
+      "independent_exact": "627123389/400000000",
+      "contract_value": 1.5678084725,
+      "abs_error": 0.0,
+      "tolerance": 2.5678084725e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y",
+      "path": [
+        4
+      ],
+      "independent_exact": "74948491/200000000",
+      "contract_value": 0.374742455,
+      "abs_error": 0.0,
+      "tolerance": 1.374742455e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y",
+      "path": [
+        5
+      ],
+      "independent_exact": "-627123389/400000000",
+      "contract_value": -1.5678084725,
+      "abs_error": 0.0,
+      "tolerance": 2.5678084725e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "-126273987/100000000",
+      "contract_value": -1.26273987,
+      "abs_error": 0.0,
+      "tolerance": 2.26273987e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "8825417/10000000",
+      "contract_value": 0.8825417,
+      "abs_error": 0.0,
+      "tolerance": 1.8825417e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "116489861/100000000",
+      "contract_value": 1.16489861,
+      "abs_error": 0.0,
+      "tolerance": 2.16489861e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "x_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "-22288473/50000000",
+      "contract_value": -0.44576946,
+      "abs_error": 0.0,
+      "tolerance": 1.44576946e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        0
+      ],
+      "independent_exact": "-586981389/4000000000",
+      "contract_value": -0.14674534725,
+      "abs_error": 0.0,
+      "tolerance": 1.14674534725e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        1
+      ],
+      "independent_exact": "2442877887/4000000000",
+      "contract_value": 0.61071947175,
+      "abs_error": 0.0,
+      "tolerance": 1.61071947175e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        2
+      ],
+      "independent_exact": "-757464819/2000000000",
+      "contract_value": -0.3787324095,
+      "abs_error": 0.0,
+      "tolerance": 1.3787324095e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        3
+      ],
+      "independent_exact": "6258571101/4000000000",
+      "contract_value": 1.56464277525,
+      "abs_error": 0.0,
+      "tolerance": 2.56464277525e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        4
+      ],
+      "independent_exact": "757464819/2000000000",
+      "contract_value": 0.3787324095,
+      "abs_error": 0.0,
+      "tolerance": 1.3787324095e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "y_f",
+      "path": [
+        5
+      ],
+      "independent_exact": "-6258571101/4000000000",
+      "contract_value": -1.56464277525,
+      "abs_error": 0.0,
+      "tolerance": 2.56464277525e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        0
+      ],
+      "independent_exact": "-95122787/80000000",
+      "contract_value": -1.1890348375,
+      "abs_error": 0.0,
+      "tolerance": 2.1890348375e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        1
+      ],
+      "independent_exact": "79543661/80000000",
+      "contract_value": 0.9942957625,
+      "abs_error": 0.0,
+      "tolerance": 1.9942957625e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        2
+      ],
+      "independent_exact": "-10916653/10000000",
+      "contract_value": -1.0916653,
+      "abs_error": 0.0,
+      "tolerance": 2.0916653e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        3
+      ],
+      "independent_exact": "25199329/40000000",
+      "contract_value": 0.629983225,
+      "abs_error": 0.0,
+      "tolerance": 1.629983225e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        4
+      ],
+      "independent_exact": "10916653/10000000",
+      "contract_value": 1.0916653,
+      "abs_error": 0.0,
+      "tolerance": 2.0916653e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "constraint_Ax",
+      "path": [
+        5
+      ],
+      "independent_exact": "-25199329/40000000",
+      "contract_value": -0.629983225,
+      "abs_error": 0.0,
+      "tolerance": 1.629983225e-10,
+      "passed": true
+    },
+    {
+      "case_id": "apdg_scaled_constraints",
+      "step": 3,
+      "name": "objective",
+      "path": [],
+      "independent_exact": "-143851284260791/200000000000000",
+      "contract_value": -0.719256421303955,
+      "abs_error": 0.0,
+      "tolerance": 1.719256421303955e-10,
+      "passed": true
+    }
+  ]
+}

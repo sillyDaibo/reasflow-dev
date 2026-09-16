@@ -1,0 +1,1037 @@
+{
+  "schema_version": "optirepro.paper_algorithm_contract.v1",
+  "paper": {
+    "paper_id": "2501.18312",
+    "title": "Decentralised convex optimisation with probability-proportional-to-size quantization",
+    "sha256": "65ac545e80f254228f3678602b8c08626f469816c43c524769c2043d8c4e2566"
+  },
+  "algorithm": {
+    "name": "PPS Primal-dual method (Algorithm 2)",
+    "citations": [
+      "PDF pp.6-7, Section 2 and PPS equation (1)",
+      "PDF pp.8-9, Section 3, equations (2)-(6)",
+      "PDF p.11, Algorithm 2 and coefficient conditions"
+    ],
+    "core_mechanisms": [
+      "signed_pps_quantization",
+      "weighted_dual_accumulation",
+      "accelerated_dual_updates",
+      "weighted_primal_restoration"
+    ],
+    "assumptions": [
+      "Three-dimensional smooth strongly convex primal quadratics and positive-definite diagonal affine A.",
+      "Exact zero-noise conjugate oracle and fixed supported PPS uniform draws; both sign masses stay positive.",
+      "Coefficient inequalities following Algorithm 2 hold with dual gradient Lipschitz bound L=1.",
+      "Finite algebraic validation only: quadratics do not satisfy the paper global uniform bounded-oracle hypothesis, so no probabilistic convergence theorem is asserted.",
+      "The decentralized Algorithm 3, barycenter specialization, and Algorithm 1 are outside the tested scope."
+    ]
+  },
+  "cases": [
+    {
+      "id": "pps_two_positive_coordinates",
+      "purpose": "Check signed PPS categorical quantization inside the accelerated primal-dual recursion, varying beta, and weighted primal restoration across initialization and three updates.",
+      "covers": [
+        "signed_pps_quantization",
+        "weighted_dual_accumulation",
+        "accelerated_dual_updates",
+        "weighted_primal_restoration"
+      ],
+      "inputs": {
+        "network": "Algorithm 2 is the generic affine-constrained primal-dual method, evaluated centrally; no gossip matrix or decentralized Algorithm 3 is used.",
+        "primal_objective": "f(x)=sum_j q_j*(x_j-c_j)^2/2 on R^3, subject to A*x=b; A=diag(A_diagonal).",
+        "q": [
+          1,
+          1,
+          1
+        ],
+        "c": [
+          -2,
+          -1,
+          3
+        ],
+        "A_diagonal": [
+          1,
+          1,
+          1
+        ],
+        "b": [
+          0,
+          0,
+          0
+        ],
+        "conjugate": "f_star(v)=sum_j(c_j*v_j+v_j^2/(2*q_j)); exact deterministic stochastic oracle F_star=f_star.",
+        "dual_objective": "phi(mu)=dot(mu,b)+f_star(-A^T*mu).",
+        "primal_restoring_function": "x(-A^T*mu)=c-diag(A_diagonal/q)*mu.",
+        "oracle": "g(mu)=b-A*x(-A^T*mu)=b-A*c+diag(A_diagonal^2/q)*mu; r=1 at all calls, no xi noise.",
+        "initialization": "mu0=[0,0,0]; draw PPS at mu0; lambda0=-alpha0/beta0*G0; A0=alpha0.",
+        "positive_uniforms": [
+          [
+            0.1,
+            0.2
+          ],
+          [
+            0.1,
+            0.9
+          ],
+          [
+            0.6,
+            0.8
+          ],
+          [
+            0.2,
+            0.7
+          ]
+        ],
+        "negative_uniforms": [
+          [
+            0.2,
+            0.6
+          ],
+          [
+            0.4,
+            0.8
+          ],
+          [
+            0.1,
+            0.7
+          ],
+          [
+            0.3,
+            0.9
+          ]
+        ],
+        "randomness": "At each oracle call k=0,1,2,3 use the corresponding two uniforms for positive and negative signs. For weights max(g,0) and max(-g,0), choose smallest zero-based index whose normalized cumulative weight is strictly greater than u. Use all two draws with replacement separately per sign, and PPS=sum_positive_mass/2*counts_positive-sum_negative_mass/2*counts_negative. Both masses remain positive in these fixtures. No other randomness.",
+        "observations": "step0 is initialization after the first PPS call and lambda0. step s=t+1 is after completing the t-th loop. z_used uses beta_t and weighted G0..Gt; mu, PPS_G, mu_hat, lambda correspond to subscript t+1; restored_primal_at_mu uses unquantized restoring function at mu_{t+1}; primal_average includes alpha0*x(-A^T*mu0) through alpha_{t+1}*x(-A^T*mu_{t+1}), divided by their sum. Residual and objective are evaluated at that average.",
+        "scope_limitation": "This smooth quadratic fixture checks finite algebraic recurrences. Its dual gradient is bounded on the visited points, but not uniformly on all R^3; it therefore does not instantiate the global bounded-oracle hypothesis of Section 2 or validate the large-deviation theorems."
+      },
+      "parameters": {
+        "T": 3,
+        "alpha": [
+          1,
+          1,
+          1.5,
+          2
+        ],
+        "beta": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "beta_minus_one_for_coefficient_condition": 4,
+        "r": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "M": [
+          2,
+          2,
+          2,
+          2
+        ],
+        "dual_gradient_L": 1,
+        "uniform_draw_interpretation": "Exact decimals in [0,1); no PRNG seed semantics."
+      },
+      "atol": 1e-10,
+      "rtol": 1e-10,
+      "expected": [
+        {
+          "step": 0,
+          "name": "mu",
+          "value": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "step": 0,
+          "name": "oracle_g",
+          "value": [
+            2.0,
+            1.0,
+            -3.0
+          ]
+        },
+        {
+          "step": 0,
+          "name": "PPS_G",
+          "value": [
+            3.0,
+            0.0,
+            -3.0
+          ]
+        },
+        {
+          "step": 0,
+          "name": "lambda",
+          "value": [
+            -0.75,
+            0.0,
+            0.75
+          ]
+        },
+        {
+          "step": 0,
+          "name": "positive_negative_mass",
+          "value": [
+            3.0,
+            3.0
+          ]
+        },
+        {
+          "step": 0,
+          "name": "sampled_positive_indices",
+          "value": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "step": 0,
+          "name": "sampled_negative_indices",
+          "value": [
+            2.0,
+            2.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "z_used",
+          "value": [
+            -0.75,
+            0.0,
+            0.75
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu",
+          "value": [
+            -0.75,
+            0.0,
+            0.75
+          ]
+        },
+        {
+          "step": 1,
+          "name": "oracle_g",
+          "value": [
+            1.25,
+            1.0,
+            -2.25
+          ]
+        },
+        {
+          "step": 1,
+          "name": "positive_negative_mass",
+          "value": [
+            2.25,
+            2.25
+          ]
+        },
+        {
+          "step": 1,
+          "name": "sampled_positive_indices",
+          "value": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "sampled_negative_indices",
+          "value": [
+            2.0,
+            2.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "PPS_G",
+          "value": [
+            1.125,
+            1.125,
+            -2.25
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu_hat",
+          "value": [
+            -1.03125,
+            -0.28125,
+            1.3125
+          ]
+        },
+        {
+          "step": 1,
+          "name": "lambda",
+          "value": [
+            -0.890625,
+            -0.140625,
+            1.03125
+          ]
+        },
+        {
+          "step": 1,
+          "name": "restored_primal_at_mu",
+          "value": [
+            -1.25,
+            -1.0,
+            2.25
+          ]
+        },
+        {
+          "step": 1,
+          "name": "primal_average",
+          "value": [
+            -1.625,
+            -1.0,
+            2.625
+          ]
+        },
+        {
+          "step": 1,
+          "name": "constraint_residual",
+          "value": [
+            -1.625,
+            -1.0,
+            2.625
+          ]
+        },
+        {
+          "step": 1,
+          "name": "primal_objective",
+          "value": 0.140625
+        },
+        {
+          "step": 2,
+          "name": "z_used",
+          "value": [
+            -0.825,
+            -0.225,
+            1.05
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu",
+          "value": [
+            -0.8625,
+            -0.1767857142857143,
+            1.0392857142857144
+          ]
+        },
+        {
+          "step": 2,
+          "name": "oracle_g",
+          "value": [
+            1.1375,
+            0.8232142857142857,
+            -1.9607142857142856
+          ]
+        },
+        {
+          "step": 2,
+          "name": "positive_negative_mass",
+          "value": [
+            1.9607142857142856,
+            1.9607142857142856
+          ]
+        },
+        {
+          "step": 2,
+          "name": "sampled_positive_indices",
+          "value": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "step": 2,
+          "name": "sampled_negative_indices",
+          "value": [
+            2.0,
+            2.0
+          ]
+        },
+        {
+          "step": 2,
+          "name": "PPS_G",
+          "value": [
+            0.0,
+            1.9607142857142856,
+            -1.9607142857142856
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu_hat",
+          "value": [
+            -0.825,
+            -0.8132142857142857,
+            1.6382142857142856
+          ]
+        },
+        {
+          "step": 2,
+          "name": "lambda",
+          "value": [
+            -0.8625,
+            -0.42887755102040814,
+            1.2913775510204082
+          ]
+        },
+        {
+          "step": 2,
+          "name": "restored_primal_at_mu",
+          "value": [
+            -1.1375,
+            -0.8232142857142857,
+            1.9607142857142856
+          ]
+        },
+        {
+          "step": 2,
+          "name": "primal_average",
+          "value": [
+            -1.4160714285714286,
+            -0.924234693877551,
+            2.3403061224489794
+          ]
+        },
+        {
+          "step": 2,
+          "name": "constraint_residual",
+          "value": [
+            -1.4160714285714286,
+            -0.924234693877551,
+            2.3403061224489794
+          ]
+        },
+        {
+          "step": 2,
+          "name": "primal_objective",
+          "value": 0.3909544851103707
+        },
+        {
+          "step": 3,
+          "name": "z_used",
+          "value": [
+            -0.6875,
+            -0.6776785714285715,
+            1.3651785714285714
+          ]
+        },
+        {
+          "step": 3,
+          "name": "mu",
+          "value": [
+            -0.7988636363636363,
+            -0.5193506493506493,
+            1.3182142857142858
+          ]
+        },
+        {
+          "step": 3,
+          "name": "oracle_g",
+          "value": [
+            1.2011363636363637,
+            0.48064935064935066,
+            -1.6817857142857142
+          ]
+        },
+        {
+          "step": 3,
+          "name": "positive_negative_mass",
+          "value": [
+            1.6817857142857142,
+            1.6817857142857142
+          ]
+        },
+        {
+          "step": 3,
+          "name": "sampled_positive_indices",
+          "value": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "step": 3,
+          "name": "sampled_negative_indices",
+          "value": [
+            2.0,
+            2.0
+          ]
+        },
+        {
+          "step": 3,
+          "name": "PPS_G",
+          "value": [
+            1.6817857142857142,
+            0.0,
+            -1.6817857142857142
+          ]
+        },
+        {
+          "step": 3,
+          "name": "mu_hat",
+          "value": [
+            -1.2480952380952381,
+            -0.6776785714285715,
+            1.9257738095238095
+          ]
+        },
+        {
+          "step": 3,
+          "name": "lambda",
+          "value": [
+            -1.0027164502164503,
+            -0.5193506493506493,
+            1.5220670995670995
+          ]
+        },
+        {
+          "step": 3,
+          "name": "restored_primal_at_mu",
+          "value": [
+            -1.2011363636363637,
+            -0.48064935064935066,
+            1.6817857142857142
+          ]
+        },
+        {
+          "step": 3,
+          "name": "primal_average",
+          "value": [
+            -1.3379132231404958,
+            -0.76293093270366,
+            2.1008441558441557
+          ]
+        },
+        {
+          "step": 3,
+          "name": "constraint_residual",
+          "value": [
+            -1.3379132231404958,
+            -0.76293093270366,
+            2.1008441558441557
+          ]
+        },
+        {
+          "step": 3,
+          "name": "primal_objective",
+          "value": 0.651520937420286
+        }
+      ],
+      "derivation": "PDF p.7 equation (1), p.8 equations (3),(5), p.11 Algorithm 2. The conjugate follows by maximizing each scalar quadratic; derivative is c+v/q. All algebra, CDF comparisons, and weighted sums use exact Fraction arithmetic. Coefficients obey alpha0 in (0,1], beta increasing and >L, alpha_t^2 beta_t <= beta_(t-1) sum_(i=0)^t alpha_i. 0:mu=[Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)]\n0:oracle_g=[Fraction(2, 1), Fraction(1, 1), Fraction(-3, 1)]\n0:PPS_G=[Fraction(3, 1), Fraction(0, 1), Fraction(-3, 1)]\n0:lambda=[Fraction(-3, 4), Fraction(0, 1), Fraction(3, 4)]\n0:positive_negative_mass=[Fraction(3, 1), Fraction(3, 1)]\n0:sampled_positive_indices=[0, 0]\n0:sampled_negative_indices=[2, 2]\n1:z_used=[Fraction(-3, 4), Fraction(0, 1), Fraction(3, 4)]\n1:mu=[Fraction(-3, 4), Fraction(0, 1), Fraction(3, 4)]\n1:oracle_g=[Fraction(5, 4), Fraction(1, 1), Fraction(-9, 4)]\n1:positive_negative_mass=[Fraction(9, 4), Fraction(9, 4)]\n1:sampled_positive_indices=[0, 1]\n1:sampled_negative_indices=[2, 2]\n1:PPS_G=[Fraction(9, 8), Fraction(9, 8), Fraction(-9, 4)]\n1:mu_hat=[Fraction(-33, 32), Fraction(-9, 32), Fraction(21, 16)]\n1:lambda=[Fraction(-57, 64), Fraction(-9, 64), Fraction(33, 32)]\n1:restored_primal_at_mu=[Fraction(-5, 4), Fraction(-1, 1), Fraction(9, 4)]\n1:primal_average=[Fraction(-13, 8), Fraction(-1, 1), Fraction(21, 8)]\n1:constraint_residual=[Fraction(-13, 8), Fraction(-1, 1), Fraction(21, 8)]\n1:primal_objective=9/64\n2:z_used=[Fraction(-33, 40), Fraction(-9, 40), Fraction(21, 20)]\n2:mu=[Fraction(-69, 80), Fraction(-99, 560), Fraction(291, 280)]\n2:oracle_g=[Fraction(91, 80), Fraction(461, 560), Fraction(-549, 280)]\n2:positive_negative_mass=[Fraction(549, 280), Fraction(549, 280)]\n2:sampled_positive_indices=[1, 1]\n2:sampled_negative_indices=[2, 2]\n2:PPS_G=[Fraction(0, 1), Fraction(549, 280), Fraction(-549, 280)]\n2:mu_hat=[Fraction(-33, 40), Fraction(-2277, 2800), Fraction(4587, 2800)]\n2:lambda=[Fraction(-69, 80), Fraction(-4203, 9800), Fraction(25311, 19600)]\n2:restored_primal_at_mu=[Fraction(-91, 80), Fraction(-461, 560), Fraction(549, 280)]\n2:primal_average=[Fraction(-793, 560), Fraction(-3623, 3920), Fraction(4587, 1960)]\n2:constraint_residual=[Fraction(-793, 560), Fraction(-3623, 3920), Fraction(4587, 1960)]\n2:primal_objective=6007563/15366400\n3:z_used=[Fraction(-11, 16), Fraction(-759, 1120), Fraction(1529, 1120)]\n3:mu=[Fraction(-703, 880), Fraction(-3999, 7700), Fraction(3691, 2800)]\n3:oracle_g=[Fraction(1057, 880), Fraction(3701, 7700), Fraction(-4709, 2800)]\n3:positive_negative_mass=[Fraction(4709, 2800), Fraction(4709, 2800)]\n3:sampled_positive_indices=[0, 0]\n3:sampled_negative_indices=[2, 2]\n3:PPS_G=[Fraction(4709, 2800), Fraction(0, 1), Fraction(-4709, 2800)]\n3:mu_hat=[Fraction(-2621, 2100), Fraction(-759, 1120), Fraction(32353, 16800)]\n3:lambda=[Fraction(-92651, 92400), Fraction(-3999, 7700), Fraction(140639, 92400)]\n3:restored_primal_at_mu=[Fraction(-1057, 880), Fraction(-3701, 7700), Fraction(4709, 2800)]\n3:primal_average=[Fraction(-12951, 9680), Fraction(-258481, 338800), Fraction(32353, 15400)]\n3:constraint_residual=[Fraction(-12951, 9680), Fraction(-258481, 338800), Fraction(32353, 15400)]\n3:primal_objective=74785117471/114785440000"
+    },
+    {
+      "id": "pps_two_negative_coordinates",
+      "purpose": "Check signed PPS categorical quantization inside the accelerated primal-dual recursion, varying beta, and weighted primal restoration across initialization and three updates.",
+      "covers": [
+        "signed_pps_quantization",
+        "weighted_dual_accumulation",
+        "accelerated_dual_updates",
+        "weighted_primal_restoration"
+      ],
+      "inputs": {
+        "network": "Algorithm 2 is the generic affine-constrained primal-dual method, evaluated centrally; no gossip matrix or decentralized Algorithm 3 is used.",
+        "primal_objective": "f(x)=sum_j q_j*(x_j-c_j)^2/2 on R^3, subject to A*x=b; A=diag(A_diagonal).",
+        "q": [
+          2,
+          4,
+          2
+        ],
+        "c": [
+          3,
+          -2,
+          1
+        ],
+        "A_diagonal": [
+          1,
+          2,
+          1
+        ],
+        "b": [
+          0.5,
+          -0.5,
+          0.25
+        ],
+        "conjugate": "f_star(v)=sum_j(c_j*v_j+v_j^2/(2*q_j)); exact deterministic stochastic oracle F_star=f_star.",
+        "dual_objective": "phi(mu)=dot(mu,b)+f_star(-A^T*mu).",
+        "primal_restoring_function": "x(-A^T*mu)=c-diag(A_diagonal/q)*mu.",
+        "oracle": "g(mu)=b-A*x(-A^T*mu)=b-A*c+diag(A_diagonal^2/q)*mu; r=1 at all calls, no xi noise.",
+        "initialization": "mu0=[0,0,0]; draw PPS at mu0; lambda0=-alpha0/beta0*G0; A0=alpha0.",
+        "positive_uniforms": [
+          [
+            0.1,
+            0.8
+          ],
+          [
+            0.2,
+            0.7
+          ],
+          [
+            0.3,
+            0.9
+          ],
+          [
+            0.1,
+            0.6
+          ]
+        ],
+        "negative_uniforms": [
+          [
+            0.1,
+            0.2
+          ],
+          [
+            0.1,
+            0.95
+          ],
+          [
+            0.85,
+            0.95
+          ],
+          [
+            0.15,
+            0.8
+          ]
+        ],
+        "randomness": "At each oracle call k=0,1,2,3 use the corresponding two uniforms for positive and negative signs. For weights max(g,0) and max(-g,0), choose smallest zero-based index whose normalized cumulative weight is strictly greater than u. Use all two draws with replacement separately per sign, and PPS=sum_positive_mass/2*counts_positive-sum_negative_mass/2*counts_negative. Both masses remain positive in these fixtures. No other randomness.",
+        "observations": "step0 is initialization after the first PPS call and lambda0. step s=t+1 is after completing the t-th loop. z_used uses beta_t and weighted G0..Gt; mu, PPS_G, mu_hat, lambda correspond to subscript t+1; restored_primal_at_mu uses unquantized restoring function at mu_{t+1}; primal_average includes alpha0*x(-A^T*mu0) through alpha_{t+1}*x(-A^T*mu_{t+1}), divided by their sum. Residual and objective are evaluated at that average.",
+        "scope_limitation": "This smooth quadratic fixture checks finite algebraic recurrences. Its dual gradient is bounded on the visited points, but not uniformly on all R^3; it therefore does not instantiate the global bounded-oracle hypothesis of Section 2 or validate the large-deviation theorems."
+      },
+      "parameters": {
+        "T": 3,
+        "alpha": [
+          1,
+          1,
+          1.5,
+          2
+        ],
+        "beta": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "beta_minus_one_for_coefficient_condition": 4,
+        "r": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "M": [
+          2,
+          2,
+          2,
+          2
+        ],
+        "dual_gradient_L": 1,
+        "uniform_draw_interpretation": "Exact decimals in [0,1); no PRNG seed semantics."
+      },
+      "atol": 1e-10,
+      "rtol": 1e-10,
+      "expected": [
+        {
+          "step": 0,
+          "name": "mu",
+          "value": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "step": 0,
+          "name": "oracle_g",
+          "value": [
+            -2.5,
+            3.5,
+            -0.75
+          ]
+        },
+        {
+          "step": 0,
+          "name": "PPS_G",
+          "value": [
+            -3.25,
+            3.5,
+            0.0
+          ]
+        },
+        {
+          "step": 0,
+          "name": "lambda",
+          "value": [
+            0.8125,
+            -0.875,
+            0.0
+          ]
+        },
+        {
+          "step": 0,
+          "name": "positive_negative_mass",
+          "value": [
+            3.5,
+            3.25
+          ]
+        },
+        {
+          "step": 0,
+          "name": "sampled_positive_indices",
+          "value": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "step": 0,
+          "name": "sampled_negative_indices",
+          "value": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "z_used",
+          "value": [
+            0.8125,
+            -0.875,
+            0.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu",
+          "value": [
+            0.8125,
+            -0.875,
+            0.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "oracle_g",
+          "value": [
+            -2.09375,
+            2.625,
+            -0.75
+          ]
+        },
+        {
+          "step": 1,
+          "name": "positive_negative_mass",
+          "value": [
+            2.625,
+            2.84375
+          ]
+        },
+        {
+          "step": 1,
+          "name": "sampled_positive_indices",
+          "value": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "sampled_negative_indices",
+          "value": [
+            0.0,
+            2.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "PPS_G",
+          "value": [
+            -1.421875,
+            2.625,
+            -1.421875
+          ]
+        },
+        {
+          "step": 1,
+          "name": "mu_hat",
+          "value": [
+            1.16796875,
+            -1.53125,
+            0.35546875
+          ]
+        },
+        {
+          "step": 1,
+          "name": "lambda",
+          "value": [
+            0.990234375,
+            -1.203125,
+            0.177734375
+          ]
+        },
+        {
+          "step": 1,
+          "name": "restored_primal_at_mu",
+          "value": [
+            2.59375,
+            -1.5625,
+            1.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "primal_average",
+          "value": [
+            2.796875,
+            -1.78125,
+            1.0
+          ]
+        },
+        {
+          "step": 1,
+          "name": "constraint_residual",
+          "value": [
+            2.296875,
+            -3.0625,
+            0.75
+          ]
+        },
+        {
+          "step": 1,
+          "name": "primal_objective",
+          "value": 0.136962890625
+        },
+        {
+          "step": 2,
+          "name": "z_used",
+          "value": [
+            0.934375,
+            -1.225,
+            0.284375
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu",
+          "value": [
+            0.9662946428571428,
+            -1.2125,
+            0.2234375
+          ]
+        },
+        {
+          "step": 2,
+          "name": "oracle_g",
+          "value": [
+            -2.0168526785714285,
+            2.2875,
+            -0.63828125
+          ]
+        },
+        {
+          "step": 2,
+          "name": "positive_negative_mass",
+          "value": [
+            2.2875,
+            2.6551339285714284
+          ]
+        },
+        {
+          "step": 2,
+          "name": "sampled_positive_indices",
+          "value": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "step": 2,
+          "name": "sampled_negative_indices",
+          "value": [
+            2.0,
+            2.0
+          ]
+        },
+        {
+          "step": 2,
+          "name": "PPS_G",
+          "value": [
+            0.0,
+            2.2875,
+            -2.6551339285714284
+          ]
+        },
+        {
+          "step": 2,
+          "name": "mu_hat",
+          "value": [
+            0.934375,
+            -1.91125,
+            1.0809151785714286
+          ]
+        },
+        {
+          "step": 2,
+          "name": "lambda",
+          "value": [
+            0.9662946428571428,
+            -1.5066071428571428,
+            0.564811862244898
+          ]
+        },
+        {
+          "step": 2,
+          "name": "restored_primal_at_mu",
+          "value": [
+            2.5168526785714285,
+            -1.39375,
+            0.88828125
+          ]
+        },
+        {
+          "step": 2,
+          "name": "primal_average",
+          "value": [
+            2.6768654336734694,
+            -1.6151785714285714,
+            0.9521205357142857
+          ]
+        },
+        {
+          "step": 2,
+          "name": "constraint_residual",
+          "value": [
+            2.1768654336734694,
+            -2.7303571428571427,
+            0.7021205357142857
+          ]
+        },
+        {
+          "step": 2,
+          "name": "primal_objective",
+          "value": 0.4028834548308322
+        },
+        {
+          "step": 3,
+          "name": "z_used",
+          "value": [
+            0.7786458333333334,
+            -1.5927083333333334,
+            0.9007626488095238
+          ]
+        },
+        {
+          "step": 3,
+          "name": "mu",
+          "value": [
+            0.8980587121212121,
+            -1.5379166666666666,
+            0.6869757846320347
+          ]
+        },
+        {
+          "step": 3,
+          "name": "oracle_g",
+          "value": [
+            -2.0509706439393938,
+            1.9620833333333334,
+            -0.40651210768398266
+          ]
+        },
+        {
+          "step": 3,
+          "name": "positive_negative_mass",
+          "value": [
+            1.9620833333333334,
+            2.4574827516233766
+          ]
+        },
+        {
+          "step": 3,
+          "name": "sampled_positive_indices",
+          "value": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "step": 3,
+          "name": "sampled_negative_indices",
+          "value": [
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "step": 3,
+          "name": "PPS_G",
+          "value": [
+            -2.4574827516233766,
+            1.9620833333333334,
+            0.0
+          ]
+        },
+        {
+          "step": 3,
+          "name": "mu_hat",
+          "value": [
+            1.5978067505411255,
+            -2.2467361111111113,
+            0.9007626488095238
+          ]
+        },
+        {
+          "step": 3,
+          "name": "lambda",
+          "value": [
+            1.195935409287682,
+            -1.7757449494949495,
+            0.6869757846320347
+          ]
+        },
+        {
+          "step": 3,
+          "name": "restored_primal_at_mu",
+          "value": [
+            2.5509706439393938,
+            -1.2310416666666666,
+            0.6565121076839827
+          ]
+        },
+        {
+          "step": 3,
+          "name": "primal_average",
+          "value": [
+            2.6310855101338055,
+            -1.4754924242424243,
+            0.8446265618850846
+          ]
+        },
+        {
+          "step": 3,
+          "name": "constraint_residual",
+          "value": [
+            2.1310855101338055,
+            -2.4509848484848487,
+            0.5946265618850846
+          ]
+        },
+        {
+          "step": 3,
+          "name": "primal_objective",
+          "value": 0.710455200159062
+        }
+      ],
+      "derivation": "PDF p.7 equation (1), p.8 equations (3),(5), p.11 Algorithm 2. The conjugate follows by maximizing each scalar quadratic; derivative is c+v/q. All algebra, CDF comparisons, and weighted sums use exact Fraction arithmetic. Coefficients obey alpha0 in (0,1], beta increasing and >L, alpha_t^2 beta_t <= beta_(t-1) sum_(i=0)^t alpha_i. 0:mu=[Fraction(0, 1), Fraction(0, 1), Fraction(0, 1)]\n0:oracle_g=[Fraction(-5, 2), Fraction(7, 2), Fraction(-3, 4)]\n0:PPS_G=[Fraction(-13, 4), Fraction(7, 2), Fraction(0, 1)]\n0:lambda=[Fraction(13, 16), Fraction(-7, 8), Fraction(0, 1)]\n0:positive_negative_mass=[Fraction(7, 2), Fraction(13, 4)]\n0:sampled_positive_indices=[1, 1]\n0:sampled_negative_indices=[0, 0]\n1:z_used=[Fraction(13, 16), Fraction(-7, 8), Fraction(0, 1)]\n1:mu=[Fraction(13, 16), Fraction(-7, 8), Fraction(0, 1)]\n1:oracle_g=[Fraction(-67, 32), Fraction(21, 8), Fraction(-3, 4)]\n1:positive_negative_mass=[Fraction(21, 8), Fraction(91, 32)]\n1:sampled_positive_indices=[1, 1]\n1:sampled_negative_indices=[0, 2]\n1:PPS_G=[Fraction(-91, 64), Fraction(21, 8), Fraction(-91, 64)]\n1:mu_hat=[Fraction(299, 256), Fraction(-49, 32), Fraction(91, 256)]\n1:lambda=[Fraction(507, 512), Fraction(-77, 64), Fraction(91, 512)]\n1:restored_primal_at_mu=[Fraction(83, 32), Fraction(-25, 16), Fraction(1, 1)]\n1:primal_average=[Fraction(179, 64), Fraction(-57, 32), Fraction(1, 1)]\n1:constraint_residual=[Fraction(147, 64), Fraction(-49, 16), Fraction(3, 4)]\n1:primal_objective=561/4096\n2:z_used=[Fraction(299, 320), Fraction(-49, 40), Fraction(91, 320)]\n2:mu=[Fraction(4329, 4480), Fraction(-97, 80), Fraction(143, 640)]\n2:oracle_g=[Fraction(-18071, 8960), Fraction(183, 80), Fraction(-817, 1280)]\n2:positive_negative_mass=[Fraction(183, 80), Fraction(2379, 896)]\n2:sampled_positive_indices=[1, 1]\n2:sampled_negative_indices=[2, 2]\n2:PPS_G=[Fraction(0, 1), Fraction(183, 80), Fraction(-2379, 896)]\n2:mu_hat=[Fraction(299, 320), Fraction(-1529, 800), Fraction(1937, 1792)]\n2:lambda=[Fraction(4329, 4480), Fraction(-8437, 5600), Fraction(7085, 12544)]\n2:restored_primal_at_mu=[Fraction(22551, 8960), Fraction(-223, 160), Fraction(1137, 1280)]\n2:primal_average=[Fraction(167893, 62720), Fraction(-1809, 1120), Fraction(8531, 8960)]\n2:constraint_residual=[Fraction(136533, 62720), Fraction(-1529, 560), Fraction(6291, 8960)]\n2:primal_objective=158486229/393379840\n3:z_used=[Fraction(299, 384), Fraction(-1529, 960), Fraction(9685, 10752)]\n3:mu=[Fraction(18967, 21120), Fraction(-3691, 2400), Fraction(40625, 59136)]\n3:oracle_g=[Fraction(-86633, 42240), Fraction(4709, 2400), Fraction(-48079, 118272)]\n3:positive_negative_mass=[Fraction(4709, 2400), Fraction(484419, 197120)]\n3:sampled_positive_indices=[1, 1]\n3:sampled_negative_indices=[0, 0]\n3:PPS_G=[Fraction(-484419, 197120), Fraction(4709, 2400), Fraction(0, 1)]\n3:mu_hat=[Fraction(944879, 591360), Fraction(-32353, 14400), Fraction(9685, 10752)]\n3:lambda=[Fraction(972439, 813120), Fraction(-140639, 79200), Fraction(40625, 59136)]\n3:restored_primal_at_mu=[Fraction(107753, 42240), Fraction(-5909, 4800), Fraction(77647, 118272)]\n3:primal_average=[Fraction(8557553, 3252480), Fraction(-38953, 26400), Fraction(2747131, 3252480)]\n3:constraint_residual=[Fraction(6931313, 3252480), Fraction(-32353, 13200), Fraction(1934011, 3252480)]\n3:primal_objective=93945499488629/132232826880000"
+    }
+  ]
+}

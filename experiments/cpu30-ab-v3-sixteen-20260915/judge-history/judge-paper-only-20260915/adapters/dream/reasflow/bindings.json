@@ -1,0 +1,6 @@
+[
+  {"path":"src/dream_reproduction/algorithms.py","symbol":"run_algorithm"},
+  {"path":"src/dream_reproduction/algorithms.py","symbol":"_run_dream"},
+  {"path":"src/dream_reproduction/algorithms.py","symbol":"_compute_gradients"},
+  {"path":"src/dream_reproduction/mixing.py","symbol":"fast_mix"}
+]

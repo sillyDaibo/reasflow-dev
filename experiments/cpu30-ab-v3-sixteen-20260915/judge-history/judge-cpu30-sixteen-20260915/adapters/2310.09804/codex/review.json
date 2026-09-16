@@ -1,0 +1,41 @@
+{
+  "schema_version": "optirepro.adapter_review.v1",
+  "reviewer_id": "/root/adapter16_a",
+  "basis": "public_inputs_and_source_only",
+  "decision": "approved",
+  "summary": "Faithful execution of the original DASHA-PAGE update, Rand-1 compressor and bucketed coordinate median with necessary public finite-sum objective callbacks and declared adversarial/random inputs.",
+  "scope_notes": [
+    "Directly inspected the original DASHA-PAGE loop, original RandK, bucketed coordinate median, sampler entry points, initialization and objective implementation. Public readonly smoke completed both cases with 24 required actual observations.",
+    "Public quadratic component mean uses exactly two components per honest worker and all ten components for the global objective; malicious worker is excluded from the objective but included in the original six-worker aggregation.",
+    "RNG supplies PAGE coins, same component index for both points in a difference, Rand-1 coordinates, and four bucket permutations including initialization. Refresh steps consume no component draws. Original RandK scales by d/k and original aggregation returns feed the real algorithm.",
+    "Arbitrary public Byzantine states replace only attacker generation. Initial malicious state is supplied before initial aggregation. Compressor wrapper calls original and returns its value unchanged; true bucket arrays are traced at the original aggregation return.",
+    "Full gradients generate the declared initial honest h and g at supplied x0, rather than overwriting their updates. Native float dtype, correction arithmetic, branch order and finite loop are unchanged.",
+    "Codex TwoGroupQuadraticObjective has fixed identity Hessian (grad=x+offset), and LogisticObjective cannot represent these heterogeneous component diagonal Hessians; custom objective is necessary. _run_dasha chooses a component before calling _gradient with batch_size equal selected-row count, so callback batch_gradient does not bypass any further random selection. Original correction expression at algorithms.py:182-184 is preserved."
+  ],
+  "substitutions": [
+    {
+      "symbol": "public quadratic gradient/loss callbacks",
+      "role": "problem_input",
+      "reason": "Replace only problem-specific logistic/fixed-identity objective evaluations that cannot express the supplied heterogeneous finite sum; selected-row means retained."
+    },
+    {
+      "symbol": "initial x / arbitrary Byzantine state input",
+      "role": "problem_input",
+      "reason": "Supplies public starting point and adversary messages; honest updates and aggregation untouched."
+    },
+    {
+      "symbol": "deterministic RNG",
+      "role": "problem_input",
+      "reason": "Supplies declared supported PAGE, sample, compressor and permutation outcomes in actual source consumption order."
+    },
+    {
+      "symbol": "randk wrapper and bucket/state trace",
+      "role": "observation",
+      "reason": "Observes original compressor argument/output and true updated local/server states; no independent update is computed."
+    }
+  ],
+  "public_digest": "b57b6d333da441aa4bfa2195dbdadd753a3b8a83b350c9ad16888100e325380c",
+  "adapter_sha256": "9e3186590085d8fe7b66f6f5fdd7838077fe7a727c0c864ec1738af5a1963493",
+  "workspace_digest": "dd0c1dd40e83d52a9410b5e55f2d9e1b0e907f9f97e2841d10c5f41b6ce1a076",
+  "bindings_digest": "545a44641a410ca0baa67ea2cf109188d3b5f336f32bebeb9cff63c97d012274"
+}
